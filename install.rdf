@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
+	<Description about="urn:mozilla:install-manifest">
+
+		<em:id>{29c4afe1-db19-4298-8785-fcc94d1d6c1d}</em:id>
+
+		<em:version>0.2.2007011501</em:version>
+
+
+		<em:targetApplication>
+			<Description><!-- Firefox -->
+				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>2.0.0.*</em:maxVersion>
+			</Description>
+		</em:targetApplication>
+
+
+		<em:name>Split Browser</em:name>
+		<em:description>Splits browser window as you like.</em:description>
+		<em:creator>SHIMODA Hiroshi</em:creator>
+		<em:contributor>Menet</em:contributor>
+		<em:homepageURL>http://piro.sakura.ne.jp/xul/_splitbrowser.html.en</em:homepageURL>
+		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
+
+
+		<em:optionsURL>chrome://splitbrowser/content/config.xul</em:optionsURL>
+		<!--em:aboutURL>chrome://splitbrowser/content/about.xul</em:aboutURL-->
+		<!--em:iconURL></em:iconURL-->
+	</Description>
+</RDF>

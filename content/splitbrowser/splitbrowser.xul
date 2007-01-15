@@ -1,0 +1,134 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="splitbrowser.css" type="text/css"?>
+<?xml-stylesheet href="chrome://splitbrowser/skin/splitbrowser.css" type="text/css"?>
+<?xml-stylesheet href="chrome://splitbrowsertoolbar/skin/splitbrowsertoolbar.css" type="text/css"?>
+
+<!DOCTYPE bindings SYSTEM "chrome://splitbrowser/locale/">
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+
+<script type="application/x-javascript" src="splitbrowser.js"/>
+<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
+
+<keyset id="mainKeyset"/>
+
+<popup id="menu_FilePopup">
+	<menuitem id="splitbrowser-remove-all"
+		insertafter="menu_close"
+		label="&splitbrowser.file.removeAll.label;"
+		oncommand="SplitBrowser.removeAllSubBrowsers();"/>
+</popup>
+
+<popup id="contentAreaContextMenu">
+	<menu id="splitbrowser-context-item-link"
+		insertafter="context-openlinkintab"
+		label="&splitbrowser.link.add.label;">
+		<menupopup>
+			<menuitem label="&splitbrowser.link.add.top.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-top"
+				oncommand="SplitBrowser.addSubBrowser(gContextMenu.linkURL, null, SplitBrowser.POSITION_TOP);"/>
+			<menuitem label="&splitbrowser.link.add.right.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-right"
+				oncommand="SplitBrowser.addSubBrowser(gContextMenu.linkURL, null, SplitBrowser.POSITION_RIGHT);"/>
+			<menuitem label="&splitbrowser.link.add.left.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-left"
+				oncommand="SplitBrowser.addSubBrowser(gContextMenu.linkURL, null, SplitBrowser.POSITION_LEFT);"/>
+			<menuitem label="&splitbrowser.link.add.bottom.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-bottom"
+				oncommand="SplitBrowser.addSubBrowser(gContextMenu.linkURL, null, SplitBrowser.POSITION_BOTTOM);"/>
+		</menupopup>
+	</menu>
+
+
+	<menuseparator id="splitbrowser-context-splitter"/>
+	<menu id="splitbrowser-context-item"
+		label="&splitbrowser.add.label;">
+		<menupopup>
+			<menuitem label="&splitbrowser.add.top.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-top"
+				oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_TOP);"/>
+			<menuitem label="&splitbrowser.add.right.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-right"
+				oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_RIGHT);"/>
+			<menuitem label="&splitbrowser.add.left.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-left"
+				oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_LEFT);"/>
+			<menuitem label="&splitbrowser.add.bottom.label;"
+				class="menuitem-iconic splitbrowser-menuitem-add-bottom"
+				oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_BOTTOM);"/>
+		</menupopup>
+	</menu>
+</popup>
+
+<menu id="frame">
+	<menupopup id="frame_popup">
+		<menuseparator/>
+		<menu id="splitbrowser-context-item-frame"
+			label="&splitbrowser.frame.add.label;">
+			<menupopup>
+				<menuitem label="&splitbrowser.frame.add.top.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-top"
+					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_TOP);"/>
+				<menuitem label="&splitbrowser.frame.add.right.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-right"
+					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_RIGHT);"/>
+				<menuitem label="&splitbrowser.frame.add.left.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-left"
+					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_LEFT);"/>
+				<menuitem label="&splitbrowser.frame.add.bottom.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-bottom"
+					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_BOTTOM);"/>
+			</menupopup>
+		</menu>
+	</menupopup>
+</menu>
+
+
+<window id="main-window">
+	<hbox id="splitbrowser-add-button-container-wrapper"
+		oncommand="SplitBrowser.onAddButtonCommand(event);"
+		ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
+		ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);">
+		<html:div id="splitbrowser-add-button-container"
+			hidden="true"/>
+		<toolbarbutton id="splitbrowser-add-button-top"
+			tooltiptext="&splitbrowser.add.button.top.tooltip;"
+			class="splitbrowser-add-button top"
+			hidden="true"/>
+		<toolbarbutton id="splitbrowser-add-button-bottom"
+			tooltiptext="&splitbrowser.add.button.bottom.tooltip;"
+			class="splitbrowser-add-button bottom"
+			hidden="true"/>
+		<toolbarbutton id="splitbrowser-add-button-left"
+			tooltiptext="&splitbrowser.add.button.left.tooltip;"
+			class="splitbrowser-add-button left"
+			hidden="true"/>
+		<toolbarbutton id="splitbrowser-add-button-right"
+			tooltiptext="&splitbrowser.add.button.right.tooltip;"
+			class="splitbrowser-add-button right"
+			hidden="true"/>
+	</hbox>
+	<data id="splitbrowser-template" collapsed="true">
+		<menu id="splitbrowser-tab-context-item-link-template"
+			label="&splitbrowser.tab.add.label;">
+			<menupopup>
+				<menuitem label="&splitbrowser.tab.add.top.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-top"
+					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_TOP);"/>
+				<menuitem label="&splitbrowser.tab.add.right.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-right"
+					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_RIGHT);"/>
+				<menuitem label="&splitbrowser.tab.add.left.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-left"
+					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_LEFT);"/>
+				<menuitem label="&splitbrowser.tab.add.bottom.label;"
+					class="menuitem-iconic splitbrowser-menuitem-add-bottom"
+					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_BOTTOM);"/>
+			</menupopup>
+		</menu>
+	</data>
+</window>
+
+</overlay>

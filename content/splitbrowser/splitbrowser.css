@@ -1,0 +1,62 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+
+#appcontent {
+	-moz-binding: url("./splitbrowser.xml#toplevel-container") !important;
+}
+
+#appcontent > vbox > hbox > vbox[anonid="wrapper"] {
+	-moz-binding: url("./splitbrowser.xml#sub-browser-base") !important;
+}
+
+subbrowser-container {
+	-moz-binding: url("./splitbrowser.xml#container") !important;
+}
+
+subbrowser {
+	-moz-binding: url("./splitbrowser.xml#sub-browser") !important;
+}
+
+.subbrowser-toolbar-content {
+	overflow: hidden;
+}
+
+.subbrowser-toolbar-item.urlbar-favicon-box {
+	cursor: -moz-grab;
+}
+
+
+.subbrowser-toolbar-item.button.reload[disabled="true"],
+.subbrowser-toolbar-item.button.stop[disabled="true"] {
+	visibility: collapse;
+}
+
+
+
+html|div[id="splitbrowser-add-button-container"] {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+html|div[id="splitbrowser-add-button-container"][hidden="true"] {
+	display: none;
+}
+
+
+html|div[id="splitbrowser-add-button-container"],
+html|div[id="splitbrowser-add-button-container"] > html|div {
+	min-width: 0 !important;
+	min-height: 0 !important;
+	max-width: 0 !important;
+	max-height: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
+	background: transparent !important;
+	font-size: 1px !important;
+}
+
+
+.splitbrowser-add-button {
+	cursor: pointer;
+}

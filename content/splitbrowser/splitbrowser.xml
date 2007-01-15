@@ -1,0 +1,784 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE overlay [
+	<!ENTITY % mainDTD SYSTEM "chrome://splitbrowser/locale/" >
+	%mainDTD;
+]>
+
+<bindings id="splitbrowserBindings"
+	xmlns="http://www.mozilla.org/xbl"
+	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	xmlns:xbl="http://www.mozilla.org/xbl">
+
+<binding id="contents-in-container" extends="xul:vbox">
+	<implementation>
+		<property name="container" readonly="true">
+			<getter><![CDATA[
+				var container = this.parentNode;
+				while (container.localName != 'subbrowser-container' &&
+						container.parentNode)
+				{
+					container = container.parentNode;
+				}
+
+				return (container.localName == 'subbrowser-container') ? container : null ;
+			]]></getter>
+		</property>
+	</implementation>
+</binding>
+
+
+
+<binding id="container" extends="#contents-in-container">
+	<content orient="vertical">
+		<xul:vbox anonid="vertical-container" flex="1">
+			<xul:hbox anonid="horizontal-container" flex="1"/>
+		</xul:vbox>
+	</content>
+
+	<implementation>
+		<property name="hContainer" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'horizontal-container'); } catch(e) { return null; }"/>
+		<property name="vContainer" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-container'); } catch(e) { return null; }"/>
+	</implementation>
+
+	<handlers>
+		<handler event="mousedown"><![CDATA[
+			var newEvent = document.createEvent('Events');
+			newEvent.force = true;
+			newEvent.initEvent('SubBrowserExitContentAreaEdge', false, true);
+			this.dispatchEvent(newEvent);
+		]]></handler>
+	</handlers>
+</binding>
+
+<binding id="toplevel-container" extends="#container">
+	<content orient="vertical">
+		<xul:vbox anonid="vertical-container" flex="1">
+			<xul:hbox anonid="horizontal-container" flex="1">
+				<xul:vbox anonid="wrapper" flex="1">
+					<children/>
+				</xul:vbox>
+			</xul:hbox>
+		</xul:vbox>
+	</content>
+
+	<implementation>
+		<property name="wrapper" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'wrapper'); } catch(e) { return null; }"/>
+	</implementation>
+</binding>
+
+
+
+<binding id="sub-browser-base" extends="#contents-in-container">
+	<implementation>
+		<property name="rightOffset" readonly="true">
+			<getter><![CDATA[
+				var win = (this.browser || gBrowser).contentWindow;
+				return (win.scrollMaxY > 0) ? SplitBrowser.scrollbarSize : 0 ;
+			]]></getter>
+		</property>
+
+		<property name="bottomOffset" readonly="true">
+			<getter><![CDATA[
+				var win = (this.browser || gBrowser).contentWindow;
+				return (win.scrollMaxX > 0) ? SplitBrowser.scrollbarSize : 0 ;
+			]]></getter>
+		</property>
+
+		<property name="contentAreaSizeObject" readonly="true">
+			<getter><![CDATA[
+				var box, retVal;
+				if (this.localName == 'subbrowser')
+					box = this.browser.boxObject;
+				else
+					box = gBrowser.mPanelContainer.boxObject;
+
+				retVal =  {
+					x       : box.x,
+					y       : box.y,
+					screenX : box.screenX,
+					screenY : box.screenY,
+					width   : box.width - this.rightOffset,
+					height  : box.height - this.bottomOffset
+				};
+
+				retVal.middleX = parseInt(box.x + (box.width / 2));
+				retVal.middleY = parseInt(box.y + (box.height / 2));
+				retVal.middleScreenX = parseInt(box.screenX + (box.width / 2));
+				retVal.middleScreenY = parseInt(box.screenY + (box.height / 2));
+
+				retVal.areaWidth   = parseInt(Math.min(SplitBrowser.addButtonAreaSize, box.width * 0.6));
+				retVal.areaX       = retVal.middleX - parseInt(retVal.areaWidth / 2);
+				retVal.areaScreenX = retVal.middleScreenX - parseInt(retVal.areaWidth / 2);
+				retVal.areaHeight  = parseInt(Math.min(SplitBrowser.addButtonAreaSize, box.height * 0.6));
+				retVal.areaY       = retVal.middleY - parseInt(retVal.areaHeight / 2);
+				retVal.areaScreenY = retVal.middleScreenY - parseInt(retVal.areaHeight / 2);
+
+				return retVal;
+			]]></getter>
+		</property>
+
+		<property name="src" readonly="true"
+			onget="return gBrowser.currentURI.spec;"/>
+
+		<method name="handleMouseOverEvent">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				var offset   = SplitBrowser.addButtonSize;
+				var box      = this.contentAreaSizeObject;
+
+				var isTop    = (aEvent.screenY >= box.screenY &&
+								aEvent.screenY < box.screenY+offset &&
+								aEvent.screenX >= box.areaScreenX &&
+								aEvent.screenX < box.areaScreenX+box.areaWidth);
+				var isBottom = (aEvent.screenY <= box.screenY+box.height &&
+								aEvent.screenY > box.screenY+box.height-offset &&
+								aEvent.screenX >= box.areaScreenX &&
+								aEvent.screenX < box.areaScreenX+box.areaWidth);
+				var isLeft   = (aEvent.screenX >= box.screenX &&
+								aEvent.screenX < box.screenX+offset &&
+								aEvent.screenY >= box.areaScreenY &&
+								aEvent.screenY < box.areaScreenY+box.areaHeight);
+				var isRight  = (aEvent.screenX <= box.screenX+box.width &&
+								aEvent.screenX > box.screenX+box.width-offset &&
+								aEvent.screenY >= box.areaScreenY &&
+								aEvent.screenY < box.areaScreenY+box.areaHeight);
+				if (
+					isTop ||
+					isBottom ||
+					isLeft ||
+					isRight
+					) {
+					if (
+						(isTop && !this.mIsMouseOverTop) ||
+						(isBottom && !this.mIsMouseOverBottom) ||
+						(isLeft && !this.mIsMouseOverLeft) ||
+						(isRight && !this.mIsMouseOverRight)
+						) {
+						this.mIsMouseOverTop    = isTop;
+						this.mIsMouseOverBottom = isBottom;
+						this.mIsMouseOverLeft   = isLeft;
+						this.mIsMouseOverRight  = isRight;
+
+						var newEvent = document.createEvent('Events');
+						newEvent.initEvent('SubBrowserEnterContentAreaEdge', false, true);
+						newEvent.isTop    = isTop;
+						newEvent.isBottom = isBottom;
+						newEvent.isLeft   = isLeft;
+						newEvent.isRight  = isRight;
+						newEvent.targetSubBrowser = this;
+						newEvent.firedBy = aEvent.type;
+						this.dispatchEvent(newEvent);
+					}
+				}
+				else {
+					this.mIsMouseOverTop    = false;
+					this.mIsMouseOverBottom = false;
+					this.mIsMouseOverLeft   = false;
+					this.mIsMouseOverRight  = false;
+
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent('SubBrowserExitContentAreaEdge', false, true);
+					this.dispatchEvent(newEvent);
+				}
+			]]></body>
+		</method>
+
+		<method name="handleDragOverEvent">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				const DragService = Components.classes['@mozilla.org/widget/dragservice;1'].getService(Components.interfaces.nsIDragService);
+				var session = DragService.getCurrentSession();
+				if (!session) return;
+
+				if (session.isDataFlavorSupported('text/x-moz-url') ||
+					session.isDataFlavorSupported('text/unicode') ||
+					session.isDataFlavorSupported('application/x-moz-file'))
+					this.handleMouseOverEvent(aEvent);
+			]]></body>
+		</method>
+
+	</implementation>
+
+	<handlers>
+		<handler event="mousemove"
+			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.hover')) this.handleMouseOverEvent(event); return true;"/>
+
+		<handler event="dragover" phase="capturing"
+			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
+	</handlers>
+</binding>
+
+<binding id="sub-browser" extends="#sub-browser-base">
+	<content orient="vertical">
+		<xul:toolbar class="chromeclass-extrachrome"
+			align="center"
+		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
+			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);">
+			<xul:deck anonid="toolbar-deck"
+				flex="1"
+				onmouseover="this.parentNode.parentNode.toggleToolbar(true);"
+				onmouseout="this.parentNode.parentNode.toggleToolbar(false);"
+				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.contentAreaEdgeDNDObserver);">
+				<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+					<xul:box class="subbrowser-toolbar-item favicon-box">
+						<xul:image class="subbrowser-toolbar-item favicon"
+							anonid="favicon"
+							validate="never"
+							ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+							onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+					</xul:box>
+					<xul:stack flex="1">
+						<xul:progressmeter class="subbrowser-toolbar-item progress"
+							anonid="progressmeter"
+							collapsed="true"
+							flex="1"/>
+						<xul:label anonid="title"
+							blank-label="&splitbrowser.subbrowser.blank;"
+							loading-label="&splitbrowser.subbrowser.loading;"
+							flex="1"
+							crop="end"/>
+					</xul:stack>
+				</xul:hbox>
+				<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+					<xul:toolbarbutton
+						anonid="back-button"
+						tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.goBack();"
+						class="subbrowser-toolbar-item button goBack"
+						disabled="true"/>
+					<xul:toolbarbutton
+						anonid="forward-button"
+						tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.goForward();"
+						class="subbrowser-toolbar-item button goForward"
+						disabled="true"/>
+					<xul:toolbarbutton
+						anonid="reload-button"
+						tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.reload();"
+						class="subbrowser-toolbar-item button reload"
+						disabled="true"/>
+					<xul:toolbarbutton
+						anonid="stop-button"
+						tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.stop();"
+						class="subbrowser-toolbar-item button stop"
+						disabled="true"/>
+					<xul:hbox class="subbrowser-toolbar-item urlbar-box"
+						align="center"
+						flex="1">
+						<xul:stack flex="1">
+							<xul:progressmeter class="subbrowser-toolbar-item urlbar-progress"
+								anonid="urlbar-progressmeter"
+								collapsed="true"
+								flex="1"/>
+							<xul:textbox flex="1"
+								anonid="urlbar"
+								class="subbrowser-toolbar-item urlbar-textbox"
+								ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+								ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+								sizetopopup="pref"
+								clickSelectsAll="true"
+								type="autocomplete"
+								autocompletesearch="history"
+								autocompletepopup="PopupAutoComplete"
+								completeselectedindex="true"
+								tabscrolling="true"
+								showcommentcolumn="true"
+								enablehistory="true">
+								<xul:box class="subbrowser-toolbar-item urlbar-favicon-box">
+									<xul:image class="subbrowser-toolbar-item urlbar-favicon"
+										anonid="urlbar-favicon"
+										validate="never"
+										ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+										onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+								</xul:box>
+							</xul:textbox>
+						 </xul:stack>
+					</xul:hbox>
+					<xul:toolbarbutton
+						anonid="go-button"
+						class="subbrowser-toolbar-item go"
+						label="&splitbrowser.subbrowser.go.label;"
+						tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.go();"/>
+				</xul:hbox>
+			</xul:deck>
+			<xul:toolbarbutton
+				anonid="close-button"
+				class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
+				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
+				oncommand="this.parentNode.parentNode.close();"/>
+		</xul:toolbar>
+		<xul:browser anonid="browser"
+			flex="1"
+			type="content"
+			onclick="return contentAreaClick(event);"
+			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
+			content="about:blank"
+			contextmenu="contentAreaContextMenu"
+			contentcontextmenu="contentAreaContextMenu"
+			autocompletepopup="PopupAutoComplete"/>
+	</content>
+
+	<implementation>
+		<property name="toolbar" readonly="true"
+			onget="return document.getAnonymousNodes(this)[0];"/>
+		<property name="toolbarDeck" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-deck');"/>
+		<property name="browser" readonly="true"
+			onget="return document.getAnonymousNodes(this)[1];"/>
+
+		<property name="backButton" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'back-button');"/>
+		<property name="forwardButton" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'forward-button');"/>
+		<property name="reloadButton" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'reload-button');"/>
+		<property name="stopButton" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'stop-button');"/>
+		<property name="urlbar" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar');"/>
+		<property name="title" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'title');"/>
+		<property name="favicon" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'favicon');"/>
+		<property name="urlbarFavicon" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar-favicon');"/>
+		<property name="progressmeter" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'progressmeter');"/>
+		<property name="urlbarProgressmeter" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar-progressmeter');"/>
+		<property name="goButton" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'go-button');"/>
+
+		<property name="src"
+			onset="this.setAttribute('src', val); this.load(val); return val;"
+			onget="return this.getAttribute('src') || 'about:blank';"/>
+
+		<method name="load">
+			<parameter name="aURI"/>
+			<body><![CDATA[
+				if (!aURI) aURI = 'about:blank';
+				this.browser.loadURI(aURI);
+				this.setAttribute('src', aURI);
+			]]></body>
+		</method>
+
+		<method name="goBack">
+			<body><![CDATA[
+				if (this.browser.canGoBack) {
+					this.browser.goBack();
+				}
+			]]></body>
+		</method>
+		<method name="goForward">
+			<body><![CDATA[
+				if (this.browser.canGoForward) {
+					this.browser.goForward();
+				}
+			]]></body>
+		</method>
+		<method name="reload">
+			<body><![CDATA[
+				this.browser.reload();
+			]]></body>
+		</method>
+		<method name="stop">
+			<body><![CDATA[
+				this.browser.stop();
+			]]></body>
+		</method>
+
+		<method name="go">
+			<body><![CDATA[
+				this.load(this.urlbar.value);
+			]]></body>
+		</method>
+
+		<method name="close">
+			<body><![CDATA[
+				var event = document.createEvent('Events');
+				event.initEvent('SubBrowserRemoveRequest', false, true);
+				this.dispatchEvent(event);
+			]]></body>
+		</method>
+
+
+
+		<method name="toggleToolbar">
+			<parameter name="aShow"/>
+			<parameter name="aForce"/>
+			<parameter name="aDelay"/>
+			<body><![CDATA[
+				if (this.mIsToolbarHover == aShow) return;
+
+				this.mIsToolbarHover = aShow;
+
+				if (aForce && aDelay === void(0)) {
+					this.toolbarDeck.selectedIndex = aShow ? 1 : 0 ;
+					return;
+				}
+
+				window.setTimeout(
+					function(aShowFlag, aThis) {
+						if (aShowFlag == aThis.mIsToolbarHover &&
+							aThis.toolbarDeck)
+							aThis.toolbarDeck.selectedIndex = aShowFlag ? 1 : 0 ;
+					},
+					(
+						aDelay !== void(0) ? aDelay :
+							this.mIsToolbarHover ?
+								SplitBrowser.subBrowserToolbarShowDelay :
+								SplitBrowser.subBrowserToolbarHideDelay
+					),
+					aShow,
+					this
+				);
+			]]></body>
+		</method>
+
+
+
+		<method name="setIcon">
+			<parameter name="aURI"/>
+			<body><![CDATA[
+				this.mIconURL = aURI;
+				this.updateIcon();
+			]]></body>
+		</method>
+
+		<method name="updateIcon">
+			<body><![CDATA[
+				if (!this.mIsBusy && this.mIconURL) {
+					this.favicon.setAttribute('src', this.mIconURL);
+					this.urlbarFavicon.setAttribute('src', this.mIconURL);
+				}
+				else {
+					this.favicon.removeAttribute('src');
+					this.urlbarFavicon.removeAttribute('src');
+				}
+			]]></body>
+		</method>
+
+		<method name="useDefaultIcon">
+			<body><![CDATA[
+				if (this.browser.contentDocument instanceof ImageDocument) {
+					if (nsPreferences.getBoolPref('browser.chrome.site_icons')) {
+						try {
+							var sz = nsPreferences.getIntPref('browser.chrome.image_icons.max_size');
+							if (!sz)
+								return;
+							var req = this.browser.contentDocument.imageRequest;
+							if (!req || !req.image || req.image.width > sz || req.image.height > sz)
+								return;
+							this.setIcon(this.browser.currentURI.spec);
+						}
+						catch (e) {
+						}
+					}
+				}
+				else if (this.shouldLoadFavIcon(this.browser.currentURI)) {
+					var url = this.browser.currentURI.prePath + '/favicon.ico';
+					if (!this.isIconKnownMissing(url))
+						this.setIcon(url);
+				}
+			]]></body>
+		</method>
+
+		<method name="shouldLoadFavIcon">
+			<parameter name="aURI"/>
+			<body><![CDATA[
+				return (
+					aURI &&
+					nsPreferences.getBoolPref('browser.chrome.site_icons') &&
+					nsPreferences.getBoolPref('browser.chrome.favicons') &&
+					('schemeIs' in aURI) &&
+					(aURI.schemeIs('http') || aURI.schemeIs('https'))
+				);
+			]]></body>
+		</method>
+
+		<method name="addToMissedIconCache">
+			<parameter name="aURI"/>
+			<body><![CDATA[
+				var entry = this.openCacheEntry(aURI, Components.interfaces.nsICache.ACCESS_READ_WRITE);
+				if (!entry) return;
+
+				if (entry.accessGranted == Components.interfaces.nsICache.ACCESS_WRITE)
+					entry.setMetaDataElement('Icon', 'Missed');
+				entry.markValid();
+				entry.close();
+			]]></body>
+		</method>
+
+		<method name="openCacheEntry">
+			<parameter name="aKey"/>
+			<parameter name="aAccess"/>
+			<body><![CDATA[
+				try {
+					if (!this.mMissedIconCache) {
+						var cacheService = Components.classes['@mozilla.org/network/cache-service;1'].getService(Components.interfaces.nsICacheService);
+						this.mMissedIconCache = cacheService.createSession('MissedIconCache', Components.interfaces.nsICache.STORE_ANYWHERE, true);
+						if (!this.mMissedIconCache) return null;
+					}
+					return this.mMissedIconCache.openCacheEntry(aKey, aAccess, true);
+				}
+				catch (e) {
+					return null;
+				}
+			]]></body>
+		</method>
+
+		<method name="isIconKnownMissing">
+			<parameter name="aKey"/>
+			<body><![CDATA[
+				var e = this.openCacheEntry(aKey, Components.interfaces.nsICache.ACCESS_READ);
+				if (e) {
+					e.close();
+					return true;
+				}
+				return false;
+			]]></body>
+		</method>
+
+		<method name="onLinkAdded">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				if (!nsPreferences.getBoolPref('browser.chrome.site_icons')) return;
+				if (!aEvent.originalTarget.rel.match((/(?:^|\s)icon(?:\s|$)/i))) return;
+
+				var href = aEvent.originalTarget.href;
+				if (!href) return;
+
+				const nsIContentPolicy = Components.interfaces.nsIContentPolicy;
+				try {
+					var contentPolicy = Components.classes['@mozilla.org/layout/content-policy;1'].getService(nsIContentPolicy);
+				}
+				catch(e) {
+					return;
+				}
+
+				const secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(Components.interfaces.nsIScriptSecurityManager);
+				const ioService = Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService);
+				const targetDoc = aEvent.target.ownerDocument;
+				var uri = ioService.newURI(href, targetDoc.characterSet, null);
+				var origURI = ioService.newURI(targetDoc.documentURI, targetDoc.characterSet, null);
+
+				const nsIScriptSecMan = Components.interfaces.nsIScriptSecurityManager;
+				try {
+					const aboutNeterr = 'about:neterror?';
+					if (origURI.spec.substr(0, aboutNeterr.length) != aboutNeterr ||
+						!uri.schemeIs('chrome'))
+						secMan.checkLoadURI(origURI, uri, nsIScriptSecMan.DISALLOW_SCRIPT);
+				}
+				catch(e) {
+					return;
+				}
+
+				if (contentPolicy.shouldLoad(
+						nsIContentPolicy.TYPE_IMAGE,
+						uri,
+						origURI,
+						aEvent.target,
+						aEvent.target.type,
+						null
+					) != nsIContentPolicy.ACCEPT)
+					return;
+
+				if (targetDoc == this.browser.contentDocument)
+					this.setIcon(href);
+			]]></body>
+		</method>
+
+
+
+		<field name="pageDNDObserver"><![CDATA[
+		({
+			mOwner : this,
+
+			onDragStart: function (aEvent, aXferData, aDragAction)
+			{
+				var value = this.mOwner.urlbar.value;
+				if (!value) return;
+
+				var urlString = value + '\n' + this.mOwner.browser.contentDocument.title;
+				var htmlString = '<a href="' + value + '">' + value + '</a>';
+
+				aXferData.data = new TransferData();
+				aXferData.data.addDataForFlavour('text/x-moz-url', urlString);
+				aXferData.data.addDataForFlavour('text/unicode', value);
+				aXferData.data.addDataForFlavour('text/html', htmlString);
+
+				aDragAction.action =
+					Components.interfaces.nsIDragService.DRAGDROP_ACTION_COPY |
+					Components.interfaces.nsIDragService.DRAGDROP_ACTION_MOVE |
+					Components.interfaces.nsIDragService.DRAGDROP_ACTION_LINK;
+			},
+
+			onDrop: function (aEvent, aXferData, aDragSession)
+			{
+				aEvent.preventDefault();
+				aEvent.preventBubble();
+
+				// "window.retrieveURLFromData()" is old implementation
+				var url = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
+				if (!url || !url.length || url.indexOf(' ', 0) != -1)
+					return;
+
+				var sourceDoc = aDragSession.sourceDocument;
+				if (sourceDoc) {
+					var sourceURI = sourceDoc.documentURI;
+					const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+					var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
+					try {
+						secMan.checkLoadURIStr(sourceURI, url, nsIScriptSecurityManager.STANDARD);
+					}
+					catch(e) {
+						aEvent.stopPropagation();
+						throw 'Drop of ' + url + ' denied.';
+					}
+				}
+
+				this.mOwner.load(getShortcutOrURI(url));
+			},
+
+			getSupportedFlavours: function ()
+			{
+				var flavourSet = new FlavourSet();
+				flavourSet.appendFlavour('text/x-moz-url');
+				flavourSet.appendFlavour('text/unicode');
+				flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
+				return flavourSet;
+			}
+		})
+		]]></field>
+
+		<field name="progressListener"><![CDATA[
+		({
+			mOwner : this,
+            mTotalProgress: 0,
+
+			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
+			{
+				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
+
+				if (this.mTotalProgress &&
+					this.mTotalProgress < 1) {
+					this.mOwner.progressmeter.removeAttribute('collapsed');
+					this.mOwner.progressmeter.setAttribute('mode', 'normal');
+					this.mOwner.progressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
+
+					this.mOwner.urlbarProgressmeter.removeAttribute('collapsed');
+					this.mOwner.urlbarProgressmeter.setAttribute('mode', 'normal');
+					this.mOwner.urlbarProgressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
+				}
+				else {
+					this.mOwner.progressmeter.setAttribute('collapsed', true);
+					this.mOwner.urlbarProgressmeter.setAttribute('collapsed', true);
+				}
+			},
+
+			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
+			{
+				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
+				if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
+					this.mOwner.stopButton.setAttribute('disabled', true);
+					this.mOwner.reloadButton.removeAttribute('disabled');
+
+					try {
+						if (this.mOwner.browser.canGoBack)
+							this.mOwner.backButton.removeAttribute('disabled');
+						else
+							this.mOwner.backButton.setAttribute('disabled', true);
+
+						if (this.mOwner.browser.canGoForward)
+							this.mOwner.forwardButton.removeAttribute('disabled');
+						else
+							this.mOwner.forwardButton.setAttribute('disabled', true);
+					}
+					catch(e) {
+						this.mOwner.backButton.setAttribute('disabled', true);
+						this.mOwner.forwardButton.setAttribute('disabled', true);
+					}
+
+					if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow) {
+						if (!this.mOwner.mIconURL)
+							this.mOwner.useDefaultIcon();
+					}
+
+					this.mOwner.mIsBusy = false;
+					this.mOwner.removeAttribute('busy');
+					this.mOwner.title.setAttribute('value', this.mOwner.browser.contentDocument.title || this.mOwner.title.getAttribute('blank-label'));
+					this.mOwner.updateIcon();
+				}
+				else if (aStateFlags & nsIWebProgressListener.STATE_START &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
+
+					this.mOwner.stopButton.removeAttribute('disabled');
+					this.mOwner.reloadButton.setAttribute('disabled', true);
+
+					this.mOwner.mIsBusy = true;
+					this.mOwner.setAttribute('busy', true);
+					this.mOwner.title.setAttribute('value', this.mOwner.title.getAttribute('loading-label'));
+					this.mOwner.updateIcon();
+				}
+			},
+
+			onLocationChange : function(aWebProgress, aRequest, aLocation)
+			{
+				this.mOwner.urlbar.value = aLocation.spec;
+				this.mOwner.setAttribute('src', aLocation.spec);
+
+				if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow &&
+					aWebProgress.isLoadingDocument)
+					this.mOwner.setIcon(null);
+			},
+
+			onStatusChange : function(aWebProgress, aRequest, aStatus, aMessage)
+			{
+			},
+
+			onSecurityChange : function(aWebProgress, aRequest, aState)
+			{
+			},
+
+			QueryInterface : function(aIID)
+			{
+				if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+					aIID.equals(Components.interfaces.nsISupports))
+					return this;
+				throw Components.results.NS_NOINTERFACE;
+			}
+		})
+		]]></field>
+
+		<constructor><![CDATA[
+			this.progressFilter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
+			this.progressFilter.addProgressListener(this.progressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+			this.browser.webProgress.addProgressListener(this.progressFilter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+
+			if (this.getAttribute('src'))
+				this.load(this.getAttribute('src'));
+		]]></constructor>
+
+		<destructor><![CDATA[
+			this.browser.webProgress.removeProgressListener(this.progressFilter);
+			this.progressFilter.removeProgressListener(this.progressListener);
+			this.progressFilter = null;
+		]]></destructor>
+	</implementation>
+
+	<handlers>
+		<handler event="DOMLinkAdded" phase="capturing"
+			action="this.onLinkAdded(event);"/>
+	</handlers>
+</binding>
+
+</bindings>

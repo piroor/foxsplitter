@@ -1,0 +1,101 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+
+
+.splitbrowser-menuitem-add-top {
+	list-style-image: url(./large/up-gray.png);
+}
+.splitbrowser-menuitem-add-bottom {
+	list-style-image: url(./large/down-gray.png);
+}
+.splitbrowser-menuitem-add-right {
+	list-style-image: url(./large/right-gray.png);
+}
+.splitbrowser-menuitem-add-left {
+	list-style-image: url(./large/left-gray.png);
+}
+
+
+.splitbrowser-add-button {
+	-moz-box-sizing: border-box;
+	-moz-appearance: none;
+	border: solid 1px ThreeDShadow;
+	outline: none;
+	-moz-outline: none;
+	-moz-border-radius: 0 0 0 0;
+	padding: 0;
+	margin: 0;
+	min-width: 0;
+	min-height: 0;
+	background: ThreeDFace none no-repeat center;
+}
+
+.splitbrowser-add-button.top {
+	background-image: url(./small/up-gray.png);
+}
+.splitbrowser-add-button.bottom {
+	background-image: url(./small/down-gray.png);
+}
+.splitbrowser-add-button.right {
+	background-image: url(./small/right-gray.png);
+}
+.splitbrowser-add-button.left {
+	background-image: url(./small/left-gray.png);
+}
+
+
+
+.subbrowser-toolbar-item.urlbar-box
+{
+/*	-moz-appearance: textfield; */
+	background: -moz-field;
+	color: -moz-fieldtext;
+	border: 1px solid -moz-use-text-color;
+	outline: none;
+	padding: 0;
+}
+
+.subbrowser-toolbar-item.progress,
+.subbrowser-toolbar-item.urlbar-progress
+{
+	-moz-appearance: none;
+	border: none;
+	outline: none;
+	background: transparent;
+	padding: 0;
+}
+.subbrowser-toolbar-item.progress > .progress-bar,
+.subbrowser-toolbar-item.urlbar-progress > .progress-bar
+{
+	-moz-appearance: none;
+	background: ThreeDShadow;
+}
+
+.subbrowser-toolbar-item.urlbar-textbox
+{
+	-moz-appearance: none;
+	background: transparent;
+	border: 0 none;
+	margin: 0;
+	padding: 0;
+}
+
+.subbrowser-toolbar-item.favicon,
+.subbrowser-toolbar-item.urlbar-favicon {
+	max-width: 16px;
+	max-height: 16px;
+	width: 16px;
+	height: 16px;
+}
+
+.subbrowser-toolbar-item.favicon-box {
+	padding: 1px 2px 1px 3px;
+}
+.subbrowser-toolbar-item.urlbar-favicon-box {
+	padding: 1px 2px 1px 0;
+}
+
+.subbrowser-toolbar-item.button.go {
+	min-width: 0;
+}

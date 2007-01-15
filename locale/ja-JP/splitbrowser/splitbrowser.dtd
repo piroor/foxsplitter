@@ -1,0 +1,54 @@
+<!ENTITY splitbrowser.title           "分割ブラウザの設定">
+<!ENTITY splitbrowser.tab.general     "全般">
+<!ENTITY splitbrowser.state.restore   "分割ブラウザの状態を保存する">
+
+<!ENTITY splitbrowser.show.addbuttons.caption  "ブラウズ領域の上/下/左/右の各辺で分割ボタンを表示する場合">
+<!ENTITY splitbrowser.show.addbuttons.hover    "通常時">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "リンクやファイルなどのドラッグ＆ドロップ時">
+
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "上に分割">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "下に分割">
+<!ENTITY splitbrowser.add.button.right.tooltip  "右に分割">
+<!ENTITY splitbrowser.add.button.left.tooltip   "左に分割">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "分割したブラウザをすべて閉じる">
+
+<!ENTITY splitbrowser.add.label        "ブラウザを分割">
+<!ENTITY splitbrowser.add.top.label    "上に分割">
+<!ENTITY splitbrowser.add.bottom.label "下に分割">
+<!ENTITY splitbrowser.add.right.label  "右に分割">
+<!ENTITY splitbrowser.add.left.label   "左に分割">
+
+<!ENTITY splitbrowser.frame.add.label        "このフレームからブラウザを分割">
+<!ENTITY splitbrowser.frame.add.top.label    "上に分割">
+<!ENTITY splitbrowser.frame.add.bottom.label "下に分割">
+<!ENTITY splitbrowser.frame.add.right.label  "右に分割">
+<!ENTITY splitbrowser.frame.add.left.label   "左に分割">
+
+<!ENTITY splitbrowser.link.add.label        "リンクをブラウザを分割して読み込む">
+<!ENTITY splitbrowser.link.add.top.label    "上に分割">
+<!ENTITY splitbrowser.link.add.bottom.label "下に分割">
+<!ENTITY splitbrowser.link.add.right.label  "右に分割">
+<!ENTITY splitbrowser.link.add.left.label   "左に分割">
+
+<!ENTITY splitbrowser.tab.add.label        "タブを分割">
+<!ENTITY splitbrowser.tab.add.top.label    "上に分割">
+<!ENTITY splitbrowser.tab.add.bottom.label "下に分割">
+<!ENTITY splitbrowser.tab.add.right.label  "右に分割">
+<!ENTITY splitbrowser.tab.add.left.label   "左に分割">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "（タイトルなし）">
+<!ENTITY splitbrowser.subbrowser.loading           "読み込み中...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "戻る">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "進む">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "更新">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "中止">
+<!ENTITY splitbrowser.subbrowser.go.label          "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "このURIを読み込む">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "閉じる">
+

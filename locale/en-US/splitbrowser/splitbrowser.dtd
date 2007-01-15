@@ -1,0 +1,52 @@
+<!ENTITY splitbrowser.title           "Split Browser Configuration">
+<!ENTITY splitbrowser.tab.general     "General">
+<!ENTITY splitbrowser.state.restore   "Save state of split browsers">
+<!ENTITY splitbrowser.show.addbuttons.caption  "Show &quot;Split&quot; buttons on top/bottom/left/right edges of the content area for">
+<!ENTITY splitbrowser.show.addbuttons.hover    "Normal time">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "While dragging links, files, etc.">
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "Split to Above">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "Split to Below">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Split to Left">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Split to Right">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "Close All Split Browsers">
+
+<!ENTITY splitbrowser.add.label        "Split Browser to">
+<!ENTITY splitbrowser.add.top.label    "Above">
+<!ENTITY splitbrowser.add.bottom.label "Below">
+<!ENTITY splitbrowser.add.right.label  "Right">
+<!ENTITY splitbrowser.add.left.label   "Left">
+
+<!ENTITY splitbrowser.frame.add.label        "Split Browser from This Frame to">
+<!ENTITY splitbrowser.frame.add.top.label    "Above">
+<!ENTITY splitbrowser.frame.add.bottom.label "Below">
+<!ENTITY splitbrowser.frame.add.right.label  "Right">
+<!ENTITY splitbrowser.frame.add.left.label   "Left">
+
+<!ENTITY splitbrowser.link.add.label        "Load in Split Browser">
+<!ENTITY splitbrowser.link.add.top.label    "Above">
+<!ENTITY splitbrowser.link.add.bottom.label "Below">
+<!ENTITY splitbrowser.link.add.right.label  "Right">
+<!ENTITY splitbrowser.link.add.left.label   "Left">
+
+<!ENTITY splitbrowser.tab.add.label        "Split Tab to">
+<!ENTITY splitbrowser.tab.add.top.label    "Above">
+<!ENTITY splitbrowser.tab.add.bottom.label "Below">
+<!ENTITY splitbrowser.tab.add.right.label  "Right">
+<!ENTITY splitbrowser.tab.add.left.label   "Left">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(Blank)">
+<!ENTITY splitbrowser.subbrowser.loading           "Loading...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Back">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Forward">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Reload">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Stop">
+<!ENTITY splitbrowser.subbrowser.go.label          "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "Load this URI">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "Close">
+

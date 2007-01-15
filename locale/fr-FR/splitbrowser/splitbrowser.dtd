@@ -1,0 +1,52 @@
+<!ENTITY splitbrowser.title           "Configuration de Split Browser">
+<!ENTITY splitbrowser.tab.general     "Général">
+<!ENTITY splitbrowser.state.restore   "Sauvegarder l'état des fenêtres partagées">
+<!ENTITY splitbrowser.show.addbuttons.caption "Montrer les boutons &quot;Split&quot; sur les cotés de la fenêtre">
+<!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "Partager au dessous">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Partager à gauche">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Partager à droite">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "Fermer toutes fenêtres partagées">
+
+<!ENTITY splitbrowser.add.label        "Partager la fenêtre au/à">
+<!ENTITY splitbrowser.add.top.label    "Dessus">
+<!ENTITY splitbrowser.add.bottom.label "Dessous">
+<!ENTITY splitbrowser.add.right.label  "Droite">
+<!ENTITY splitbrowser.add.left.label   "Gauche">
+
+<!ENTITY splitbrowser.frame.add.label        "Partager la fenêtre à partir de ce cadre au/à">
+<!ENTITY splitbrowser.frame.add.top.label    "Dessus">
+<!ENTITY splitbrowser.frame.add.bottom.label "Dessous">
+<!ENTITY splitbrowser.frame.add.right.label  "Droite">
+<!ENTITY splitbrowser.frame.add.left.label   "Gauche">
+
+<!ENTITY splitbrowser.link.add.label        "Charger dans une fenêtre partagée au/à">
+<!ENTITY splitbrowser.link.add.top.label    "Dessus">
+<!ENTITY splitbrowser.link.add.bottom.label "Dessous">
+<!ENTITY splitbrowser.link.add.right.label  "Droite">
+<!ENTITY splitbrowser.link.add.left.label   "Gauche">
+
+<!ENTITY splitbrowser.tab.add.label        "Partager la étiquette au/à">
+<!ENTITY splitbrowser.tab.add.top.label    "Dessus">
+<!ENTITY splitbrowser.tab.add.bottom.label "Dessous">
+<!ENTITY splitbrowser.tab.add.right.label  "Droite">
+<!ENTITY splitbrowser.tab.add.left.label   "Gauche">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
+<!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avancer d'une page">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Actualiser la page courante">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Arrêter le chargement de la page">
+<!ENTITY splitbrowser.subbrowser.go.label          "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "Se rendre à la page indiquée dans la barre d'adresse">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
+

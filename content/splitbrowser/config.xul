@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<?xml-stylesheet href="chrome://global/skin/"?>
+
+<!DOCTYPE prefwindow [
+<!ENTITY % mainDTD SYSTEM "chrome://splitbrowser/locale/splitbrowser.dtd">
+%mainDTD;
+]>
+
+<prefwindow id="splitbrowser-config"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="&splitbrowser.title;">
+
+
+<prefpane id="prefpane-general" label="&splitbrowser.tab.general;">
+	<preferences>
+		<preference id="splitbrowser.state.restore"
+			name="splitbrowser.state.restore"
+			type="bool"/>
+		<preference id="splitbrowser.show.addbuttons.hover"
+			name="splitbrowser.show.addbuttons.hover"
+			type="bool"/>
+		<preference id="splitbrowser.show.addbuttons.dragdrop"
+			name="splitbrowser.show.addbuttons.dragdrop"
+			type="bool"/>
+	</preferences>
+
+	<checkbox id="splitbrowser.state.restore-check" flex="1"
+		label="&splitbrowser.state.restore;"
+		preference="splitbrowser.state.restore"/>
+
+	<groupbox>
+		<caption label="&splitbrowser.show.addbuttons.caption;"/>
+		<checkbox id="splitbrowser.show.addbuttons.hover-check" flex="1"
+			label="&splitbrowser.show.addbuttons.hover;"
+			preference="splitbrowser.show.addbuttons.hover"/>
+		<checkbox id="splitbrowser.show.addbuttons.dragdrop-check" flex="1"
+			label="&splitbrowser.show.addbuttons.dragdrop;"
+			preference="splitbrowser.show.addbuttons.dragdrop"/>
+	</groupbox>
+
+</prefpane>
+
+</prefwindow>
