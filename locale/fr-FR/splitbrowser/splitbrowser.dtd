@@ -32,7 +32,7 @@
 <!ENTITY splitbrowser.link.add.right.label  "Droite">
 <!ENTITY splitbrowser.link.add.left.label   "Gauche">
 
-<!ENTITY splitbrowser.tab.add.label        "Partager la étiquette au/à">
+<!ENTITY splitbrowser.tab.add.label        "Partager l'onglet au/à">
 <!ENTITY splitbrowser.tab.add.top.label    "Dessus">
 <!ENTITY splitbrowser.tab.add.bottom.label "Dessous">
 <!ENTITY splitbrowser.tab.add.right.label  "Droite">
