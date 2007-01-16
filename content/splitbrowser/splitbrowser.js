@@ -62,7 +62,7 @@ var SplitBrowser = {
 	{
 		var appcontent = document.getElementById('appcontent');
 		var b = aBrowser || this.getBrowserFromFrame(document.commandDispatcher.focusedWindow.top);
-		var target = (b && b.container) ? b.container : appcontent ;
+		var target = (b && b.parentContainer) ? b.parentContainer : appcontent ;
 		var hContainer = target.hContainer;
 		var vContainer = target.vContainer;
 
@@ -207,7 +207,7 @@ var SplitBrowser = {
 //dump('SubBrowserRemoveRequest\n');
 		var appcontent = document.getElementById('appcontent');
 		var browser   = aBrowser;
-		var container = browser.container || appcontent;
+		var container = browser.parentContainer || appcontent;
 
 		browser.parentNode.removeChild(browser);
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
@@ -257,7 +257,7 @@ var SplitBrowser = {
 	cleanUpContainer : function(aContainer) 
 	{
 		var container = aContainer;
-		var parentContainer = container.container;
+		var parentContainer = container.parentContainer;
 //dump('Clean Up Start\n');
 
 		var cont = container.hContainer;
@@ -815,7 +815,7 @@ var SplitBrowser = {
 
 		var browser   = aEvent.target.targetSubBrowser;
 		newEvent.targetSubBrowser = browser;
-		newEvent.targetContainer = browser.container || document.getElementById('appcontent');
+		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
 		newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()];
 		newEvent.targetURI = browser.src;
 		aEvent.target.dispatchEvent(newEvent);
@@ -919,7 +919,7 @@ var SplitBrowser = {
 		var button = this.addButton;
 		var browser = button.targetSubBrowser;
 		newEvent.targetSubBrowser = browser;
-		newEvent.targetContainer = browser.container || document.getElementById('appcontent');
+		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
 		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
 		newEvent.targetURI = aURI;
 		button.dispatchEvent(newEvent);

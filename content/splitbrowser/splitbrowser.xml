@@ -12,7 +12,7 @@
 
 <binding id="contents-in-container" extends="xul:vbox">
 	<implementation>
-		<property name="container" readonly="true">
+		<property name="parentContainer" readonly="true">
 			<getter><![CDATA[
 				var container = this.parentNode;
 				while (container.localName != 'subbrowser-container' &&
@@ -241,7 +241,7 @@
 
 <binding id="sub-browser" extends="#sub-browser-base">
 	<content orient="vertical">
-		<xul:toolbar class="chromeclass-extrachrome"
+		<xul:toolbar class="subbrowser-toolbar chromeclass-extrachrome"
 			align="center"
 		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);">
