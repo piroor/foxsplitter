@@ -33,30 +33,15 @@ subbrowser {
 }
 
 
-
-html|div[id="splitbrowser-add-button-container"] {
+#splitbrowser-add-button-container {
 	position: fixed;
 	top: 0;
 	left: 0;
-}
-html|div[id="splitbrowser-add-button-container"][hidden="true"] {
-	display: none;
+	z-index: 32000;
 }
 
-
-html|div[id="splitbrowser-add-button-container"],
-html|div[id="splitbrowser-add-button-container"] > html|div {
-	min-width: 0 !important;
-	min-height: 0 !important;
-	max-width: 0 !important;
-	max-height: 0 !important;
-	padding: 0 !important;
-	margin: 0 !important;
-	background: transparent !important;
-	font-size: 1px !important;
-}
-
-
-.splitbrowser-add-button {
+#splitbrowser-add-button {
+	position: fixed;
+	z-index: 65000;
 	cursor: pointer;
 }

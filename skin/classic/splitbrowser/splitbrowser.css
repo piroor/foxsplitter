@@ -17,8 +17,7 @@
 }
 
 
-.splitbrowser-add-button {
-	-moz-box-sizing: border-box;
+#splitbrowser-add-button {
 	-moz-appearance: none;
 	border: solid 1px ThreeDShadow;
 	outline: none;
@@ -31,16 +30,16 @@
 	background: ThreeDFace none no-repeat center;
 }
 
-.splitbrowser-add-button.top {
+#splitbrowser-add-button.top {
 	background-image: url(./small/up-gray.png);
 }
-.splitbrowser-add-button.bottom {
+#splitbrowser-add-button.bottom {
 	background-image: url(./small/down-gray.png);
 }
-.splitbrowser-add-button.right {
+#splitbrowser-add-button.right {
 	background-image: url(./small/right-gray.png);
 }
-.splitbrowser-add-button.left {
+#splitbrowser-add-button.left {
 	background-image: url(./small/left-gray.png);
 }
 

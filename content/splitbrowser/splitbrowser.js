@@ -660,30 +660,8 @@ var SplitBrowser = {
 /* popup-buttons */ 
 	addButtonIsShown : false,
 	
-	get addButtonContainer() { 
-		return document.getElementById('splitbrowser-add-button-container');
-	},
-
-	get addButtonTop() {
-		return document.getElementById('splitbrowser-add-button-top');
-	},
-	get addButtonBottom() {
-		return document.getElementById('splitbrowser-add-button-bottom');
-	},
-	get addButtonLeft() {
-		return document.getElementById('splitbrowser-add-button-left');
-	},
-	get addButtonRight() {
-		return document.getElementById('splitbrowser-add-button-right');
-	},
-
-	get addButtons() {
-		return [
-			this.addButtonTop,
-			this.addButtonBottom,
-			this.addButtonLeft,
-			this.addButtonRight
-		];
+	get addButton() { 
+		return document.getElementById('splitbrowser-add-button');
 	},
  
 	get addButtonSize() { 
@@ -697,25 +675,6 @@ var SplitBrowser = {
 	},
 	get addButtonHideDelay() {
 		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.hide');
-	},
- 
-	initAddButtons : function() 
-	{
-		var container = this.addButtonContainer;
-		var buttons = this.addButtons;
-		var div;
-		var size = this.addButtonSize;
-		for (var i = 0, maxi = buttons.length; i < maxi; i++)
-		{
-			div = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
-			div.style.position = 'absolute';
-			div.style.zIndex   = 65500;
-			buttons[i].width  = size;
-			buttons[i].height = size;
-			buttons[i].parentNode.removeChild(buttons[i]);
-			div.appendChild(buttons[i]);
-			container.appendChild(div);
-		}
 	},
  
 	showAddButton : function(aEvent) 
@@ -759,44 +718,43 @@ var SplitBrowser = {
 
 		aThis.hideAddButton();
 
-		aThis.addButtonContainer.removeAttribute('hidden');
-		var box = node.contentAreaSizeObject;
-		var button;
+		var box    = node.contentAreaSizeObject;
+		var button = aThis.addButton;
+		button.hidden = button.parentNode.hidden = false;
 
 		var size  = aThis.addButtonSize;
 
+		button.width = button.height = size;
+
+		var pos;
 		if (aEvent.isTop) {
-			button = aThis.addButtonTop;
-			button.targetSubBrowser = node;
-			button.width = box.areaWidth;
+			pos = 'top';
+			button.width  = box.areaWidth;
 			button.parentNode.style.top = box.y+'px';
 			button.parentNode.style.left = box.areaX+'px';
-			button.removeAttribute('hidden');
 		}
 		else if (aEvent.isBottom) {
-			button = aThis.addButtonBottom;
-			button.targetSubBrowser = node;
+			pos = 'bottom';
 			button.width = box.areaWidth;
 			button.parentNode.style.top = (box.y + box.height - size)+'px';
 			button.parentNode.style.left = box.areaX+'px';
-			button.removeAttribute('hidden');
 		}
 		else if (aEvent.isLeft) {
-			button = aThis.addButtonLeft;
-			button.targetSubBrowser = node;
+			pos = 'left';
 			button.height = box.areaHeight;
 			button.parentNode.style.top = box.areaY+'px';
 			button.parentNode.style.left = box.x+'px';
-			button.removeAttribute('hidden');
 		}
 		else if (aEvent.isRight) {
-			button = aThis.addButtonRight;
-			button.targetSubBrowser = node;
+			pos = 'right';
 			button.height = box.areaHeight;
 			button.parentNode.style.top = box.areaY+'px';
 			button.parentNode.style.left = (box.x + box.width - size)+'px';
-			button.removeAttribute('hidden');
 		}
+
+		button.className = pos;
+		button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
+		button.targetSubBrowser = node;
 
 		if (aThis.hideAddButtonTimer)
 			aThis.stopDelayedHideAddButtonTimer();
@@ -805,15 +763,13 @@ var SplitBrowser = {
   
 	hideAddButton : function(aEvent) 
 	{
+		this.addButtonIsShown = false;
+
 		this.stopDelayedHideAddButtonTimer();
 
-		var buttons = this.addButtons;
-		for (var i = 0, maxi = buttons.length; i < maxi; i++)
-		{
-			buttons[i].targetSubBrowser = null;
-			buttons[i].setAttribute('hidden', true);
-		}
-		this.addButtonContainer.setAttribute('hidden', true);
+		var button = this.addButton;
+		button.hidden = button.parentNode.hidden = true;
+		button.targetSubBrowser = null;
 
 		if (aEvent && aEvent.force) {
 			if (this.showAddButtonTimer) {
@@ -821,8 +777,6 @@ var SplitBrowser = {
 				this.showAddButtonTimer = null;
 			}
 		}
-
-		this.addButtonIsShown = false;
 	},
  
 	delayedHideAddButton : function() 
@@ -852,7 +806,7 @@ var SplitBrowser = {
 		var browser   = aEvent.target.targetSubBrowser;
 		newEvent.targetSubBrowser = browser;
 		newEvent.targetContainer = browser.container || document.getElementById('appcontent');
-		newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.replace(/.+ (top|bottom|right|left)$/, '$1').toUpperCase()];
+		newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()];
 		newEvent.targetURI = browser.src;
 		aEvent.target.dispatchEvent(newEvent);
 
@@ -889,10 +843,10 @@ var SplitBrowser = {
 			var newEvent = document.createEvent('Events');
 			newEvent.initEvent('SubBrowserAddRequest', false, true);
 
-			var browser   = aEvent.target.targetSubBrowser;
+			var browser = aEvent.target.targetSubBrowser;
 			newEvent.targetSubBrowser = browser;
 			newEvent.targetContainer = browser.container || document.getElementById('appcontent');
-			newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.replace(/.+ (top|bottom|right|left)$/, '$1').toUpperCase()];
+			newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()];
 			newEvent.targetURI = getShortcutOrURI(url);
 			aEvent.target.dispatchEvent(newEvent);
 
@@ -964,8 +918,6 @@ catch(e) {
 		window.addEventListener('unload', this, false);
 
 		window.removeEventListener('load', this, false);
-
-		this.initAddButtons();
 
 		this.insertSeparateTabItem(gBrowser);
 

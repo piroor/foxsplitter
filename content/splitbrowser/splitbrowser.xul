@@ -87,29 +87,17 @@
 
 
 <window id="main-window">
-	<hbox id="splitbrowser-add-button-container-wrapper"
-		oncommand="SplitBrowser.onAddButtonCommand(event);"
-		ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
-		ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);">
-		<html:div id="splitbrowser-add-button-container"
+	<vbox id="splitbrowser-add-button-container">
+		<toolbarbutton id="splitbrowser-add-button"
+			oncommand="SplitBrowser.onAddButtonCommand(event);"
+			ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
+			ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);"
+			tooltiptext-top="&splitbrowser.add.button.top.tooltip;"
+			tooltiptext-bottom="&splitbrowser.add.button.bottom.tooltip;"
+			tooltiptext-left="&splitbrowser.add.button.left.tooltip;"
+			tooltiptext-right="&splitbrowser.add.button.right.tooltip;"
 			hidden="true"/>
-		<toolbarbutton id="splitbrowser-add-button-top"
-			tooltiptext="&splitbrowser.add.button.top.tooltip;"
-			class="splitbrowser-add-button top"
-			hidden="true"/>
-		<toolbarbutton id="splitbrowser-add-button-bottom"
-			tooltiptext="&splitbrowser.add.button.bottom.tooltip;"
-			class="splitbrowser-add-button bottom"
-			hidden="true"/>
-		<toolbarbutton id="splitbrowser-add-button-left"
-			tooltiptext="&splitbrowser.add.button.left.tooltip;"
-			class="splitbrowser-add-button left"
-			hidden="true"/>
-		<toolbarbutton id="splitbrowser-add-button-right"
-			tooltiptext="&splitbrowser.add.button.right.tooltip;"
-			class="splitbrowser-add-button right"
-			hidden="true"/>
-	</hbox>
+	</vbox>
 	<data id="splitbrowser-template" collapsed="true">
 		<menu id="splitbrowser-tab-context-item-link-template"
 			label="&splitbrowser.tab.add.label;">
