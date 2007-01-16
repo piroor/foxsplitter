@@ -1,0 +1,52 @@
+<!ENTITY splitbrowser.title           "Split Browser - Einstellungen">
+<!ENTITY splitbrowser.tab.general     "Allgemein">
+<!ENTITY splitbrowser.state.restore   "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
+<!ENTITY splitbrowser.show.addbuttons.caption "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
+<!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "Nach oben teilen">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "Nach unten teilen">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Nach links teilen">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Nach rechts teilen">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "Alle geteilten Ansichten schließen">
+
+<!ENTITY splitbrowser.add.label        "Seite in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.add.top.label    "Oben">
+<!ENTITY splitbrowser.add.bottom.label "Unten">
+<!ENTITY splitbrowser.add.right.label  "Rechts">
+<!ENTITY splitbrowser.add.left.label   "Links">
+
+<!ENTITY splitbrowser.frame.add.label        "Diesen Frame in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.frame.add.top.label    "Oben">
+<!ENTITY splitbrowser.frame.add.bottom.label "Unten">
+<!ENTITY splitbrowser.frame.add.right.label  "Rechts">
+<!ENTITY splitbrowser.frame.add.left.label   "Links">
+
+<!ENTITY splitbrowser.link.add.label        "Link in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.link.add.top.label    "Oben">
+<!ENTITY splitbrowser.link.add.bottom.label "Unten">
+<!ENTITY splitbrowser.link.add.right.label  "Rechts">
+<!ENTITY splitbrowser.link.add.left.label   "Links">
+
+<!ENTITY splitbrowser.tab.add.label        "Tab in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.tab.add.top.label    "Oben">
+<!ENTITY splitbrowser.tab.add.bottom.label "Unten">
+<!ENTITY splitbrowser.tab.add.right.label  "Rechts">
+<!ENTITY splitbrowser.tab.add.left.label   "Links">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
+<!ENTITY splitbrowser.subbrowser.loading           "Laden...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Vor">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Neu laden">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Stopp">
+<!ENTITY splitbrowser.subbrowser.go.label          "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "Diese Adresse laden">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
+

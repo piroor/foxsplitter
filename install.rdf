@@ -5,7 +5,7 @@
 
 		<em:id>{29c4afe1-db19-4298-8785-fcc94d1d6c1d}</em:id>
 
-		<em:version>0.2.2007011501</em:version>
+		<em:version>0.2.2007011701</em:version>
 
 
 		<em:targetApplication>
@@ -20,7 +20,8 @@
 		<em:name>Split Browser</em:name>
 		<em:description>Splits browser window as you like.</em:description>
 		<em:creator>SHIMODA Hiroshi</em:creator>
-		<em:contributor>Menet</em:contributor>
+		<em:contributor>Menet (fr-FR locale)</em:contributor>
+		<em:contributor>ReinekeFux (de-DE locale)</em:contributor>
 		<em:homepageURL>http://piro.sakura.ne.jp/xul/_splitbrowser.html.en</em:homepageURL>
 		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
 
