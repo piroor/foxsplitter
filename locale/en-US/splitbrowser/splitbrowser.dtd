@@ -8,8 +8,8 @@
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Split to Above">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "Split to Below">
-<!ENTITY splitbrowser.add.button.right.tooltip  "Split to Left">
-<!ENTITY splitbrowser.add.button.left.tooltip   "Split to Right">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Split to Right">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Split to Left">
 
 
 <!ENTITY splitbrowser.file.removeAll.label "Close All Split Browsers">

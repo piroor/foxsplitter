@@ -8,8 +8,8 @@
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Nach oben teilen">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "Nach unten teilen">
-<!ENTITY splitbrowser.add.button.right.tooltip  "Nach links teilen">
-<!ENTITY splitbrowser.add.button.left.tooltip   "Nach rechts teilen">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Nach rechts teilen">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Nach links teilen">
 
 
 <!ENTITY splitbrowser.file.removeAll.label "Alle geteilten Ansichten schließen">
