@@ -94,7 +94,7 @@
 				if (this.localName == 'subbrowser')
 					box = this.browser.boxObject;
 				else
-					box = gBrowser.mPanelContainer.boxObject;
+					box = gBrowser.mCurrentBrowser.boxObject;
 
 				retVal =  {
 					x       : box.x,
@@ -124,12 +124,11 @@
 		<property name="src" readonly="true"
 			onget="return gBrowser.currentURI.spec;"/>
 
-		<method name="handleMouseOverEvent">
+		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
 			<body><![CDATA[
 				var offset   = SplitBrowser.addButtonSize;
 				var box      = this.contentAreaSizeObject;
-
 				var isTop    = (aEvent.screenY >= box.screenY &&
 								aEvent.screenY < box.screenY+offset &&
 								aEvent.screenX >= box.areaScreenX &&
@@ -146,29 +145,43 @@
 								aEvent.screenX > box.screenX+box.width-offset &&
 								aEvent.screenY >= box.areaScreenY &&
 								aEvent.screenY < box.areaScreenY+box.areaHeight);
+//dump(isTop+' / '+isBottom+' / '+isLeft+' / '+isRight+' / '+aEvent.screenX+' / '+aEvent.screenY+'\n');
+				return {
+					isTop    : isTop,
+					isBottom : isBottom,
+					isLeft   : isLeft,
+					isRight  : isRight
+				};
+			]]></body>
+		</method>
+
+		<method name="handleMouseOverEvent">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				var check = this.checkEventFiredOnEdge(aEvent);
 				if (
-					isTop ||
-					isBottom ||
-					isLeft ||
-					isRight
+					check.isTop ||
+					check.isBottom ||
+					check.isLeft ||
+					check.isRight
 					) {
 					if (
-						(isTop && !this.mIsMouseOverTop) ||
-						(isBottom && !this.mIsMouseOverBottom) ||
-						(isLeft && !this.mIsMouseOverLeft) ||
-						(isRight && !this.mIsMouseOverRight)
+						(check.isTop && !this.mIsMouseOverTop) ||
+						(check.isBottom && !this.mIsMouseOverBottom) ||
+						(check.isLeft && !this.mIsMouseOverLeft) ||
+						(check.isRight && !this.mIsMouseOverRight)
 						) {
-						this.mIsMouseOverTop    = isTop;
-						this.mIsMouseOverBottom = isBottom;
-						this.mIsMouseOverLeft   = isLeft;
-						this.mIsMouseOverRight  = isRight;
+						this.mIsMouseOverTop    = check.isTop;
+						this.mIsMouseOverBottom = check.isBottom;
+						this.mIsMouseOverLeft   = check.isLeft;
+						this.mIsMouseOverRight  = check.isRight;
 
 						var newEvent = document.createEvent('Events');
 						newEvent.initEvent('SubBrowserEnterContentAreaEdge', false, true);
-						newEvent.isTop    = isTop;
-						newEvent.isBottom = isBottom;
-						newEvent.isLeft   = isLeft;
-						newEvent.isRight  = isRight;
+						newEvent.isTop    = check.isTop;
+						newEvent.isBottom = check.isBottom;
+						newEvent.isLeft   = check.isLeft;
+						newEvent.isRight  = check.isRight;
 						newEvent.targetSubBrowser = this;
 						newEvent.firedBy = aEvent.type;
 						this.dispatchEvent(newEvent);
@@ -196,8 +209,22 @@
 
 				if (session.isDataFlavorSupported('text/x-moz-url') ||
 					session.isDataFlavorSupported('text/unicode') ||
-					session.isDataFlavorSupported('application/x-moz-file'))
+					session.isDataFlavorSupported('application/x-moz-file')) {
 					this.handleMouseOverEvent(aEvent);
+					var check = this.checkEventFiredOnEdge(aEvent);
+					if (
+						SplitBrowser.isLinux &&
+						SplitBrowser.addButton.targetBrowser == this &&
+						(
+							check.isTop ||
+							check.isBottom ||
+							check.isLeft ||
+							check.isRight
+						)
+						) {
+						session.canDrop = true;
+					}
+				}
 			]]></body>
 		</method>
 
@@ -644,7 +671,25 @@
 					}
 				}
 
-				this.mOwner.load(getShortcutOrURI(url));
+
+				// fallback for Linux
+				// in Linux, "dragdrop" event doesn't fire on the button.
+				var check = this.mOwner.checkEventFiredOnEdge(aEvent);
+				if (
+					SplitBrowser.isLinux &&
+					SplitBrowser.addButton.targetSubBrowser == this.mOwner &&
+					(
+						check.isTop ||
+						check.isBottom ||
+						check.isLeft ||
+						check.isRight
+					)
+					) {
+					SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
+				}
+				else {
+					this.mOwner.load(getShortcutOrURI(url));
+				}
 			},
 
 			getSupportedFlavours: function ()

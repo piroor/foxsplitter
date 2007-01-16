@@ -11,6 +11,16 @@ var SplitBrowser = {
 		return nsPreferences.getIntPref('splitbrowser.delay.subbrowser.toolbar.hide');
 	},
  
+	get isLinux() 
+	{
+		return (navigator.platform.indexOf('Linux') > -1);
+	},
+ 
+	get mainBrowserBox() 
+	{
+		return document.getElementById('appcontent').wrapper;
+	},
+ 
 	POSITION_LEFT   : 1, 
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
@@ -59,7 +69,7 @@ var SplitBrowser = {
 		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt((b || gBrowser).boxObject.width / 5 * 2) : -1 ;
 		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt((b || gBrowser).boxObject.height / 5 * 2) : -1 ;
 
-		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || appcontent.wrapper ) : hContainer ;
+		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
 		var browser   = this.createSubBrowser(aURI);
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
@@ -763,8 +773,6 @@ var SplitBrowser = {
   
 	hideAddButton : function(aEvent) 
 	{
-		this.addButtonIsShown = false;
-
 		this.stopDelayedHideAddButtonTimer();
 
 		var button = this.addButton;
@@ -777,6 +785,8 @@ var SplitBrowser = {
 				this.showAddButtonTimer = null;
 			}
 		}
+
+		this.addButtonIsShown = false;
 	},
  
 	delayedHideAddButton : function() 
@@ -840,16 +850,7 @@ var SplitBrowser = {
 				}
 			}
 
-			var newEvent = document.createEvent('Events');
-			newEvent.initEvent('SubBrowserAddRequest', false, true);
-
-			var browser = aEvent.target.targetSubBrowser;
-			newEvent.targetSubBrowser = browser;
-			newEvent.targetContainer = browser.container || document.getElementById('appcontent');
-			newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()];
-			newEvent.targetURI = getShortcutOrURI(url);
-			aEvent.target.dispatchEvent(newEvent);
-
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
 			window.setTimeout('SplitBrowser.hideAddButton();', 0);
 		},
 
@@ -861,6 +862,67 @@ var SplitBrowser = {
 			flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
 			return flavourSet;
 		}
+	},
+ 
+	contentAreaOnDrop: function (aEvent, aXferData, aDragSession) 
+	{
+		// "window.retrieveURLFromData()" is old implementation
+		var url = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
+		if (url && url.length && url.indexOf(' ', 0) == -1) {
+			var sourceDoc = aDragSession.sourceDocument;
+			if (sourceDoc) {
+				var sourceURI = sourceDoc.documentURI;
+				const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+				var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
+				try {
+					secMan.checkLoadURIStr(sourceURI, url, nsIScriptSecurityManager.STANDARD);
+				}
+				catch(e) {
+					aEvent.stopPropagation();
+					throw 'Drop of ' + url + ' denied.';
+				}
+			}
+		}
+		else {
+			url = null;
+		}
+
+		// fallback for Linux
+		// in Linux, "dragdrop" event doesn't fire on the button.
+		var box = SplitBrowser.mainBrowserBox;
+		var check = box.checkEventFiredOnEdge(aEvent);
+		if (
+			url &&
+			SplitBrowser.addButton.targetSubBrowser == box &&
+			(
+				check.isTop ||
+				check.isBottom ||
+				check.isLeft ||
+				check.isRight
+			)
+			) {
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
+			aEvent.preventDefault();
+			aEvent.preventBubble();
+			return void(0);
+		}
+		else {
+			return this.__splitbrowser__onDrop(aEvent, aXferData, aDragSession);
+		}
+	},
+ 
+	fireSubBrowserAddRequestEventFromButton : function(aURI) 
+	{
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
+
+		var button = this.addButton;
+		var browser = button.targetSubBrowser;
+		newEvent.targetSubBrowser = browser;
+		newEvent.targetContainer = browser.container || document.getElementById('appcontent');
+		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
+		newEvent.targetURI = aURI;
+		button.dispatchEvent(newEvent);
 	},
   
 /* animation */ 
@@ -920,6 +982,11 @@ catch(e) {
 		window.removeEventListener('load', this, false);
 
 		this.insertSeparateTabItem(gBrowser);
+
+		if (this.isLinux && 'contentAreaDNDObserver' in window) {
+			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
+			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
+		}
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			this.load();
