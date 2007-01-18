@@ -336,12 +336,15 @@
 				</xul:hbox>
 			</xul:deck>
 			<xul:toolbarbutton
+				label="tab"
+				oncommand="this.parentNode.parentNode.browser.addTab();"/>
+			<xul:toolbarbutton
 				anonid="close-button"
 				class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
 				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 				oncommand="this.parentNode.parentNode.close();"/>
 		</xul:toolbar>
-		<xul:browser anonid="browser"
+		<xul:tabbrowser anonid="browser"
 			flex="1"
 			type="content"
 			onclick="return contentAreaClick(event);"
