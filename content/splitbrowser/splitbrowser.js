@@ -18,7 +18,7 @@ var SplitBrowser = {
  
 	get mainBrowserBox() 
 	{
-		return document.getElementById('appcontent').wrapper;
+		return document.getElementById('appcontent').contentWrapper;
 	},
  
 	POSITION_LEFT   : 1, 
@@ -61,15 +61,19 @@ var SplitBrowser = {
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
 		var appcontent = document.getElementById('appcontent');
-		var b = aBrowser || this.getBrowserFromFrame(document.commandDispatcher.focusedWindow.top);
-		var target = (b && b.parentContainer) ? b.parentContainer : appcontent ;
+		var browser = aBrowser || this.getBrowserFromFrame(document.commandDispatcher.focusedWindow.top) || gBrowser ;
+		var target  = browser.parentContainer || appcontent;
+		var wrapper = browser.wrapper;
+		if (wrapper == target.contentWrapper)
+			wrapper = target.wrapper;
+
 		var hContainer = target.hContainer;
 		var vContainer = target.vContainer;
 
-		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt((b || gBrowser).boxObject.width / 5 * 2) : -1 ;
-		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt((b || gBrowser).boxObject.height / 5 * 2) : -1 ;
+		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt(browser.boxObject.width / 5 * 2) : -1 ;
+		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt(browser.boxObject.height / 5 * 2) : -1 ;
 
-		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
+		var refNode = (aPosition & this.POSITION_HORIZONAL) ? wrapper : hContainer ;
 
 		var browser   = this.createSubBrowser(aURI);
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
@@ -103,6 +107,9 @@ var SplitBrowser = {
 		var hContainer = aParent.hContainer;
 		var vContainer = aParent.vContainer;
 
+		var wrapper = this.createWrapper();
+		wrapper.appendChild(container);
+
 		var splitter = document.createElement('splitter');
 		splitter.setAttribute('state', 'open');
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
@@ -114,7 +121,7 @@ var SplitBrowser = {
 				if (!aRefNode) aRefNode = hContainer.firstChild;
 				if (aContent)
 					aRefNode.width = aRefNode.boxObject.width - aWidth;
-				hContainer.insertBefore(container, aRefNode);
+				hContainer.insertBefore(wrapper, aRefNode);
 				hContainer.insertBefore(splitter, aRefNode);
 				break;
 
@@ -126,11 +133,11 @@ var SplitBrowser = {
 				aRefNode = aRefNode.nextSibling;
 				if (aRefNode) {
 					hContainer.insertBefore(splitter, aRefNode);
-					hContainer.insertBefore(container, aRefNode);
+					hContainer.insertBefore(wrapper, aRefNode);
 				}
 				else {
 					hContainer.appendChild(splitter, aRefNode);
-					hContainer.appendChild(container, aRefNode);
+					hContainer.appendChild(wrapper, aRefNode);
 				}
 				break;
 
@@ -138,7 +145,7 @@ var SplitBrowser = {
 				if (!aRefNode) aRefNode = vContainer.firstChild;
 				if (aContent)
 					aRefNode.height = aRefNode.boxObject.height - aHeight;
-				vContainer.insertBefore(container, aRefNode);
+				vContainer.insertBefore(wrapper, aRefNode);
 				vContainer.insertBefore(splitter, aRefNode);
 				break;
 
@@ -149,17 +156,17 @@ var SplitBrowser = {
 				aRefNode = aRefNode.nextSibling;
 				if (aRefNode) {
 					vContainer.insertBefore(splitter, aRefNode);
-					vContainer.insertBefore(container, aRefNode);
+					vContainer.insertBefore(wrapper, aRefNode);
 				}
 				else {
 					vContainer.appendChild(splitter, aRefNode);
-					vContainer.appendChild(container, aRefNode);
+					vContainer.appendChild(wrapper, aRefNode);
 				}
 				break;
 		}
 
 		if (aContent)
-			container.hContainer.appendChild(aContent);
+			container.appendChild(aContent);
 
 		return container;
 	},
@@ -174,6 +181,14 @@ var SplitBrowser = {
 		this.browsers.push(browser);
 
 		return browser;
+	},
+ 
+	createWrapper : function() 
+	{
+		var wrapper = document.createElement('box');
+		wrapper.setAttribute('flex', 1);
+		wrapper.setAttribute('class', 'subbrowser-container-content-wrapper');
+		return wrapper;
 	},
  
 	createContainer : function(aWidth, aHeight) 
@@ -208,10 +223,13 @@ var SplitBrowser = {
 		var appcontent = document.getElementById('appcontent');
 		var browser   = aBrowser;
 		var container = browser.parentContainer || appcontent;
+		var wrapper   = browser.wrapper || container.contentWrapper;
 
 		gBrowser.setAttribute('type', 'content-primary');
 
 		browser.parentNode.removeChild(browser);
+		wrapper.parentNode.removeChild(wrapper);
+
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
 			if (this.browsers[i] == browser) {
@@ -219,48 +237,13 @@ var SplitBrowser = {
 				break;
 			}
 		}
-/*
-		var orient = 'horizontal';
-		var node = container;
-		while (node.parentNode &&
-			!(
-			(node.previousSibling && node.previousSibling.localName == 'splitter') ||
-			(node.nextSibling && node.nextSibling.localName == 'splitter')
-			))
-		{
-			node = node.parentNode;
-		}
-		if (node.previousSibling && node.previousSibling.localName == 'splitter')
-			orient = node.previousSibling.getAttribute('orient');
-		else if (node.nextSibling && node.nextSibling.localName == 'splitter')
-			orient = node.nextSibling.getAttribute('orient');
-*/
-//dump(' remove wrapper.\n');
 		this.cleanUpContainer(container);
-/*
-		this.animationStart({
-			target  : container.wrapper,
-			maxW    : container.wrapper.boxObject.width,
-			maxH    : container.wrapper.boxObject.height,
-			minW    : 0,
-			minH    : 0,
-			orient  : orient,
-			timeout : 250,
-			container : container,
-			callback  : function(aInfo) {
-//dump(' remove wrapper.\n');
-				aInfo.target.parentNode.removeChild(aInfo.target);
-				SplitBrowser.cleanUpContainer(aInfo.container);
-			}
-		});
-*/
 	},
 	
 	cleanUpContainer : function(aContainer) 
 	{
 		var container = aContainer;
 		var parentContainer = container.parentContainer;
-//dump('Clean Up Start\n');
 
 		var cont = container.hContainer;
 		if (cont) {
@@ -277,11 +260,9 @@ var SplitBrowser = {
 					cont.nextSibling.nextSibling.removeAttribute('collapsed');
 					container.vContainer.removeChild(cont.nextSibling);
 				}
-	//dump(' remove hContainer.\n');
 				container.vContainer.removeChild(cont);
 			}
 			else if (cont.childNodes.length % 2 == 0) {
-	//dump(' remove horizontal splitter.\n');
 				if (cont.firstChild.localName == 'splitter') {
 					cont.removeChild(cont.firstChild);
 				}
@@ -303,21 +284,20 @@ var SplitBrowser = {
 
 		var cont = container.vContainer;
 		if (!cont.hasChildNodes()) {
-			if (container.previousSibling && container.previousSibling.localName == 'splitter') {
-				container.previousSibling.previousSibling.removeAttribute('width');
-				container.previousSibling.previousSibling.removeAttribute('collapsed');
-				container.parentNode.removeChild(container.previousSibling);
+			var wrapper = container.parentNode;
+			if (wrapper.previousSibling && wrapper.previousSibling.localName == 'splitter') {
+				wrapper.previousSibling.previousSibling.removeAttribute('width');
+				wrapper.previousSibling.previousSibling.removeAttribute('collapsed');
+				wrapper.parentNode.removeChild(wrapper.previousSibling);
 			}
-			else if (container.nextSibling && container.nextSibling.localName == 'splitter') {
-				container.nextSibling.nextSibling.removeAttribute('width');
-				container.nextSibling.nextSibling.removeAttribute('collapsed');
-				container.parentNode.removeChild(container.nextSibling);
+			else if (wrapper.nextSibling && wrapper.nextSibling.localName == 'splitter') {
+				wrapper.nextSibling.nextSibling.removeAttribute('width');
+				wrapper.nextSibling.nextSibling.removeAttribute('collapsed');
+				wrapper.parentNode.removeChild(wrapper.nextSibling);
 			}
-//dump(' remove vContainer.\n');
-			container.parentNode.removeChild(container);
+			wrapper.parentNode.removeChild(wrapper);
 		}
 		else if (cont.childNodes.length % 2 == 0) {
-//dump(' remove vertical splitter.\n');
 			if (cont.firstChild.localName == 'splitter') {
 				cont.removeChild(cont.firstChild);
 			}
@@ -365,34 +345,24 @@ var SplitBrowser = {
 
 		var hContainer = aContainer.hContainer;
 		if (hContainer) {
-			var wrapper = aContainer.wrapper;
-			var originalContent = hContainer.firstChild;
-			for (var i = 0, maxi = hContainer.childNodes.length; i < maxi; i++)
-			{
-				if ((wrapper && hContainer.childNodes[i] == wrapper) ||
-					hContainer.childNodes[i].localName == 'subbrowser') {
-					originalContent = hContainer.childNodes[i];
-					break;
+			var contentWrapper = aContainer.contentWrapper;
+			var originalContent = contentWrapper || hContainer.firstChild;
+			if (contentWrapper) {
+				state.content = {
+					width   : contentWrapper.boxObject.width,
+					height  : contentWrapper.boxObject.height,
+				};
+				if (aContainer.firstChild.localName == 'subbrowser') {
+					state.content.type    = 'subbrowser';
+					state.content.uri     = aContainer.firstChild.src;
+					state.content.history = this.serializeSessionHistory(aContainer.firstChild.browser);
+				}
+				else {
+					state.content.type = 'root';
 				}
 			}
-			if (originalContent.localName == 'subbrowser') {
-				state.content = {
-					type    : 'subbrowser',
-					uri     : originalContent.src,
-					width   : originalContent.boxObject.width,
-					height  : originalContent.boxObject.height,
-					history : this.serializeSessionHistory(originalContent.browser)
-				};
-			}
-			else if (wrapper && hContainer.childNodes[i] == wrapper) {
-				state.content = {
-					type   : 'root',
-					width  : gBrowser.boxObject.width,
-					height : gBrowser.boxObject.height
-				};
-			}
 			else {
-				state.content = this.getContainerState(originalContent);
+				state.content = this.getContainerState(originalContent.firstChild);
 			}
 
 			var node = originalContent.previousSibling;
@@ -402,7 +372,7 @@ var SplitBrowser = {
 					node = node.previousSibling;
 					continue;
 				}
-				state.children.push(this.getContainerState(node));
+				state.children.push(this.getContainerState(node.firstChild));
 				state.children[state.children.length-1].position = this.POSITION_LEFT;
 				state.children[state.children.length-1].width    = node.boxObject.width;
 				if (node.nextSibling.getAttribute('state') == 'collapsed')
@@ -417,7 +387,7 @@ var SplitBrowser = {
 					node = node.nextSibling;
 					continue;
 				}
-				state.children.push(this.getContainerState(node));
+				state.children.push(this.getContainerState(node.firstChild));
 				state.children[state.children.length-1].position = this.POSITION_RIGHT;
 				state.children[state.children.length-1].width    = node.boxObject.width;
 				if (node.previousSibling.getAttribute('state') == 'collapsed')
@@ -428,26 +398,18 @@ var SplitBrowser = {
 
 		var vContainer = aContainer.vContainer;
 
-		var originalContent = vContainer.firstChild;
-		for (var i = 0, maxi = vContainer.childNodes.length; i < maxi; i++)
-		{
-			if (vContainer.childNodes[i] == hContainer ||
-				vContainer.childNodes[i].localName == 'subbrowser') {
-				originalContent = vContainer.childNodes[i];
-				break;
-			}
-		}
-		if (originalContent.localName == 'subbrowser') {
+		var originalContent = hContainer || vContainer.firstChild;
+		if (!hContainer) {
 			state.content = {
 				type    : 'subbrowser',
-				uri     : originalContent.src,
+				uri     : originalContent.firstChild.firstChild.src,
 				width   : originalContent.boxObject.width,
 				height  : originalContent.boxObject.height,
-				history : this.serializeSessionHistory(originalContent.browser)
+				history : this.serializeSessionHistory(originalContent.firstChild.firstChild.browser)
 			};
 		}
 		else if (!state.content) {
-			state.content = this.getContainerState(originalContent);
+			state.content = this.getContainerState(originalContent.firstChild);
 		}
 
 		var node = originalContent.previousSibling;
@@ -457,7 +419,7 @@ var SplitBrowser = {
 				node = node.previousSibling;
 				continue;
 			}
-			state.children.push(this.getContainerState(node));
+			state.children.push(this.getContainerState(node.firstChild));
 			state.children[state.children.length-1].position = this.POSITION_TOP;
 			state.children[state.children.length-1].height   = node.boxObject.height;
 			if (node.nextSibling.getAttribute('state') == 'collapsed')
@@ -472,7 +434,7 @@ var SplitBrowser = {
 				node = node.nextSibling;
 				continue;
 			}
-			state.children.push(this.getContainerState(node));
+			state.children.push(this.getContainerState(node.firstChild));
 			state.children[state.children.length-1].position = this.POSITION_BOTTOM;
 			state.children[state.children.length-1].height   = node.boxObject.height;
 			if (node.previousSibling.getAttribute('state') == 'collapsed')
@@ -570,22 +532,21 @@ var SplitBrowser = {
 	
 	buildContent : function(aState, aContainer) 
 	{
-//dump('START TO BUILD.\n');
 		switch (aState.content.type)
 		{
-			case 'root':
-//dump(' THIS IS ROOT.\n');
-				aContainer.wrapper.width  = aState.content.width;
-				aContainer.wrapper.height = aState.content.height;
+			default:
+				var wrapper = aContainer.contentWrapper;
+				wrapper.parentNode.removeChild(wrapper);
 				break;
 
-			default:
 			case 'subbrowser':
-//dump(' append subbrowser for '+aState.content.uri+'.\n');
 				var b = this.createSubBrowser(aState.content.uri);
-				aContainer.hContainer.appendChild(b);
+				aContainer.appendChild(b);
 				aContainer.hContainer.width  = aState.content.width;
 				aContainer.hContainer.height = aState.content.height;
+
+				aContainer.contentWrapper.width  = aState.content.width;
+				aContainer.contentWrapper.height = aState.content.height;
 
 				if (aState.content.history) {
 					var SHInternal = b.browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
@@ -607,14 +568,16 @@ var SplitBrowser = {
 				}
 
 				break;
+
+			case 'root':
+				aContainer.contentWrapper.width  = aState.content.width;
+				aContainer.contentWrapper.height = aState.content.height;
+				break;
 		}
 
 		var container;
-		var spacer = document.createElement('spacer');
-		spacer.setAttribute('flex', 1);
 		for (var i = 0, maxi = aState.children.length; i < maxi; i++)
 		{
-//dump(' append container at '+aState.children[i].position+'.\n');
 			container = this.addContainerTo(
 				aContainer,
 				aState.children[i].position,
