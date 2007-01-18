@@ -6,7 +6,7 @@
 	-moz-binding: url("./splitbrowser.xml#toplevel-container") !important;
 }
 
-#appcontent > vbox > hbox > .subbrowser-container-content-wrapper > .primary-browser-wrapper {
+#appcontent > vbox > hbox > .primary-browser-wrapper {
 	-moz-binding: url("./splitbrowser.xml#sub-browser-base") !important;
 }
 

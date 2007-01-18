@@ -24,17 +24,6 @@
 				return (container.localName == 'subbrowser-container') ? container : null ;
 			]]></getter>
 		</property>
-		<property name="wrapper" readonly="true">
-			<getter><![CDATA[
-				var container = this.parentContainer;
-				if (container &&
-					container.contentWrapper &&
-					container.contentWrapper.firstChild == this)
-					return container.contentWrapper;
-
-				return null;
-			]]></getter>
-		</property>
 	</implementation>
 </binding>
 
@@ -43,12 +32,7 @@
 <binding id="container" extends="#contents-in-container">
 	<content orient="vertical">
 		<xul:vbox anonid="vertical-container" flex="1">
-			<xul:hbox anonid="horizontal-container" flex="1">
-				<xul:box anonid="content-wrapper"
-					class="subbrowser-container-content-wrapper primary-content" flex="1">
-					<children/>
-				</xul:box>
-			</xul:hbox>
+			<xul:hbox anonid="horizontal-container" flex="1"/>
 		</xul:vbox>
 	</content>
 
@@ -57,8 +41,6 @@
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'horizontal-container'); } catch(e) { return null; }"/>
 		<property name="vContainer" readonly="true"
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-container'); } catch(e) { return null; }"/>
-		<property name="contentWrapper" readonly="true"
-			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'content-wrapper'); } catch(e) { return null; }"/>
 	</implementation>
 
 	<handlers>
@@ -75,19 +57,16 @@
 	<content orient="vertical">
 		<xul:vbox anonid="vertical-container" flex="1">
 			<xul:hbox anonid="horizontal-container" flex="1">
-				<xul:box anonid="content-wrapper"
-					class="subbrowser-container-content-wrapper primary-content" flex="1">
-					<xul:box anonid="primary-browser-wrapper"
-						class="primary-browser-wrapper" flex="1">
-						<children/>
-					</xul:box>
-				</xul:box>
+				<xul:vbox anonid="primary-browser-wrapper" flex="1"
+					class="primary-browser-wrapper">
+					<children/>
+				</xul:vbox>
 			</xul:hbox>
 		</xul:vbox>
 	</content>
 
 	<implementation>
-		<property name="primaryBrowserWrapper" readonly="true"
+		<property name="contentWrapper" readonly="true"
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-wrapper'); } catch(e) { return null; }"/>
 	</implementation>
 </binding>
@@ -366,7 +345,7 @@
 				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 				oncommand="this.parentNode.parentNode.close();"/>
 		</xul:toolbar>
-		<xul:browser anonid="browser"
+		<xul:tabbrowser anonid="browser"
 			flex="1"
 			type="content"
 			onclick="return contentAreaClick(event);"
