@@ -209,6 +209,8 @@ var SplitBrowser = {
 		var browser   = aBrowser;
 		var container = browser.parentContainer || appcontent;
 
+		gBrowser.setAttribute('type', 'content-primary');
+
 		browser.parentNode.removeChild(browser);
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
