@@ -30,17 +30,41 @@
 
 
 <binding id="container" extends="#contents-in-container">
-	<content orient="vertical">
-		<xul:vbox anonid="vertical-container" flex="1">
-			<xul:hbox anonid="horizontal-container" flex="1"/>
+	<!--content orient="vertical">
+		<xul:vbox anonid="vertical-container" flex="1"
+			class="vertical-container">
+			<xul:hbox anonid="horizontal-container" flex="1"
+				class="horizontal-container"/>
 		</xul:vbox>
-	</content>
+	</content-->
 
 	<implementation>
-		<property name="hContainer" readonly="true"
-			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'horizontal-container'); } catch(e) { return null; }"/>
-		<property name="vContainer" readonly="true"
-			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-container'); } catch(e) { return null; }"/>
+<!--
+		<field name="hContainer">null</field>
+		<field name="vContainer">null</field>
+-->
+		<constructor><![CDATA[
+			if (
+				this.vContainer ||
+				this.localName != 'subbrowser-container' ||
+				(
+					this.hasChildNodes() &&
+					this.firstChild.getAttribute('class') == 'vertical-container'
+				)
+				)
+				return;
+
+			this.vContainer = document.createElement('vbox');
+			this.vContainer.setAttribute('class', 'vertical-container');
+			this.vContainer.setAttribute('flex', 1);
+			this.appendChild(this.vContainer);
+
+			this.hContainer = document.createElement('hbox');
+			this.hContainer.setAttribute('class', 'horizontal-container');
+			this.hContainer.setAttribute('flex', 1);
+			this.vContainer.appendChild(this.hContainer);
+
+		]]></constructor>
 	</implementation>
 
 	<handlers>
@@ -55,8 +79,10 @@
 
 <binding id="toplevel-container" extends="#container">
 	<content orient="vertical">
-		<xul:vbox anonid="vertical-container" flex="1">
-			<xul:hbox anonid="horizontal-container" flex="1">
+		<xul:vbox anonid="vertical-container" flex="1"
+			class="vertical-container">
+			<xul:hbox anonid="horizontal-container" flex="1"
+				class="horizontal-container">
 				<xul:vbox anonid="primary-browser-wrapper" flex="1"
 					class="primary-browser-wrapper">
 					<children/>
@@ -66,6 +92,10 @@
 	</content>
 
 	<implementation>
+		<property name="hContainer" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'horizontal-container'); } catch(e) { return null; }"/>
+		<property name="vContainer" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-container'); } catch(e) { return null; }"/>
 		<property name="contentWrapper" readonly="true"
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-wrapper'); } catch(e) { return null; }"/>
 	</implementation>
