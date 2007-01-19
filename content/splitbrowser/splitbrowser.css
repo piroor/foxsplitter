@@ -18,8 +18,8 @@ subbrowser {
 	-moz-binding: url("./splitbrowser.xml#subbrowser") !important;
 }
 
-subbrowser:not([browsertype="simple"]) > browser,
-subbrowser[browsertype="simple"] > tabbrowser {
+subbrowser:not([browsertype="simple"]) > .subbrowser-browser-box > browser,
+subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 	display: none;
 }
 

@@ -420,32 +420,37 @@
 				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 				oncommand="this.parentNode.parentNode.close();"/>
 		</xul:toolbar>
-		<xul:tabbrowser anonid="browser-tabbrowser"
-			flex="1"
-			type="content"
-			onnewtab="
-				var node = this;
-				while (node.localName != 'tabbrowser') {
-					node = node.parentNode;
-				}
-				node.parentNode.openNewTab();
-			"
-			onclick="return contentAreaClick(event, false);"
-			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
-			content="about:blank"
-			contextmenu="contentAreaContextMenu"
-			contentcontextmenu="contentAreaContextMenu"
-			autocompletepopup="PopupAutoComplete"
-			disablehistory="true"/>
-		<xul:browser anonid="browser-simple"
-			flex="1"
-			type="content"
-			onclick="return contentAreaClick(event, false);"
-			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
-			content="about:blank"
-			contextmenu="contentAreaContextMenu"
-			contentcontextmenu="contentAreaContextMenu"
-			autocompletepopup="PopupAutoComplete"/>
+		<xul:vbox class="subbrowser-browser-box"
+			flex="1">
+			<xul:tabbrowser anonid="browser-tabbrowser"
+				class="subbrowser-browser"
+				flex="1"
+				type="content"
+				onnewtab="
+					var node = this;
+					while (node.localName != 'tabbrowser') {
+						node = node.parentNode;
+					}
+					node.parentNode.parentNode.openNewTab();
+				"
+				onclick="return contentAreaClick(event, false);"
+				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.pageDNDObserver);"
+				content="about:blank"
+				contextmenu="contentAreaContextMenu"
+				contentcontextmenu="contentAreaContextMenu"
+				autocompletepopup="PopupAutoComplete"
+				disablehistory="true"/>
+			<xul:browser anonid="browser-simple"
+				class="subbrowser-browser"
+				flex="1"
+				type="content"
+				onclick="return contentAreaClick(event, false);"
+				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.pageDNDObserver);"
+				content="about:blank"
+				contextmenu="contentAreaContextMenu"
+				contentcontextmenu="contentAreaContextMenu"
+				autocompletepopup="PopupAutoComplete"/>
+		</xul:vbox>
 	</content>
 
 	<implementation>
@@ -1075,6 +1080,10 @@
 
 		<constructor><![CDATA[
 			var b = this.browser;
+			if (b.nextSibling && b.nextSibling.localName == 'browser')
+				b.parentNode.removeChild(b.nextSibling);
+			if (b.previousSibling && b.previousSibling.localName == 'tabbrowser')
+				b.parentNode.removeChild(b.previousSibling);
 
 			if (b.localName == 'tabbrowser') {
 				b.parentSubBrowser = this;
