@@ -498,7 +498,7 @@ var SplitBrowser = {
 		if (aBrowser.localName == 'tabbrowser') {
 			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
 			{
-				histories.push(this.serializeSessionHistory(aBrowser.getBrowserForTab(aTabBrowser.mTabContainer.childNodes[i])))
+				histories.push(this.serializeSessionHistory(aBrowser.getBrowserForTab(aBrowser.mTabContainer.childNodes[i])))
 			}
 		}
 		else {
@@ -615,7 +615,7 @@ var SplitBrowser = {
 				aContainer.hContainer.height = aState.content.height;
 
 				if (aState.content.histories && aState.content.histories.length)
-					window.setTimeout(this.deserializeHistory, 0, b.browser, aState.content);
+					this.deserializeHistory(b.browser, aState.content);
 
 				aContainer.lastWidth  = aState.content.lastWidth;
 				aContainer.lastHeight = aState.content.lastHeight;

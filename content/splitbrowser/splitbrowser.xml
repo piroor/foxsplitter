@@ -1084,17 +1084,6 @@
 				b.removeTab = this.newRemoveTab;
 				b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
 				b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
-			}
-
-			window.setTimeout(function(aThis) { aThis.mDelayedStartup(); }, 0, this);
-		]]></constructor>
-
-		<method name="mDelayedStartup">
-			<parameter name="aThis"/>
-			<body><![CDATA[
-			var b = this.browser;
-			if (b.localName == 'tabbrowser') {
-				this.addProgressListener(b.mCurrentTab);
 
 				var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
 				if (autoHide)
@@ -1102,25 +1091,35 @@
 
 				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
-				b = b.mCurrentBrowser;
-				b.setAttribute('type', 'content');
-
-
-				gBrowser.mCurrentBrowser.removeAttribute('type');
-				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
-
-
-				b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
-
-				var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
-				os.addObserver(b, 'browser:purge-session-history', false);
-				b.removeAttribute('disablehistory');
-				b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
+				window.setTimeout(function(aThis) {
+					aThis.mDelayedTabbrowserStartup();
+				}, 0, this);
 			}
 			else {
 				this.addProgressListener(null);
+				if (this.getAttribute('src'))
+					this.load(this.getAttribute('src'));
 			}
+		]]></constructor>
 
+		<method name="mDelayedTabbrowserStartup">
+			<parameter name="aThis"/>
+			<body><![CDATA[
+			var b = this.browser;
+			this.addProgressListener(b.mCurrentTab);
+
+			b = b.mCurrentBrowser;
+			b.setAttribute('type', 'content');
+
+			gBrowser.mCurrentBrowser.removeAttribute('type');
+			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+
+			b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
+
+			var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
+			os.addObserver(b, 'browser:purge-session-history', false);
+			b.removeAttribute('disablehistory');
+			b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
 
 			if (this.getAttribute('src'))
 				this.load(this.getAttribute('src'));
