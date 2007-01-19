@@ -378,12 +378,20 @@
 		<xul:tabbrowser anonid="browser"
 			flex="1"
 			type="content"
-			onclick="return contentAreaClick(event);"
+			onnewtab="
+				var node = this;
+				while (node.localName != 'tabbrowser') {
+					node = node.parentNode;
+				}
+				node.parentNode.openNewTab();
+			"
+			onclick="return contentAreaClick(event, false);"
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
 			content="about:blank"
 			contextmenu="contentAreaContextMenu"
 			contentcontextmenu="contentAreaContextMenu"
-			autocompletepopup="PopupAutoComplete"/>
+			autocompletepopup="PopupAutoComplete"
+			disablehistory="true"/>
 	</content>
 
 	<implementation>
@@ -738,7 +746,16 @@
 		]]></field>
 
 
-
+		<method name="openNewTab">
+			<body><![CDATA[
+				this.browser.selectedTab = this.browser.addTab('about:blank');
+				this.toggleToolbar(true, true, 0);
+				window.setTimeout(function(aUrlbar) {
+					aUrlbar.value = '';
+					aUrlbar.focus();
+				}, 0, this.urlbar);
+			]]></body>
+		</method>
 
 		<method name="newAddTab">
 			<body><![CDATA[
@@ -762,11 +779,18 @@
 			<body><![CDATA[
 				var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
 
-				this.mCurrentBrowser.removeAttribute('type');
-				this.mCurrentBrowser.setAttribute('type', 'content');
+				if (this.parentSubBrowser.focused) {
+					gBrowser.mCurrentBrowser.removeAttribute('type');
+					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
+				}
+				else {
+				}
+					this.mCurrentBrowser.removeAttribute('type');
+					this.mCurrentBrowser.setAttribute('type', 'content');
 
-				gBrowser.mCurrentBrowser.removeAttribute('type');
-				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+					gBrowser.mCurrentBrowser.removeAttribute('type');
+					gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+				}
 
 				return result;
 			]]></body>
@@ -820,7 +844,7 @@
 			{
 				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
 
-				if (!this.mTab.selected) return;
+				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				if (this.mTotalProgress &&
 					this.mTotalProgress < 1) {
@@ -840,7 +864,7 @@
 
 			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
 			{
-				if (!this.mTab.selected) return;
+				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
 				if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
@@ -889,7 +913,7 @@
 
 			onLocationChange : function(aWebProgress, aRequest, aLocation)
 			{
-				if (!this.mTab.selected) return;
+				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				this.mOwner.urlbar.value = aLocation.spec;
 				this.mOwner.setAttribute('src', aLocation.spec);
@@ -924,13 +948,15 @@
 		<field name="mTabFilters">[]</field>
 
 		<constructor><![CDATA[
-			this.browser.parentSubBrowser = this;
-			this.browser.__splitbrowser__addTab = this.browser.addTab;
-			this.browser.addTab = this.newAddTab;
-			this.browser.__splitbrowser__removeTab = this.browser.removeTab;
-			this.browser.removeTab = this.newRemoveTab;
-			this.browser.__splitbrowser__updateCurrentBrowser = this.browser.updateCurrentBrowser;
-			this.browser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+			var b = this.browser;
+
+			b.parentSubBrowser = this;
+			b.__splitbrowser__addTab = b.addTab;
+			b.addTab = this.newAddTab;
+			b.__splitbrowser__removeTab = b.removeTab;
+			b.removeTab = this.newRemoveTab;
+			b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
+			b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
 
 			window.setTimeout(function(aThis) { aThis.mDelayedStartup(); }, 0, this);
 		]]></constructor>
@@ -938,11 +964,23 @@
 		<method name="mDelayedStartup">
 			<parameter name="aThis"/>
 			<body><![CDATA[
-			this.addTabProgressListener(this.browser.mCurrentTab);
-			this.browser.mCurrentBrowser.setAttribute('type', 'content');
+			var b = this.browser;
+			this.addTabProgressListener(b.mCurrentTab);
+
+			b = b.mCurrentBrowser;
+			b.setAttribute('type', 'content');
 
 			gBrowser.mCurrentBrowser.removeAttribute('type');
 			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+
+
+			b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
+
+			var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
+			os.addObserver(b, 'browser:purge-session-history', false);
+			b.removeAttribute('disablehistory');
+			b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
+
 
 			if (this.getAttribute('src'))
 				this.load(this.getAttribute('src'));
@@ -962,6 +1000,12 @@
 	<handlers>
 		<handler event="DOMLinkAdded" phase="capturing"
 			action="this.onLinkAdded(event);"/>
+
+		<handler event="focus" phase="capturing"
+			action="this.focused = true;"/>
+
+		<handler event="blur" phase="capturing"
+			action="this.focused = false;"/>
 	</handlers>
 </binding>
 

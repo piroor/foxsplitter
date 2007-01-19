@@ -343,7 +343,7 @@ var SplitBrowser = {
 					uri     : originalContent.src,
 					width   : originalContent.boxObject.width,
 					height  : originalContent.boxObject.height,
-					history : this.serializeSessionHistory(originalContent.browser)
+					histories : this.serializeBrowserSessionHistories(originalContent.browser)
 				};
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
@@ -405,12 +405,8 @@ var SplitBrowser = {
 				uri       : originalContent.src,
 				width     : originalContent.boxObject.width,
 				height    : originalContent.boxObject.height,
-				histories : []
+				histories : this.serializeBrowserSessionHistories(originalContent.browser)
 			};
-			for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
-			{
-				state.content.histories.push(this.serializeSessionHistory(originalContent.browser.getBrowserForTab(originalContent.browser.mTabContainer.childNodes[i])))
-			}
 		}
 		else if (!state.content) {
 			state.content = this.getContainerState(originalContent);
@@ -449,7 +445,16 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeSessionHistory : function(aBrowser) 
+	serializeBrowserSessionHistories : function(aTabBrowser) {
+		var histories = [];
+		for (var i = 0, maxi = aTabBrowser.mTabContainer.childNodes.length; i < maxi; i++)
+		{
+			histories.push(this.serializeSessionHistory(aTabBrowser.getBrowserForTab(aTabBrowser.mTabContainer.childNodes[i])))
+		}
+		return histories
+	},
+ 
+	serializeSessionHistory : function(aBrowser)
 	{
 		var SH = null;
 		try {
@@ -557,7 +562,7 @@ var SplitBrowser = {
 				aContainer.hContainer.height = aState.content.height;
 
 				if (aState.content.histories && aState.content.histories.length)
-					window.setTimeout(this.restoreHistory, 0, b.browser, aState);
+					window.setTimeout(this.restoreHistory, 0, b.browser, aState.content);
 
 				break;
 		}
@@ -583,24 +588,34 @@ var SplitBrowser = {
 			aContainer.vContainer.removeChild(aContainer.hContainer);
 		}
 	},
-	restoreHistory : function(aTabBrowser, aState)
+	restoreHistory : function(aTabBrowser, aBrowserState)
 	{
 		var browser = aTabBrowser.mCurrentBrowser,
 			tab     = aTabBrowser.mCurrentTab;
-		for (var i = 0, maxi = aState.content.histories.length; i < maxi; i++)
+
+		try {
+			browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
+		}
+		catch(e) {
+			window.setTimeout(arguments.callee, 50, aTabBrowser, aBrowserState);
+			dump(e+'\n');
+			return;
+		}
+
+		for (var i = 0, maxi = aBrowserState.histories.length; i < maxi; i++)
 		{
 			if (i) {
 				tab     = aTabBrowser.addTab('about:blank');
 				browser = aTabBrowser.getBrowserForTab(tab);
 			}
 			var SHInternal = browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
-			for (var j in aState.content.histories[i].entries)
+			for (var j in aBrowserState.histories[i].entries)
 				SHInternal.addEntry(
-					SplitBrowser.deserializeHistoryEntry(aState.content.histories[i].entries[j]),
+					SplitBrowser.deserializeHistoryEntry(aBrowserState.histories[i].entries[j]),
 					true
 				);
 			try {
-				browser.gotoIndex(aState.content.histories[i].index);
+				browser.gotoIndex(aBrowserState.histories[i].index);
 			}
 			catch(e) { // when the entry is moving in frames...
 				try {
@@ -970,9 +985,62 @@ catch(e) {
 			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
 		}
 
+		window.__splitbrowser__handleLinkClick = window.handleLinkClick;
+		window.handleLinkClick = this.contentAreaHandleLinkClick;
+
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);
 //			this.load();
+	},
+ 
+	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode)
+	{
+		var d = aEvent.target.ownerDocument;
+		var b = SplitBrowser.getBrowserFromFrame(d.defaultView.top);
+		if (b) {
+			b = b.browser;
+		}
+		else {
+			return this.__splitbrowser__handleLinkClick.apply(this, arguments);
+		}
+
+		var docURL = d.location.aURI;
+		if (
+			(
+				aEvent.button == 0 &&
+				aEvent.ctrlKey
+			) ||
+			(
+				aEvent.button == 1 &&
+				nsPreferences.getBoolPref('browser.tabs.opentabfor.middleclick')
+			)
+			) {
+			var loadInBackground = nsPreferences.getBoolPref('browser.tabs.loadInBackground');
+			if (aEvent && aEvent.shiftKey)
+				loadInBackground = !loadInBackground;
+
+			if (docURL)
+				urlSecurityCheck(aURI, docURL);
+
+			var originCharset = d.characterSet;
+			var referrerURI = docURL ? SplitBrowser.makeURIFromSpec(docURL) : null;
+			if ('loadOneTab' in b) {
+				b.loadOneTab(aURI, referrerURI, originCharset, null, loadInBackground, false);
+			}
+			else {
+				var tab = b.addTab(aURI, referrerURI, originCharset);
+				if (!loadInBackground) {
+					window.setTimeout(function() {
+						b.selectedTab = tab;
+					}, 0);
+					b.selectedTab = tab;
+				}
+			}
+			aEvent.stopPropagation();
+			return true;
+		}
+
+		return this.__splitbrowser__handleLinkClick.apply(this, arguments);
 	},
 	
 	insertSeparateTabItem : function(aBrowser) 
