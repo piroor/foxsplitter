@@ -545,7 +545,9 @@
 				var collapsed = this.isCollapsed();
 				popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
 				popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
-				popup.getElementsByAttribute('class', 'subbrowser-context-openNewTab')[0].hidden = (this.browser.localName != 'tabbrowser');
+
+				var tabItem = popup.getElementsByAttribute('class', 'subbrowser-context-openNewTab')[0];
+				tabItem.hidden = tabItem.previousSibling.hidden = (this.browser.localName != 'tabbrowser');
 			]]></body>
 		</method>
 
