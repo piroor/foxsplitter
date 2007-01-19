@@ -212,8 +212,9 @@ var SplitBrowser = {
 		splitter.setAttribute('contextmenu', 'subbrowser-splitter-contextmenu');
 		splitter.setAttribute('state', 'open');
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
+		splitter.setAttribute('sizevalue', ((aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ));
 		splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
-		splitter.setAttribute('onmousedown', 'SplitBrowser.getSplitterTarget(this).collapsed = false;');
+		splitter.setAttribute('onmousedown', 'var node = SplitBrowser.getSplitterTarget(this); if (node.isCollapsed()) { node[this.getAttribute("sizevalue")] = 0; node.collapsed = false; }');
 		return splitter;
 	},
  
