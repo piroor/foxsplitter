@@ -23,6 +23,10 @@
 		<preference id="splitbrowser.show.addbuttons.dragdrop"
 			name="splitbrowser.show.addbuttons.dragdrop"
 			type="bool"/>
+		<preference id="splitbrowser.tabs.autoHide"
+			name="splitbrowser.tabs.autoHide"
+			type="bool"
+			inverted="true"/>
 	</preferences>
 
 	<checkbox id="splitbrowser.state.restore-check" flex="1"
@@ -37,6 +41,9 @@
 		<checkbox id="splitbrowser.show.addbuttons.dragdrop-check" flex="1"
 			label="&splitbrowser.show.addbuttons.dragdrop;"
 			preference="splitbrowser.show.addbuttons.dragdrop"/>
+		<checkbox id="splitbrowser.tabs.autoHide" flex="1"
+			label="&splitbrowser.tabs.autoHide;"
+			preference="splitbrowser.tabs.autoHide"/>
 	</groupbox>
 
 </prefpane>

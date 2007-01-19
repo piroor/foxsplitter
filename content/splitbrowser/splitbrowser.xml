@@ -770,7 +770,14 @@
 			<body><![CDATA[
 				if (this.parentSubBrowser)
 					this.parentSubBrowser.removeTabProgressListener(arguments[0]);
+
 				var result = this.__splitbrowser__removeTab.apply(this, arguments);
+
+				if (this.mTabContainer.childNodes.length == 1 &&
+					nsPreferences.getBoolPref('splitbrowser.tabs.autoHide')) {
+					this.setStripVisibilityTo(false);
+				}
+
 				return result;
 			]]></body>
 		</method>
@@ -967,8 +974,14 @@
 			var b = this.browser;
 			this.addTabProgressListener(b.mCurrentTab);
 
+			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
+			if (autoHide)
+				b.setStripVisibilityTo(false);
+
+
 			b = b.mCurrentBrowser;
 			b.setAttribute('type', 'content');
+
 
 			gBrowser.mCurrentBrowser.removeAttribute('type');
 			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');

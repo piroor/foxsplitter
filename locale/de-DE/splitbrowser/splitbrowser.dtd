@@ -5,6 +5,8 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
 
+<!ENTITY splitbrowser.tabs.autoHide "Show tab bar in split browsers always">
+
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Nach oben teilen">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "Nach unten teilen">

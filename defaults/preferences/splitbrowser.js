@@ -1,5 +1,6 @@
 pref("splitbrowser.state.restore",            true);
 pref("splitbrowser.tab.closetab",             false);
+pref("splitbrowser.tabs.autoHide",            true);
 
 pref("splitbrowser.show.addbuttons.hover",    true);
 pref("splitbrowser.show.addbuttons.dragdrop", true);

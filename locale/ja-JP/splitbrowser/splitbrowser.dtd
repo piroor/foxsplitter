@@ -6,6 +6,8 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "通常時">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "リンクやファイルなどのドラッグ＆ドロップ時">
 
+<!ENTITY splitbrowser.tabs.autoHide "分割ブラウザで常にタブを表示する">
+
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "上に分割">

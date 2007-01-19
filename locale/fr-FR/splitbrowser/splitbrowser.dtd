@@ -5,6 +5,8 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
 
+<!ENTITY splitbrowser.tabs.autoHide "Show tab bar in split browsers always">
+
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "Partager au dessous">
