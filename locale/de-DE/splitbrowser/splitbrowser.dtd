@@ -52,3 +52,5 @@
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "Diese Adresse laden">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
 
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Neuer Tab">
+

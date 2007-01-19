@@ -54,3 +54,4 @@
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "このURIを読み込む">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "閉じる">
 
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "新しいタブ">

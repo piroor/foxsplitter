@@ -275,7 +275,12 @@
 		<xul:toolbar class="subbrowser-toolbar chromeclass-extrachrome"
 			align="center"
 		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
-			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);">
+			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
+			context="_child">
+			<xul:menupopup>
+				<xul:menuitem label="&splitbrowser.subbrowser.menu.openNewTab;"
+					oncommand="this.parentNode.parentNode.parentNode.openNewTab();"/>
+			</xul:menupopup>
 			<xul:deck anonid="toolbar-deck"
 				flex="1"
 				onmouseover="this.parentNode.parentNode.toggleToolbar(true);"

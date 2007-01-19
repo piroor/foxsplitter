@@ -52,3 +52,4 @@
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "Se rendre à la page indiquée dans la barre d'adresse">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
 
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nouvel onglet">

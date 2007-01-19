@@ -52,3 +52,4 @@
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "Load this URI">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Close">
 
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "New Tab">
