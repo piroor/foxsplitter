@@ -991,48 +991,17 @@
 				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
-				if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
-					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
-					this.mOwner.stopButton.setAttribute('disabled', true);
-					this.mOwner.reloadButton.removeAttribute('disabled');
-
-					if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow) {
-						if (!this.mOwner.mIconURL)
-							this.mOwner.useDefaultIcon();
-					}
-
-					this.mOwner.mIsBusy = false;
-					this.mOwner.removeAttribute('busy');
-
-					try {
-						if (this.mOwner.browser.canGoBack)
-							this.mOwner.backButton.removeAttribute('disabled');
-						else
-							this.mOwner.backButton.setAttribute('disabled', true);
-
-						if (this.mOwner.browser.canGoForward)
-							this.mOwner.forwardButton.removeAttribute('disabled');
-						else
-							this.mOwner.forwardButton.setAttribute('disabled', true);
-					}
-					catch(e) {
-						this.mOwner.backButton.setAttribute('disabled', true);
-						this.mOwner.forwardButton.setAttribute('disabled', true);
-					}
-
-					this.mOwner.title.setAttribute('value', this.mOwner.browser.contentDocument.title || this.mOwner.title.getAttribute('blank-label'));
-					this.mOwner.updateIcon();
-				}
-				else if (aStateFlags & nsIWebProgressListener.STATE_START &&
-					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
-
-					this.mOwner.stopButton.removeAttribute('disabled');
-					this.mOwner.reloadButton.setAttribute('disabled', true);
-
-					this.mOwner.mIsBusy = true;
-					this.mOwner.setAttribute('busy', true);
-					this.mOwner.title.setAttribute('value', this.mOwner.title.getAttribute('loading-label'));
-					this.mOwner.updateIcon();
+				if (
+					(
+						aStateFlags & nsIWebProgressListener.STATE_STOP &&
+						aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+					) ||
+					(
+						aStateFlags & nsIWebProgressListener.STATE_START &&
+						aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+					)
+					) {
+					this.mOwner.updateToolbarForCurrentTab();
 				}
 			},
 
