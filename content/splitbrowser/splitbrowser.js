@@ -216,7 +216,7 @@ var SplitBrowser = {
 	createSplitter : function(aPosition) 
 	{
 		var splitter = document.createElement('splitter');
-		splitter.setAttribute('contextmenu', 'subbrowser-splitter-contextmenu');
+//		splitter.setAttribute('contextmenu', 'subbrowser-splitter-contextmenu');
 		splitter.setAttribute('state', 'open');
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
 		splitter.setAttribute('sizevalue', ((aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ));
