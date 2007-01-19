@@ -65,6 +65,28 @@
 			this.vContainer.appendChild(this.hContainer);
 
 		]]></constructor>
+
+		<method name="toggleCollapsed">
+			<body><![CDATA[
+				if (!this.isCollapsed()) {
+					this.lastWidth  = this.boxObject.width;
+					this.lastHeight = this.boxObject.height;
+					this.collapsed  = true;
+				}
+				else {
+					this.collapsed  = false;
+					this.width      = this.lastWidth;
+					this.height     = this.lastHeight;
+				}
+			]]></body>
+		</method>
+		<method name="isCollapsed">
+			<body><![CDATA[
+				return this.collapsed || !this.boxObject.width || !this.boxObject.height;
+			]]></body>
+		</method>
+		<field name="lastWidth">-1</field>
+		<field name="lastHeight">-1</field>
 	</implementation>
 
 	<handlers>
@@ -103,7 +125,7 @@
 
 
 
-<binding id="sub-browser-base" extends="#contents-in-container">
+<binding id="subbrowser-base" extends="#contents-in-container">
 	<implementation>
 		<property name="rightOffset" readonly="true">
 			<getter><![CDATA[
@@ -270,15 +292,27 @@
 	</handlers>
 </binding>
 
-<binding id="sub-browser" extends="#sub-browser-base">
+<binding id="subbrowser" extends="#subbrowser-base">
 	<content orient="vertical">
 		<xul:toolbar class="subbrowser-toolbar chromeclass-extrachrome"
 			align="center"
 		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
 			context="_child">
-			<xul:menupopup>
-				<xul:menuitem label="&splitbrowser.subbrowser.menu.openNewTab;"
+			<xul:menupopup anonid="contextmenu"
+				onpopupshowing="this.parentNode.parentNode.updateContextMenu(event);">
+				<xul:menuitem class="subbrowser-context-close"
+					label="&splitbrowser.subbrowser.menu.close;"
+					oncommand="this.parentNode.parentNode.parentNode.close();"/>
+				<xul:menuitem class="subbrowser-context-collapse"
+					label="&splitbrowser.subbrowser.menu.collapse;"
+					oncommand="this.parentNode.parentNode.parentNode.toggleCollapsed();"/>
+				<xul:menuitem class="subbrowser-context-expand"
+					label="&splitbrowser.subbrowser.menu.expand;"
+					oncommand="this.parentNode.parentNode.parentNode.toggleCollapsed();"/>
+				<xul:menuseparator/>
+				<xul:menuitem class="subbrowser-context-openNewTab"
+					label="&splitbrowser.subbrowser.menu.openNewTab;"
 					oncommand="this.parentNode.parentNode.parentNode.openNewTab();"/>
 			</xul:menupopup>
 			<xul:deck anonid="toolbar-deck"
@@ -426,6 +460,8 @@
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar-progressmeter');"/>
 		<property name="goButton" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'go-button');"/>
+		<property name="contextmenu" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'contextmenu');"/>
 
 		<property name="src"
 			onset="this.setAttribute('src', val); this.load(val); return val;"
@@ -481,6 +517,31 @@
 
 
 
+		<method name="updateContextMenu">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				var popup = this.contextmenu;
+				var collapsed = this.isCollapsed();
+				popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
+				popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
+			]]></body>
+		</method>
+
+		<method name="isCollapsed">
+			<body><![CDATA[
+				var c = this.parentContainer;
+				return c ? c.isCollapsed() : false ;
+			]]></body>
+		</method>
+
+		<method name="toggleCollapsed">
+			<body><![CDATA[
+				var c = this.parentContainer;
+				if (c) c.toggleCollapsed();
+			]]></body>
+		</method>
+
+
 		<method name="toggleToolbar">
 			<parameter name="aShow"/>
 			<parameter name="aForce"/>
@@ -512,7 +573,6 @@
 				);
 			]]></body>
 		</method>
-
 
 
 		<method name="setIcon">
@@ -1023,5 +1083,6 @@
 			action="this.focused = false;"/>
 	</handlers>
 </binding>
+
 
 </bindings>

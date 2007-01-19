@@ -55,3 +55,6 @@
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "閉じる">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "新しいタブ">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "たたむ">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "ひろげる">
+<!ENTITY splitbrowser.subbrowser.menu.close        "閉じる">

@@ -53,4 +53,6 @@
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Neuer Tab">
-
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Collapse">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Expand">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Close">

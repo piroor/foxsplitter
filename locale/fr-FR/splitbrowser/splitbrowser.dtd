@@ -53,3 +53,6 @@
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nouvel onglet">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Collapse">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Expand">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Close">

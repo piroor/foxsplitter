@@ -33,7 +33,6 @@ var SplitBrowser = {
 	POSITION_AFTER  : 10,
  
 	browsers  : [], 
-	splitters : [],
  
 	makeURIFromSpec : function(aURI) 
 	{
@@ -55,6 +54,30 @@ var SplitBrowser = {
 		return null;
 	},
 	mIOService : Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
+ 
+	/* splitter context menu */ 
+	getSplitterTarget : function(aSplitter)
+	{
+		return (aSplitter.getAttribute('collapse') == 'before') ? aSplitter.previousSibling : aSplitter.nextSibling ;
+	},
+
+	updateSplitterContextMenu : function()
+	{
+		var c = this.getSplitterTarget(document.popupNode);
+		alert(c);
+		if (!c) return;
+
+		var popup = document.getElementById('subbrowser-splitter-contextmenu');
+		var collapsed = c.isCollapsed();
+		popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
+		popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
+	},
+
+	toggleSplitterCollapsed : function()
+	{
+		var c = this.getSplitterTarget(document.popupNode);
+		if (c) c.toggleCollapsed();
+	},
  
 /* add sub-browser (split contents) */ 
 	
@@ -103,10 +126,7 @@ var SplitBrowser = {
 		var hContainer = aParent.hContainer;
 		var vContainer = aParent.vContainer;
 
-		var splitter = document.createElement('splitter');
-		splitter.setAttribute('state', 'open');
-		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
-		splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
+		var splitter = this.createSplitter(aPosition);
 
 		switch (aPosition)
 		{
@@ -186,6 +206,17 @@ var SplitBrowser = {
 		return container;
 	},
  
+	createSplitter : function(aPosition) 
+	{
+		var splitter = document.createElement('splitter');
+		splitter.setAttribute('contextmenu', 'subbrowser-splitter-contextmenu');
+		splitter.setAttribute('state', 'open');
+		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
+		splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
+		splitter.setAttribute('onmousedown', 'SplitBrowser.getSplitterTarget(this).collapsed = false;');
+		return splitter;
+	},
+ 
 	getBrowserFromFrame : function(aFrame) 
 	{
 		var docShell = aFrame
@@ -244,6 +275,7 @@ var SplitBrowser = {
 					container.vContainer.removeChild(cont.nextSibling);
 				}
 				container.vContainer.removeChild(cont);
+				container.hContainer = null;
 			}
 			else if (cont.childNodes.length % 2 == 0) {
 				if (cont.firstChild.localName == 'splitter') {
@@ -339,11 +371,15 @@ var SplitBrowser = {
 			}
 			if (originalContent.localName == 'subbrowser') {
 				state.content = {
-					type    : 'subbrowser',
-					uri     : originalContent.src,
-					width   : originalContent.boxObject.width,
-					height  : originalContent.boxObject.height,
-					histories : this.serializeBrowserSessionHistories(originalContent.browser)
+					type      : 'subbrowser',
+					uri       : originalContent.src,
+					width     : originalContent.boxObject.width,
+					height    : originalContent.boxObject.height,
+					histories : this.serializeBrowserSessionHistories(originalContent.browser),
+
+					collapsed  : aContainer.isCollapsed(),
+					lastWidth  : aContainer.lastWidth,
+					lastHeight : aContainer.lastHeight
 				};
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
@@ -405,7 +441,11 @@ var SplitBrowser = {
 				uri       : originalContent.src,
 				width     : originalContent.boxObject.width,
 				height    : originalContent.boxObject.height,
-				histories : this.serializeBrowserSessionHistories(originalContent.browser)
+				histories : this.serializeBrowserSessionHistories(originalContent.browser),
+
+				collapsed  : aContainer.isCollapsed(),
+				lastWidth  : aContainer.lastWidth,
+				lastHeight : aContainer.lastHeight
 			};
 		}
 		else if (!state.content) {
@@ -563,6 +603,11 @@ var SplitBrowser = {
 
 				if (aState.content.histories && aState.content.histories.length)
 					window.setTimeout(this.restoreHistory, 0, b.browser, aState.content);
+
+				aContainer.lastWidth  = aState.content.lastWidth;
+				aContainer.lastHeight = aState.content.lastHeight;
+				if (aState.content.collapsed)
+					aContainer.toggleCollapsed();
 
 				break;
 		}

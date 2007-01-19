@@ -117,6 +117,20 @@
 			</menupopup>
 		</menu>
 	</data>
+
 </window>
+
+<popupset id="splitbrowser-popupset">
+	<menupopup id="subbrowser-splitter-contextmenu"
+		onpopupshowing="SplitBrowser.updateSplitterContextMenu();">
+		<menuitem class="subbrowser-context-collapse"
+			label="&splitbrowser.subbrowser.menu.collapse;"
+			oncommand="SplitBrowser.toggleSplitterCollapsed();"/>
+		<menuitem class="subbrowser-context-expand"
+			label="&splitbrowser.subbrowser.menu.expand;"
+			oncommand="SplitBrowser.toggleSplitterCollapsed();"/>
+	</menupopup>
+</popupset>
+
 
 </overlay>

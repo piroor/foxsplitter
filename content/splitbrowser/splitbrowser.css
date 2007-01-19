@@ -7,7 +7,7 @@
 }
 
 #appcontent > vbox > hbox > .primary-browser-wrapper {
-	-moz-binding: url("./splitbrowser.xml#sub-browser-base") !important;
+	-moz-binding: url("./splitbrowser.xml#subbrowser-base") !important;
 }
 
 subbrowser-container {
@@ -15,7 +15,7 @@ subbrowser-container {
 }
 
 subbrowser {
-	-moz-binding: url("./splitbrowser.xml#sub-browser") !important;
+	-moz-binding: url("./splitbrowser.xml#subbrowser") !important;
 }
 
 .subbrowser-toolbar-content {
