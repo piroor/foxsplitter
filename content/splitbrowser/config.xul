@@ -32,6 +32,9 @@
 	<checkbox id="splitbrowser.state.restore-check" flex="1"
 		label="&splitbrowser.state.restore;"
 		preference="splitbrowser.state.restore"/>
+	<checkbox id="splitbrowser.tabs.autoHide" flex="1"
+		label="&splitbrowser.tabs.autoHide;"
+		preference="splitbrowser.tabs.autoHide"/>
 
 	<groupbox>
 		<caption label="&splitbrowser.show.addbuttons.caption;"/>
@@ -41,9 +44,6 @@
 		<checkbox id="splitbrowser.show.addbuttons.dragdrop-check" flex="1"
 			label="&splitbrowser.show.addbuttons.dragdrop;"
 			preference="splitbrowser.show.addbuttons.dragdrop"/>
-		<checkbox id="splitbrowser.tabs.autoHide" flex="1"
-			label="&splitbrowser.tabs.autoHide;"
-			preference="splitbrowser.tabs.autoHide"/>
 	</groupbox>
 
 </prefpane>
