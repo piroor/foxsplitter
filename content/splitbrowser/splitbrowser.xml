@@ -144,8 +144,12 @@
 		<property name="contentAreaSizeObject" readonly="true">
 			<getter><![CDATA[
 				var box, retVal;
-				if (this.localName == 'subbrowser')
-					box = this.browser.mCurrentBrowser.boxObject;
+				if (this.localName == 'subbrowser') {
+					if (this.browser.localName == 'tabbrowser')
+						box = this.browser.mCurrentBrowser.boxObject;
+					else
+						box = this.browser.boxObject;
+				}
 				else
 					box = gBrowser.mCurrentBrowser.boxObject;
 
@@ -416,7 +420,7 @@
 				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 				oncommand="this.parentNode.parentNode.close();"/>
 		</xul:toolbar>
-		<xul:tabbrowser anonid="browser"
+		<xul:tabbrowser anonid="browser-tabbrowser"
 			flex="1"
 			type="content"
 			onnewtab="
@@ -433,6 +437,15 @@
 			contentcontextmenu="contentAreaContextMenu"
 			autocompletepopup="PopupAutoComplete"
 			disablehistory="true"/>
+		<xul:browser anonid="browser-simple"
+			flex="1"
+			type="content"
+			onclick="return contentAreaClick(event, false);"
+			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
+			content="about:blank"
+			contextmenu="contentAreaContextMenu"
+			contentcontextmenu="contentAreaContextMenu"
+			autocompletepopup="PopupAutoComplete"/>
 	</content>
 
 	<implementation>
@@ -440,8 +453,11 @@
 			onget="return document.getAnonymousNodes(this)[0];"/>
 		<property name="toolbarDeck" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-deck');"/>
+
 		<property name="browser" readonly="true"
-			onget="return document.getAnonymousNodes(this)[1];"/>
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'browser-'+this.browserType);"/>
+		<property name="browserType" readonly="true"
+			onget="return this.getAttribute('browsertype') == 'simple' ? 'simple' : 'tabbrowser' ;"/>
 
 		<property name="backButton" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'back-button');"/>
@@ -529,6 +545,7 @@
 				var collapsed = this.isCollapsed();
 				popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
 				popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
+				popup.getElementsByAttribute('class', 'subbrowser-context-openNewTab')[0].hidden = (this.browser.localName != 'tabbrowser');
 			]]></body>
 		</method>
 
@@ -550,23 +567,34 @@
 
 		<method name="updateToolbarForCurrentTab">
 			<body><![CDATA[
-				var t = this.browser.selectedTab;
-				if (t.getAttribute('busy') != 'true') {
+				var b      = this.browser;
+				var t      = null;
+				var isBusy = b.mIsBusy;
+				if (b.localName == 'tabbrowser') {
+					t = this.browser.selectedTab;
+					isBusy = t.getAttribute('busy') != 'true';
+				}
+				if (!isBusy) {
 					this.stopButton.setAttribute('disabled', true);
 					this.reloadButton.removeAttribute('disabled');
 
-					this.setIcon(t.getAttribute('image'));
+					if (t) {
+						this.setIcon(t.getAttribute('image'));
+					}
+					else if (!this.mIconURL) {
+						this.useDefaultIcon();
+					}
 
 					this.mIsBusy = false;
 					this.removeAttribute('busy');
 
 					try {
-						if (this.browser.canGoBack)
+						if (b.canGoBack)
 							this.backButton.removeAttribute('disabled');
 						else
 							this.backButton.setAttribute('disabled', true);
 
-						if (this.browser.canGoForward)
+						if (b.canGoForward)
 							this.forwardButton.removeAttribute('disabled');
 						else
 							this.forwardButton.setAttribute('disabled', true);
@@ -576,7 +604,7 @@
 						this.forwardButton.setAttribute('disabled', true);
 					}
 
-					this.title.setAttribute('value', this.browser.contentDocument.title || this.title.getAttribute('blank-label'));
+					this.title.setAttribute('value', b.contentDocument.title || this.title.getAttribute('blank-label'));
 					this.updateIcon();
 				}
 				else {
@@ -878,7 +906,7 @@
 			<body><![CDATA[
 				var tab = this.__splitbrowser__addTab.apply(this, arguments);
 				if (this.parentSubBrowser)
-					this.parentSubBrowser.addTabProgressListener(tab);
+					this.parentSubBrowser.addProgressListener(tab);
 				return tab;
 			]]></body>
 		</method>
@@ -886,7 +914,7 @@
 		<method name="newRemoveTab">
 			<body><![CDATA[
 				if (this.parentSubBrowser)
-					this.parentSubBrowser.removeTabProgressListener(arguments[0]);
+					this.parentSubBrowser.removeProgressListener(arguments[0]);
 
 				var result = this.__splitbrowser__removeTab.apply(this, arguments);
 
@@ -920,13 +948,13 @@
 			]]></body>
 		</method>
 
-		<method name="addTabProgressListener">
+		<method name="addProgressListener">
 			<parameter name="aTab"/>
 			<body><![CDATA[
-				var browser = this.browser.getBrowserForTab(aTab);
+				var browser = aTab ? this.browser.getBrowserForTab(aTab) : this.browser ;
 
 				var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
-				var listener = this.createTabProgressListener(aTab, browser);
+				var listener = this.createProgressListener(aTab, browser);
 				filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
 				browser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
 
@@ -935,15 +963,17 @@
 			]]></body>
 		</method>
 
-		<method name="removeTabProgressListener">
+		<method name="removeProgressListener">
 			<parameter name="aTab"/>
 			<body><![CDATA[
-				var browser = this.browser.getBrowserForTab(aTab);
+				var browser = aTab ? this.browser.getBrowserForTab(aTab) : this.browser ;
 				var count = 0;
 
-				for (count = 0, maxc = this.mTabListeners.length; count < maxc; count++)
-				{
-					if (this.mTabListeners[count].mTab == aTab) break;
+				if (aTab) {
+					for (count = 0, maxc = this.mTabListeners.length; count < maxc; count++)
+					{
+						if (this.mTabListeners[count].mTab == aTab) break;
+					}
 				}
 
 				browser.webProgress.removeProgressListener(this.mTabFilters[count]);
@@ -953,7 +983,7 @@
 			]]></body>
 		</method>
 
-		<method name="createTabProgressListener">
+		<method name="createProgressListener">
 			<parameter name="aTab"/>
 			<parameter name="aBrowser"/>
 			<body><![CDATA[
@@ -968,7 +998,7 @@
 			{
 				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
 
-				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
+				if (this.mTab && this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				if (this.mTotalProgress &&
 					this.mTotalProgress < 1) {
@@ -988,7 +1018,7 @@
 
 			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
 			{
-				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
+				if (this.mTab && this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
 				if (
@@ -1007,7 +1037,7 @@
 
 			onLocationChange : function(aWebProgress, aRequest, aLocation)
 			{
-				if (this.mTab != this.mOwner.browser.mCurrentTab) return;
+				if (this.mTab && this.mTab != this.mOwner.browser.mCurrentTab) return;
 
 				this.mOwner.urlbar.value = aLocation.spec;
 				this.mOwner.setAttribute('src', aLocation.spec);
@@ -1044,13 +1074,15 @@
 		<constructor><![CDATA[
 			var b = this.browser;
 
-			b.parentSubBrowser = this;
-			b.__splitbrowser__addTab = b.addTab;
-			b.addTab = this.newAddTab;
-			b.__splitbrowser__removeTab = b.removeTab;
-			b.removeTab = this.newRemoveTab;
-			b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
-			b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+			if (b.localName == 'tabbrowser') {
+				b.parentSubBrowser = this;
+				b.__splitbrowser__addTab = b.addTab;
+				b.addTab = this.newAddTab;
+				b.__splitbrowser__removeTab = b.removeTab;
+				b.removeTab = this.newRemoveTab;
+				b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
+				b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+			}
 
 			window.setTimeout(function(aThis) { aThis.mDelayedStartup(); }, 0, this);
 		]]></constructor>
@@ -1059,28 +1091,33 @@
 			<parameter name="aThis"/>
 			<body><![CDATA[
 			var b = this.browser;
-			this.addTabProgressListener(b.mCurrentTab);
+			if (b.localName == 'tabbrowser') {
+				this.addProgressListener(b.mCurrentTab);
 
-			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
-			if (autoHide)
-				b.setStripVisibilityTo(false);
+				var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
+				if (autoHide)
+					b.setStripVisibilityTo(false);
 
-			b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
+				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
-			b = b.mCurrentBrowser;
-			b.setAttribute('type', 'content');
-
-
-			gBrowser.mCurrentBrowser.removeAttribute('type');
-			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+				b = b.mCurrentBrowser;
+				b.setAttribute('type', 'content');
 
 
-			b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
+				gBrowser.mCurrentBrowser.removeAttribute('type');
+				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
 
-			var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
-			os.addObserver(b, 'browser:purge-session-history', false);
-			b.removeAttribute('disablehistory');
-			b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
+
+				b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
+
+				var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
+				os.addObserver(b, 'browser:purge-session-history', false);
+				b.removeAttribute('disablehistory');
+				b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
+			}
+			else {
+				this.addProgressListener(null);
+			}
 
 
 			if (this.getAttribute('src'))
@@ -1090,13 +1127,19 @@
 
 
 		<destructor><![CDATA[
-			for (var i = 0, maxi = this.browser.mTabContainer.childNodes.length; i < maxi; i++)
-			{
-				this.removeTabProgressListener(this.browser.mTabContainer.childNodes[i]);
+			var b = this.browser;
+			if (b.localName == 'tabbrowser') {
+				for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
+				{
+					this.removeProgressListener(b.mTabContainer.childNodes[i]);
+				}
+				b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 			}
-			this.browser.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
+			else {
+				this.removeProgressListener();
+			}
 
-			this.browser.parentSubBrowser = null;
+			b.parentSubBrowser = null;
 		]]></destructor>
 
 
@@ -1117,6 +1160,7 @@
 
 		<field name="focused">false</field>
 
+<!--
 		<method name="onFocus">
 			<body><![CDATA[
 				window.setTimeout(function(aThis) {
@@ -1138,6 +1182,7 @@
 				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
 			]]></body>
 		</method>
+-->
 
 	</implementation>
 

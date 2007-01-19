@@ -18,6 +18,11 @@ subbrowser {
 	-moz-binding: url("./splitbrowser.xml#subbrowser") !important;
 }
 
+subbrowser:not([browsertype="simple"]) > browser,
+subbrowser[browsertype="simple"] > tabbrowser {
+	display: none;
+}
+
 .subbrowser-toolbar-content {
 	overflow: hidden;
 }

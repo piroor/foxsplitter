@@ -191,6 +191,13 @@ var SplitBrowser = {
 		if (aURI)
 			browser.setAttribute('src', aURI);
 
+		if ('TabbrowserService' in window) {
+			browser.setAttribute('browsertype', 'simple');
+		}
+		else {
+			browser.setAttribute('browsertype', 'tabbrowser');
+		}
+
 		this.browsers.push(browser);
 
 		return browser;
@@ -486,11 +493,16 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeBrowserSessionHistories : function(aTabBrowser) {
+	serializeBrowserSessionHistories : function(aBrowser) {
 		var histories = [];
-		for (var i = 0, maxi = aTabBrowser.mTabContainer.childNodes.length; i < maxi; i++)
-		{
-			histories.push(this.serializeSessionHistory(aTabBrowser.getBrowserForTab(aTabBrowser.mTabContainer.childNodes[i])))
+		if (aBrowser.localName == 'tabbrowser') {
+			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
+			{
+				histories.push(this.serializeSessionHistory(aBrowser.getBrowserForTab(aTabBrowser.mTabContainer.childNodes[i])))
+			}
+		}
+		else {
+			histories.push(this.serializeSessionHistory(aBrowser));
 		}
 		return histories
 	},
@@ -603,7 +615,7 @@ var SplitBrowser = {
 				aContainer.hContainer.height = aState.content.height;
 
 				if (aState.content.histories && aState.content.histories.length)
-					window.setTimeout(this.restoreHistory, 0, b.browser, aState.content);
+					window.setTimeout(this.deserializeHistory, 0, b.browser, aState.content);
 
 				aContainer.lastWidth  = aState.content.lastWidth;
 				aContainer.lastHeight = aState.content.lastHeight;
@@ -634,16 +646,24 @@ var SplitBrowser = {
 			aContainer.vContainer.removeChild(aContainer.hContainer);
 		}
 	},
-	restoreHistory : function(aTabBrowser, aBrowserState)
+ 
+	deserializeHistory : function(aBrowser, aBrowserState)
 	{
-		var browser = aTabBrowser.mCurrentBrowser,
-			tab     = aTabBrowser.mCurrentTab;
+		var browser, tab;
+		if (aBrowser.localName == 'tabbrowser') {
+			browser = aBrowser.mCurrentBrowser,
+			tab     = aBrowser.mCurrentTab;
+		}
+		else {
+			browser = aBrowser;
+			tab     = null;
+		}
 
 		try {
 			browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
 		}
 		catch(e) {
-			window.setTimeout(arguments.callee, 50, aTabBrowser, aBrowserState);
+			window.setTimeout(arguments.callee, 50, aBrowser, aBrowserState);
 			dump(e+'\n');
 			return;
 		}
@@ -651,8 +671,8 @@ var SplitBrowser = {
 		for (var i = 0, maxi = aBrowserState.histories.length; i < maxi; i++)
 		{
 			if (i) {
-				tab     = aTabBrowser.addTab('about:blank');
-				browser = aTabBrowser.getBrowserForTab(tab);
+				tab     = aBrowser.addTab('about:blank');
+				browser = aBrowser.getBrowserForTab(tab);
 			}
 			var SHInternal = browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
 			for (var j in aBrowserState.histories[i].entries)
@@ -1052,13 +1072,16 @@ catch(e) {
 
 		var docURL = d.location.aURI;
 		if (
+			b.localName == 'tabbrowser' &&
 			(
-				aEvent.button == 0 &&
-				aEvent.ctrlKey
-			) ||
-			(
-				aEvent.button == 1 &&
-				nsPreferences.getBoolPref('browser.tabs.opentabfor.middleclick')
+				(
+					aEvent.button == 0 &&
+					aEvent.ctrlKey
+				) ||
+				(
+					aEvent.button == 1 &&
+					nsPreferences.getBoolPref('browser.tabs.opentabfor.middleclick')
+				)
 			)
 			) {
 			var loadInBackground = nsPreferences.getBoolPref('browser.tabs.loadInBackground');
