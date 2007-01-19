@@ -123,7 +123,7 @@
 			<getter><![CDATA[
 				var box, retVal;
 				if (this.localName == 'subbrowser')
-					box = this.browser.boxObject;
+					box = this.browser.mCurrentBrowser.boxObject;
 				else
 					box = gBrowser.mCurrentBrowser.boxObject;
 
@@ -737,14 +737,90 @@
 		})
 		]]></field>
 
-		<field name="progressListener"><![CDATA[
-		({
-			mOwner : this,
-            mTotalProgress: 0,
+
+
+
+		<method name="newAddTab">
+			<body><![CDATA[
+				var tab = this.__splitbrowser__addTab.apply(this, arguments);
+				if (this.parentSubBrowser)
+					this.parentSubBrowser.addTabProgressListener(tab);
+				return tab;
+			]]></body>
+		</method>
+
+		<method name="newRemoveTab">
+			<body><![CDATA[
+				if (this.parentSubBrowser)
+					this.parentSubBrowser.removeTabProgressListener(arguments[0]);
+				var result = this.__splitbrowser__removeTab.apply(this, arguments);
+				return result;
+			]]></body>
+		</method>
+
+		<method name="newUpdateCurrentBrowser">
+			<body><![CDATA[
+				var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
+
+				this.mCurrentBrowser.removeAttribute('type');
+				this.mCurrentBrowser.setAttribute('type', 'content');
+
+				gBrowser.mCurrentBrowser.removeAttribute('type');
+				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+
+				return result;
+			]]></body>
+		</method>
+
+		<method name="addTabProgressListener">
+			<parameter name="aTab"/>
+			<body><![CDATA[
+				var browser = this.browser.getBrowserForTab(aTab);
+
+				var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
+				var listener = this.createTabProgressListener(aTab, browser);
+				filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+				browser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+
+				this.mTabListeners.push(listener);
+				this.mTabFilters.push(filter);
+			]]></body>
+		</method>
+
+		<method name="removeTabProgressListener">
+			<parameter name="aTab"/>
+			<body><![CDATA[
+				var browser = this.browser.getBrowserForTab(aTab);
+				var count = 0;
+
+				for (count = 0, maxc = this.mTabListeners.length; count < maxc; count++)
+				{
+					if (this.mTabListeners[count].mTab == aTab) break;
+				}
+
+				browser.webProgress.removeProgressListener(this.mTabFilters[count]);
+				this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
+				this.mTabFilters.splice(count, 1);
+				this.mTabListeners.splice(count, 1);
+			]]></body>
+		</method>
+
+		<method name="createTabProgressListener">
+			<parameter name="aTab"/>
+			<parameter name="aBrowser"/>
+			<body><![CDATA[
+			return {
+
+			mOwner         : this,
+            mTab           : aTab,
+            mBrowser       : aBrowser,
+            mTotalProgress : 0,
 
 			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
 			{
 				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
+
+				if (!this.mTab.selected) return;
 
 				if (this.mTotalProgress &&
 					this.mTotalProgress < 1) {
@@ -764,6 +840,8 @@
 
 			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
 			{
+				if (!this.mTab.selected) return;
+
 				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
 				if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
 					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
@@ -811,10 +889,12 @@
 
 			onLocationChange : function(aWebProgress, aRequest, aLocation)
 			{
+				if (!this.mTab.selected) return;
+
 				this.mOwner.urlbar.value = aLocation.spec;
 				this.mOwner.setAttribute('src', aLocation.spec);
 
-				if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow &&
+				if (aWebProgress.DOMWindow == this.mBrowser.contentWindow &&
 					aWebProgress.isLoadingDocument)
 					this.mOwner.setIcon(null);
 			},
@@ -835,22 +915,47 @@
 					return this;
 				throw Components.results.NS_NOINTERFACE;
 			}
-		})
-		]]></field>
+
+			};
+			]]></body>
+		</method>
+
+		<field name="mTabListeners">[]</field>
+		<field name="mTabFilters">[]</field>
 
 		<constructor><![CDATA[
-			this.progressFilter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
-			this.progressFilter.addProgressListener(this.progressListener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-			this.browser.webProgress.addProgressListener(this.progressFilter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
+			this.browser.parentSubBrowser = this;
+			this.browser.__splitbrowser__addTab = this.browser.addTab;
+			this.browser.addTab = this.newAddTab;
+			this.browser.__splitbrowser__removeTab = this.browser.removeTab;
+			this.browser.removeTab = this.newRemoveTab;
+			this.browser.__splitbrowser__updateCurrentBrowser = this.browser.updateCurrentBrowser;
+			this.browser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+
+			window.setTimeout(function(aThis) { aThis.mDelayedStartup(); }, 0, this);
+		]]></constructor>
+
+		<method name="mDelayedStartup">
+			<parameter name="aThis"/>
+			<body><![CDATA[
+			this.addTabProgressListener(this.browser.mCurrentTab);
+			this.browser.mCurrentBrowser.setAttribute('type', 'content');
+
+			gBrowser.mCurrentBrowser.removeAttribute('type');
+			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
 
 			if (this.getAttribute('src'))
 				this.load(this.getAttribute('src'));
-		]]></constructor>
+			]]></body>
+		</method>
 
 		<destructor><![CDATA[
-			this.browser.webProgress.removeProgressListener(this.progressFilter);
-			this.progressFilter.removeProgressListener(this.progressListener);
-			this.progressFilter = null;
+			for (var i = 0, maxi = this.browser.mTabContainer.childNodes.length; i < maxi; i++)
+			{
+				this.removeTabProgressListener(this.browser.mTabContainer.childNodes[i]);
+			}
+
+			this.browser.parentSubBrowser = null;
 		]]></destructor>
 	</implementation>
 

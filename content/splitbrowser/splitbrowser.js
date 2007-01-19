@@ -209,6 +209,7 @@ var SplitBrowser = {
 		var browser   = aBrowser;
 		var container = browser.parentContainer || appcontent;
 
+		gBrowser.setAttribute('type', 'content');
 		gBrowser.setAttribute('type', 'content-primary');
 
 		browser.parentNode.removeChild(browser);
@@ -400,12 +401,16 @@ var SplitBrowser = {
 		}
 		if (originalContent.localName == 'subbrowser') {
 			state.content = {
-				type    : 'subbrowser',
-				uri     : originalContent.src,
-				width   : originalContent.boxObject.width,
-				height  : originalContent.boxObject.height,
-				history : this.serializeSessionHistory(originalContent.browser)
+				type      : 'subbrowser',
+				uri       : originalContent.src,
+				width     : originalContent.boxObject.width,
+				height    : originalContent.boxObject.height,
+				histories : []
 			};
+			for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
+			{
+				state.content.histories.push(this.serializeSessionHistory(originalContent.browser.getBrowserForTab(originalContent.browser.mTabContainer.childNodes[i])))
+			}
 		}
 		else if (!state.content) {
 			state.content = this.getContainerState(originalContent);
@@ -540,29 +545,19 @@ var SplitBrowser = {
 
 			default:
 			case 'subbrowser':
-				var b = this.createSubBrowser(aState.content.uri);
+				if (aState.content.history) {
+					aState.content.histories = [aState.content.history];
+				}
+
+				var b = this.createSubBrowser(
+						aState.content.histories && aState.content.histories.length ? null : aState.content.uri
+					);
 				aContainer.hContainer.appendChild(b);
 				aContainer.hContainer.width  = aState.content.width;
 				aContainer.hContainer.height = aState.content.height;
 
-				if (aState.content.history) {
-					var SHInternal = b.browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
-					for (var i in aState.content.history.entries)
-						SHInternal.addEntry(
-							this.deserializeHistoryEntry(aState.content.history.entries[i]),
-							true
-						);
-					try {
-						b.browser.gotoIndex(aState.content.history.index);
-					}
-					catch(e) { // when the entry is moving in frames...
-						try {
-							b.browser.gotoIndex(b.sessionHistory.count-1);
-						}
-						catch(ex) { // when there is no history, do nothing
-						}
-					}
-				}
+				if (aState.content.histories && aState.content.histories.length)
+					window.setTimeout(this.restoreHistory, 0, b.browser, aState);
 
 				break;
 		}
@@ -586,6 +581,34 @@ var SplitBrowser = {
 
 		if (!aContainer.hContainer.hasChildNodes()) {
 			aContainer.vContainer.removeChild(aContainer.hContainer);
+		}
+	},
+	restoreHistory : function(aTabBrowser, aState)
+	{
+		var browser = aTabBrowser.mCurrentBrowser,
+			tab     = aTabBrowser.mCurrentTab;
+		for (var i = 0, maxi = aState.content.histories.length; i < maxi; i++)
+		{
+			if (i) {
+				tab     = aTabBrowser.addTab('about:blank');
+				browser = aTabBrowser.getBrowserForTab(tab);
+			}
+			var SHInternal = browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
+			for (var j in aState.content.histories[i].entries)
+				SHInternal.addEntry(
+					SplitBrowser.deserializeHistoryEntry(aState.content.histories[i].entries[j]),
+					true
+				);
+			try {
+				browser.gotoIndex(aState.content.histories[i].index);
+			}
+			catch(e) { // when the entry is moving in frames...
+				try {
+					browser.gotoIndex(browser.sessionHistory.count-1);
+				}
+				catch(ex) { // when there is no history, do nothing
+				}
+			}
 		}
 	},
  
@@ -948,7 +971,8 @@ catch(e) {
 		}
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
-			this.load();
+			window.setTimeout('SplitBrowser.load();', 0);
+//			this.load();
 	},
 	
 	insertSeparateTabItem : function(aBrowser) 
