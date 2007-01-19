@@ -300,7 +300,12 @@
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
 			context="_child">
 			<xul:menupopup anonid="contextmenu"
-				onpopupshowing="this.parentNode.parentNode.updateContextMenu(event);">
+				onpopupshowing="
+					this.parentNode.parentNode.toggleToolbar(false, true, 0);
+					this.parentNode.parentNode.updateContextMenu(event);
+				"
+				oncommand="this.parentNode.parentNode.toggleToolbar(false, true, 0);"
+				ondraggesture="event.stopPropagation();">
 				<xul:menuitem class="subbrowser-context-close"
 					label="&splitbrowser.subbrowser.menu.close;"
 					oncommand="this.parentNode.parentNode.parentNode.close();"/>
@@ -540,6 +545,52 @@
 				if (c) c.toggleCollapsed();
 			]]></body>
 		</method>
+
+
+
+		<method name="updateToolbarForCurrentTab">
+			<body><![CDATA[
+				var t = this.browser.selectedTab;
+				if (t.getAttribute('busy') != 'true') {
+					this.stopButton.setAttribute('disabled', true);
+					this.reloadButton.removeAttribute('disabled');
+
+					this.setIcon(t.getAttribute('image'));
+
+					this.mIsBusy = false;
+					this.removeAttribute('busy');
+
+					try {
+						if (this.browser.canGoBack)
+							this.backButton.removeAttribute('disabled');
+						else
+							this.backButton.setAttribute('disabled', true);
+
+						if (this.browser.canGoForward)
+							this.forwardButton.removeAttribute('disabled');
+						else
+							this.forwardButton.setAttribute('disabled', true);
+					}
+					catch(e) {
+						this.backButton.setAttribute('disabled', true);
+						this.forwardButton.setAttribute('disabled', true);
+					}
+
+					this.title.setAttribute('value', this.browser.contentDocument.title || this.title.getAttribute('blank-label'));
+					this.updateIcon();
+				}
+				else {
+					this.stopButton.removeAttribute('disabled');
+					this.reloadButton.setAttribute('disabled', true);
+
+					this.mIsBusy = true;
+					this.setAttribute('busy', true);
+					this.title.setAttribute('value', this.title.getAttribute('loading-label'));
+					this.updateIcon();
+				}
+			]]></body>
+		</method>
+
 
 
 		<method name="toggleToolbar">
@@ -810,11 +861,15 @@
 
 		<method name="openNewTab">
 			<body><![CDATA[
-				this.browser.selectedTab = this.browser.addTab('about:blank');
+				var b = this.browser;
+				var t = b.addTab('about:blank');
 				this.toggleToolbar(true, true, 0);
 				window.setTimeout(function(aUrlbar) {
-					aUrlbar.value = '';
-					aUrlbar.focus();
+					b.selectedTab = t;
+					window.setTimeout(function(aUrlbar) {
+						aUrlbar.value = '';
+						aUrlbar.focus();
+					}, 0, aUrlbar);
 				}, 0, this.urlbar);
 			]]></body>
 		</method>
@@ -941,6 +996,14 @@
 					this.mOwner.stopButton.setAttribute('disabled', true);
 					this.mOwner.reloadButton.removeAttribute('disabled');
 
+					if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow) {
+						if (!this.mOwner.mIconURL)
+							this.mOwner.useDefaultIcon();
+					}
+
+					this.mOwner.mIsBusy = false;
+					this.mOwner.removeAttribute('busy');
+
 					try {
 						if (this.mOwner.browser.canGoBack)
 							this.mOwner.backButton.removeAttribute('disabled');
@@ -957,13 +1020,6 @@
 						this.mOwner.forwardButton.setAttribute('disabled', true);
 					}
 
-					if (aWebProgress.DOMWindow == this.mOwner.browser.contentWindow) {
-						if (!this.mOwner.mIconURL)
-							this.mOwner.useDefaultIcon();
-					}
-
-					this.mOwner.mIsBusy = false;
-					this.mOwner.removeAttribute('busy');
 					this.mOwner.title.setAttribute('value', this.mOwner.browser.contentDocument.title || this.mOwner.title.getAttribute('blank-label'));
 					this.mOwner.updateIcon();
 				}
@@ -1040,6 +1096,7 @@
 			if (autoHide)
 				b.setStripVisibilityTo(false);
 
+			b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
 			b = b.mCurrentBrowser;
 			b.setAttribute('type', 'content');
@@ -1062,25 +1119,70 @@
 			]]></body>
 		</method>
 
+
 		<destructor><![CDATA[
 			for (var i = 0, maxi = this.browser.mTabContainer.childNodes.length; i < maxi; i++)
 			{
 				this.removeTabProgressListener(this.browser.mTabContainer.childNodes[i]);
 			}
+			this.browser.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 
 			this.browser.parentSubBrowser = null;
 		]]></destructor>
+
+
+		<field name="onTabSelectHandler"><![CDATA[
+			({
+				mOwner      : this,
+				handleEvent : function(aEvent)
+				{
+					switch (aEvent.type)
+					{
+						case 'select':
+							this.mOwner.updateToolbarForCurrentTab();
+					}
+				}
+			})
+		]]></field>
+
+
+		<field name="focused">false</field>
+
+		<method name="onFocus">
+			<body><![CDATA[
+				window.setTimeout(function(aThis) {
+					aThis.focused = true;
+					gBrowser.mCurrentBrowser.removeAttribute('type');
+					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
+					aThis.browser.mCurrentBrowser.removeAttribute('type');
+					aThis.browser.mCurrentBrowser.setAttribute('type', 'content-primary');
+				}, 0, this);
+			]]></body>
+		</method>
+
+		<method name="onBlur">
+			<body><![CDATA[
+				this.focused = false;
+				this.browser.mCurrentBrowser.removeAttribute('type');
+				this.browser.mCurrentBrowser.setAttribute('type', 'content');
+				gBrowser.mCurrentBrowser.removeAttribute('type');
+				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+			]]></body>
+		</method>
+
 	</implementation>
 
 	<handlers>
 		<handler event="DOMLinkAdded" phase="capturing"
 			action="this.onLinkAdded(event);"/>
 
+<!--
 		<handler event="focus" phase="capturing"
-			action="this.focused = true;"/>
+			action="this.onFocus();"/>
 
 		<handler event="blur" phase="capturing"
-			action="this.focused = false;"/>
+			action="this.onBlur();"/>
+-->
 	</handlers>
 </binding>
 
