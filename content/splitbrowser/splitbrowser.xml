@@ -573,8 +573,8 @@
 				var t      = null;
 				var isBusy = b.mIsBusy;
 				if (b.localName == 'tabbrowser') {
-					t = this.browser.selectedTab;
-					isBusy = t.getAttribute('busy') != 'true';
+					t = b.selectedTab;
+					isBusy = t.getAttribute('busy') == 'true';
 				}
 				if (!isBusy) {
 					this.stopButton.setAttribute('disabled', true);
