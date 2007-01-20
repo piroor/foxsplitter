@@ -16,6 +16,15 @@ var SplitBrowser = {
 		return (navigator.platform.indexOf('Linux') > -1);
 	},
  
+	get tabbedBrowsingEnabled() 
+	{
+		// tabbed browsing mode is not compatible with TBE or TMP
+		return !(
+			'TM_init' in window ||
+			'TabbrowserService' in window
+		);
+	},
+ 
 	get mainBrowserBox() 
 	{
 		return document.getElementById('appcontent').contentWrapper;
@@ -55,30 +64,6 @@ var SplitBrowser = {
 	},
 	mIOService : Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
  
-	/* splitter context menu */ 
-	getSplitterTarget : function(aSplitter)
-	{
-		return (aSplitter.getAttribute('collapse') == 'before') ? aSplitter.previousSibling : aSplitter.nextSibling ;
-	},
-
-	updateSplitterContextMenu : function()
-	{
-		var c = this.getSplitterTarget(document.popupNode);
-		alert(c);
-		if (!c) return;
-
-		var popup = document.getElementById('subbrowser-splitter-contextmenu');
-		var collapsed = c.isCollapsed();
-		popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
-		popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
-	},
-
-	toggleSplitterCollapsed : function()
-	{
-		var c = this.getSplitterTarget(document.popupNode);
-		if (c) c.toggleCollapsed();
-	},
- 
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
@@ -97,7 +82,7 @@ var SplitBrowser = {
 		var browser   = this.createSubBrowser(aURI);
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
 	},
- 
+	
 	addSubBrowserFromTab : function(aTab, aPosition) { 
 		var b = gBrowser;
 /*
@@ -114,7 +99,7 @@ var SplitBrowser = {
 		if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
 			b.removeTab(aTab);
 	},
- 
+  
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
 	{
 		if (aPosition & this.POSITION_HORIZONAL)
@@ -191,12 +176,7 @@ var SplitBrowser = {
 		if (aURI)
 			browser.setAttribute('src', aURI);
 
-		if ('TabbrowserService' in window) {
-			browser.setAttribute('browsertype', 'simple');
-		}
-		else {
-			browser.setAttribute('browsertype', 'tabbrowser');
-		}
+		browser.setAttribute('browsertype', this.tabbedBrowsingEnabled ? 'tabbrowser' : 'simple' );
 
 		this.browsers.push(browser);
 
@@ -493,7 +473,7 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeBrowserSessionHistories : function(aBrowser) {
+	serializeBrowserSessionHistories : function(aBrowser) { 
 		var histories = [];
 		if (aBrowser.localName == 'tabbrowser') {
 			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
@@ -506,8 +486,8 @@ var SplitBrowser = {
 		}
 		return histories
 	},
- 
-	serializeSessionHistory : function(aBrowser)
+	
+	serializeSessionHistory : function(aBrowser) 
 	{
 		var SH = null;
 		try {
@@ -534,7 +514,7 @@ var SplitBrowser = {
 			index   : (SH ? SH.index : -1 )
 		};
 	},
- 
+	
 	serializeHistoryEntry : function(aEntry) 
 	{
 		if (!aEntry) return null;
@@ -577,7 +557,7 @@ var SplitBrowser = {
 		}
 		return data;
 	},
-  
+    
 	load : function() 
 	{
 		var state = nsPreferences.copyUnicharPref('splitbrowser.state');
@@ -647,7 +627,7 @@ var SplitBrowser = {
 		}
 	},
  
-	deserializeHistory : function(aBrowser, aBrowserState)
+	deserializeHistory : function(aBrowser, aBrowserState) 
 	{
 		var browser, tab;
 		if (aBrowser.localName == 'tabbrowser') {
@@ -692,7 +672,7 @@ var SplitBrowser = {
 			}
 		}
 	},
- 
+	
 	deserializeHistoryEntry : function(aData) 
 	{
 		var entry = Components.classes['@mozilla.org/browser/session-history-entry;1'].createInstance(Components.interfaces.nsISHEntry);
@@ -729,7 +709,7 @@ var SplitBrowser = {
 
 		return entry;
 	},
-   
+    
 /* popup-buttons */ 
 	addButtonIsShown : false,
 	
@@ -927,6 +907,94 @@ var SplitBrowser = {
 		}
 	},
  
+	fireSubBrowserAddRequestEventFromButton : function(aURI) 
+	{
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
+
+		var button = this.addButton;
+		var browser = button.targetSubBrowser;
+		newEvent.targetSubBrowser = browser;
+		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
+		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
+		newEvent.targetURI = aURI;
+		button.dispatchEvent(newEvent);
+	},
+  
+	/* splitter context menu */ 
+	
+	getSplitterTarget : function(aSplitter) 
+	{
+		return (aSplitter.getAttribute('collapse') == 'before') ? aSplitter.previousSibling : aSplitter.nextSibling ;
+	},
+ 
+	updateSplitterContextMenu : function() 
+	{
+		var c = this.getSplitterTarget(document.popupNode);
+		alert(c);
+		if (!c) return;
+
+		var popup = document.getElementById('subbrowser-splitter-contextmenu');
+		var collapsed = c.isCollapsed();
+		popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
+		popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
+	},
+ 
+	toggleSplitterCollapsed : function() 
+	{
+		var c = this.getSplitterTarget(document.popupNode);
+		if (c) c.toggleCollapsed();
+	},
+  
+	init : function() 
+	{
+		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
+		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
+		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
+		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
+
+		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
+
+		window.addEventListener('resize', this, false);
+		window.addEventListener('unload', this, false);
+
+		window.removeEventListener('load', this, false);
+
+		this.insertSeparateTabItem(gBrowser);
+
+		if (this.isLinux && 'contentAreaDNDObserver' in window) {
+			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
+			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
+		}
+
+		if (this.tabbedBrowsingEnabled) {
+			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
+			window.handleLinkClick = this.contentAreaHandleLinkClick;
+		}
+
+		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
+			window.setTimeout('SplitBrowser.load();', 0);
+//			this.load();
+	},
+	
+	insertSeparateTabItem : function(aBrowser) 
+	{
+		var menu = document.getElementById('splitbrowser-tab-context-item-link-template').cloneNode(true);
+
+		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
+		var separator = tabContext.firstChild;
+		while (separator.localName != 'menuseparator' && separator)
+		{
+			separator = separator.nextSibling;
+		}
+		if (separator)
+			tabContext.insertBefore(menu, separator);
+		else
+			tabContext.appendChild(menu);
+
+		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 1000)));
+	},
+ 
 	contentAreaOnDrop: function (aEvent, aXferData, aDragSession) 
 	{
 		// "window.retrieveURLFromData()" is old implementation
@@ -974,92 +1042,7 @@ var SplitBrowser = {
 		}
 	},
  
-	fireSubBrowserAddRequestEventFromButton : function(aURI) 
-	{
-		var newEvent = document.createEvent('Events');
-		newEvent.initEvent('SubBrowserAddRequest', false, true);
-
-		var button = this.addButton;
-		var browser = button.targetSubBrowser;
-		newEvent.targetSubBrowser = browser;
-		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
-		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
-		newEvent.targetURI = aURI;
-		button.dispatchEvent(newEvent);
-	},
-  
-/* animation */ 
-	
-	animationStart : function(aInfo) 
-	{
-		this.animationStop();
-		aInfo.startTime = (new Date()).getTime();
-		this.animationInfo = aInfo;
-		this.animationTimer = window.setInterval(this.animationCallback, 1);
-	},
- 
-	animationCallback : function() 
-	{
-		var info = SplitBrowser.animationInfo;
-		var now = (new Date()).getTime();
-
-try {
-		var progress = Math.max(1, now - info.startTime) / info.timeout;
-		info.target.style.border  = '1px solid red !important;';
-		if (info.orient == 'horizontal')
-			info.target.style.maxWidth  = parseInt((1 - progress) * info.maxW)+'px !important';
-		else
-			info.target.style.maxHeight = parseInt((1 - progress) * info.maxH)+'px !important';
-}
-catch(e) {
-	//dump(e+'\n');
-}
-		if (now - info.startTime > info.timeout)
-			SplitBrowser.animationStop();
-	},
- 
-	animationStop : function() 
-	{
-		if (this.animationTimer) {
-			window.clearInterval(this.animationTimer);
-			if (this.animationInfo)
-				this.animationInfo.callback(this.animationInfo);
-			this.animationTimer = null;
-			this.animationInfo = null;
-		}
-	},
-
-  
-	init : function() 
-	{
-		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
-		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
-
-		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
-
-		window.addEventListener('resize', this, false);
-		window.addEventListener('unload', this, false);
-
-		window.removeEventListener('load', this, false);
-
-		this.insertSeparateTabItem(gBrowser);
-
-		if (this.isLinux && 'contentAreaDNDObserver' in window) {
-			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
-			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
-		}
-
-		window.__splitbrowser__handleLinkClick = window.handleLinkClick;
-		window.handleLinkClick = this.contentAreaHandleLinkClick;
-
-		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
-			window.setTimeout('SplitBrowser.load();', 0);
-//			this.load();
-	},
- 
-	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode)
+	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode) 
 	{
 		var d = aEvent.target.ownerDocument;
 		var b = SplitBrowser.getBrowserFromFrame(d.defaultView.top);
@@ -1110,24 +1093,6 @@ catch(e) {
 		}
 
 		return this.__splitbrowser__handleLinkClick.apply(this, arguments);
-	},
-	
-	insertSeparateTabItem : function(aBrowser) 
-	{
-		var menu = document.getElementById('splitbrowser-tab-context-item-link-template').cloneNode(true);
-
-		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
-		var separator = tabContext.firstChild;
-		while (separator.localName != 'menuseparator' && separator)
-		{
-			separator = separator.nextSibling;
-		}
-		if (separator)
-			tabContext.insertBefore(menu, separator);
-		else
-			tabContext.appendChild(menu);
-
-		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 1000)));
 	},
   
 	destroy : function() 

@@ -581,7 +581,24 @@
 				if (aSwitchTab) {
 					t = b.mCurrentTab;
 					isBusy = (t.getAttribute('busy') == 'true');
+					this.mTotalProgress = t.mSubbrowserTabTotalProgress || 0 ;
 				}
+
+				if (this.mTotalProgress &&
+					this.mTotalProgress < 1) {
+					this.progressmeter.removeAttribute('collapsed');
+					this.progressmeter.setAttribute('mode', 'normal');
+					this.progressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
+
+					this.urlbarProgressmeter.removeAttribute('collapsed');
+					this.urlbarProgressmeter.setAttribute('mode', 'normal');
+					this.urlbarProgressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
+				}
+				else {
+					this.progressmeter.setAttribute('collapsed', true);
+					this.urlbarProgressmeter.setAttribute('collapsed', true);
+				}
+
 				if (!isBusy) {
 					this.stopButton.setAttribute('disabled', true);
 					this.reloadButton.removeAttribute('disabled');
@@ -1005,23 +1022,13 @@
 			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
 			{
 				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
+				if (this.mTab)
+					this.mTab.mSubbrowserTabTotalProgress = this.mTotalProgress;
 
 				if (this.mTab && this.mTab != this.mOwner.browser.mCurrentTab) return;
 
-				if (this.mTotalProgress &&
-					this.mTotalProgress < 1) {
-					this.mOwner.progressmeter.removeAttribute('collapsed');
-					this.mOwner.progressmeter.setAttribute('mode', 'normal');
-					this.mOwner.progressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
-
-					this.mOwner.urlbarProgressmeter.removeAttribute('collapsed');
-					this.mOwner.urlbarProgressmeter.setAttribute('mode', 'normal');
-					this.mOwner.urlbarProgressmeter.setAttribute('value', parseInt(this.mTotalProgress * 100));
-				}
-				else {
-					this.mOwner.progressmeter.setAttribute('collapsed', true);
-					this.mOwner.urlbarProgressmeter.setAttribute('collapsed', true);
-				}
+				this.mOwner.mTotalProgress = this.mTotalProgress;
+				this.mOwner.updateToolbarForCurrentTab();
 			},
 
 			onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus)
