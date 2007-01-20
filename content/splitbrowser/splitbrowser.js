@@ -16,6 +16,11 @@ var SplitBrowser = {
 		return (navigator.platform.indexOf('Linux') > -1);
 	},
  
+	get tabbedBrowsingEnabled() 
+	{
+		return !('TabbrowserService' in window);
+	},
+ 
 	get mainBrowserBox() 
 	{
 		return document.getElementById('appcontent').contentWrapper;
@@ -167,12 +172,7 @@ var SplitBrowser = {
 		if (aURI)
 			browser.setAttribute('src', aURI);
 
-		if ('TabbrowserService' in window) {
-			browser.setAttribute('browsertype', 'simple');
-		}
-		else {
-			browser.setAttribute('browsertype', 'tabbrowser');
-		}
+		browser.setAttribute('browsertype', this.tabbedBrowsingEnabled ? 'tabbrowser' : 'simple' );
 
 		this.browsers.push(browser);
 
@@ -963,8 +963,10 @@ var SplitBrowser = {
 			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
 		}
 
-		window.__splitbrowser__handleLinkClick = window.handleLinkClick;
-		window.handleLinkClick = this.contentAreaHandleLinkClick;
+		if (this.tabbedBrowsingEnabled) {
+			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
+			window.handleLinkClick = this.contentAreaHandleLinkClick;
+		}
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);
