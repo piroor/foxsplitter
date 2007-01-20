@@ -86,19 +86,17 @@ var SplitBrowser = {
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
 	},
 	
-	addSubBrowserFromTab : function(aTab, aPosition) { 
-		var b = gBrowser;
-/*
+	addSubBrowserFromTab : function(aTab, aPosition) 
+	{
 		var b = aTab;
 		while (b.localName != 'tabbrowser')
 		{
 			b = b.parentNode;
 		}
-*/
 		if (aTab.localName != 'tab')
-			aTab = b.selectedTab;
+			aTab = b.mCurrentTab;
 
-		this.addSubBrowser(aTab.linkedBrowser.currentURI.spec, b, aPosition);
+		this.addSubBrowser(aTab.linkedBrowser.currentURI.spec, b.parentSubBrowser || this.mainBrowserBox, aPosition);
 		if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
 			b.removeTab(aTab);
 	},
@@ -119,7 +117,8 @@ var SplitBrowser = {
 		switch (aPosition)
 		{
 			case this.POSITION_LEFT:
-				if (!aRefNode) aRefNode = hContainer.firstChild;
+				if (!aRefNode || aRefNode.parentNode != hContainer)
+					aRefNode = hContainer.firstChild;
 				if (aContent)
 					aRefNode.width = aRefNode.boxObject.width - aWidth;
 				hContainer.insertBefore(container, aRefNode);
@@ -128,7 +127,8 @@ var SplitBrowser = {
 
 			default:
 			case this.POSITION_RIGHT:
-				if (!aRefNode) aRefNode = hContainer.lastChild;
+				if (!aRefNode || aRefNode.parentNode != hContainer)
+					aRefNode = hContainer.lastChild;
 				if (aContent)
 					aRefNode.width = aRefNode.boxObject.width - aWidth;
 				aRefNode = aRefNode.nextSibling;
@@ -143,7 +143,8 @@ var SplitBrowser = {
 				break;
 
 			case this.POSITION_TOP:
-				if (!aRefNode) aRefNode = vContainer.firstChild;
+				if (!aRefNode || aRefNode.parentNode != vContainer)
+					aRefNode = vContainer.firstChild;
 				if (aContent)
 					aRefNode.height = aRefNode.boxObject.height - aHeight;
 				vContainer.insertBefore(container, aRefNode);
@@ -151,7 +152,8 @@ var SplitBrowser = {
 				break;
 
 			case this.POSITION_BOTTOM:
-				if (!aRefNode) aRefNode = vContainer.lastChild;
+				if (!aRefNode || aRefNode.parentNode != vContainer)
+					aRefNode = vContainer.lastChild;
 				if (aContent)
 					aRefNode.height = aRefNode.boxObject.height - aHeight;
 				aRefNode = aRefNode.nextSibling;
@@ -955,6 +957,7 @@ var SplitBrowser = {
 		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
 		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
 		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
+		document.documentElement.addEventListener('SubBrowserTabbrowserInserted', this, false);
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
@@ -1107,6 +1110,7 @@ var SplitBrowser = {
 		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, false);
 		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, false);
 		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, false);
+		document.documentElement.removeEventListener('SubBrowserTabbrowserInserted', this, false);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
@@ -1155,6 +1159,10 @@ var SplitBrowser = {
 					item.removeAttribute('hidden');
 				else
 					item.setAttribute('hidden', true);
+				break;
+
+			case 'SubBrowserTabbrowserInserted':
+				this.insertSeparateTabItem(aEvent.tabbrowser);
 				break;
 		}
 	}

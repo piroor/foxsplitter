@@ -101,19 +101,25 @@
 	<data id="splitbrowser-template" collapsed="true">
 		<menu id="splitbrowser-tab-context-item-link-template"
 			label="&splitbrowser.tab.add.label;">
-			<menupopup>
+			<menupopup
+				oncommand="
+					var b = this;
+					while (b.localName != 'tabbrowser')
+						b = b.parentNode;
+					SplitBrowser.addSubBrowserFromTab(b.mContextTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')]);
+				">
 				<menuitem label="&splitbrowser.tab.add.top.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-top"
-					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_TOP);"/>
+					splitbrowser-position="POSITION_TOP"/>
 				<menuitem label="&splitbrowser.tab.add.right.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-right"
-					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_RIGHT);"/>
+					splitbrowser-position="POSITION_RIGHT"/>
 				<menuitem label="&splitbrowser.tab.add.left.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-left"
-					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_LEFT);"/>
+					splitbrowser-position="POSITION_LEFT"/>
 				<menuitem label="&splitbrowser.tab.add.bottom.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-bottom"
-					oncommand="SplitBrowser.addSubBrowserFromTab(gBrowser.mContextTab, SplitBrowser.POSITION_BOTTOM);"/>
+					splitbrowser-position="POSITION_BOTTOM"/>
 			</menupopup>
 		</menu>
 	</data>

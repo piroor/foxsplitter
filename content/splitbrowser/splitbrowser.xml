@@ -1095,8 +1095,9 @@
 			if (b.previousSibling && b.previousSibling.localName == 'tabbrowser')
 				b.parentNode.removeChild(b.previousSibling);
 
+			b.parentSubBrowser = this;
+
 			if (b.localName == 'tabbrowser') {
-				b.parentSubBrowser = this;
 				b.__splitbrowser__addTab = b.addTab;
 				b.addTab = this.newAddTab;
 				b.__splitbrowser__removeTab = b.removeTab;
@@ -1113,6 +1114,11 @@
 				window.setTimeout(function(aThis) {
 					aThis.mDelayedTabbrowserStartup();
 				}, 0, this);
+
+				var newEvent = document.createEvent('Events');
+				newEvent.tabbrowser = b;
+				newEvent.initEvent('SubBrowserTabbrowserInserted', false, true);
+				this.dispatchEvent(newEvent);
 			}
 			else {
 				this.addProgressListener(null);
