@@ -573,13 +573,14 @@
 
 
 		<method name="updateToolbarForCurrentTab">
+			<parameter name="aSwitchTab"/>
 			<body><![CDATA[
 				var b      = this.browser;
 				var t      = null;
-				var isBusy = b.mIsBusy;
-				if (b.localName == 'tabbrowser') {
-					t = b.selectedTab;
-					isBusy = t.getAttribute('busy') == 'true';
+				var isBusy = this.mIsBusy;
+				if (aSwitchTab) {
+					t = b.mCurrentTab;
+					isBusy = (t.getAttribute('busy') == 'true');
 				}
 				if (!isBusy) {
 					this.stopButton.setAttribute('disabled', true);
@@ -1029,15 +1030,17 @@
 
 				const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
 				if (
-					(
-						aStateFlags & nsIWebProgressListener.STATE_STOP &&
-						aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
-					) ||
-					(
-						aStateFlags & nsIWebProgressListener.STATE_START &&
-						aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
-					)
+					aStateFlags & nsIWebProgressListener.STATE_START &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
 					) {
+					this.mOwner.mIsBusy = true;
+					this.mOwner.updateToolbarForCurrentTab();
+				}
+				else if (
+					aStateFlags & nsIWebProgressListener.STATE_STOP &&
+					aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK
+					) {
+					this.mOwner.mIsBusy = false;
 					this.mOwner.updateToolbarForCurrentTab();
 				}
 			},
@@ -1161,7 +1164,8 @@
 					switch (aEvent.type)
 					{
 						case 'select':
-							this.mOwner.updateToolbarForCurrentTab();
+							this.mOwner.updateToolbarForCurrentTab(true);
+							break;
 					}
 				}
 			})
