@@ -5,7 +5,7 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
 
-<!ENTITY splitbrowser.tabs.autoHide "Show tab bar in split browsers always">
+<!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">
@@ -16,29 +16,29 @@
 
 <!ENTITY splitbrowser.file.removeAll.label "Fermer toutes fenêtres partagées">
 
-<!ENTITY splitbrowser.add.label        "Partager la fenêtre au/à">
-<!ENTITY splitbrowser.add.top.label    "Dessus">
-<!ENTITY splitbrowser.add.bottom.label "Dessous">
-<!ENTITY splitbrowser.add.right.label  "Droite">
-<!ENTITY splitbrowser.add.left.label   "Gauche">
+<!ENTITY splitbrowser.add.label        "Partager la fenêtre">
+<!ENTITY splitbrowser.add.top.label    "Au dessus">
+<!ENTITY splitbrowser.add.bottom.label "Au dessous">
+<!ENTITY splitbrowser.add.right.label  "À droite">
+<!ENTITY splitbrowser.add.left.label   "À gauche">
 
-<!ENTITY splitbrowser.frame.add.label        "Partager la fenêtre à partir de ce cadre au/à">
-<!ENTITY splitbrowser.frame.add.top.label    "Dessus">
-<!ENTITY splitbrowser.frame.add.bottom.label "Dessous">
-<!ENTITY splitbrowser.frame.add.right.label  "Droite">
-<!ENTITY splitbrowser.frame.add.left.label   "Gauche">
+<!ENTITY splitbrowser.frame.add.label        "Partager la fenêtre à partir de ce cadre">
+<!ENTITY splitbrowser.frame.add.top.label    "Au dessus">
+<!ENTITY splitbrowser.frame.add.bottom.label "Au dessous">
+<!ENTITY splitbrowser.frame.add.right.label  "À droite">
+<!ENTITY splitbrowser.frame.add.left.label   "À gauche">
 
-<!ENTITY splitbrowser.link.add.label        "Charger dans une fenêtre partagée au/à">
-<!ENTITY splitbrowser.link.add.top.label    "Dessus">
-<!ENTITY splitbrowser.link.add.bottom.label "Dessous">
-<!ENTITY splitbrowser.link.add.right.label  "Droite">
-<!ENTITY splitbrowser.link.add.left.label   "Gauche">
+<!ENTITY splitbrowser.link.add.label        "Charger dans une fenêtre partagée">
+<!ENTITY splitbrowser.link.add.top.label    "Au dessus">
+<!ENTITY splitbrowser.link.add.bottom.label "Au dessous">
+<!ENTITY splitbrowser.link.add.right.label  "À droite">
+<!ENTITY splitbrowser.link.add.left.label   "À gauche">
 
-<!ENTITY splitbrowser.tab.add.label        "Partager l'onglet au/à">
-<!ENTITY splitbrowser.tab.add.top.label    "Dessus">
-<!ENTITY splitbrowser.tab.add.bottom.label "Dessous">
-<!ENTITY splitbrowser.tab.add.right.label  "Droite">
-<!ENTITY splitbrowser.tab.add.left.label   "Gauche">
+<!ENTITY splitbrowser.tab.add.label        "Partager l'onglet">
+<!ENTITY splitbrowser.tab.add.top.label    "Au dessus">
+<!ENTITY splitbrowser.tab.add.bottom.label "Au dessous">
+<!ENTITY splitbrowser.tab.add.right.label  "À droite">
+<!ENTITY splitbrowser.tab.add.left.label   "À gauche">
 
 
 
@@ -53,6 +53,6 @@
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nouvel onglet">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "Collapse">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "Expand">
-<!ENTITY splitbrowser.subbrowser.menu.close        "Close">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Réduire">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Déployer">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Fermer">
