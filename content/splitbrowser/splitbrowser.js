@@ -21,7 +21,10 @@ var SplitBrowser = {
 		// tabbed browsing mode is not compatible with TBE or TMP
 		return !(
 			'TM_init' in window ||
-			'TabbrowserService' in window
+			(
+				'TabbrowserService' in window &&
+				!('TBECompatibilityServiceSplitBrowser' in window)
+			)
 		);
 	},
  
