@@ -374,6 +374,15 @@ var SplitBrowser = {
 					lastWidth  : aContainer.lastWidth,
 					lastHeight : aContainer.lastHeight
 				};
+				if (originalContent.browser.localName == 'tabbrowser') {
+					for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
+					{
+						if (originalContent.browser.mTabContainer.childNodes[i] == originalContent.browser.selectedTab) {
+							state.content.selectedTab = i;
+							break;
+						}
+					}
+				}
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
 				state.content = {
@@ -440,6 +449,15 @@ var SplitBrowser = {
 				lastWidth  : aContainer.lastWidth,
 				lastHeight : aContainer.lastHeight
 			};
+			if (originalContent.browser.localName == 'tabbrowser') {
+				for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
+				{
+					if (originalContent.browser.mTabContainer.childNodes[i] == originalContent.browser.selectedTab) {
+						state.content.selectedTab = i;
+						break;
+					}
+				}
+			}
 		}
 		else if (!state.content) {
 			state.content = this.getContainerState(originalContent);
@@ -675,6 +693,9 @@ var SplitBrowser = {
 				catch(ex) { // when there is no history, do nothing
 				}
 			}
+			if (aBrowser.localName == 'tabbrowser' &&
+				aBrowserState.selectedTab == i)
+				aBrowser.selectedTab = tab;
 		}
 	},
 	
