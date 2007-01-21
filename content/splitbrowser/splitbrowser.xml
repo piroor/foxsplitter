@@ -943,9 +943,8 @@
 
 				var result = this.__splitbrowser__removeTab.apply(this, arguments);
 
-				if (this.mTabContainer.childNodes.length == 1 &&
-					nsPreferences.getBoolPref('splitbrowser.tabs.autoHide')) {
-					this.setStripVisibilityTo(false);
+				if (this.mTabContainer.childNodes.length == 1) {
+					this.setStripVisibilityTo(!nsPreferences.getBoolPref('splitbrowser.tabs.autoHide'));
 				}
 
 				return result;
@@ -1105,10 +1104,6 @@
 				b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
 				b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
 
-				var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
-				if (autoHide)
-					b.setStripVisibilityTo(false);
-
 				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
 				window.setTimeout(function(aThis) {
@@ -1132,6 +1127,9 @@
 			<body><![CDATA[
 			var b = this.browser;
 			this.addProgressListener(b.mCurrentTab);
+
+			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
+			b.setStripVisibilityTo(!autoHide);
 
 			b = b.mCurrentBrowser;
 			b.setAttribute('type', 'content');
