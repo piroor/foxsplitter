@@ -84,6 +84,8 @@ var SplitBrowser = {
 
 		var browser   = this.createSubBrowser(aURI);
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
+
+		return browser;
 	},
 	
 	addSubBrowserFromTab : function(aTab, aPosition) 
@@ -96,11 +98,25 @@ var SplitBrowser = {
 		if (aTab.localName != 'tab')
 			aTab = b.mCurrentTab;
 
-		this.addSubBrowser(aTab.linkedBrowser.currentURI.spec, b.parentSubBrowser || this.mainBrowserBox, aPosition);
+		var uri = this.tabbedBrowsingEnabled ? null : aTab.linkedBrowser.currentURI.spec ;
+
+
+		var browser = this.addSubBrowser(uri, b.parentSubBrowser || this.mainBrowserBox, aPosition);
 		if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
 			b.removeTab(aTab);
+
+		if (this.tabbedBrowsingEnabled)
+			window.setTimeout(this.duplicateSessionHistory, 0, aTab.linkedBrowser, browser.browser);
+
+		return browser;
 	},
-  
+	
+	duplicateSessionHistory : function(aSource, aTarget) 
+	{
+		var state = { histories : [ SplitBrowser.serializeSessionHistory(aSource) ] };
+		SplitBrowser.deserializeHistory(aTarget, state);
+	},
+   
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
 	{
 		if (aPosition & this.POSITION_HORIZONAL)
