@@ -160,21 +160,22 @@
 				var box, retVal;
 				if (this.localName == 'subbrowser') {
 					if (this.browser.localName == 'tabbrowser')
-						box = this.browser.mCurrentBrowser.boxObject;
+						box = this.browser.mCurrentBrowser;
 					else
-						box = this.browser.boxObject;
+						box = this.browser;
 				}
 				else
-					box = gBrowser.mCurrentBrowser.boxObject;
+					box = gBrowser.mCurrentBrowser;
 
-				retVal =  {
-					x       : box.x,
-					y       : box.y,
-					screenX : box.screenX,
-					screenY : box.screenY,
-					width   : box.width - this.rightOffset,
-					height  : box.height - this.bottomOffset
-				};
+				retVal =  { box : box };
+
+				box = box.boxObject;
+				retVal.x       = box.x;
+				retVal.y       = box.y;
+				retVal.screenX = box.screenX;
+				retVal.screenY = box.screenY;
+				retVal.width   = box.width - this.rightOffset;
+				retVal.height  = box.height - this.bottomOffset;
 
 				retVal.middleX = parseInt(box.x + (box.width / 2));
 				retVal.middleY = parseInt(box.y + (box.height / 2));
@@ -197,9 +198,21 @@
 
 		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
+			<parameter name="aForceFire"/>
 			<body><![CDATA[
 				var offset   = SplitBrowser.addButtonSize;
 				var box      = this.contentAreaSizeObject;
+
+				if (aForceFire || aEvent.ctrlKey) {
+					var pos = SplitBrowser.getDropPositionOnContentArea(aEvent, box.box);
+					return {
+						isTop    : pos == SplitBrowser.POSITION_TOP,
+						isBottom : pos == SplitBrowser.POSITION_BOTTOM,
+						isLeft   : pos == SplitBrowser.POSITION_LEFT,
+						isRight  : pos == SplitBrowser.POSITION_RIGHT
+					};
+				}
+
 				var isTop    = (aEvent.screenY >= box.screenY &&
 								aEvent.screenY < box.screenY+offset &&
 								aEvent.screenX >= box.areaScreenX &&
@@ -216,7 +229,7 @@
 								aEvent.screenX > box.screenX+box.width-offset &&
 								aEvent.screenY >= box.areaScreenY &&
 								aEvent.screenY < box.areaScreenY+box.areaHeight);
-//dump(isTop+' / '+isBottom+' / '+isLeft+' / '+isRight+' / '+aEvent.screenX+' / '+aEvent.screenY+'\n');
+
 				return {
 					isTop    : isTop,
 					isBottom : isBottom,
@@ -228,8 +241,9 @@
 
 		<method name="handleMouseOverEvent">
 			<parameter name="aEvent"/>
+			<parameter name="aForceFire"/>
 			<body><![CDATA[
-				var check = this.checkEventFiredOnEdge(aEvent);
+				var check = this.checkEventFiredOnEdge(aEvent, aForceFire);
 				if (
 					check.isTop ||
 					check.isBottom ||
@@ -278,12 +292,13 @@
 				var session = DragService.getCurrentSession();
 				if (!session) return;
 
-				if (session.isDataFlavorSupported('application/x-moz-splitbrowser') ||
+				var isSubBrowser = session.isDataFlavorSupported('application/x-moz-splitbrowser');
+				if (isSubBrowser ||
 					session.isDataFlavorSupported('text/x-moz-url') ||
 					session.isDataFlavorSupported('text/unicode') ||
 					session.isDataFlavorSupported('application/x-moz-file')) {
-					this.handleMouseOverEvent(aEvent);
-					var check = this.checkEventFiredOnEdge(aEvent);
+					this.handleMouseOverEvent(aEvent, isSubBrowser);
+					var check = this.checkEventFiredOnEdge(aEvent, isSubBrowser);
 					if (
 						SplitBrowser.isLinux &&
 						SplitBrowser.addButton.targetBrowser == this &&
@@ -894,9 +909,10 @@
 
 				// fallback for Linux
 				// in Linux, "dragdrop" event doesn't fire on the button.
-				var check = this.mOwner.checkEventFiredOnEdge(aEvent);
+				var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
+				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
 				if (
-					SplitBrowser.isLinux &&
+					(forceCheck || SplitBrowser.isLinux) &&
 					SplitBrowser.addButton.targetSubBrowser == this.mOwner &&
 					(
 						check.isTop ||
@@ -909,12 +925,6 @@
 					return;
 				}
 
-
-				if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
-					var data = uri.split('\n');
-					var b = SplitBrowser.getSubBrowserById(data[1].replace(/^id:/, ''));
-					uri = b ? b.src : data[2].replace(/^uri:/, '') ;
-				}
 				this.mOwner.load(uri);
 			},
 

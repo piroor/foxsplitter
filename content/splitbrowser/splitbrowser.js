@@ -119,6 +119,24 @@ var SplitBrowser = {
 		}
 		return null;
 	},
+ 
+	getDropPositionOnContentArea : function(aEvent, aBox) 
+	{
+		var W = aBox.boxObject.width;
+		var H = aBox.boxObject.height;
+		var X = aBox.boxObject.screenX;
+		var Y = aBox.boxObject.screenY;
+		var x = aEvent.screenX - X;
+		var y = aEvent.screenY - Y;
+
+		var isTL = x <= W - (y * W / H);
+		var isBL = x <= y * W / H;
+
+		return (isTL && isBL) ? SplitBrowser.POSITION_LEFT :
+			(isTL && !isBL) ? SplitBrowser.POSITION_TOP :
+			(!isTL && isBL) ? SplitBrowser.POSITION_BOTTOM :
+			SplitBrowser.POSITION_RIGHT ;
+	},
   
 /* add sub-browser (split contents) */ 
 	
@@ -1066,6 +1084,7 @@ var SplitBrowser = {
 
 		var button = this.addButton;
 		var browser = button.targetSubBrowser;
+
 		newEvent.targetSubBrowser = browser;
 		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
 		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
@@ -1115,9 +1134,11 @@ var SplitBrowser = {
 
 		this.insertSeparateTabItem(gBrowser);
 
-		if (this.isLinux && 'contentAreaDNDObserver' in window) {
+		if ('contentAreaDNDObserver' in window) {
 			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
 			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
+			contentAreaDNDObserver.__splitbrowser__getSupportedFlavours = contentAreaDNDObserver.getSupportedFlavours;
+			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
 		if (this.tabbedBrowsingEnabled) {
@@ -1155,10 +1176,13 @@ var SplitBrowser = {
 
 		// fallback for Linux
 		// in Linux, "dragdrop" event doesn't fire on the button.
+
 		var box = SplitBrowser.mainBrowserBox;
-		var check = box.checkEventFiredOnEdge(aEvent);
+
+		var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
+		var check = box.checkEventFiredOnEdge(aEvent, forceCheck);
 		if (
-			url &&
+			(forceCheck || SplitBrowser.isLinux) &&
 			SplitBrowser.addButton.targetSubBrowser == box &&
 			(
 				check.isTop ||
@@ -1173,13 +1197,18 @@ var SplitBrowser = {
 			return;
 		}
 
-		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
-			var data = uri.split('\n');
-			var b = SplitBrowser.getSubBrowserById(data[1].replace(/^id:/, ''));
-			aXferData.flavour.data        = b ? b.src : data[2].replace(/^uri:/, '') ;
-			aXferData.flavour.contentType = 'text/unicode';
-		}
 		return this.__splitbrowser__onDrop(aEvent, aXferData, aDragSession);
+	},
+ 
+	contentAreaGetSupportedFlavours : function() 
+	{
+		var flavourSet = this.__splitbrowser__getSupportedFlavours();
+
+		var flavour = new Flavour('application/x-moz-splitbrowser');
+		flavourSet.flavours.splice(0, 0, flavour);
+		flavourSet.flavourTable[flavour.contentType] = flavour;
+
+		return flavourSet;
 	},
  
 	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode) 
