@@ -330,7 +330,10 @@
 	<content orient="vertical">
 		<xul:toolbar class="subbrowser-toolbar chromeclass-extrachrome"
 			align="center"
-		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
+		 	ondraggesture="
+				this.parentNode.toggleToolbar(false, true, 0);
+		 		nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);
+		 	"
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
 			ondragover="nsDragAndDrop.dragOver(event, this.parentNode.pageDNDObserver);"
 			context="_child">
