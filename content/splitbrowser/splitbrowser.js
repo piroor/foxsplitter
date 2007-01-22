@@ -46,6 +46,8 @@ var SplitBrowser = {
  
 	browsers  : [], 
  
+/* utilities */ 
+	
 	makeURIFromSpec : function(aURI) 
 	{
 		try {
@@ -67,12 +69,63 @@ var SplitBrowser = {
 	},
 	mIOService : Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
  
+	getSubBrowserById : function(aID) 
+	{
+		var windows = this.browserWindows;
+		var node;
+		for (var i = 0, maxi = windows.length; i < maxi; i++)
+		{
+			node = windows[i].document.getElementById(aID);
+			if (node)
+				return node;
+		}
+		return null;
+	},
+ 
+	get browserWindows() 
+	{
+		var browserWindows = [];
+
+		var targets = this.WindowManager.getEnumerator('navigator:browser'),
+			target;
+		while (targets.hasMoreElements())
+		{
+			target = targets.getNext().QueryInterface(Components.interfaces.nsIDOMWindowInternal);
+			browserWindows.push(target);
+		}
+
+		return browserWindows;
+	},
+ 
+	get WindowManager() 
+	{
+		if (!this._WindowManager) {
+			this._WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+		}
+		return this._WindowManager;
+	},
+	_WindowManager : null,
+ 
+	getSubBrowserFromFrame : function(aFrame) 
+	{
+		var docShell = aFrame
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShell);
+		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+		{
+			if (this.browsers[i].browser.docShell == docShell)
+				return this.browsers[i];
+		}
+		return null;
+	},
+  
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
 		var appcontent = document.getElementById('appcontent');
-		var b = aBrowser || this.getBrowserFromFrame(document.commandDispatcher.focusedWindow.top);
+		var b = aBrowser || this.getSubBrowserFromFrame(document.commandDispatcher.focusedWindow.top);
 		var target = (b && b.parentContainer) ? b.parentContainer : appcontent ;
 		var hContainer = target.hContainer;
 		var vContainer = target.vContainer;
@@ -82,8 +135,36 @@ var SplitBrowser = {
 
 		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
+		var source = (!aURI || aURI.split('\n')[0] == 'subbrowser') ? aURI.split('\n')[1].replace(/^id:/, '') : null ;
+		if (source) {
+			source = SplitBrowser.getSubBrowserById(source);
+			var data = aURI.split('\n');
+			if (!source) {
+				aURI = data[2].replace(/^uri:/, '');
+			}
+			else {
+				aURI   = null;
+				if (aPosition & this.POSITION_HORIZONAL && source.parentOrient == 'horizontal')
+					width = parseInt(data[3].replace(/^width:/, ''));
+				if (aPosition & this.POSITION_VERTICAL && source.parentOrient == 'vertical')
+					height = parseInt(data[4].replace(/^height:/, ''));
+			}
+		}
+
 		var browser   = this.createSubBrowser(aURI);
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
+
+		if (source) {
+			window.setTimeout(
+				this.duplicateBrowser,
+				0,
+				source.browser,
+				browser.browser,
+				function() {
+					source.close();
+				}
+			);
+		}
 
 		return browser;
 	},
@@ -142,8 +223,10 @@ var SplitBrowser = {
 			case this.POSITION_LEFT:
 				if (!aRefNode || aRefNode.parentNode != hContainer)
 					aRefNode = hContainer.firstChild;
-				if (aContent)
+				if (aContent) {
 					aRefNode.width = aRefNode.boxObject.width - aWidth;
+					aContent.setAttribute('width', aWidth);
+				}
 				hContainer.insertBefore(container, aRefNode);
 				hContainer.insertBefore(splitter, aRefNode);
 				break;
@@ -152,8 +235,10 @@ var SplitBrowser = {
 			case this.POSITION_RIGHT:
 				if (!aRefNode || aRefNode.parentNode != hContainer)
 					aRefNode = hContainer.lastChild;
-				if (aContent)
+				if (aContent) {
 					aRefNode.width = aRefNode.boxObject.width - aWidth;
+					aContent.setAttribute('width', aWidth);
+				}
 				aRefNode = aRefNode.nextSibling;
 				if (aRefNode) {
 					hContainer.insertBefore(splitter, aRefNode);
@@ -168,8 +253,10 @@ var SplitBrowser = {
 			case this.POSITION_TOP:
 				if (!aRefNode || aRefNode.parentNode != vContainer)
 					aRefNode = vContainer.firstChild;
-				if (aContent)
+				if (aContent) {
 					aRefNode.height = aRefNode.boxObject.height - aHeight;
+					aContent.setAttribute('height', aHeight);
+				}
 				vContainer.insertBefore(container, aRefNode);
 				vContainer.insertBefore(splitter, aRefNode);
 				break;
@@ -177,8 +264,10 @@ var SplitBrowser = {
 			case this.POSITION_BOTTOM:
 				if (!aRefNode || aRefNode.parentNode != vContainer)
 					aRefNode = vContainer.lastChild;
-				if (aContent)
+				if (aContent) {
 					aRefNode.height = aRefNode.boxObject.height - aHeight;
+					aContent.setAttribute('height', aHeight);
+				}
 				aRefNode = aRefNode.nextSibling;
 				if (aRefNode) {
 					vContainer.insertBefore(splitter, aRefNode);
@@ -205,6 +294,7 @@ var SplitBrowser = {
 			browser.setAttribute('src', aURI);
 
 		browser.setAttribute('browsertype', this.tabbedBrowsingEnabled ? 'tabbrowser' : 'simple' );
+		browser.setAttribute('id', 'splitbrowser-subbrowser-'+parseInt(Math.random() * 65000));
 
 		this.browsers.push(browser);
 
@@ -231,20 +321,6 @@ var SplitBrowser = {
 		splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
 		splitter.setAttribute('onmousedown', 'var node = SplitBrowser.getSplitterTarget(this); if (node.isCollapsed()) { node[this.getAttribute("sizevalue")] = 0; node.collapsed = false; }');
 		return splitter;
-	},
- 
-	getBrowserFromFrame : function(aFrame) 
-	{
-		var docShell = aFrame
-			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-			.getInterface(Components.interfaces.nsIWebNavigation)
-			.QueryInterface(Components.interfaces.nsIDocShell);
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
-		{
-			if (this.browsers[i].browser.docShell == docShell)
-				return this.browsers[i];
-		}
-		return null;
 	},
   
 /* remove sub-browser (unsplit) */ 
@@ -278,15 +354,18 @@ var SplitBrowser = {
 		var cont = container.hContainer;
 		if (cont) {
 			if (!cont.hasChildNodes()) {
+				var box;
 				if (cont.previousSibling &&
 					cont.previousSibling.localName == 'splitter') {
-					cont.previousSibling.previousSibling.removeAttribute('height');
+					box = cont.previousSibling.previousSibling;
+					box.height = box.boxObject.height + cont.boxObject.height;
 					cont.previousSibling.previousSibling.removeAttribute('collapsed');
 					container.vContainer.removeChild(cont.previousSibling);
 				}
 				else if (cont.nextSibling &&
 					cont.nextSibling.localName == 'splitter') {
-					cont.nextSibling.nextSibling.removeAttribute('height');
+					box = cont.nextSibling.nextSibling;
+					box.height = box.boxObject.height + cont.boxObject.height;
 					cont.nextSibling.nextSibling.removeAttribute('collapsed');
 					container.vContainer.removeChild(cont.nextSibling);
 				}
@@ -315,13 +394,16 @@ var SplitBrowser = {
 
 		var cont = container.vContainer;
 		if (!cont.hasChildNodes()) {
+			var box;
 			if (container.previousSibling && container.previousSibling.localName == 'splitter') {
-				container.previousSibling.previousSibling.removeAttribute('width');
+				box = container.previousSibling.previousSibling;
+				box.width = box.boxObject.width + container.boxObject.width;
 				container.previousSibling.previousSibling.removeAttribute('collapsed');
 				container.parentNode.removeChild(container.previousSibling);
 			}
 			else if (container.nextSibling && container.nextSibling.localName == 'splitter') {
-				container.nextSibling.nextSibling.removeAttribute('width');
+				box = container.nextSibling.nextSibling;
+				box.width = box.boxObject.width + container.boxObject.width;
 				container.nextSibling.nextSibling.removeAttribute('collapsed');
 				container.parentNode.removeChild(container.nextSibling);
 			}
@@ -924,10 +1006,38 @@ var SplitBrowser = {
 			aEvent.preventDefault();
 			aEvent.preventBubble();
 
+			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
+			if (!uri) return;
+
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri);
+			window.setTimeout('SplitBrowser.hideAddButton();', 0);
+		},
+
+		getSupportedFlavours: function ()
+		{
+			var flavourSet = new FlavourSet();
+			flavourSet.appendFlavour('application/x-moz-splitbrowser');
+			flavourSet.appendFlavour('text/x-moz-url');
+			flavourSet.appendFlavour('text/unicode');
+			flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
+			return flavourSet;
+		}
+	},
+  
+/* drag-and-drop */ 
+	
+	getURIFromDragData : function(aXferData, aDragSession, aEvent) 
+	{
+		var uri;
+		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
+			uri = aXferData.data;
+		}
+		else {
 			// "window.retrieveURLFromData()" is old implementation
-			var url = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
-			if (!url || !url.length || url.indexOf(' ', 0) != -1)
-				return;
+			uri = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
+
+			if (!uri || !uri.length || uri.indexOf(' ', 0) != -1)
+				return null;
 
 			var sourceDoc = aDragSession.sourceDocument;
 			if (sourceDoc) {
@@ -935,26 +1045,18 @@ var SplitBrowser = {
 				const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
 				var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
 				try {
-					secMan.checkLoadURIStr(sourceURI, url, nsIScriptSecurityManager.STANDARD);
+					secMan.checkLoadURIStr(sourceURI, uri, nsIScriptSecurityManager.STANDARD);
 				}
 				catch(e) {
 					aEvent.stopPropagation();
-					throw 'Drop of ' + url + ' denied.';
+					throw 'Drop of ' + uri + ' denied.';
 				}
 			}
 
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
-			window.setTimeout('SplitBrowser.hideAddButton();', 0);
-		},
-
-		getSupportedFlavours: function ()
-		{
-			var flavourSet = new FlavourSet();
-			flavourSet.appendFlavour('text/x-moz-url');
-			flavourSet.appendFlavour('text/unicode');
-			flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
-			return flavourSet;
+			uri = getShortcutOrURI(uri);
 		}
+
+		return uri;
 	},
  
 	fireSubBrowserAddRequestEventFromButton : function(aURI) 
@@ -1043,31 +1145,13 @@ var SplitBrowser = {
 		else
 			tabContext.appendChild(menu);
 
-		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 1000)));
+		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 65000)));
 	},
  
 	contentAreaOnDrop: function (aEvent, aXferData, aDragSession) 
 	{
-		// "window.retrieveURLFromData()" is old implementation
-		var url = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
-		if (url && url.length && url.indexOf(' ', 0) == -1) {
-			var sourceDoc = aDragSession.sourceDocument;
-			if (sourceDoc) {
-				var sourceURI = sourceDoc.documentURI;
-				const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
-				var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
-				try {
-					secMan.checkLoadURIStr(sourceURI, url, nsIScriptSecurityManager.STANDARD);
-				}
-				catch(e) {
-					aEvent.stopPropagation();
-					throw 'Drop of ' + url + ' denied.';
-				}
-			}
-		}
-		else {
-			url = null;
-		}
+		var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
+		if (!uri) return;
 
 		// fallback for Linux
 		// in Linux, "dragdrop" event doesn't fire on the button.
@@ -1083,20 +1167,25 @@ var SplitBrowser = {
 				check.isRight
 			)
 			) {
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri);
 			aEvent.preventDefault();
 			aEvent.preventBubble();
-			return void(0);
+			return;
 		}
-		else {
-			return this.__splitbrowser__onDrop(aEvent, aXferData, aDragSession);
+
+		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
+			var data = uri.split('\n');
+			var b = SplitBrowser.getSubBrowserById(data[1].replace(/^id:/, ''));
+			aXferData.flavour.data        = b ? b.src : data[2].replace(/^uri:/, '') ;
+			aXferData.flavour.contentType = 'text/unicode';
 		}
+		return this.__splitbrowser__onDrop(aEvent, aXferData, aDragSession);
 	},
  
 	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode) 
 	{
 		var d = aEvent.target.ownerDocument;
-		var b = SplitBrowser.getBrowserFromFrame(d.defaultView.top);
+		var b = SplitBrowser.getSubBrowserFromFrame(d.defaultView.top);
 		if (b) {
 			b = b.browser;
 		}

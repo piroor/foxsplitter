@@ -24,6 +24,20 @@
 				return (container.localName == 'subbrowser-container') ? container : null ;
 			]]></getter>
 		</property>
+
+		<property name="parentOrient" readonly="true">
+			<getter><![CDATA[
+				var node = this.parentContainer;
+				if (!node) return null;
+
+				node = node.parentNode;
+
+				if (node.orient == 'horizontal' || node.localName == 'hbox')
+					return 'horizontal';
+				else
+					return 'vertical';
+			]]></getter>
+		</property>
 	</implementation>
 </binding>
 
@@ -264,7 +278,8 @@
 				var session = DragService.getCurrentSession();
 				if (!session) return;
 
-				if (session.isDataFlavorSupported('text/x-moz-url') ||
+				if (session.isDataFlavorSupported('application/x-moz-splitbrowser') ||
+					session.isDataFlavorSupported('text/x-moz-url') ||
 					session.isDataFlavorSupported('text/unicode') ||
 					session.isDataFlavorSupported('application/x-moz-file')) {
 					this.handleMouseOverEvent(aEvent);
@@ -302,6 +317,7 @@
 			align="center"
 		 	ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);"
 			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
+			ondragover="nsDragAndDrop.dragOver(event, this.parentNode.pageDNDObserver);"
 			context="_child">
 			<xul:menupopup anonid="contextmenu"
 				onpopupshowing="
@@ -327,8 +343,7 @@
 			<xul:deck anonid="toolbar-deck"
 				flex="1"
 				onmouseover="this.parentNode.parentNode.toggleToolbar(true);"
-				onmouseout="this.parentNode.parentNode.toggleToolbar(false);"
-				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.contentAreaEdgeDNDObserver);">
+				onmouseout="this.parentNode.parentNode.toggleToolbar(false);">
 				<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
 					<xul:box class="subbrowser-toolbar-item favicon-box">
 						<xul:image class="subbrowser-toolbar-item favicon"
@@ -838,13 +853,24 @@
 
 			onDragStart: function (aEvent, aXferData, aDragAction)
 			{
-				var value = this.mOwner.urlbar.value;
+				var value = this.mOwner.src;
 				if (!value) return;
 
 				var urlString = value + '\n' + this.mOwner.browser.contentDocument.title;
 				var htmlString = '<a href="' + value + '">' + value + '</a>';
 
 				aXferData.data = new TransferData();
+
+				aXferData.data.addDataForFlavour('application/x-moz-splitbrowser',
+					[
+						'subbrowser',
+						'id:'+this.mOwner.id,
+						'uri:'+value,
+						'width:'+this.mOwner.boxObject.width,
+						'height:'+this.mOwner.boxObject.height
+					].join('\n')
+				);
+
 				aXferData.data.addDataForFlavour('text/x-moz-url', urlString);
 				aXferData.data.addDataForFlavour('text/unicode', value);
 				aXferData.data.addDataForFlavour('text/html', htmlString);
@@ -855,30 +881,16 @@
 					Components.interfaces.nsIDragService.DRAGDROP_ACTION_LINK;
 			},
 
+			onDragOver : function() {
+			},
+
 			onDrop: function (aEvent, aXferData, aDragSession)
 			{
 				aEvent.preventDefault();
 				aEvent.preventBubble();
 
-				// "window.retrieveURLFromData()" is old implementation
-				var url = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
-				if (!url || !url.length || url.indexOf(' ', 0) != -1)
-					return;
-
-				var sourceDoc = aDragSession.sourceDocument;
-				if (sourceDoc) {
-					var sourceURI = sourceDoc.documentURI;
-					const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
-					var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
-					try {
-						secMan.checkLoadURIStr(sourceURI, url, nsIScriptSecurityManager.STANDARD);
-					}
-					catch(e) {
-						aEvent.stopPropagation();
-						throw 'Drop of ' + url + ' denied.';
-					}
-				}
-
+				var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
+				if (!uri) return;
 
 				// fallback for Linux
 				// in Linux, "dragdrop" event doesn't fire on the button.
@@ -893,16 +905,23 @@
 						check.isRight
 					)
 					) {
-					SplitBrowser.fireSubBrowserAddRequestEventFromButton(getShortcutOrURI(url));
+					SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri);
+					return;
 				}
-				else {
-					this.mOwner.load(getShortcutOrURI(url));
+
+
+				if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
+					var data = uri.split('\n');
+					var b = SplitBrowser.getSubBrowserById(data[1].replace(/^id:/, ''));
+					uri = b ? b.src : data[2].replace(/^uri:/, '') ;
 				}
+				this.mOwner.load(uri);
 			},
 
 			getSupportedFlavours: function ()
 			{
 				var flavourSet = new FlavourSet();
+				flavourSet.appendFlavour('application/x-moz-splitbrowser');
 				flavourSet.appendFlavour('text/x-moz-url');
 				flavourSet.appendFlavour('text/unicode');
 				flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
