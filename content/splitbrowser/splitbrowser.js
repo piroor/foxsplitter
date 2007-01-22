@@ -105,7 +105,7 @@ var SplitBrowser = {
 
 		if (this.tabbedBrowsingEnabled)
 			window.setTimeout(
-				this.duplicateSessionHistory,
+				this.duplicateBrowser,
 				0,
 				aTab.linkedBrowser,
 				browser.browser,
@@ -118,10 +118,10 @@ var SplitBrowser = {
 		return browser;
 	},
 	
-	duplicateSessionHistory : function(aSource, aTarget, aCallback) 
+	duplicateBrowser : function(aSource, aTarget, aCallback) 
 	{
-		var state = { histories : [ SplitBrowser.serializeSessionHistory(aSource) ] };
-		SplitBrowser.deserializeHistory(aTarget, state, aCallback);
+		var state = SplitBrowser.serializeBrowserState(aSource);
+		SplitBrowser.deserializeBrowserState(aTarget, state, aCallback);
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
@@ -386,26 +386,14 @@ var SplitBrowser = {
 				}
 			}
 			if (originalContent.localName == 'subbrowser') {
-				state.content = {
-					type      : 'subbrowser',
-					uri       : originalContent.src,
-					width     : originalContent.boxObject.width,
-					height    : originalContent.boxObject.height,
-					histories : this.serializeBrowserSessionHistories(originalContent.browser),
-
-					collapsed  : aContainer.isCollapsed(),
-					lastWidth  : aContainer.lastWidth,
-					lastHeight : aContainer.lastHeight
-				};
-				if (originalContent.browser.localName == 'tabbrowser') {
-					for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
-					{
-						if (originalContent.browser.mTabContainer.childNodes[i] == originalContent.browser.selectedTab) {
-							state.content.selectedTab = i;
-							break;
-						}
-					}
-				}
+				state.content = this.serializeBrowserState(originalContent.browser);
+				state.content.type       = 'subbrowser';
+				state.content.uri        = originalContent.src;
+				state.content.width      = originalContent.boxObject.width;
+				state.content.height     = originalContent.boxObject.height;
+				state.content.collapsed  = aContainer.isCollapsed();
+				state.content.lastWidth  = aContainer.lastWidth;
+				state.content.lastHeight = aContainer.lastHeight;
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
 				state.content = {
@@ -461,26 +449,14 @@ var SplitBrowser = {
 			}
 		}
 		if (originalContent.localName == 'subbrowser') {
-			state.content = {
-				type      : 'subbrowser',
-				uri       : originalContent.src,
-				width     : originalContent.boxObject.width,
-				height    : originalContent.boxObject.height,
-				histories : this.serializeBrowserSessionHistories(originalContent.browser),
-
-				collapsed  : aContainer.isCollapsed(),
-				lastWidth  : aContainer.lastWidth,
-				lastHeight : aContainer.lastHeight
-			};
-			if (originalContent.browser.localName == 'tabbrowser') {
-				for (var i = 0, maxi = originalContent.browser.mTabContainer.childNodes.length; i < maxi; i++)
-				{
-					if (originalContent.browser.mTabContainer.childNodes[i] == originalContent.browser.selectedTab) {
-						state.content.selectedTab = i;
-						break;
-					}
-				}
-			}
+			state.content = this.serializeBrowserState(originalContent.browser);
+			state.content.type       = 'subbrowser';
+			state.content.uri        = originalContent.src;
+			state.content.width      = originalContent.boxObject.width;
+			state.content.height     = originalContent.boxObject.height;
+			state.content.collapsed  = aContainer.isCollapsed();
+			state.content.lastWidth  = aContainer.lastWidth;
+			state.content.lastHeight = aContainer.lastHeight;
 		}
 		else if (!state.content) {
 			state.content = this.getContainerState(originalContent);
@@ -514,6 +490,24 @@ var SplitBrowser = {
 			if (node.previousSibling.getAttribute('state') == 'collapsed')
 				state.children[state.children.length-1].collapsed = true;
 			node = node.nextSibling;
+		}
+
+		return state;
+	},
+ 
+	serializeBrowserState : function(aBrowser) { 
+		var state = {
+				histories : this.serializeBrowserSessionHistories(aBrowser)
+			};
+
+		if (aBrowser.localName == 'tabbrowser') {
+			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
+			{
+				if (aBrowser.mTabContainer.childNodes[i] == aBrowser.selectedTab) {
+					state.selectedTab = i;
+					break;
+				}
+			}
 		}
 
 		return state;
@@ -640,8 +634,7 @@ var SplitBrowser = {
 				aContainer.hContainer.width  = aState.content.width;
 				aContainer.hContainer.height = aState.content.height;
 
-				if (aState.content.histories && aState.content.histories.length)
-					this.deserializeHistory(b.browser, aState.content);
+				this.deserializeBrowserState(b.browser, aState.content);
 
 				aContainer.lastWidth  = aState.content.lastWidth;
 				aContainer.lastHeight = aState.content.lastHeight;
@@ -673,7 +666,7 @@ var SplitBrowser = {
 		}
 	},
  
-	deserializeHistory : function(aBrowser, aBrowserState, aCallback) 
+	deserializeBrowserState : function(aBrowser, aBrowserState, aCallback) 
 	{
 		var browser, tab;
 		if (aBrowser.localName == 'tabbrowser') {
@@ -700,22 +693,7 @@ var SplitBrowser = {
 				tab     = aBrowser.addTab('about:blank');
 				browser = aBrowser.getBrowserForTab(tab);
 			}
-			var SHInternal = browser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
-			for (var j in aBrowserState.histories[i].entries)
-				SHInternal.addEntry(
-					SplitBrowser.deserializeHistoryEntry(aBrowserState.histories[i].entries[j]),
-					true
-				);
-			try {
-				browser.gotoIndex(aBrowserState.histories[i].index);
-			}
-			catch(e) { // when the entry is moving in frames...
-				try {
-					browser.gotoIndex(browser.sessionHistory.count-1);
-				}
-				catch(ex) { // when there is no history, do nothing
-				}
-			}
+			SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
 			if (aBrowser.localName == 'tabbrowser' &&
 				aBrowserState.selectedTab == i)
 				aBrowser.selectedTab = tab;
@@ -725,7 +703,27 @@ var SplitBrowser = {
 			aCallback();
 	},
 	
-	deserializeHistoryEntry : function(aData) 
+	deserializeSessionHistory : function(aBrowser, aData) 
+	{
+		var SHInternal = aBrowser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
+		for (var j in aData.entries)
+			SHInternal.addEntry(
+				this.deserializeSessionHistoryEntry(aData.entries[j]),
+				true
+			);
+		try {
+			aBrowser.gotoIndex(aData.index);
+		}
+		catch(e) { // when the entry is moving in frames...
+			try {
+				aBrowser.gotoIndex(aBrowser.sessionHistory.count-1);
+			}
+			catch(ex) { // when there is no history, do nothing
+			}
+		}
+	},
+ 
+	deserializeSessionHistoryEntry : function(aData) 
 	{
 		var entry = Components.classes['@mozilla.org/browser/session-history-entry;1'].createInstance(Components.interfaces.nsISHEntry);
 		entry = entry.QueryInterface(Components.interfaces.nsIHistoryEntry);
@@ -753,7 +751,7 @@ var SplitBrowser = {
 		entry = entry.QueryInterface(Components.interfaces.nsISHContainer);
 		for (var i in aData.children)
 			entry.AddChild(
-				this.deserializeHistoryEntry(
+				this.deserializeSessionHistoryEntry(
 					aData.children[i]
 				),
 				i
