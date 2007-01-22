@@ -153,7 +153,7 @@ var SplitBrowser = {
 
 		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
-		var source = (!aURI || aURI.split('\n')[0] == 'subbrowser') ? aURI.split('\n')[1].replace(/^id:/, '') : null ;
+		var source = (aURI && aURI.split('\n')[0] == 'subbrowser') ? aURI.split('\n')[1].replace(/^id:/, '') : null ;
 		if (source) {
 			source = SplitBrowser.getSubBrowserById(source);
 			var data = aURI.split('\n');
@@ -1222,7 +1222,7 @@ var SplitBrowser = {
 			return this.__splitbrowser__handleLinkClick.apply(this, arguments);
 		}
 
-		var docURL = d.location.aURI;
+		var docURL = d.location.href;
 		if (
 			b.localName == 'tabbrowser' &&
 			(
