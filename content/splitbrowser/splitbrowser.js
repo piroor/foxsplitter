@@ -102,19 +102,26 @@ var SplitBrowser = {
 
 
 		var browser = this.addSubBrowser(uri, b.parentSubBrowser || this.mainBrowserBox, aPosition);
-		if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
-			b.removeTab(aTab);
 
 		if (this.tabbedBrowsingEnabled)
-			window.setTimeout(this.duplicateSessionHistory, 0, aTab.linkedBrowser, browser.browser);
+			window.setTimeout(
+				this.duplicateSessionHistory,
+				0,
+				aTab.linkedBrowser,
+				browser.browser,
+				function() {
+					if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
+						b.removeTab(aTab);
+				}
+			);
 
 		return browser;
 	},
 	
-	duplicateSessionHistory : function(aSource, aTarget) 
+	duplicateSessionHistory : function(aSource, aTarget, aCallback) 
 	{
 		var state = { histories : [ SplitBrowser.serializeSessionHistory(aSource) ] };
-		SplitBrowser.deserializeHistory(aTarget, state);
+		SplitBrowser.deserializeHistory(aTarget, state, aCallback);
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
@@ -666,7 +673,7 @@ var SplitBrowser = {
 		}
 	},
  
-	deserializeHistory : function(aBrowser, aBrowserState) 
+	deserializeHistory : function(aBrowser, aBrowserState, aCallback) 
 	{
 		var browser, tab;
 		if (aBrowser.localName == 'tabbrowser') {
@@ -713,6 +720,9 @@ var SplitBrowser = {
 				aBrowserState.selectedTab == i)
 				aBrowser.selectedTab = tab;
 		}
+
+		if (aCallback && typeof aCallback == 'function')
+			aCallback();
 	},
 	
 	deserializeHistoryEntry : function(aData) 

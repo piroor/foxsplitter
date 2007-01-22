@@ -27,14 +27,24 @@
 			name="splitbrowser.tabs.autoHide"
 			type="bool"
 			inverted="true"/>
+		<preference id="splitbrowser.tab.closetab"
+			name="splitbrowser.tab.closetab"
+			type="bool"/>
 	</preferences>
 
 	<checkbox id="splitbrowser.state.restore-check" flex="1"
 		label="&splitbrowser.state.restore;"
 		preference="splitbrowser.state.restore"/>
-	<checkbox id="splitbrowser.tabs.autoHide" flex="1"
-		label="&splitbrowser.tabs.autoHide;"
-		preference="splitbrowser.tabs.autoHide"/>
+
+	<groupbox>
+		<caption label="&splitbrowser.tab.caption;"/>
+		<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
+			label="&splitbrowser.tabs.autoHide;"
+			preference="splitbrowser.tabs.autoHide"/>
+		<checkbox id="splitbrowser.tab.closetab-check" flex="1"
+			label="&splitbrowser.tab.closetab;"
+			preference="splitbrowser.tab.closetab"/>
+	</groupbox>
 
 	<groupbox>
 		<caption label="&splitbrowser.show.addbuttons.caption;"/>
