@@ -6,8 +6,8 @@
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "While dragging links, files, etc.">
 
 <!ENTITY splitbrowser.tab.caption   "Tab">
-<!ENTITY splitbrowser.tabs.autoHide "Show tab bar in split browsers always">
-<!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in browser">
+<!ENTITY splitbrowser.tabs.autoHide "Always show tab bar in split browsers">
+<!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in new browser">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Split to Above">

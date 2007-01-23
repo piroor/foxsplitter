@@ -5,9 +5,9 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
 
-<!ENTITY splitbrowser.tab.caption   "Tab">
-<!ENTITY splitbrowser.tabs.autoHide "Show tab bar in split browsers always">
-<!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in browser">
+<!ENTITY splitbrowser.tab.caption   "Tabs">
+<!ENTITY splitbrowser.tabs.autoHide "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
+<!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Nach oben teilen">
@@ -55,6 +55,6 @@
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Neuer Tab">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "Collapse">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "Expand">
-<!ENTITY splitbrowser.subbrowser.menu.close        "Close">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Einklappen">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Ausklappen">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Schließen">

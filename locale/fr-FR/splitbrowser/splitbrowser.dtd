@@ -5,9 +5,9 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
 
-<!ENTITY splitbrowser.tab.caption   "Tab">
+<!ENTITY splitbrowser.tab.caption   "Onglet">
 <!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
-<!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in browser">
+<!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">
