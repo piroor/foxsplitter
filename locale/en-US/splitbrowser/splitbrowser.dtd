@@ -1,6 +1,8 @@
 <!ENTITY splitbrowser.title           "Split Browser Configuration">
 <!ENTITY splitbrowser.tab.general     "General">
-<!ENTITY splitbrowser.state.restore   "Save state of split browsers">
+<!ENTITY splitbrowser.general.caption     "General">
+<!ENTITY splitbrowser.state.restore       "Save state of split browsers">
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
 <!ENTITY splitbrowser.show.addbuttons.caption  "Show &quot;Split&quot; buttons on top/bottom/left/right edges of the content area for">
 <!ENTITY splitbrowser.show.addbuttons.hover    "Normal time">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "While dragging links, files, etc.">

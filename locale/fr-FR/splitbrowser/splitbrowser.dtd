@@ -1,6 +1,8 @@
 <!ENTITY splitbrowser.title           "Configuration de Split Browser">
-<!ENTITY splitbrowser.tab.general     "Général">
-<!ENTITY splitbrowser.state.restore   "Sauvegarder l'état des fenêtres partagées">
+<!ENTITY splitbrowser.tab.general         "Général">
+<!ENTITY splitbrowser.general.caption     "Général">
+<!ENTITY splitbrowser.state.restore       "Sauvegarder l'état des fenêtres partagées">
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
 <!ENTITY splitbrowser.show.addbuttons.caption "Montrer les boutons &quot;Split&quot; sur les cotés de la fenêtre">
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">

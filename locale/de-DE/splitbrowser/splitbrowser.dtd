@@ -1,6 +1,8 @@
 <!ENTITY splitbrowser.title           "Split Browser - Einstellungen">
-<!ENTITY splitbrowser.tab.general     "Allgemein">
-<!ENTITY splitbrowser.state.restore   "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
+<!ENTITY splitbrowser.tab.general         "Allgemein">
+<!ENTITY splitbrowser.general.caption     "Allgemein">
+<!ENTITY splitbrowser.state.restore       "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
 <!ENTITY splitbrowser.show.addbuttons.caption "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
 <!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">

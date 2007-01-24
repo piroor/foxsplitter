@@ -1,6 +1,9 @@
 <!ENTITY splitbrowser.title           "分割ブラウザの設定">
 <!ENTITY splitbrowser.tab.general     "全般">
-<!ENTITY splitbrowser.state.restore   "分割ブラウザの状態を保存する">
+
+<!ENTITY splitbrowser.general.caption     "全般">
+<!ENTITY splitbrowser.state.restore       "分割されたブラウザの状態を保存する">
+<!ENTITY splitbrowser.show.toolbar.always "分割されたブラウザのツールバーを常に表示する">
 
 <!ENTITY splitbrowser.show.addbuttons.caption  "ブラウズ領域の上/下/左/右の各辺で分割ボタンを表示する場合">
 <!ENTITY splitbrowser.show.addbuttons.hover    "通常時">

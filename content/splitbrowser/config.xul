@@ -17,6 +17,9 @@
 		<preference id="splitbrowser.state.restore"
 			name="splitbrowser.state.restore"
 			type="bool"/>
+		<preference id="splitbrowser.show.toolbar.always"
+			name="splitbrowser.show.toolbar.always"
+			type="bool"/>
 		<preference id="splitbrowser.show.addbuttons.hover"
 			name="splitbrowser.show.addbuttons.hover"
 			type="bool"/>
@@ -32,9 +35,16 @@
 			type="bool"/>
 	</preferences>
 
-	<checkbox id="splitbrowser.state.restore-check" flex="1"
-		label="&splitbrowser.state.restore;"
-		preference="splitbrowser.state.restore"/>
+
+	<groupbox>
+		<caption label="&splitbrowser.general.caption;"/>
+		<checkbox id="splitbrowser.state.restore-check" flex="1"
+			label="&splitbrowser.state.restore;"
+			preference="splitbrowser.state.restore"/>
+		<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
+			label="&splitbrowser.show.toolbar.always;"
+			preference="splitbrowser.show.toolbar.always"/>
+	</groupbox>
 
 	<groupbox>
 		<caption label="&splitbrowser.tab.caption;"/>
