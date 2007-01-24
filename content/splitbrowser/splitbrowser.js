@@ -342,24 +342,8 @@ var SplitBrowser = {
 			splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
 
 		var prop = (aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ;
-		splitter.setAttribute('onmousedown',
-			'var node = SplitBrowser.getSplitterTarget(this);'+
-			'if (node.last'+prop+' === void(0) || node.last'+prop+' < 0) {'+
-				'node.tempLast'+prop+' = node.boxObject.'+prop+';'+
-			'}'+
-			'else {'+
-				'this.tempLast'+prop+' = -1;'+
-			'};'+
-			'node.contentCollapsed = false;'+
-			'node.removeAttribute("max'+prop+'");');
-		splitter.setAttribute('onmouseup',
-			'var node = SplitBrowser.getSplitterTarget(this);'+
-			'if (node.contentCollapsed && node.tempLast'+prop+' !== void(0) && node.tempLast'+prop+' > -1 && (node.last'+prop+' === void(0) || node.last'+prop+' < 0)) {'+
-				'node.last'+prop+' = node.tempLast'+prop+';'+
-				'node.contentCollapsed = true;'+
-				'node.setAttribute("max'+prop+'", 0);'+
-			'}'+
-			'node.tempLast'+prop+' = -1;');
+		splitter.setAttribute('onmousedown', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
+		splitter.setAttribute('onmouseup', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 
 		return splitter;
 	},
@@ -1137,6 +1121,45 @@ catch(e) {
 			return node;
 		else
 			return aSplitter.nextSibling;
+	},
+ 
+	updateSplitterSideBoxes : function(aEvent, aProp) 
+	{
+		var splitter = aEvent.originalTarget || aEvent.target;
+		this.updateSplitterSideBox(splitter.previousSibling, aEvent, aProp);
+		this.updateSplitterSideBox(splitter.nextSibling, aEvent, aProp);
+	},
+	updateSplitterSideBox : function(aNode, aEvent, aProp)
+	{
+		if (aEvent.type == 'mousedown') {
+			aNode.splitterDragging = true;
+			if (aNode['last'+aProp] === void(0) || aNode['last'+aProp] < 0) {
+				aNode['tempLast'+aProp] = aNode.boxObject[aProp];
+			}
+			else {
+				aNode['tempLast'+aProp] = -1;
+			}
+			aNode.contentCollapsed = false;
+			aNode.removeAttribute('max'+aProp);
+		}
+		else {
+			if (aNode.contentCollapsed &&
+				aNode['tempLast'+aProp] !== void(0) &&
+				aNode['tempLast'+aProp] > -1 &&
+				(
+					aNode['last'+aProp] === void(0) ||
+					aNode['last'+aProp] < 0
+				)
+				) {
+				aNode['last'+aProp] = aNode['tempLast'+aProp];
+				aNode.contentCollapsed = true;
+				aNode.setAttribute('max'+aProp, 0);
+			}
+			aNode['tempLast'+aProp] = -1;
+			window.setTimeout(function() {
+				aNode.splitterDragging = false;
+			}, 0);
+		}
 	},
  
 	updateSplitterContextMenu : function() 

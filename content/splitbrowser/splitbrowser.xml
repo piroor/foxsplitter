@@ -28,10 +28,15 @@
 		<property name="collapsableParent" readonly="true">
 			<getter><![CDATA[
 				var c = this;
-				while (c && !c.nextSibling && !c.previousSibling)
+				while (
+					c &&
+					c != document.documentElement &&
+					!c.nextSibling &&
+					!c.previousSibling
+					)
 					c = c.parentNode;
 
-				return c;
+				return c == document.documentElement ? null : c ;
 			]]></getter>
 		</property>
 	</implementation>
@@ -178,7 +183,19 @@
 		<method name="toggleCollapsed">
 			<body><![CDATA[
 				var c = this.collapsableParent;
+
+				var cTemp = c;
+				var cTemp2;
+				var appcontent = document.getElementById('appcontent');
+				while (cTemp && cTemp != appcontent)
+				{
+					if (cTemp.contentCollapsed) cTemp2 = cTemp;
+					cTemp = cTemp.parentNode;
+				}
+				if (cTemp2) c = cTemp2;
+
 				if (!c) return;
+
 
 				var sideBox;
 				var splitter;
@@ -210,6 +227,7 @@
 				if (!this.contentCollapsed) {
 					c['last'+prop] = origSize;
 					c.setAttribute(prop, 0);
+					sideBox.removeAttribute('max'+prop);
 					sideBox.setAttribute(prop, sideSize + origSize);
 					c.contentCollapsed = true;
 					c.setAttribute('max'+prop, 0);
@@ -237,6 +255,15 @@
 			<parameter name="aEvent"/>
 			<parameter name="aForceFire"/>
 			<body><![CDATA[
+				if (this.contentCollapsed) {
+					return {
+						isTop    : false,
+						isBottom : false,
+						isLeft   : false,
+						isRight  : false
+					};
+				}
+
 				var offset   = SplitBrowser.addButtonSize;
 				var box      = this.contentAreaSizeObject;
 
@@ -1391,8 +1418,13 @@
 -->
 
 		<method name="mUpdateToolbarMode">
+			<parameter name="aCollapsableParent"/>
 			<body><![CDATA[
 				var c = this.collapsableParent;
+				while (c && c.parentNode && !c.splitterDragging)
+					c = c.parentNode;
+				if (c && c == document) c = null;
+
 				var minWidth = this.vToolbox.boxObject.width || this.hToolbox.boxObject.height;
 				var minHeight = this.hToolbox.boxObject.height || this.vToolbox.boxObject.width;
 				if (this.boxObject.width <= minWidth) {
@@ -1417,8 +1449,9 @@
 	<handlers>
 		<handler event="DOMLinkAdded" phase="capturing"
 			action="this.onLinkAdded(event);"/>
-		<handler event="resize"
-			action="this.mUpdateToolbarMode();"/>
+		<handler event="resize"><![CDATA[
+			this.mUpdateToolbarMode();
+		]]></handler>
 
 <!--
 		<handler event="focus" phase="capturing"

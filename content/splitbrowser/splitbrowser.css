@@ -54,6 +54,18 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 
 
 
+subbrowser[toolbar-mode="vertical"] tabbrowser.subbrowser-browser .tabbrowser-arrowscrollbox {
+	min-width: 0 !important;
+}
+
+subbrowser tabbrowser.subbrowser-browser > tabbox,
+subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
+	overflow: hidden !important;
+	min-width: 0 !important;
+}
+
+
+
 .subbrowser-toolbox-vertical,
 subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-horizontal {
 	visibility: collapse;
