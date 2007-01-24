@@ -53,10 +53,22 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 
 
 
-.subbrowser-toolbox-vertical {
+
+.subbrowser-toolbox-vertical,
+subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-horizontal {
 	visibility: collapse;
 }
 
-subbrowser[orient="horizontal"][browserCollapsed="true"] .subbrowser-toolbox-vertical {
+subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-vertical {
 	visibility: visible;
+}
+
+.subbrowser-toolbox-vertical {
+	overflow: hidden;
+}
+.subbrowser-vertical-title {
+	overflow: hidden;
+	white-space: pre;
+	text-align: center;
+	line-height: 1;
 }

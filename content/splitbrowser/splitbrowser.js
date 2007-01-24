@@ -235,6 +235,7 @@ var SplitBrowser = {
 		var vContainer = aParent.vContainer;
 
 		var splitter = this.createSplitter(aPosition);
+		container.setAttribute('splitter', ((aPosition & this.POSITION_AFTER) ? 'before' : 'after' ));
 
 		switch (aPosition)
 		{
@@ -242,7 +243,7 @@ var SplitBrowser = {
 				if (!aRefNode || aRefNode.parentNode != hContainer)
 					aRefNode = hContainer.firstChild;
 				if (aContent) {
-					aRefNode.width = aRefNode.boxObject.width - aWidth;
+					aRefNode.setAttribute('width', aRefNode.boxObject.width - aWidth);
 					aContent.setAttribute('width', aWidth);
 				}
 				hContainer.insertBefore(container, aRefNode);
@@ -254,7 +255,7 @@ var SplitBrowser = {
 				if (!aRefNode || aRefNode.parentNode != hContainer)
 					aRefNode = hContainer.lastChild;
 				if (aContent) {
-					aRefNode.width = aRefNode.boxObject.width - aWidth;
+					aRefNode.setAttribute('width', aRefNode.boxObject.width - aWidth);
 					aContent.setAttribute('width', aWidth);
 				}
 				aRefNode = aRefNode.nextSibling;
@@ -272,7 +273,7 @@ var SplitBrowser = {
 				if (!aRefNode || aRefNode.parentNode != vContainer)
 					aRefNode = vContainer.firstChild;
 				if (aContent) {
-					aRefNode.height = aRefNode.boxObject.height - aHeight;
+					aRefNode.setAttribute('height', aRefNode.boxObject.height - aHeight);
 					aContent.setAttribute('height', aHeight);
 				}
 				vContainer.insertBefore(container, aRefNode);
@@ -283,7 +284,7 @@ var SplitBrowser = {
 				if (!aRefNode || aRefNode.parentNode != vContainer)
 					aRefNode = vContainer.lastChild;
 				if (aContent) {
-					aRefNode.height = aRefNode.boxObject.height - aHeight;
+					aRefNode.setAttribute('height', aRefNode.boxObject.height - aHeight);
 					aContent.setAttribute('height', aHeight);
 				}
 				aRefNode = aRefNode.nextSibling;
@@ -336,10 +337,30 @@ var SplitBrowser = {
 		splitter.setAttribute('class', 'subbrowser-splitter');
 		splitter.setAttribute('state', 'open');
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
-		splitter.setAttribute('sizevalue', ((aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ));
-//		splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
-		splitter.setAttribute('onmousedown', 'var node = SplitBrowser.getSplitterTarget(this); if (node.isCollapsed()) { node[this.getAttribute("sizevalue")] = 0; node.collapsed = false; }');
-		splitter.setAttribute('onmouseup', 'var node = SplitBrowser.getSplitterTarget(this);');
+
+		if (!nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
+			splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
+
+		var prop = (aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ;
+		splitter.setAttribute('onmousedown',
+			'var node = SplitBrowser.getSplitterTarget(this);'+
+			'if (node.last'+prop+' === void(0) || node.last'+prop+' < 0) {'+
+				'node.tempLast'+prop+' = node.boxObject.'+prop+';'+
+			'}'+
+			'else {'+
+				'this.tempLast'+prop+' = -1;'+
+			'};'+
+			'node.contentCollapsed = false;'+
+			'node.removeAttribute("max'+prop+'");');
+		splitter.setAttribute('onmouseup',
+			'var node = SplitBrowser.getSplitterTarget(this);'+
+			'if (node.contentCollapsed && node.tempLast'+prop+' !== void(0) && node.tempLast'+prop+' > -1 && (node.last'+prop+' === void(0) || node.last'+prop+' < 0)) {'+
+				'node.last'+prop+' = node.tempLast'+prop+';'+
+				'node.contentCollapsed = true;'+
+				'node.setAttribute("max'+prop+'", 0);'+
+			'}'+
+			'node.tempLast'+prop+' = -1;');
+
 		return splitter;
 	},
   
@@ -493,9 +514,9 @@ var SplitBrowser = {
 				state.content.uri        = originalContent.src;
 				state.content.width      = originalContent.boxObject.width;
 				state.content.height     = originalContent.boxObject.height;
-				state.content.collapsed  = aContainer.isCollapsed();
-				state.content.lastWidth  = aContainer.lastWidth;
-				state.content.lastHeight = aContainer.lastHeight;
+				state.content.collapsed  = aContainer.contentCollapsed;
+				state.content.lastWidth  = aContainer.lastwidth;
+				state.content.lastHeight = aContainer.lastheight;
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
 				state.content = {
@@ -556,9 +577,9 @@ var SplitBrowser = {
 			state.content.uri        = originalContent.src;
 			state.content.width      = originalContent.boxObject.width;
 			state.content.height     = originalContent.boxObject.height;
-			state.content.collapsed  = aContainer.isCollapsed();
-			state.content.lastWidth  = aContainer.lastWidth;
-			state.content.lastHeight = aContainer.lastHeight;
+			state.content.collapsed  = aContainer.contentCollapsed;
+			state.content.lastWidth  = aContainer.lastwidth;
+			state.content.lastHeight = aContainer.lastheight;
 		}
 		else if (!state.content) {
 			state.content = this.getContainerState(originalContent);
@@ -738,10 +759,16 @@ var SplitBrowser = {
 
 				this.deserializeBrowserState(b.browser, aState.content);
 
-				aContainer.lastWidth  = aState.content.lastWidth;
-				aContainer.lastHeight = aState.content.lastHeight;
-				if (aState.content.collapsed)
-					aContainer.toggleCollapsed();
+				aContainer.lastwidth  = aState.content.lastWidth;
+				aContainer.lastheight = aState.content.lastHeight;
+				if (aState.content.collapsed) {
+					aContainer.contentCollapsed = true;
+					if (aContainer.parentNode.localName == 'hbox' ||
+						aContainer.parentNode.getAttribute('orient') != 'vertical')
+						aContainer.setAttribute('maxwidth', 0);
+					else
+						aContainer.setAttribute('maxheight', 0);
+				}
 
 				break;
 		}
@@ -789,16 +816,18 @@ var SplitBrowser = {
 			return;
 		}
 
-		for (var i = 0, maxi = aBrowserState.histories.length; i < maxi; i++)
-		{
-			if (i) {
-				tab     = aBrowser.addTab('about:blank');
-				browser = aBrowser.getBrowserForTab(tab);
+		if (aBrowserState.histories) {
+			for (var i = 0, maxi = aBrowserState.histories.length; i < maxi; i++)
+			{
+				if (i) {
+					tab     = aBrowser.addTab('about:blank');
+					browser = aBrowser.getBrowserForTab(tab);
+				}
+				SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
+				if (aBrowser.localName == 'tabbrowser' &&
+					aBrowserState.selectedTab == i)
+					aBrowser.selectedTab = tab;
 			}
-			SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
-			if (aBrowser.localName == 'tabbrowser' &&
-				aBrowserState.selectedTab == i)
-				aBrowser.selectedTab = tab;
 		}
 
 		if (aCallback && typeof aCallback == 'function')
@@ -1048,6 +1077,7 @@ var SplitBrowser = {
 	
 	getURIFromDragData : function(aXferData, aDragSession, aEvent) 
 	{
+try{
 		var uri;
 		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
 			uri = aXferData.data;
@@ -1075,6 +1105,10 @@ var SplitBrowser = {
 
 			uri = getShortcutOrURI(uri);
 		}
+}
+catch(e) {
+	alert(e);
+}
 
 		return uri;
 	},
@@ -1098,7 +1132,11 @@ var SplitBrowser = {
 	
 	getSplitterTarget : function(aSplitter) 
 	{
-		return (aSplitter.getAttribute('collapse') == 'before') ? aSplitter.previousSibling : aSplitter.nextSibling ;
+		var node = aSplitter.previousSibling;
+		if (node.getAttribute('splitter') == 'after')
+			return node;
+		else
+			return aSplitter.nextSibling;
 	},
  
 	updateSplitterContextMenu : function() 

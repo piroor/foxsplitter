@@ -25,17 +25,13 @@
 			]]></getter>
 		</property>
 
-		<property name="parentOrient" readonly="true">
+		<property name="collapsableParent" readonly="true">
 			<getter><![CDATA[
-				var node = this.parentContainer;
-				if (!node) return null;
+				var c = this;
+				while (c && !c.nextSibling && !c.previousSibling)
+					c = c.parentNode;
 
-				node = node.parentNode;
-
-				if (node.orient == 'horizontal' || node.localName == 'hbox')
-					return 'horizontal';
-				else
-					return 'vertical';
+				return c;
 			]]></getter>
 		</property>
 	</implementation>
@@ -80,27 +76,10 @@
 
 		]]></constructor>
 
-		<method name="toggleCollapsed">
-			<body><![CDATA[
-				if (!this.isCollapsed()) {
-					this.lastWidth  = this.boxObject.width;
-					this.lastHeight = this.boxObject.height;
-					this.collapsed  = true;
-				}
-				else {
-					this.collapsed  = false;
-					this.width      = this.lastWidth;
-					this.height     = this.lastHeight;
-				}
-			]]></body>
-		</method>
-		<method name="isCollapsed">
-			<body><![CDATA[
-				return this.collapsed || !this.boxObject.width || !this.boxObject.height;
-			]]></body>
-		</method>
-		<field name="lastWidth">-1</field>
-		<field name="lastHeight">-1</field>
+		<field name="contentCollapsed">false</field>
+
+		<field name="lastwidth">-1</field>
+		<field name="lastheight">-1</field>
 	</implementation>
 
 	<handlers>
@@ -195,6 +174,64 @@
 
 		<property name="src" readonly="true"
 			onget="return gBrowser.currentURI.spec;"/>
+
+		<method name="toggleCollapsed">
+			<body><![CDATA[
+				var c = this.collapsableParent;
+				if (!c) return;
+
+				var sideBox;
+				var splitter;
+				if (c.getAttribute('splitter') == 'before') {
+					sideBox = c.previousSibling ? c.previousSibling.previousSibling : c.nextSibling.nextSibling ;
+					splitter = c.previousSibling || c.nextSibling;
+				}
+				else {
+					sideBox = c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling ;
+					splitter = c.nextSibling || c.previousSibling;
+				}
+				if (!c.contentCollapsed && sideBox.contentCollapsed) {
+					if (c.getAttribute('splitter') == 'before') {
+						if (c.nextSibling) {
+							sideBox = c.nextSibling.nextSibling;
+							splitter.nextSibling;
+						}
+					}
+					else if (c.previousSibling) {
+						sideBox = c.previousSibling.previousSibling;
+						splitter.previousSibling;
+					}
+				}
+
+				var prop = (splitter.getAttribute('orient') == 'horizontal') ? 'width' : 'height' ;
+
+				var origSize = c.boxObject[prop];
+				var sideSize = sideBox.boxObject[prop];
+				if (!this.contentCollapsed) {
+					c['last'+prop] = origSize;
+					c.setAttribute(prop, 0);
+					sideBox.setAttribute(prop, sideSize + origSize);
+					c.contentCollapsed = true;
+					c.setAttribute('max'+prop, 0);
+				}
+				else {
+					c.removeAttribute('max'+prop);
+					c.contentCollapsed = false;
+					if (c['last'+prop] === void(0) || c['last'+prop] < 0)
+						c['last'+prop] = 100;
+					c.setAttribute(prop, c['last'+prop]);
+					sideBox.setAttribute(prop, sideSize - (c['last'+prop] - origSize));
+					c['last'+prop] = -1;
+				}
+
+				window.setTimeout(function(aThis) {
+					aThis.toggleToolbar(false, true, 0);
+					if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
+						aThis.mUpdateToolbarMode();
+				}, 0, this);
+			]]></body>
+		</method>
+
 
 		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
@@ -363,12 +400,15 @@
 			 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.pageDNDObserver);
 			 	"
 				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
-				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.pageDNDObserver);">
+				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+				onclick="if (event.button == 1) this.parentNode.parentNode.parentNode.toggleCollapsed();"
+				ondblclick="this.parentNode.parentNode.parentNode.toggleCollapsed();">
 				<xul:toolbarbutton
 					anonid="close-button-vertical"
 					class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
 					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"/>
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"
+					ondblclick="event.stopPropagation();"/>
 				<xul:box class="subbrowser-toolbar-item favicon-box">
 					<xul:image class="subbrowser-toolbar-item favicon"
 						anonid="vertical-favicon"
@@ -376,11 +416,9 @@
 						ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 				</xul:box>
-				<!--xul:label anonid="title"
-					blank-label="&splitbrowser.subbrowser.blank;"
-					loading-label="&splitbrowser.subbrowser.loading;"
-					flex="1"
-					crop="end"/-->
+				<xul:description anonid="vertical-title"
+					class="subbrowser-vertical-title"
+					flex="1"/>
 			</xul:toolbar>
 			</xul:toolbox>
 			<xul:vbox flex="1">
@@ -396,7 +434,15 @@
 				 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);
 				 	"
 					ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);">
+					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+				 	onclick="
+				 		if (event.button == 0 &amp;&amp;
+				 			this.firstChild.selectedIndex == 0)
+							this.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false, true, 0);
+				 		if (event.button == 1)
+				 			this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();
+				 	"
+					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
 					<xul:deck anonid="toolbar-deck"
 						flex="1"
 						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(true);"
@@ -426,24 +472,28 @@
 								anonid="back-button"
 								tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
 								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goBack();"
+								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goBack"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="forward-button"
 								tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
 								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goForward();"
+								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goForward"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="reload-button"
 								tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
 								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.reload();"
+								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button reload"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="stop-button"
 								tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
 								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.stop();"
+								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button stop"
 								disabled="true"/>
 							<xul:hbox class="subbrowser-toolbar-item urlbar-box"
@@ -459,6 +509,8 @@
 										class="subbrowser-toolbar-item urlbar-textbox"
 										ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
 										ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+										onclick="event.stopPropagation();"
+										ondblclick="event.stopPropagation();"
 										sizetopopup="pref"
 										clickSelectsAll="true"
 										type="autocomplete"
@@ -482,14 +534,16 @@
 								class="subbrowser-toolbar-item go"
 								label="&splitbrowser.subbrowser.go.label;"
 								tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.go();"/>
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.go();"
+								ondblclick="event.stopPropagation();"/>
 						</xul:hbox>
 					</xul:deck>
 					<xul:toolbarbutton
 						anonid="close-button"
 						class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
 						tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.close();"/>
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.close();"
+						ondblclick="event.stopPropagation();"/>
 				</xul:toolbar>
 				</xul:toolbox>
 				<xul:hbox class="subbrowser-browser-box"
@@ -506,7 +560,7 @@
 							node.parentNode.openNewTab();
 						"
 						onclick="return contentAreaClick(event, false);"
-						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						content="about:blank"
 						contextmenu="contentAreaContextMenu"
 						contentcontextmenu="contentAreaContextMenu"
@@ -517,7 +571,7 @@
 						flex="1"
 						type="content"
 						onclick="return contentAreaClick(event, false);"
-						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						content="about:blank"
 						contextmenu="contentAreaContextMenu"
 						contentcontextmenu="contentAreaContextMenu"
@@ -556,6 +610,8 @@
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar');"/>
 		<property name="title" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'title');"/>
+		<property name="vTitle" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-title');"/>
 		<property name="favicon" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'favicon');"/>
 		<property name="vFavicon" readonly="true"
@@ -574,9 +630,6 @@
 		<property name="src"
 			onset="this.setAttribute('src', val); this.load(val); return val;"
 			onget="return this.getAttribute('src') || 'about:blank';"/>
-
-		<property name="browserCollapsed" readonly="true"
-			onget="return (this.boxObject.width == this.vToolbox.boxObject.width) || (this.boxObject.height == this.hToolbox.boxObject.height);"/>
 
 		<method name="load">
 			<parameter name="aURI"/>
@@ -627,31 +680,24 @@
 		</method>
 
 
+		<property name="contentCollapsed"
+			onset="return val;">
+			<getter><![CDATA[
+				return (this.boxObject.width <= this.vToolbox.boxObject.width) ||
+					(this.boxObject.height <= this.hToolbox.boxObject.height);
+			]]></getter>
+		</property>
 
 		<method name="updateContextMenu">
 			<parameter name="aEvent"/>
 			<body><![CDATA[
 				var popup = this.contextmenu;
-				var collapsed = this.isCollapsed();
+				var collapsed = this.contentCollapsed;
 				popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
 				popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
 
 				var tabItem = popup.getElementsByAttribute('class', 'subbrowser-context-openNewTab')[0];
 				tabItem.hidden = tabItem.previousSibling.hidden = (this.browser.localName != 'tabbrowser');
-			]]></body>
-		</method>
-
-		<method name="isCollapsed">
-			<body><![CDATA[
-				var c = this.parentContainer;
-				return c ? c.isCollapsed() : false ;
-			]]></body>
-		</method>
-
-		<method name="toggleCollapsed">
-			<body><![CDATA[
-				var c = this.parentContainer;
-				if (c) c.toggleCollapsed();
 			]]></body>
 		</method>
 
@@ -714,7 +760,22 @@
 						this.forwardButton.setAttribute('disabled', true);
 					}
 
-					this.title.setAttribute('value', b.contentDocument.title || this.title.getAttribute('blank-label'));
+					var title = b.contentDocument.title || this.title.getAttribute('blank-label');
+					this.title.setAttribute('value', title);
+					while (this.vTitle.hasChildNodes())
+						this.vTitle.removeChild(this.vTitle.firstChild);
+					this.vTitle.appendChild(document.createTextNode(
+						title.replace(/(.)/g, '$1\n')
+							.replace(/:/g, '..')
+							.replace(/;/g, ',.')
+//							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
+//							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
+							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '.-.')
+							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '._.')
+							.replace(/\|/g, '<->')
+							.replace(/^-$/mg, '|')
+							.replace(/<->/mg, '-')
+					));
 					this.updateIcon();
 				}
 				else {
@@ -723,7 +784,22 @@
 
 					this.mIsBusy = true;
 					this.setAttribute('busy', true);
-					this.title.setAttribute('value', this.title.getAttribute('loading-label'));
+					var title = this.title.getAttribute('loading-label');
+					this.title.setAttribute('value', title);
+					while (this.vTitle.hasChildNodes())
+						this.vTitle.removeChild(this.vTitle.firstChild);
+					this.vTitle.appendChild(document.createTextNode(
+						title.replace(/(.)/g, '$1\n')
+							.replace(/:/g, '..')
+							.replace(/;/g, ',.')
+//							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
+//							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
+							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '.-.')
+							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '._.')
+							.replace(/\|/g, '<->')
+							.replace(/^-$/mg, '|')
+							.replace(/<->/mg, '-')
+					));
 					this.updateIcon();
 				}
 			]]></body>
@@ -736,7 +812,7 @@
 			<parameter name="aForce"/>
 			<parameter name="aDelay"/>
 			<body><![CDATA[
-				if (this.browserCollapsed) aShow = false;
+				if (this.contentCollapsed) aShow = false;
 
 				if (this.mIsToolbarHover == aShow) return;
 
@@ -744,14 +820,19 @@
 
 				if (aForce && aDelay === void(0)) {
 					this.toolbarDeck.selectedIndex = aShow ? 1 : 0 ;
+					if (this.toggleToolbarTimer) {
+						window.clearTimeout(this.toggleToolbarTimer);
+						this.toggleToolbarTimer = null;
+					}
 					return;
 				}
 
-				window.setTimeout(
+				this.toggleToolbarTimer = window.setTimeout(
 					function(aShowFlag, aThis) {
 						if (aShowFlag == aThis.mIsToolbarHover &&
 							aThis.toolbarDeck)
 							aThis.toolbarDeck.selectedIndex = aShowFlag ? 1 : 0 ;
+						aThis.toggleToolbarTimer = null;
 					},
 					(
 						aDelay !== void(0) ? aDelay :
@@ -764,6 +845,7 @@
 				);
 			]]></body>
 		</method>
+		<field name="toggleToolbarTimer">null</field>
 
 
 		<method name="setIcon">
@@ -961,7 +1043,7 @@
 			onDrop: function (aEvent, aXferData, aDragSession)
 			{
 				aEvent.preventDefault();
-				aEvent.preventBubble();
+				aEvent.stopPropagation();
 
 				var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 				if (!uri) return;
@@ -1205,14 +1287,25 @@
 			}
 			else {
 				this.addProgressListener(null);
+
+				window.setTimeout(function(aThis) {
+					aThis.mDelayedBrowserStartup();
+				}, 0, this);
+
 				if (this.getAttribute('src'))
 					this.load(this.getAttribute('src'));
 			}
 		]]></constructor>
 
-		<method name="mDelayedTabbrowserStartup">
-			<parameter name="aThis"/>
+		<method name="mDelayedBrowserStartup">
 			<body><![CDATA[
+				this.mUpdateToolbarMode();
+			]]></body>
+		</method>
+		<method name="mDelayedTabbrowserStartup">
+			<body><![CDATA[
+			this.mDelayedBrowserStartup();
+
 			var b = this.browser;
 			this.addProgressListener(b.mCurrentTab);
 
@@ -1297,11 +1390,35 @@
 		</method>
 -->
 
+		<method name="mUpdateToolbarMode">
+			<body><![CDATA[
+				var c = this.collapsableParent;
+				var minWidth = this.vToolbox.boxObject.width || this.hToolbox.boxObject.height;
+				var minHeight = this.hToolbox.boxObject.height || this.vToolbox.boxObject.width;
+				if (this.boxObject.width <= minWidth) {
+					if (c && this.boxObject.width <= minWidth) {
+						c.contentCollapsed = true;
+						c.setAttribute('maxwidth', 0);
+					}
+					this.setAttribute('toolbar-mode', 'vertical');
+				}
+				else {
+					if (c && this.boxObject.height <= minHeight) {
+						c.contentCollapsed = true;
+						c.setAttribute('maxheight', 0);
+					}
+					this.setAttribute('toolbar-mode', 'horizontal');
+				}
+			]]></body>
+		</method>
+
 	</implementation>
 
 	<handlers>
 		<handler event="DOMLinkAdded" phase="capturing"
 			action="this.onLinkAdded(event);"/>
+		<handler event="resize"
+			action="this.mUpdateToolbarMode();"/>
 
 <!--
 		<handler event="focus" phase="capturing"
