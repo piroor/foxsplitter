@@ -327,168 +327,215 @@
 </binding>
 
 <binding id="subbrowser" extends="#subbrowser-base">
-	<content orient="vertical">
-		<xul:toolbar class="subbrowser-toolbar chromeclass-extrachrome"
-			align="center"
-		 	ondraggesture="
+	<content orient="vertical"
+		context="_child">
+		<xul:menupopup anonid="contextmenu"
+			onpopupshowing="
 				this.parentNode.toggleToolbar(false, true, 0);
-		 		nsDragAndDrop.startDrag(event, this.parentNode.pageDNDObserver);
-		 	"
-			ondragdrop="nsDragAndDrop.drop(event, this.parentNode.pageDNDObserver);"
-			ondragover="nsDragAndDrop.dragOver(event, this.parentNode.pageDNDObserver);"
-			context="_child">
-			<xul:menupopup anonid="contextmenu"
-				onpopupshowing="
-					this.parentNode.parentNode.toggleToolbar(false, true, 0);
-					this.parentNode.parentNode.updateContextMenu(event);
-				"
-				oncommand="this.parentNode.parentNode.toggleToolbar(false, true, 0);"
-				ondraggesture="event.stopPropagation();">
-				<xul:menuitem class="subbrowser-context-close"
-					label="&splitbrowser.subbrowser.menu.close;"
-					oncommand="this.parentNode.parentNode.parentNode.close();"/>
-				<xul:menuitem class="subbrowser-context-collapse"
-					label="&splitbrowser.subbrowser.menu.collapse;"
-					oncommand="this.parentNode.parentNode.parentNode.toggleCollapsed();"/>
-				<xul:menuitem class="subbrowser-context-expand"
-					label="&splitbrowser.subbrowser.menu.expand;"
-					oncommand="this.parentNode.parentNode.parentNode.toggleCollapsed();"/>
-				<xul:menuseparator/>
-				<xul:menuitem class="subbrowser-context-openNewTab"
-					label="&splitbrowser.subbrowser.menu.openNewTab;"
-					oncommand="this.parentNode.parentNode.parentNode.openNewTab();"/>
-			</xul:menupopup>
-			<xul:deck anonid="toolbar-deck"
-				flex="1"
-				onmouseover="this.parentNode.parentNode.toggleToolbar(true);"
-				onmouseout="this.parentNode.parentNode.toggleToolbar(false);">
-				<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
-					<xul:box class="subbrowser-toolbar-item favicon-box">
-						<xul:image class="subbrowser-toolbar-item favicon"
-							anonid="favicon"
-							validate="never"
-							ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-							onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
-					</xul:box>
-					<xul:stack flex="1">
-						<xul:progressmeter class="subbrowser-toolbar-item progress"
-							anonid="progressmeter"
-							collapsed="true"
-							flex="1"/>
-						<xul:label anonid="title"
-							blank-label="&splitbrowser.subbrowser.blank;"
-							loading-label="&splitbrowser.subbrowser.loading;"
-							flex="1"
-							crop="end"/>
-					</xul:stack>
-				</xul:hbox>
-				<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
-					<xul:toolbarbutton
-						anonid="back-button"
-						tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.goBack();"
-						class="subbrowser-toolbar-item button goBack"
-						disabled="true"/>
-					<xul:toolbarbutton
-						anonid="forward-button"
-						tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.goForward();"
-						class="subbrowser-toolbar-item button goForward"
-						disabled="true"/>
-					<xul:toolbarbutton
-						anonid="reload-button"
-						tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.reload();"
-						class="subbrowser-toolbar-item button reload"
-						disabled="true"/>
-					<xul:toolbarbutton
-						anonid="stop-button"
-						tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.stop();"
-						class="subbrowser-toolbar-item button stop"
-						disabled="true"/>
-					<xul:hbox class="subbrowser-toolbar-item urlbar-box"
-						align="center"
-						flex="1">
-						<xul:stack flex="1">
-							<xul:progressmeter class="subbrowser-toolbar-item urlbar-progress"
-								anonid="urlbar-progressmeter"
-								collapsed="true"
-								flex="1"/>
-							<xul:textbox flex="1"
-								anonid="urlbar"
-								class="subbrowser-toolbar-item urlbar-textbox"
-								ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
-								ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
-								sizetopopup="pref"
-								clickSelectsAll="true"
-								type="autocomplete"
-								autocompletesearch="history"
-								autocompletepopup="PopupAutoComplete"
-								completeselectedindex="true"
-								tabscrolling="true"
-								showcommentcolumn="true"
-								enablehistory="true">
-								<xul:box class="subbrowser-toolbar-item urlbar-favicon-box">
-									<xul:image class="subbrowser-toolbar-item urlbar-favicon"
-										anonid="urlbar-favicon"
-										validate="never"
-										ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-										onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
-								</xul:box>
-							</xul:textbox>
-						 </xul:stack>
-					</xul:hbox>
-					<xul:toolbarbutton
-						anonid="go-button"
-						class="subbrowser-toolbar-item go"
-						label="&splitbrowser.subbrowser.go.label;"
-						tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.go();"/>
-				</xul:hbox>
-			</xul:deck>
-			<xul:toolbarbutton
-				anonid="close-button"
-				class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
-				tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
+				this.parentNode.updateContextMenu(event);
+			"
+			oncommand="this.parentNode.toggleToolbar(false, true, 0);"
+			ondraggesture="event.stopPropagation();">
+			<xul:menuitem class="subbrowser-context-close"
+				label="&splitbrowser.subbrowser.menu.close;"
 				oncommand="this.parentNode.parentNode.close();"/>
-		</xul:toolbar>
-		<xul:vbox class="subbrowser-browser-box"
-			flex="1">
-			<xul:tabbrowser anonid="browser-tabbrowser"
-				class="subbrowser-browser"
+			<xul:menuitem class="subbrowser-context-collapse"
+				label="&splitbrowser.subbrowser.menu.collapse;"
+				oncommand="this.parentNode.parentNode.toggleCollapsed();"/>
+			<xul:menuitem class="subbrowser-context-expand"
+				label="&splitbrowser.subbrowser.menu.expand;"
+				oncommand="this.parentNode.parentNode.toggleCollapsed();"/>
+			<xul:menuseparator/>
+			<xul:menuitem class="subbrowser-context-openNewTab"
+				label="&splitbrowser.subbrowser.menu.openNewTab;"
+				oncommand="this.parentNode.parentNode.openNewTab();"/>
+		</xul:menupopup>
+		<xul:hbox flex="1">
+			<xul:toolbox anonid="subbrowser-toolbox-vertical"
+				orient="vertical"
+				class="subbrowser-toolbox subbrowser-toolbox-vertical">
+			<xul:toolbar anonid="subbrowser-toolbar-vertical"
+				orient="vertical"
 				flex="1"
-				type="content"
-				onnewtab="
-					var node = this;
-					while (node.localName != 'tabbrowser') {
-						node = node.parentNode;
-					}
-					node.parentNode.parentNode.openNewTab();
-				"
-				onclick="return contentAreaClick(event, false);"
-				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.pageDNDObserver);"
-				content="about:blank"
-				contextmenu="contentAreaContextMenu"
-				contentcontextmenu="contentAreaContextMenu"
-				autocompletepopup="PopupAutoComplete"
-				disablehistory="true"/>
-			<xul:browser anonid="browser-simple"
-				class="subbrowser-browser"
-				flex="1"
-				type="content"
-				onclick="return contentAreaClick(event, false);"
-				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.pageDNDObserver);"
-				content="about:blank"
-				contextmenu="contentAreaContextMenu"
-				contentcontextmenu="contentAreaContextMenu"
-				autocompletepopup="PopupAutoComplete"/>
-		</xul:vbox>
+				class="subbrowser-toolbar subbrowser-toolbar-vertical chromeclass-extrachrome"
+				align="center"
+			 	ondraggesture="
+			 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.pageDNDObserver);
+			 	"
+				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.pageDNDObserver);">
+				<xul:toolbarbutton
+					anonid="close-button-vertical"
+					class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
+					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"/>
+				<xul:box class="subbrowser-toolbar-item favicon-box">
+					<xul:image class="subbrowser-toolbar-item favicon"
+						anonid="vertical-favicon"
+						validate="never"
+						ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+				</xul:box>
+				<!--xul:label anonid="title"
+					blank-label="&splitbrowser.subbrowser.blank;"
+					loading-label="&splitbrowser.subbrowser.loading;"
+					flex="1"
+					crop="end"/-->
+			</xul:toolbar>
+			</xul:toolbox>
+			<xul:vbox flex="1">
+				<xul:toolbox anonid="subbrowser-toolbox-horizontal"
+					orient="horizontal"
+					class="subbrowser-toolbox subbrowser-toolbox-horizontal">
+				<xul:toolbar anonid="subbrowser-toolbar-horizontal"
+					class="subbrowser-toolbar subbrowser-toolbar-horizontal chromeclass-extrachrome"
+					align="center"
+					flex="1"
+				 	ondraggesture="
+						this.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false, true, 0);
+				 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);
+				 	"
+					ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);">
+					<xul:deck anonid="toolbar-deck"
+						flex="1"
+						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(true);"
+						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false);">
+						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+							<xul:box class="subbrowser-toolbar-item favicon-box">
+								<xul:image class="subbrowser-toolbar-item favicon"
+									anonid="favicon"
+									validate="never"
+									ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+									onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+							</xul:box>
+							<xul:stack flex="1">
+								<xul:progressmeter class="subbrowser-toolbar-item progress"
+									anonid="progressmeter"
+									collapsed="true"
+									flex="1"/>
+								<xul:label anonid="title"
+									blank-label="&splitbrowser.subbrowser.blank;"
+									loading-label="&splitbrowser.subbrowser.loading;"
+									flex="1"
+									crop="end"/>
+							</xul:stack>
+						</xul:hbox>
+						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+							<xul:toolbarbutton
+								anonid="back-button"
+								tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goBack();"
+								class="subbrowser-toolbar-item button goBack"
+								disabled="true"/>
+							<xul:toolbarbutton
+								anonid="forward-button"
+								tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goForward();"
+								class="subbrowser-toolbar-item button goForward"
+								disabled="true"/>
+							<xul:toolbarbutton
+								anonid="reload-button"
+								tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.reload();"
+								class="subbrowser-toolbar-item button reload"
+								disabled="true"/>
+							<xul:toolbarbutton
+								anonid="stop-button"
+								tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.stop();"
+								class="subbrowser-toolbar-item button stop"
+								disabled="true"/>
+							<xul:hbox class="subbrowser-toolbar-item urlbar-box"
+								align="center"
+								flex="1">
+								<xul:stack flex="1">
+									<xul:progressmeter class="subbrowser-toolbar-item urlbar-progress"
+										anonid="urlbar-progressmeter"
+										collapsed="true"
+										flex="1"/>
+									<xul:textbox flex="1"
+										anonid="urlbar"
+										class="subbrowser-toolbar-item urlbar-textbox"
+										ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+										ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+										sizetopopup="pref"
+										clickSelectsAll="true"
+										type="autocomplete"
+										autocompletesearch="history"
+										autocompletepopup="PopupAutoComplete"
+										completeselectedindex="true"
+										tabscrolling="true"
+										showcommentcolumn="true"
+										enablehistory="true">
+										<xul:box class="subbrowser-toolbar-item urlbar-favicon-box">
+											<xul:image class="subbrowser-toolbar-item urlbar-favicon"
+												anonid="urlbar-favicon"
+												validate="never"
+												onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+										</xul:box>
+									</xul:textbox>
+								 </xul:stack>
+							</xul:hbox>
+							<xul:toolbarbutton
+								anonid="go-button"
+								class="subbrowser-toolbar-item go"
+								label="&splitbrowser.subbrowser.go.label;"
+								tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.go();"/>
+						</xul:hbox>
+					</xul:deck>
+					<xul:toolbarbutton
+						anonid="close-button"
+						class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
+						tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.close();"/>
+				</xul:toolbar>
+				</xul:toolbox>
+				<xul:hbox class="subbrowser-browser-box"
+					flex="1">
+					<xul:tabbrowser anonid="browser-tabbrowser"
+						class="subbrowser-browser"
+						flex="1"
+						type="content"
+						onnewtab="
+							var node = this;
+							while (node.localName != 'tabbrowser') {
+								node = node.parentNode;
+							}
+							node.parentNode.openNewTab();
+						"
+						onclick="return contentAreaClick(event, false);"
+						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+						content="about:blank"
+						contextmenu="contentAreaContextMenu"
+						contentcontextmenu="contentAreaContextMenu"
+						autocompletepopup="PopupAutoComplete"
+						disablehistory="true"/>
+					<xul:browser anonid="browser-simple"
+						class="subbrowser-browser"
+						flex="1"
+						type="content"
+						onclick="return contentAreaClick(event, false);"
+						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
+						content="about:blank"
+						contextmenu="contentAreaContextMenu"
+						contentcontextmenu="contentAreaContextMenu"
+						autocompletepopup="PopupAutoComplete"/>
+				</xul:hbox>
+			</xul:vbox>
+		</xul:hbox>
 	</content>
 
 	<implementation>
 		<property name="toolbar" readonly="true"
-			onget="return document.getAnonymousNodes(this)[0];"/>
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'subbrowser-toolbar-horizontal');"/>
+
+		<property name="hToolbox" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'subbrowser-toolbox-horizontal');"/>
+		<property name="vToolbox" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'subbrowser-toolbox-vertical');"/>
+
 		<property name="toolbarDeck" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'toolbar-deck');"/>
 
@@ -511,6 +558,8 @@
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'title');"/>
 		<property name="favicon" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'favicon');"/>
+		<property name="vFavicon" readonly="true"
+			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-favicon');"/>
 		<property name="urlbarFavicon" readonly="true"
 			onget="return document.getAnonymousElementByAttribute(this, 'anonid', 'urlbar-favicon');"/>
 		<property name="progressmeter" readonly="true"
@@ -525,6 +574,9 @@
 		<property name="src"
 			onset="this.setAttribute('src', val); this.load(val); return val;"
 			onget="return this.getAttribute('src') || 'about:blank';"/>
+
+		<property name="browserCollapsed" readonly="true"
+			onget="return (this.boxObject.width == this.vToolbox.boxObject.width) || (this.boxObject.height == this.hToolbox.boxObject.height);"/>
 
 		<method name="load">
 			<parameter name="aURI"/>
@@ -684,6 +736,8 @@
 			<parameter name="aForce"/>
 			<parameter name="aDelay"/>
 			<body><![CDATA[
+				if (this.browserCollapsed) aShow = false;
+
 				if (this.mIsToolbarHover == aShow) return;
 
 				this.mIsToolbarHover = aShow;
@@ -724,10 +778,12 @@
 			<body><![CDATA[
 				if (!this.mIsBusy && this.mIconURL) {
 					this.favicon.setAttribute('src', this.mIconURL);
+					this.vFavicon.setAttribute('src', this.mIconURL);
 					this.urlbarFavicon.setAttribute('src', this.mIconURL);
 				}
 				else {
 					this.favicon.removeAttribute('src');
+					this.vFavicon.removeAttribute('src');
 					this.urlbarFavicon.removeAttribute('src');
 				}
 			]]></body>

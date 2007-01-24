@@ -50,3 +50,13 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 	z-index: 65000;
 	cursor: pointer;
 }
+
+
+
+.subbrowser-toolbox-vertical {
+	visibility: collapse;
+}
+
+subbrowser[orient="horizontal"][browserCollapsed="true"] .subbrowser-toolbox-vertical {
+	visibility: visible;
+}
