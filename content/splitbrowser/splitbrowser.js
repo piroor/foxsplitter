@@ -604,15 +604,17 @@ var SplitBrowser = {
  
 	serializeBrowserState : function(aBrowser) { 
 		var state = {
+				textZoom  : [aBrowser.markupDocumentViewer.textZoom],
 				histories : this.serializeBrowserSessionHistories(aBrowser)
 			};
 
 		if (aBrowser.localName == 'tabbrowser') {
-			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
+			var tabs = aBrowser.mTabContainer.childNodes;
+			for (var i = 0, maxi = tabs.length; i < maxi; i++)
 			{
-				if (aBrowser.mTabContainer.childNodes[i] == aBrowser.selectedTab) {
+				state.textZoom[i] = tabs[i].linkedBrowser.markupDocumentViewer.textZoom;
+				if (tabs[i] == aBrowser.selectedTab) {
 					state.selectedTab = i;
-					break;
 				}
 			}
 		}
@@ -808,6 +810,7 @@ var SplitBrowser = {
 					browser = aBrowser.getBrowserForTab(tab);
 				}
 				SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
+				browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[i] || 1;
 				if (aBrowser.localName == 'tabbrowser' &&
 					aBrowserState.selectedTab == i)
 					aBrowser.selectedTab = tab;
