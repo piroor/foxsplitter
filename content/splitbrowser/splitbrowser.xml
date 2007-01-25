@@ -834,13 +834,11 @@
 						title.replace(/(.)/g, '$1\n')
 							.replace(/:/g, '..')
 							.replace(/;/g, ',.')
-//							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
-//							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
-							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '.-.')
-							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '._.')
+							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
+							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
 							.replace(/\|/g, '<->')
-							.replace(/^-$/mg, '|')
-							.replace(/<->/mg, '-')
+							.replace(/^[-\u2015\u30fc\uff0d\uff70]$/mg, '|')
+							.replace(/<->/mg, '--')
 					));
 					this.updateIcon();
 				}
@@ -858,13 +856,11 @@
 						title.replace(/(.)/g, '$1\n')
 							.replace(/:/g, '..')
 							.replace(/;/g, ',.')
-//							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
-//							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
-							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '.-.')
-							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '._.')
+							.replace(/[(\[\{<\uff1c\uff08\u300c\uff5b\u3014\u300e\u3008\u300a\u3010\uff3b\u226a]/g, '\u2227')
+							.replace(/[)\]\}>\uff1e\uff09\u300d\uff5d\u3015\u300f\u3009\u300b\u3011\uff3d\u226b]/g, '\u2228')
 							.replace(/\|/g, '<->')
-							.replace(/^-$/mg, '|')
-							.replace(/<->/mg, '-')
+							.replace(/^[-\u2015\u30fc\uff0d\uff70]$/mg, '|')
+							.replace(/<->/mg, '--')
 					));
 					this.updateIcon();
 				}
