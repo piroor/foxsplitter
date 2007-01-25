@@ -2,6 +2,9 @@
 @namespace html url("http://www.w3.org/1999/xhtml");
 
 
+
+/* Apply Bindings */
+
 #appcontent {
 	-moz-binding: url("./splitbrowser.xml#toplevel-container") !important;
 }
@@ -18,10 +21,16 @@ subbrowser {
 	-moz-binding: url("./splitbrowser.xml#subbrowser") !important;
 }
 
+
+/* tabbed browsing mode / simple mode */
+
 subbrowser:not([browsertype="simple"]) > .subbrowser-browser-box > browser,
 subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 	display: none;
 }
+
+
+/* Toolbar Behaviour */
 
 .subbrowser-toolbar-content {
 	overflow: hidden;
@@ -31,40 +40,13 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 	cursor: -moz-grab;
 }
 
-
 .subbrowser-toolbar-item.button.reload[disabled="true"],
 .subbrowser-toolbar-item.button.stop[disabled="true"] {
 	visibility: collapse;
 }
 
 
-#splitbrowser-add-button-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 32000;
-}
-
-#splitbrowser-add-button {
-	position: fixed;
-	z-index: 65000;
-	cursor: pointer;
-}
-
-
-
-
-subbrowser tabbrowser.subbrowser-browser .tabbrowser-arrowscrollbox {
-	min-width: 0 !important;
-}
-
-subbrowser tabbrowser.subbrowser-browser > tabbox,
-subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
-	overflow: hidden !important;
-	min-width: 0 !important;
-}
-
-
+/* vertical toolbar */
 
 .subbrowser-toolbox-vertical,
 subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-horizontal {
@@ -84,3 +66,34 @@ subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-vertical {
 	text-align: center;
 	line-height: 1;
 }
+
+
+
+/* positioning of popup-button */
+
+#splitbrowser-add-button-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 32000;
+}
+
+#splitbrowser-add-button {
+	position: fixed;
+	z-index: 65000;
+	cursor: pointer;
+}
+
+
+/* make "tabbrowser" being able to be collapsed */
+
+subbrowser tabbrowser.subbrowser-browser .tabbrowser-arrowscrollbox {
+	min-width: 0 !important;
+}
+
+subbrowser tabbrowser.subbrowser-browser > tabbox,
+subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
+	overflow: hidden !important;
+	min-width: 0 !important;
+}
+
