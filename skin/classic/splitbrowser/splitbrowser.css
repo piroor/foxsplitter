@@ -98,3 +98,15 @@
 .subbrowser-toolbar-item.button.go {
 	min-width: 0;
 }
+
+
+subbrowser .subbrowser-toolbar {
+}
+
+subbrowser[focused="true"] .subbrowser-toolbar {
+	background: ActiveCaption;
+	color: CaptionText;
+}
+subbrowser[focused="true"] .subbrowser-title {
+	font-weight: bold !important;
+}

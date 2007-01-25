@@ -444,7 +444,7 @@
 						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 				</xul:box>
 				<xul:description anonid="vertical-title"
-					class="subbrowser-vertical-title"
+					class="subbrowser-title subbrowser-vertical-title"
 					flex="1"/>
 			</xul:toolbar>
 			</xul:toolbox>
@@ -488,6 +488,7 @@
 									collapsed="true"
 									flex="1"/>
 								<xul:label anonid="title"
+									class="subbrowser-title"
 									blank-label="&splitbrowser.subbrowser.blank;"
 									loading-label="&splitbrowser.subbrowser.loading;"
 									flex="1"
@@ -1157,7 +1158,6 @@
 					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
 				}
 				else {
-				}
 					this.mCurrentBrowser.removeAttribute('type');
 					this.mCurrentBrowser.setAttribute('type', 'content');
 
@@ -1361,6 +1361,8 @@
 		<destructor><![CDATA[
 			var b = this.browser;
 			if (b.localName == 'tabbrowser') {
+				b.mCurrentBrowser.removeAttribute('type');
+				b.mCurrentBrowser.setAttribute('type', 'content');
 				for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
 				{
 					this.removeProgressListener(b.mTabContainer.childNodes[i]);
@@ -1368,7 +1370,14 @@
 				b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 			}
 			else {
+				b.removeAttribute('type');
+				b.setAttribute('type', 'content');
 				this.removeProgressListener();
+			}
+
+			if (this.focused) {
+				gBrowser.mCurrentBrowser.removeAttribute('type');
+				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
 			}
 
 			b.parentSubBrowser = null;
@@ -1391,31 +1400,37 @@
 		]]></field>
 
 
-		<field name="focused">false</field>
+		<property name="focused"
+			onset="if (val) this.setAttribute('focused', true); else this.removeAttribute('focused'); return val;"
+			onget="return this.getAttribute('focused') == 'true';"/>
 
-<!--
 		<method name="onFocus">
 			<body><![CDATA[
+//			dump('onFocus\n');
 				window.setTimeout(function(aThis) {
 					aThis.focused = true;
 					gBrowser.mCurrentBrowser.removeAttribute('type');
 					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
-					aThis.browser.mCurrentBrowser.removeAttribute('type');
-					aThis.browser.mCurrentBrowser.setAttribute('type', 'content-primary');
+					var b = aThis.browser;
+					if (b.localName == 'tabbrowser') b = b.mCurrentBrowser;
+					b.removeAttribute('type');
+					b.setAttribute('type', 'content-primary');
 				}, 0, this);
 			]]></body>
 		</method>
 
 		<method name="onBlur">
 			<body><![CDATA[
+//			dump('onBlur\n');
 				this.focused = false;
-				this.browser.mCurrentBrowser.removeAttribute('type');
-				this.browser.mCurrentBrowser.setAttribute('type', 'content');
+				var b = this.browser;
+				if (b.localName == 'tabbrowser') b = b.mCurrentBrowser;
+				b.removeAttribute('type');
+				b.setAttribute('type', 'content');
 				gBrowser.mCurrentBrowser.removeAttribute('type');
 				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
 			]]></body>
 		</method>
--->
 
 		<method name="mUpdateToolbarMode">
 			<parameter name="aCollapsableParent"/>
@@ -1453,13 +1468,12 @@
 			this.mUpdateToolbarMode();
 		]]></handler>
 
-<!--
 		<handler event="focus" phase="capturing"
 			action="this.onFocus();"/>
 
 		<handler event="blur" phase="capturing"
 			action="this.onBlur();"/>
--->
+
 	</handlers>
 </binding>
 
