@@ -137,6 +137,57 @@ var SplitBrowser = {
 			(!isTL && isBL) ? SplitBrowser.POSITION_BOTTOM :
 			SplitBrowser.POSITION_RIGHT ;
 	},
+ 
+	get focusedSubBrowser() 
+	{
+		return this._mFocusedSubBrowser;
+	},
+	set focusedSubBrowser(val) 
+	{
+		var old = this.focusedSubBrowser;
+
+		try {
+			var fastFind = old.browser ? old.browser.fastFind : gBrowser.fastFind ;
+			fastFind.setSelectionModeAndRepaint(Components.interfaces.nsISelectionController.SELECTION_ON);
+
+			if ('gFindBar' in window)
+				gFindBar.toggleHighlight(false);
+			else
+				toggleHighlight(false);
+		}
+		catch(e) {
+		}
+
+
+		if (old && old != val && old.focused) old.focused = false;
+		this._mFocusedSubBrowser = val || this.mainBrowserBox;
+		this.focusedSubBrowser.focused = true;
+
+
+		var b = this.focusedSubBrowser.browser ? this.focusedSubBrowser.browser : gBrowser ;
+
+		var field = document.getElementById('find-field');
+		if (field)
+			field.value = b.findString;
+
+/*
+		var check = document.getElementById('highlight');
+		if (check && check.checked) {
+			if ('gFindBar' in window)
+				gFindBar.toggleHighlight(true);
+			else
+				toggleHighlight(true);
+		}
+*/
+
+		var check = document.getElementById('match-case-status');
+		if (check)
+			b.fastFind.caseSensitive = check.checked;
+
+
+		return val;
+	},
+	_mFocusedSubBrowser : null,
   
 /* add sub-browser (split contents) */ 
 	
@@ -360,6 +411,7 @@ var SplitBrowser = {
 		gBrowser.setAttribute('type', 'content');
 		gBrowser.setAttribute('type', 'content-primary');
 
+		browser.destroy();
 		browser.parentNode.removeChild(browser);
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
@@ -1207,10 +1259,36 @@ catch(e) {
 			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
+
+		var newGetBrowser = '(SplitBrowser.focusedSubBrowser && SplitBrowser.focusedSubBrowser.browser ? SplitBrowser.focusedSubBrowser.browser : getBrowser() )';
+		var functions = [
+				'setCaseSensitivity', // Fx 2.0-
+				'toggleCaseSensitivity', // Fx -1.5
+				'finishFAYT',
+				'delayedCloseFindBar',
+				'shouldFastFind',
+				'onFindBarBlur',
+				'updateFoundLink',
+				'find',
+				'onFindAgainCmd',
+				'onFindPreviousCmd',
+				'findNext',
+				'findPrevious'
+			];
+		var base = ('gFindBar' in window) ? gFindBar : window ;
+		for (var i = 0; i < functions.length; i++)
+		{
+			if (base[functions[i]])
+				eval('base.'+functions[i]+' = '+base[functions[i]].toSource().replace(/getBrowser\(\)/g, newGetBrowser));
+		}
+
+
 		if (this.tabbedBrowsingEnabled) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
 			window.handleLinkClick = this.contentAreaHandleLinkClick;
 		}
+
+		this.focusedSubBrowser = this.mainBrowserBox;
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);

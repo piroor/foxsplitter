@@ -103,10 +103,10 @@
 subbrowser .subbrowser-toolbar {
 }
 
-subbrowser[focused="true"] .subbrowser-toolbar {
+subbrowser[subbrowser-focused="true"] .subbrowser-toolbar {
 	background: ActiveCaption;
 	color: CaptionText;
 }
-subbrowser[focused="true"] .subbrowser-title {
+subbrowser[subbrowser-focused="true"] .subbrowser-title {
 	font-weight: bold !important;
 }

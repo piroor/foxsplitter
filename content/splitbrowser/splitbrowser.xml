@@ -379,6 +379,35 @@
 			]]></body>
 		</method>
 
+
+		<property name="focused">
+			<setter><![CDATA[
+				var b = gBrowser.mCurrentBrowser;
+				if (val) {
+					this.setAttribute('subbrowser-focused', true);
+					if (SplitBrowser.focusedSubBrowser != this)
+						SplitBrowser.focusedSubBrowser = this;
+					b.removeAttribute('type');
+					b.setAttribute('type', 'content-primary');
+				}
+				else if (!val) {
+					this.removeAttribute('subbrowser-focused');
+					b.removeAttribute('type');
+					b.setAttribute('type', 'content');
+					if (SplitBrowser.focusedSubBrowser) {
+						if (SplitBrowser.focusedSubBrowser == this)
+							SplitBrowser.focusedSubBrowser = null;
+						else
+							SplitBrowser.focusedSubBrowser.focused = true;
+					}
+				}
+				return val;
+			]]></setter>
+			<getter><![CDATA[
+				return this.getAttribute('subbrowser-focused') == 'true';
+			]]></getter>
+		</property>
+
 	</implementation>
 
 	<handlers>
@@ -387,6 +416,9 @@
 
 		<handler event="dragover" phase="capturing"
 			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
+
+		<handler event="focus" phase="capturing"
+			action="this.focused = true;"/>
 	</handlers>
 </binding>
 
@@ -575,7 +607,9 @@
 				</xul:toolbar>
 				</xul:toolbox>
 				<xul:hbox class="subbrowser-browser-box"
-					flex="1">
+					flex="1"
+					onkeypress="if ('findBar_OnBrowserKeyPress' in window) findBar_OnBrowserKeyPress(event);"
+					onmouseup="if ('findBar_OnBrowserMouseUp' in window) findBar_OnBrowserMouseUp(event);">
 					<xul:tabbrowser anonid="browser-tabbrowser"
 						class="subbrowser-browser"
 						flex="1"
@@ -1154,15 +1188,13 @@
 				var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
 
 				if (this.parentSubBrowser.focused) {
-					gBrowser.mCurrentBrowser.removeAttribute('type');
-					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
+					SplitBrowser.mainBrowserBox.focused = false;
 				}
 				else {
-					this.mCurrentBrowser.removeAttribute('type');
-					this.mCurrentBrowser.setAttribute('type', 'content');
-
-					gBrowser.mCurrentBrowser.removeAttribute('type');
-					gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
+					var node = SplitBrowser.focusedSubBrowser;
+					this.parentSubBrowser.focused = false;
+					if (node)
+						node.focused = true;
 				}
 
 				return result;
@@ -1326,6 +1358,7 @@
 
 		<method name="mDelayedBrowserStartup">
 			<body><![CDATA[
+				this.focused = false;
 				this.mUpdateToolbarMode();
 			]]></body>
 		</method>
@@ -1340,11 +1373,6 @@
 			b.setStripVisibilityTo(!autoHide);
 
 			b = b.mCurrentBrowser;
-			b.setAttribute('type', 'content');
-
-			gBrowser.mCurrentBrowser.removeAttribute('type');
-			gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
-
 			b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
 
 			var os = Components.classes['@mozilla.org/observer-service;1'].getService(Components.interfaces.nsIObserverService);
@@ -1358,30 +1386,32 @@
 		</method>
 
 
-		<destructor><![CDATA[
-			var b = this.browser;
-			if (b.localName == 'tabbrowser') {
-				b.mCurrentBrowser.removeAttribute('type');
-				b.mCurrentBrowser.setAttribute('type', 'content');
-				for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
-				{
-					this.removeProgressListener(b.mTabContainer.childNodes[i]);
+		<method name="destroy">
+			<body><![CDATA[
+				var b = this.browser;
+				if (b.localName == 'tabbrowser') {
+					b.mCurrentBrowser.removeAttribute('type');
+					b.mCurrentBrowser.setAttribute('type', 'content');
+					for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
+					{
+						this.removeProgressListener(b.mTabContainer.childNodes[i]);
+a					}
+					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 				}
-				b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
-			}
-			else {
-				b.removeAttribute('type');
-				b.setAttribute('type', 'content');
-				this.removeProgressListener();
-			}
+				else {
+					b.removeAttribute('type');
+					b.setAttribute('type', 'content');
+					this.removeProgressListener();
+				}
 
-			if (this.focused) {
-				gBrowser.mCurrentBrowser.removeAttribute('type');
-				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
-			}
+				if (this.focused) {
+					gBrowser.contentWindow.focus();
+				}
+				this.focused = false;
 
-			b.parentSubBrowser = null;
-		]]></destructor>
+				b.parentSubBrowser = null;
+			]]></body>
+		</method>
 
 
 		<field name="onTabSelectHandler"><![CDATA[
@@ -1399,38 +1429,35 @@
 			})
 		]]></field>
 
-
-		<property name="focused"
-			onset="if (val) this.setAttribute('focused', true); else this.removeAttribute('focused'); return val;"
-			onget="return this.getAttribute('focused') == 'true';"/>
-
-		<method name="onFocus">
-			<body><![CDATA[
-//			dump('onFocus\n');
-				window.setTimeout(function(aThis) {
-					aThis.focused = true;
-					gBrowser.mCurrentBrowser.removeAttribute('type');
-					gBrowser.mCurrentBrowser.setAttribute('type', 'content');
-					var b = aThis.browser;
-					if (b.localName == 'tabbrowser') b = b.mCurrentBrowser;
+		<property name="focused">
+			<setter><![CDATA[
+				var b = this.browser;
+				if (b.localName == 'tabbrowser')
+					b = b.mCurrentBrowser;
+				if (val) {
+					this.setAttribute('subbrowser-focused', true);
+					if (SplitBrowser.focusedSubBrowser != this)
+						SplitBrowser.focusedSubBrowser = this;
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content-primary');
-				}, 0, this);
-			]]></body>
-		</method>
-
-		<method name="onBlur">
-			<body><![CDATA[
-//			dump('onBlur\n');
-				this.focused = false;
-				var b = this.browser;
-				if (b.localName == 'tabbrowser') b = b.mCurrentBrowser;
-				b.removeAttribute('type');
-				b.setAttribute('type', 'content');
-				gBrowser.mCurrentBrowser.removeAttribute('type');
-				gBrowser.mCurrentBrowser.setAttribute('type', 'content-primary');
-			]]></body>
-		</method>
+				}
+				else if (!val) {
+					this.removeAttribute('subbrowser-focused');
+					b.removeAttribute('type');
+					b.setAttribute('type', 'content');
+					if (SplitBrowser.focusedSubBrowser) {
+						if (SplitBrowser.focusedSubBrowser == this)
+							SplitBrowser.focusedSubBrowser = null;
+						else
+							SplitBrowser.focusedSubBrowser.focused = true;
+					}
+				}
+				return val;
+			]]></setter>
+			<getter><![CDATA[
+				return this.getAttribute('subbrowser-focused') == 'true';
+			]]></getter>
+		</property>
 
 		<method name="mUpdateToolbarMode">
 			<parameter name="aCollapsableParent"/>
@@ -1464,15 +1491,12 @@
 	<handlers>
 		<handler event="DOMLinkAdded" phase="capturing"
 			action="this.onLinkAdded(event);"/>
-		<handler event="resize"><![CDATA[
-			this.mUpdateToolbarMode();
-		]]></handler>
 
-		<handler event="focus" phase="capturing"
-			action="this.onFocus();"/>
+		<handler event="resize"
+			action="this.mUpdateToolbarMode();"/>
 
-		<handler event="blur" phase="capturing"
-			action="this.onBlur();"/>
+		<handler event="click"
+			action="this.browser.contentWindow.focus();"/>
 
 	</handlers>
 </binding>
