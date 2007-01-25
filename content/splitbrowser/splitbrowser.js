@@ -1252,6 +1252,9 @@ catch(e) {
 
 		this.insertSeparateTabItem(gBrowser);
 
+		gBrowser.__splitbrowser__updateCurrentBrowser = gBrowser.updateCurrentBrowser;
+		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+
 		if ('contentAreaDNDObserver' in window) {
 			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
 			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
@@ -1311,6 +1314,19 @@ catch(e) {
 			tabContext.appendChild(menu);
 
 		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 65000)));
+	},
+ 
+	newUpdateCurrentBrowser: function (aEvent, aXferData, aDragSession) 
+	{
+		var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
+
+		SplitBrowser.mainBrowserBox.focused = SplitBrowser.mainBrowserBox.focused;
+
+		var node = SplitBrowser.focusedSubBrowser;
+		if (node != SplitBrowser.mainBrowserBox)
+			node.focused = node.focused;
+
+		return result;
 	},
  
 	contentAreaOnDrop: function (aEvent, aXferData, aDragSession) 
