@@ -138,57 +138,37 @@ var SplitBrowser = {
 			SplitBrowser.POSITION_RIGHT ;
 	},
  
-	get focusedSubBrowser() 
+	get activeSubBrowser() 
 	{
 		return this._mFocusedSubBrowser;
 	},
-	set focusedSubBrowser(val) 
+	set activeSubBrowser(val)
 	{
-		var old = this.focusedSubBrowser;
-
+		var old = this.activeSubBrowser;
 		try {
-			var fastFind = old.browser ? old.browser.fastFind : gBrowser.fastFind ;
-			fastFind.setSelectionModeAndRepaint(Components.interfaces.nsISelectionController.SELECTION_ON);
-
-			if ('gFindBar' in window)
-				gFindBar.toggleHighlight(false);
-			else
-				toggleHighlight(false);
+			if (old && old != val && old.focused) old.focused = false;
 		}
 		catch(e) {
 		}
-
-
-		if (old && old != val && old.focused) old.focused = false;
 		this._mFocusedSubBrowser = val || this.mainBrowserBox;
-		this.focusedSubBrowser.focused = true;
+		this.activeSubBrowser.focused = true;
 
 
-		var b = this.focusedSubBrowser.browser ? this.focusedSubBrowser.browser : gBrowser ;
-
-		var field = document.getElementById('find-field');
-		if (field)
-			field.value = b.findString;
-
-/*
-		var check = document.getElementById('highlight');
-		if (check && check.checked) {
-			if ('gFindBar' in window)
-				gFindBar.toggleHighlight(true);
-			else
-				toggleHighlight(true);
-		}
-*/
-
-		var check = document.getElementById('match-case-status');
-		if (check)
-			b.fastFind.caseSensitive = check.checked;
-
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserFocusMoved', false, true);
+		newEvent.lastFocused = old;
+		document.documentElement.dispatchEvent(newEvent);
 
 		return val;
 	},
 	_mFocusedSubBrowser : null,
-  
+	
+	get activeBrowser() 
+	{
+		var b = this.activeSubBrowser;
+		return b && b.browser ? b.browser : gBrowser ;
+	},
+   
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
@@ -1235,35 +1215,11 @@ catch(e) {
 		if (c) c.toggleCollapsed();
 	},
   
-	init : function() 
+/* Find Bar */ 
+	
+	overrideFindBar : function() 
 	{
-		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
-		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
-		document.documentElement.addEventListener('SubBrowserTabbrowserInserted', this, false);
-
-		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
-
-		window.addEventListener('resize', this, false);
-		window.addEventListener('unload', this, false);
-
-		window.removeEventListener('load', this, false);
-
-		this.insertSeparateTabItem(gBrowser);
-
-		gBrowser.__splitbrowser__updateCurrentBrowser = gBrowser.updateCurrentBrowser;
-		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
-
-		if ('contentAreaDNDObserver' in window) {
-			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
-			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
-			contentAreaDNDObserver.__splitbrowser__getSupportedFlavours = contentAreaDNDObserver.getSupportedFlavours;
-			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
-		}
-
-
-		var newGetBrowser = '(SplitBrowser.focusedSubBrowser && SplitBrowser.focusedSubBrowser.browser ? SplitBrowser.focusedSubBrowser.browser : getBrowser() )';
+		var newGetBrowser = '(SplitBrowser.activeBrowser || getBrowser())';
 		var functions = [
 				'setCaseSensitivity', // Fx 2.0-
 				'toggleCaseSensitivity', // Fx -1.5
@@ -1284,14 +1240,114 @@ catch(e) {
 			if (base[functions[i]])
 				eval('base.'+functions[i]+' = '+base[functions[i]].toSource().replace(/getBrowser\(\)/g, newGetBrowser));
 		}
+	},
+ 
+	updateFindBar : function(aEvent) 
+	{
+		var old = aEvent.lastFocused;
+		var oldB;
+		try {
+			oldB = old ? (old.browser ? old.browser : gBrowser ) : null ;
+			if (oldB) {
+				oldB.fastFind.setSelectionModeAndRepaint(Components.interfaces.nsISelectionController.SELECTION_ON);
 
+				if ('gFindBar' in window)
+					gFindBar.highlightDoc(null, null, null, oldB.contentWindow);
+				else
+					highlightDoc(null, null, null, oldB.contentWindow);
+			}
+		}
+		catch(e) {
+		}
+
+
+		var b = this.activeBrowser;
+
+		var field = document.getElementById('find-field');
+		if (field)
+			field.value = b.findString;
+
+/*
+		var check = document.getElementById('highlight');
+		if (check && check.checked) {
+			if ('gFindBar' in window)
+				gFindBar.toggleHighlight(true);
+			else
+				toggleHighlight(true);
+		}
+*/
+
+		var check = document.getElementById('match-case-status');
+		if (check)
+			b.fastFind.caseSensitive = check.checked;
+	},
+  
+/* Text Zoom */ 
+	
+	overrideZoomManager : function() 
+	{
+		ZoomManager.prototype.__defineGetter__('textZoom', function() {
+			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
+			var currentZoom;
+			try {
+				currentZoom = Math.round(markupDocumentViewer.textZoom * 100);
+				if (this.indexOf(currentZoom) == -1) {
+					if (currentZoom != this.factorOther) {
+						this.factorOther = currentZoom;
+						this.factorAnchor = this.factorOther;
+					}
+				}
+			} catch (e) {
+				currentZoom = 100;
+			}
+			return currentZoom;
+		});
+		ZoomManager.prototype.__defineSetter__('textZoom', function(aZoom) {
+			if (aZoom < this.MIN || aZoom > this.MAX)
+				throw Components.results.NS_ERROR_INVALID_ARG;
+
+			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
+			markupDocumentViewer.textZoom = aZoom / 100;
+		});
+	},
+  
+	init : function() 
+	{
+		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
+		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
+		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
+		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
+		document.documentElement.addEventListener('SubBrowserTabbrowserInserted', this, false);
+		document.documentElement.addEventListener('SubBrowserFocusMoved', this, false);
+
+		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
+
+		window.addEventListener('resize', this, false);
+		window.addEventListener('unload', this, false);
+
+		window.removeEventListener('load', this, false);
+
+		this.insertSeparateTabItem(gBrowser);
+
+		gBrowser.__splitbrowser__updateCurrentBrowser = gBrowser.updateCurrentBrowser;
+		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
+
+		if ('contentAreaDNDObserver' in window) {
+			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
+			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
+			contentAreaDNDObserver.__splitbrowser__getSupportedFlavours = contentAreaDNDObserver.getSupportedFlavours;
+			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
+		}
+
+		this.overrideFindBar();
+		this.overrideZoomManager();
 
 		if (this.tabbedBrowsingEnabled) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
 			window.handleLinkClick = this.contentAreaHandleLinkClick;
 		}
 
-		this.focusedSubBrowser = this.mainBrowserBox;
+		this.activeSubBrowser = this.mainBrowserBox;
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);
@@ -1322,7 +1378,7 @@ catch(e) {
 
 		SplitBrowser.mainBrowserBox.focused = SplitBrowser.mainBrowserBox.focused;
 
-		var node = SplitBrowser.focusedSubBrowser;
+		var node = SplitBrowser.activeSubBrowser;
 		if (node != SplitBrowser.mainBrowserBox)
 			node.focused = node.focused;
 
@@ -1434,6 +1490,7 @@ catch(e) {
 		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, false);
 		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, false);
 		document.documentElement.removeEventListener('SubBrowserTabbrowserInserted', this, false);
+		document.documentElement.removeEventListener('SubBrowserFocusMoved', this, false);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
@@ -1470,6 +1527,10 @@ catch(e) {
 			case 'SubBrowserExitContentAreaEdge':
 //				this.hideAddButton(aEvent);
 				this.delayedHideAddButton();
+				break;
+
+			case 'SubBrowserFocusMoved':
+				this.updateFindBar(aEvent);
 				break;
 
 			case 'resize':

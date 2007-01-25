@@ -231,6 +231,7 @@
 					sideBox.setAttribute(prop, sideSize + origSize);
 					c.contentCollapsed = true;
 					c.setAttribute('max'+prop, 0);
+					this.focused = false;
 				}
 				else {
 					c.removeAttribute('max'+prop);
@@ -382,11 +383,14 @@
 
 		<property name="focused">
 			<setter><![CDATA[
+				if (this.contentCollapsed)
+					val = false;
+
 				var b = gBrowser.mCurrentBrowser;
 				if (val) {
 					this.setAttribute('subbrowser-focused', true);
-					if (SplitBrowser.focusedSubBrowser != this)
-						SplitBrowser.focusedSubBrowser = this;
+					if (SplitBrowser.activeSubBrowser != this)
+						SplitBrowser.activeSubBrowser = this;
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content-primary');
 				}
@@ -394,11 +398,11 @@
 					this.removeAttribute('subbrowser-focused');
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content');
-					if (SplitBrowser.focusedSubBrowser) {
-						if (SplitBrowser.focusedSubBrowser == this)
-							SplitBrowser.focusedSubBrowser = null;
+					if (SplitBrowser.activeSubBrowser) {
+						if (SplitBrowser.activeSubBrowser == this)
+							SplitBrowser.activeSubBrowser = null;
 						else
-							SplitBrowser.focusedSubBrowser.focused = true;
+							SplitBrowser.activeSubBrowser.focused = true;
 					}
 				}
 				return val;
@@ -1191,7 +1195,7 @@
 					SplitBrowser.mainBrowserBox.focused = false;
 				}
 				else {
-					var node = SplitBrowser.focusedSubBrowser;
+					var node = SplitBrowser.activeSubBrowser;
 					this.parentSubBrowser.focused = false;
 					if (node)
 						node.focused = true;
@@ -1388,6 +1392,11 @@
 
 		<method name="destroy">
 			<body><![CDATA[
+				if (this.focused) {
+					gBrowser.contentWindow.focus();
+				}
+				this.focused = false;
+
 				var b = this.browser;
 				if (b.localName == 'tabbrowser') {
 					b.mCurrentBrowser.removeAttribute('type');
@@ -1395,7 +1404,7 @@
 					for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
 					{
 						this.removeProgressListener(b.mTabContainer.childNodes[i]);
-a					}
+					}
 					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 				}
 				else {
@@ -1403,11 +1412,6 @@ a					}
 					b.setAttribute('type', 'content');
 					this.removeProgressListener();
 				}
-
-				if (this.focused) {
-					gBrowser.contentWindow.focus();
-				}
-				this.focused = false;
 
 				b.parentSubBrowser = null;
 			]]></body>
@@ -1431,13 +1435,16 @@ a					}
 
 		<property name="focused">
 			<setter><![CDATA[
+				if (this.contentCollapsed)
+					val = false;
+
 				var b = this.browser;
 				if (b.localName == 'tabbrowser')
 					b = b.mCurrentBrowser;
 				if (val) {
 					this.setAttribute('subbrowser-focused', true);
-					if (SplitBrowser.focusedSubBrowser != this)
-						SplitBrowser.focusedSubBrowser = this;
+					if (SplitBrowser.activeSubBrowser != this)
+						SplitBrowser.activeSubBrowser = this;
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content-primary');
 				}
@@ -1445,11 +1452,11 @@ a					}
 					this.removeAttribute('subbrowser-focused');
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content');
-					if (SplitBrowser.focusedSubBrowser) {
-						if (SplitBrowser.focusedSubBrowser == this)
-							SplitBrowser.focusedSubBrowser = null;
+					if (SplitBrowser.activeSubBrowser) {
+						if (SplitBrowser.activeSubBrowser == this)
+							SplitBrowser.activeSubBrowser = null;
 						else
-							SplitBrowser.focusedSubBrowser.focused = true;
+							SplitBrowser.activeSubBrowser.focused = true;
 					}
 				}
 				return val;
