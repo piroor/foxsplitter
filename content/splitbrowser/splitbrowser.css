@@ -54,7 +54,7 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 
 
 
-subbrowser[toolbar-mode="vertical"] tabbrowser.subbrowser-browser .tabbrowser-arrowscrollbox {
+subbrowser tabbrowser.subbrowser-browser .tabbrowser-arrowscrollbox {
 	min-width: 0 !important;
 }
 
