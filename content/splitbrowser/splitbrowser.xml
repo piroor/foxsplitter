@@ -746,11 +746,22 @@
 		</method>
 
 
+		<property name="minSize" readonly="true">
+			<getter><![CDATA[
+				if (this.mMinSize < 0)
+					this.mMinSize = Math.max(this.vToolbox.boxObject.width, this.hToolbox.boxObject.height) * 2;
+
+				return this.mMinSize;
+			]]></getter>
+		</property>
+		<field name="mMinSize">
+			-1
+		</field>
+
 		<property name="contentCollapsed"
 			onset="return val;">
 			<getter><![CDATA[
-				return (this.boxObject.width <= this.vToolbox.boxObject.width) ||
-					(this.boxObject.height <= this.hToolbox.boxObject.height);
+				return this.boxObject.width <= this.minSize || this.boxObject.height <= this.minSize;
 			]]></getter>
 		</property>
 
@@ -1470,20 +1481,14 @@
 					c = c.parentNode;
 				if (c && c == document) c = null;
 
-				var minWidth = this.vToolbox.boxObject.width || this.hToolbox.boxObject.height;
-				var minHeight = this.hToolbox.boxObject.height || this.vToolbox.boxObject.width;
-				if (this.boxObject.width <= minWidth) {
-					if (c && this.boxObject.width <= minWidth) {
-						c.contentCollapsed = true;
-						c.setAttribute('maxwidth', 0);
-					}
+				if (c) c.contentCollapsed = true;
+
+				if (this.boxObject.width <= this.minSize) {
+					if (c) c.setAttribute('maxwidth', 0);
 					this.setAttribute('toolbar-mode', 'vertical');
 				}
 				else {
-					if (c && this.boxObject.height <= minHeight) {
-						c.contentCollapsed = true;
-						c.setAttribute('maxheight', 0);
-					}
+					if (c) c.setAttribute('maxheight', 0);
 					this.setAttribute('toolbar-mode', 'horizontal');
 				}
 			]]></body>

@@ -527,10 +527,6 @@ var SplitBrowser = {
 			if (originalContent.localName == 'subbrowser') {
 				state.content = this.serializeBrowserState(originalContent.browser);
 				state.content.type       = 'subbrowser';
-				state.content.uri        = originalContent.src;
-				state.content.width      = originalContent.boxObject.width;
-				state.content.height     = originalContent.boxObject.height;
-				state.content.collapsed  = aContainer.contentCollapsed;
 				state.content.lastWidth  = aContainer.lastwidth;
 				state.content.lastHeight = aContainer.lastheight;
 			}
@@ -590,10 +586,6 @@ var SplitBrowser = {
 		if (originalContent.localName == 'subbrowser') {
 			state.content = this.serializeBrowserState(originalContent.browser);
 			state.content.type       = 'subbrowser';
-			state.content.uri        = originalContent.src;
-			state.content.width      = originalContent.boxObject.width;
-			state.content.height     = originalContent.boxObject.height;
-			state.content.collapsed  = aContainer.contentCollapsed;
 			state.content.lastWidth  = aContainer.lastwidth;
 			state.content.lastHeight = aContainer.lastheight;
 		}
@@ -636,8 +628,13 @@ var SplitBrowser = {
  
 	serializeBrowserState : function(aBrowser) { 
 		var state = {
-				textZoom  : [aBrowser.markupDocumentViewer.textZoom],
-				histories : this.serializeBrowserSessionHistories(aBrowser)
+				uri         : aBrowser.uri,
+				width       : aBrowser.boxObject.width,
+				height      : aBrowser.boxObject.height,
+				collapsed   : aBrowser.contentCollapsed,
+				toolbarMode : (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' ),
+				textZoom    : [aBrowser.markupDocumentViewer.textZoom],
+				histories   : this.serializeBrowserSessionHistories(aBrowser)
 			};
 
 		if (aBrowser.localName == 'tabbrowser') {
@@ -842,7 +839,12 @@ var SplitBrowser = {
 					browser = aBrowser.getBrowserForTab(tab);
 				}
 				SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
-				browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[i] || 1;
+
+				if (aBrowserState.textZoom[i])
+					browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[i];
+				if (aBrowserState.toolbarMode)
+					browser.setAttribute('toolbar-mode', aBrowserState.toolbarMode);
+
 				if (aBrowser.localName == 'tabbrowser' &&
 					aBrowserState.selectedTab == i)
 					aBrowser.selectedTab = tab;
