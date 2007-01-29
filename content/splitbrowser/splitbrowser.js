@@ -525,7 +525,7 @@ var SplitBrowser = {
 				}
 			}
 			if (originalContent.localName == 'subbrowser') {
-				state.content = this.serializeBrowserState(originalContent.browser);
+				state.content = this.serializeSubBrowserState(originalContent);
 				state.content.type       = 'subbrowser';
 				state.content.lastWidth  = aContainer.lastwidth;
 				state.content.lastHeight = aContainer.lastheight;
@@ -584,7 +584,7 @@ var SplitBrowser = {
 			}
 		}
 		if (originalContent.localName == 'subbrowser') {
-			state.content = this.serializeBrowserState(originalContent.browser);
+			state.content = this.serializeSubBrowserState(originalContent);
 			state.content.type       = 'subbrowser';
 			state.content.lastWidth  = aContainer.lastwidth;
 			state.content.lastHeight = aContainer.lastheight;
@@ -626,13 +626,20 @@ var SplitBrowser = {
 		return state;
 	},
  
+	serializeSubBrowserState : function(aBrowser) { 
+		var state = this.serializeBrowserState(aBrowser.browser);
+
+		state.uri         = aBrowser.src;
+		state.width       = aBrowser.boxObject.width;
+		state.height      = aBrowser.boxObject.height;
+		state.collapsed   = aBrowser.contentCollapsed;
+		state.toolbarMode = (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' );
+
+		return state;
+	},
+ 
 	serializeBrowserState : function(aBrowser) { 
 		var state = {
-				uri         : aBrowser.uri,
-				width       : aBrowser.boxObject.width,
-				height      : aBrowser.boxObject.height,
-				collapsed   : aBrowser.contentCollapsed,
-				toolbarMode : (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' ),
 				textZoom    : [aBrowser.markupDocumentViewer.textZoom],
 				histories   : this.serializeBrowserSessionHistories(aBrowser)
 			};
