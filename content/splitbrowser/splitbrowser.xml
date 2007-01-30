@@ -646,6 +646,7 @@
 						onclick="return contentAreaClick(event, false);"
 						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						content="about:blank"
+						contenttooltip="aHTMLTooltip"
 						contextmenu="contentAreaContextMenu"
 						contentcontextmenu="contentAreaContextMenu"
 						autocompletepopup="PopupAutoComplete"
@@ -657,6 +658,7 @@
 						onclick="return contentAreaClick(event, false);"
 						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						content="about:blank"
+						contenttooltip="aHTMLTooltip"
 						contextmenu="contentAreaContextMenu"
 						contentcontextmenu="contentAreaContextMenu"
 						autocompletepopup="PopupAutoComplete"/>
@@ -869,6 +871,7 @@
 							.replace(/^[-\u2015\u30fc\uff0d\uff70]$/mg, '|')
 							.replace(/<->/mg, '--')
 					));
+					this.setAttribute('tooltiptext', title);
 					this.updateIcon();
 				}
 				else {
@@ -891,6 +894,7 @@
 							.replace(/^[-\u2015\u30fc\uff0d\uff70]$/mg, '|')
 							.replace(/<->/mg, '--')
 					));
+					this.setAttribute('tooltiptext', title);
 					this.updateIcon();
 				}
 			]]></body>

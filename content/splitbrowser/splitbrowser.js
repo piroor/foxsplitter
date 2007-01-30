@@ -851,8 +851,7 @@ var SplitBrowser = {
 				aContainer.lastheight = aState.content.lastHeight;
 				if (aState.content.collapsed) {
 					aContainer.contentCollapsed = true;
-					if (aContainer.parentNode.localName == 'hbox' ||
-						aContainer.parentNode.getAttribute('orient') != 'vertical')
+					if (aState.position & this.POSITION_HORIZONTAL)
 						aContainer.setAttribute('maxwidth', 0);
 					else
 						aContainer.setAttribute('maxheight', 0);
