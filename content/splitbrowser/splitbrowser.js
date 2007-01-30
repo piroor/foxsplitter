@@ -33,6 +33,52 @@ var SplitBrowser = {
 		return document.getElementById('appcontent').contentWrapper;
 	},
  
+	get closeAllBroadcaster() 
+	{
+		return document.getElementById('splitbrowser-closeAll-broadcaster');
+	},
+	get collapseAllBroadcaster()
+	{
+		return document.getElementById('splitbrowser-collapseAll-broadcaster');
+	},
+	get expandAllBroadcaster()
+	{
+		return document.getElementById('splitbrowser-expandAll-broadcaster');
+	},
+	updateBroadcasters : function()
+	{
+		if (!this.browsers.length) {
+			this.closeAllBroadcaster.setAttribute('disabled', true);
+			this.collapseAllBroadcaster.setAttribute('disabled', true);
+			this.expandAllBroadcaster.setAttribute('disabled', true);
+		}
+		else {
+			this.closeAllBroadcaster.removeAttribute('disabled');
+
+			var collapsed = 0;
+			var expanded  = 0;
+			for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+			{
+				if (this.browsers[i].contentCollapsed)
+					collapsed++;
+				else
+					expanded++;
+
+				if (collapsed && expanded) break;
+			}
+
+			if (collapsed)
+				this.expandAllBroadcaster.removeAttribute('disabled');
+			else
+				this.expandAllBroadcaster.setAttribute('disabled', true);
+
+			if (expanded)
+				this.collapseAllBroadcaster.removeAttribute('disabled');
+			else
+				this.collapseAllBroadcaster.setAttribute('disabled', true);
+		}
+	},
+ 
 	POSITION_LEFT   : 1, 
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
@@ -391,8 +437,6 @@ var SplitBrowser = {
 		gBrowser.setAttribute('type', 'content');
 		gBrowser.setAttribute('type', 'content-primary');
 
-		browser.destroy();
-		browser.parentNode.removeChild(browser);
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
 			if (this.browsers[i] == browser) {
@@ -400,6 +444,10 @@ var SplitBrowser = {
 				break;
 			}
 		}
+
+		browser.destroy();
+		browser.parentNode.removeChild(browser);
+
 		this.cleanUpContainer(container);
 	},
 	
@@ -495,6 +543,24 @@ var SplitBrowser = {
 		for (var i = this.browsers.length-1; i > -1; i--)
 		{
 			this.removeSubBrowser(this.browsers[i]);
+		}
+	},
+ 
+	collapseAllSubBrowsers : function()
+	{
+		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+		{
+			if (!this.browsers[i].contentCollapsed)
+				this.browsers[i].toggleCollapsed(this.browsers[i].FORCE_COLLAPSE);
+		}
+	},
+ 
+	expandAllSubBrowsers : function()
+	{
+		for (var i = this.browsers.length -1; i > -1; i--)
+		{
+			if (this.browsers[i].contentCollapsed)
+				this.browsers[i].toggleCollapsed(this.browsers[i].FORCE_EXPAND);
 		}
 	},
   
@@ -1324,6 +1390,10 @@ catch(e) {
 	{
 		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
 		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
+		document.documentElement.addEventListener('SubBrowserAdded', this, false);
+		document.documentElement.addEventListener('SubBrowserRemoved', this, false);
+		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, false);
+		document.documentElement.addEventListener('SubBrowserContentExpanded', this, false);
 		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
 		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
 		document.documentElement.addEventListener('SubBrowserTabbrowserInserted', this, false);
@@ -1496,6 +1566,10 @@ catch(e) {
 
 		document.documentElement.removeEventListener('SubBrowserAddRequest', this, false);
 		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, false);
+		document.documentElement.removeEventListener('SubBrowserAdded', this, false);
+		document.documentElement.removeEventListener('SubBrowserRemoved', this, false);
+		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, false);
+		document.documentElement.removeEventListener('SubBrowserContentExpanded', this, false);
 		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, false);
 		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, false);
 		document.documentElement.removeEventListener('SubBrowserTabbrowserInserted', this, false);
@@ -1527,6 +1601,13 @@ catch(e) {
 			case 'SubBrowserRemoveRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.removeSubBrowser(aEvent.originalTarget || aEvent.target);
+				break;
+
+			case 'SubBrowserAdded':
+			case 'SubBrowserRemoved':
+			case 'SubBrowserContentCollapsed':
+			case 'SubBrowserContentExpanded':
+				this.updateBroadcasters();
 				break;
 
 			case 'SubBrowserEnterContentAreaEdge':

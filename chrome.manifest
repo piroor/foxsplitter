@@ -1,4 +1,3 @@
-
 content	splitbrowser	jar:chrome/splitbrowser.jar!/content/splitbrowser/
 overlay	chrome://browser/content/browser.xul	chrome://splitbrowser/content/splitbrowser.xul
 
@@ -8,5 +7,7 @@ locale	splitbrowser	fr-FR	jar:chrome/splitbrowser.jar!/locale/fr-FR/splitbrowser
 locale	splitbrowser	de-DE	jar:chrome/splitbrowser.jar!/locale/de-DE/splitbrowser/
 locale	splitbrowser	ko-KR	jar:chrome/splitbrowser.jar!/locale/ko-KR/splitbrowser/
 
-skin splitbrowser classic/1.0 jar:chrome/splitbrowser.jar!/skin/classic/splitbrowser/
-skin splitbrowsertoolbar classic/1.0 jar:chrome/splitbrowser.jar!/skin/classic/splitbrowsertoolbar/
+skin	splitbrowser	classic/1.0	jar:chrome/splitbrowser.jar!/skin/classic/splitbrowser/
+skin	splitbrowsertoolbar	classic/1.0	jar:chrome/splitbrowser.jar!/skin/classic/splitbrowsertoolbar/
+
+style	chrome://global/content/customizeToolbar.xul	chrome://splitbrowser/skin/buttons.css

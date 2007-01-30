@@ -1,0 +1,91 @@
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
+@namespace html url("http://www.w3.org/1999/xhtml");
+
+
+.toolbarbutton-1.splitbrowser-button {
+	list-style-image: url("./large/buttons.png");
+}
+
+#splitbrowser-expandAll-button {
+	-moz-image-region: rect(0px 24px 24px 0px);
+}
+#splitbrowser-expandAll-button[buttonover="true"],
+#splitbrowser-expandAll-button:hover {
+	-moz-image-region: rect(24px 24px 48px 0px);
+}
+#splitbrowser-expandAll-button[disabled="true"],
+#splitbrowser-expandAll-button[disabled="true"][buttonover="true"],
+#splitbrowser-expandAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(48px 24px 72px 0px);
+}
+
+#splitbrowser-collapseAll-button {
+	-moz-image-region: rect(0px 48px 24px 24px);
+}
+#splitbrowser-collapseAll-button[buttonover="true"],
+#splitbrowser-collapseAll-button:hover {
+	-moz-image-region: rect(24px 48px 48px 24px);
+}
+#splitbrowser-collapseAll-button[disabled="true"],
+#splitbrowser-collapseAll-button[disabled="true"][buttonover="true"],
+#splitbrowser-collapseAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(48px 48px 72px 24px);
+}
+
+#splitbrowser-closeAll-button {
+	-moz-image-region: rect(0px 72px 24px 48px);
+}
+#splitbrowser-closeAll-button[buttonover="true"],
+#splitbrowser-closeAll-button:hover {
+	-moz-image-region: rect(24px 72px 48px 48px);
+}
+#splitbrowser-closeAll-button[disabled="true"],
+#splitbrowser-closeAll-button[disabled="true"][buttonover="true"],
+#splitbrowser-closeAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(48px 72px 72px 48px);
+}
+
+
+
+[iconsize="small"] .toolbarbutton-1.splitbrowser-button {
+	list-style-image: url("./small/buttons.png");
+}
+
+[iconsize="small"] #splitbrowser-expandAll-button {
+	-moz-image-region: rect(0px 16px 16px 0px);
+}
+[iconsize="small"] #splitbrowser-expandAll-button[buttonover="true"],
+[iconsize="small"] #splitbrowser-expandAll-button:hover {
+	-moz-image-region: rect(16px 16px 32px 0px);
+}
+[iconsize="small"] #splitbrowser-expandAll-button[disabled="true"],
+[iconsize="small"] #splitbrowser-expandAll-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #splitbrowser-expandAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(32px 16px 48px 0px);
+}
+
+[iconsize="small"] #splitbrowser-collapseAll-button {
+	-moz-image-region: rect(0px 32px 16px 16px);
+}
+[iconsize="small"] #splitbrowser-collapseAll-button[buttonover="true"],
+[iconsize="small"] #splitbrowser-collapseAll-button:hover {
+	-moz-image-region: rect(16px 32px 32px 16px);
+}
+[iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"],
+[iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(32px 32px 48px 16px);
+}
+
+[iconsize="small"] #splitbrowser-closeAll-button {
+	-moz-image-region: rect(0px 48px 16px 32px);
+}
+[iconsize="small"] #splitbrowser-closeAll-button[buttonover="true"],
+[iconsize="small"] #splitbrowser-closeAll-button:hover {
+	-moz-image-region: rect(16px 48px 32px 32px);
+}
+[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"],
+[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"]:hover {
+	-moz-image-region: rect(32px 48px 48px 32px);
+}

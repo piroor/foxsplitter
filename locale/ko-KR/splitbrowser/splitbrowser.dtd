@@ -60,3 +60,11 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "감추기">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "보이기">
 <!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
+
+
+<!ENTITY splitbrowser.button.collapseAll.label   "Collapse">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Collapse all of split browsers">
+<!ENTITY splitbrowser.button.expandAll.label     "Expand">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of split browsers">
+<!ENTITY splitbrowser.button.closeAll.label      "Close All">
+<!ENTITY splitbrowser.button.closeAll.tooltip    "Close all of split browsers">

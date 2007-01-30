@@ -180,19 +180,36 @@
 		<property name="src" readonly="true"
 			onget="return gBrowser.currentURI.spec;"/>
 
+		<field name="FORCE_COLLAPSE">1</field>
+		<field name="FORCE_EXPAND">2</field>
+
 		<method name="toggleCollapsed">
+			<parameter name="aForceFlag"/>
 			<body><![CDATA[
 				var c = this.collapsableParent;
 
-				var cTemp = c;
-				var cTemp2;
-				var appcontent = document.getElementById('appcontent');
-				while (cTemp && cTemp != appcontent)
-				{
-					if (cTemp.contentCollapsed) cTemp2 = cTemp;
-					cTemp = cTemp.parentNode;
+				if (!aForceFlag || aForceFlag == this.FORCE_EXPAND) {
+					var cTemp = c;
+					var cTemp2;
+					var appcontent = document.getElementById('appcontent');
+					while (cTemp && cTemp != appcontent)
+					{
+						if (cTemp.contentCollapsed) cTemp2 = cTemp;
+						cTemp = cTemp.parentNode;
+					}
+					if (cTemp2) c = cTemp2;
 				}
-				if (cTemp2) c = cTemp2;
+				else {
+					var cTemp = c;
+					var cTemp2;
+					var appcontent = document.getElementById('appcontent');
+					while (cTemp && cTemp != appcontent)
+					{
+						cTemp2 = cTemp;
+						cTemp = cTemp.parentContainer;
+					}
+					if (cTemp2) c = cTemp2;
+				}
 
 				if (!c) return;
 
@@ -207,6 +224,7 @@
 					sideBox = c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling ;
 					splitter = c.nextSibling || c.previousSibling;
 				}
+
 				if (!c.contentCollapsed && sideBox.contentCollapsed) {
 					if (c.getAttribute('splitter') == 'before') {
 						if (c.nextSibling) {
@@ -236,8 +254,8 @@
 				else {
 					c.removeAttribute('max'+prop);
 					c.contentCollapsed = false;
-					if (c['last'+prop] === void(0) || c['last'+prop] < 0)
-						c['last'+prop] = 100;
+					if (c['last'+prop] === void(0) || c['last'+prop] <= 0)
+						c['last'+prop] = parseInt(sideSize * 2 / 5);
 					c.setAttribute(prop, c['last'+prop]);
 					sideBox.setAttribute(prop, sideSize - (c['last'+prop] - origSize));
 					c['last'+prop] = -1;
@@ -1371,6 +1389,10 @@
 			<body><![CDATA[
 				this.focused = false;
 				this.mUpdateToolbarMode();
+
+				var newEvent = document.createEvent('Events');
+				newEvent.initEvent('SubBrowserAdded', false, true);
+				this.dispatchEvent(newEvent);
 			]]></body>
 		</method>
 		<method name="mDelayedTabbrowserStartup">
@@ -1419,6 +1441,10 @@
 					b.setAttribute('type', 'content');
 					this.removeProgressListener();
 				}
+
+				var newEvent = document.createEvent('Events');
+				newEvent.initEvent('SubBrowserRemoved', false, true);
+				document.documentElement.dispatchEvent(newEvent);
 
 				b.parentSubBrowser = null;
 			]]></body>
@@ -1474,22 +1500,35 @@
 		</property>
 
 		<method name="mUpdateToolbarMode">
-			<parameter name="aCollapsableParent"/>
 			<body><![CDATA[
 				var c = this.collapsableParent;
 				while (c && c.parentNode && !c.splitterDragging)
 					c = c.parentNode;
 				if (c && c == document) c = null;
 
-				if (c) c.contentCollapsed = true;
-
 				if (this.boxObject.width <= this.minSize) {
-					if (c) c.setAttribute('maxwidth', 0);
 					this.setAttribute('toolbar-mode', 'vertical');
+					if (c) {
+						c.setAttribute('maxwidth', 0);
+						c.contentCollapsed = true;
+					}
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
+					document.documentElement.dispatchEvent(newEvent);
 				}
 				else {
-					if (c) c.setAttribute('maxheight', 0);
 					this.setAttribute('toolbar-mode', 'horizontal');
+					if (this.boxObject.height <= this.minSize) {
+						if (c) {
+							c.setAttribute('maxheight', 0);
+							c.contentCollapsed = true;
+						}
+					}
+					else {
+						var newEvent = document.createEvent('Events');
+						newEvent.initEvent('SubBrowserContentExpanded', false, true);
+						document.documentElement.dispatchEvent(newEvent);
+					}
 				}
 			]]></body>
 		</method>

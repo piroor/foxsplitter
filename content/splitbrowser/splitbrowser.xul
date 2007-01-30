@@ -2,6 +2,7 @@
 
 <?xml-stylesheet href="splitbrowser.css" type="text/css"?>
 <?xml-stylesheet href="chrome://splitbrowser/skin/splitbrowser.css" type="text/css"?>
+<?xml-stylesheet href="chrome://splitbrowser/skin/buttons.css" type="text/css"?>
 <?xml-stylesheet href="chrome://splitbrowsertoolbar/skin/splitbrowsertoolbar.css" type="text/css"?>
 
 <!DOCTYPE bindings SYSTEM "chrome://splitbrowser/locale/">
@@ -13,6 +14,37 @@
 <script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
 <keyset id="mainKeyset"/>
+
+<broadcasterset id="mainBroadcasterSet">
+	<broadcaster id="splitbrowser-collapseAll-broadcaster"
+		disabled="true"/>
+	<broadcaster id="splitbrowser-expandAll-broadcaster"
+		disabled="true"/>
+	<broadcaster id="splitbrowser-closeAll-broadcaster"
+		disabled="true"/>
+</broadcasterset>
+
+<toolbarpalette id="BrowserToolbarPalette">
+	<toolbarbutton id="splitbrowser-collapseAll-button"
+		class="splitbrowser-button toolbarbutton-1"
+		oncommand="SplitBrowser.collapseAllSubBrowsers();"
+		label="&splitbrowser.button.collapseAll.label;"
+		tooltiptext="&splitbrowser.button.collapseAll.tooltip;"
+		observes="splitbrowser-collapseAll-broadcaster"/>
+	<toolbarbutton id="splitbrowser-expandAll-button"
+		class="splitbrowser-button toolbarbutton-1"
+		oncommand="SplitBrowser.expandAllSubBrowsers();"
+		label="&splitbrowser.button.expandAll.label;"
+		tooltiptext="&splitbrowser.button.expandAll.tooltip;"
+		observes="splitbrowser-expandAll-broadcaster"/>
+	<toolbarbutton id="splitbrowser-closeAll-button"
+		class="splitbrowser-button toolbarbutton-1"
+		oncommand="SplitBrowser.removeAllSubBrowsers();"
+		label="&splitbrowser.button.closeAll.label;"
+		tooltiptext="&splitbrowser.button.closeAll.tooltip;"
+		observes="splitbrowser-closeAll-broadcaster"/>
+</toolbarpalette>
+
 
 <popup id="menu_FilePopup">
 	<menuitem id="splitbrowser-remove-all"
