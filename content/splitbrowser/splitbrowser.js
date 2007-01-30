@@ -849,6 +849,7 @@ var SplitBrowser = {
 
 				aContainer.lastwidth  = aState.content.lastWidth;
 				aContainer.lastheight = aState.content.lastHeight;
+/*
 				if (aState.content.collapsed) {
 					aContainer.contentCollapsed = true;
 					if (aState.position & this.POSITION_HORIZONTAL)
@@ -856,6 +857,7 @@ var SplitBrowser = {
 					else
 						aContainer.setAttribute('maxheight', 0);
 				}
+*/
 
 				break;
 		}
