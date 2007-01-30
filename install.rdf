@@ -28,6 +28,6 @@
 
 		<em:optionsURL>chrome://splitbrowser/content/config.xul</em:optionsURL>
 		<!--em:aboutURL>chrome://splitbrowser/content/about.xul</em:aboutURL-->
-		<!--em:iconURL></em:iconURL-->
+		<em:iconURL>chrome://splitbrowser/content/icon.png</em:iconURL>
 	</Description>
 </RDF>
