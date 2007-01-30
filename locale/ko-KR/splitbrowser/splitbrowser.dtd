@@ -1,0 +1,62 @@
+<!ENTITY splitbrowser.title           "Split Browser 설정">
+<!ENTITY splitbrowser.tab.general     "일반">
+<!ENTITY splitbrowser.general.caption     "일반">
+<!ENTITY splitbrowser.state.restore       "브라우저 분할 상태 저장">
+<!ENTITY splitbrowser.show.toolbar.always "항상 분할 브라우저에 도구 모음 보이기">
+<!ENTITY splitbrowser.show.addbuttons.caption  "컨텐트 영역의 위쪽/아래쪽/왼쪽/오른쪽 가장자리에 &quot;분할&quot; 버튼 보이기">
+<!ENTITY splitbrowser.show.addbuttons.hover    "보통 시간">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "링크, 파일 등을 드래그 하는 동안">
+
+<!ENTITY splitbrowser.tab.caption   "탭">
+<!ENTITY splitbrowser.tabs.autoHide "항상 분할 브라우저에 탭 도구 모음 보이기">
+<!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "위쪽으로 분할">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "아래쪽으로 분할">
+<!ENTITY splitbrowser.add.button.right.tooltip  "오른쪽으로 분할">
+<!ENTITY splitbrowser.add.button.left.tooltip   "왼쪽으로 분할">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "분할 브라우저 모두 닫기">
+
+<!ENTITY splitbrowser.add.label        "브라우저 분할 방향">
+<!ENTITY splitbrowser.add.top.label    "위쪽">
+<!ENTITY splitbrowser.add.bottom.label "아래쪽">
+<!ENTITY splitbrowser.add.right.label  "오른쪽">
+<!ENTITY splitbrowser.add.left.label   "왼쪽">
+
+<!ENTITY splitbrowser.frame.add.label        "현재 프레임에서의 브라우저 분할 방향">
+<!ENTITY splitbrowser.frame.add.top.label    "위쪽">
+<!ENTITY splitbrowser.frame.add.bottom.label "아래쪽">
+<!ENTITY splitbrowser.frame.add.right.label  "오른쪽">
+<!ENTITY splitbrowser.frame.add.left.label   "왼쪽">
+
+<!ENTITY splitbrowser.link.add.label        "분할 브라우저로의 로드 방향">
+<!ENTITY splitbrowser.link.add.top.label    "위쪽">
+<!ENTITY splitbrowser.link.add.bottom.label "아래쪽">
+<!ENTITY splitbrowser.link.add.right.label  "오른쪽">
+<!ENTITY splitbrowser.link.add.left.label   "왼쪽">
+
+<!ENTITY splitbrowser.tab.add.label        "탭 분할 방향">
+<!ENTITY splitbrowser.tab.add.top.label    "위쪽">
+<!ENTITY splitbrowser.tab.add.bottom.label "아래쪽">
+<!ENTITY splitbrowser.tab.add.right.label  "오른쪽">
+<!ENTITY splitbrowser.tab.add.left.label   "왼쪽">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
+<!ENTITY splitbrowser.subbrowser.loading           "로드 중...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "뒤로">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "앞으로">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "새로 고침">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "중지">
+<!ENTITY splitbrowser.subbrowser.go.label          "가기">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "현재 URI 로드">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "닫기">
+
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "새 탭">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "감추기">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "보이기">
+<!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
