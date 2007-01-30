@@ -1507,10 +1507,19 @@
 				if (c && c == document) c = null;
 
 				if (this.boxObject.width <= this.minSize) {
-					this.setAttribute('toolbar-mode', 'vertical');
-					if (c) {
-						c.setAttribute('maxwidth', 0);
-						c.contentCollapsed = true;
+					if (this.boxObject.height <= this.minSize) {
+						this.setAttribute('toolbar-mode', 'horizontal');
+						if (c) {
+							c.setAttribute('maxheight', 0);
+							c.contentCollapsed = true;
+						}
+					}
+					else {
+						this.setAttribute('toolbar-mode', 'vertical');
+						if (c) {
+							c.setAttribute('maxwidth', 0);
+							c.contentCollapsed = true;
+						}
 					}
 					var newEvent = document.createEvent('Events');
 					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
