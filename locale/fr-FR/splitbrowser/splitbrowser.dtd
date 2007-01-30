@@ -19,6 +19,11 @@
 
 
 <!ENTITY splitbrowser.file.removeAll.label "Fermer toutes fenêtres partagées">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.view.collapseAll.label     "Collapse All Split Browsers">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.view.expandAll.label       "Expand All Split Browsers">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "x">
 
 <!ENTITY splitbrowser.add.label        "Partager la fenêtre">
 <!ENTITY splitbrowser.add.top.label    "Au dessus">

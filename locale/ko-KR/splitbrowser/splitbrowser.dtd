@@ -18,7 +18,12 @@
 <!ENTITY splitbrowser.add.button.left.tooltip   "왼쪽으로 분할">
 
 
-<!ENTITY splitbrowser.file.removeAll.label "분할 브라우저 모두 닫기">
+<!ENTITY splitbrowser.file.removeAll.label       "분할 브라우저 모두 닫기">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.view.collapseAll.label     "Collapse All Split Browsers">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.view.expandAll.label       "Expand All Split Browsers">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "x">
 
 <!ENTITY splitbrowser.add.label        "브라우저 분할 방향">
 <!ENTITY splitbrowser.add.top.label    "위쪽">

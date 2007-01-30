@@ -2,10 +2,21 @@
 @namespace html url("http://www.w3.org/1999/xhtml");
 
 
-#splitbrowser-remove-all {
+#splitbrowser-file-remove-all {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 48px 32px 32px);
 }
+
+#splitbrowser-view-collapse-all {
+	list-style-image: url(./small/buttons.png);
+	-moz-image-region: rect(16px 32px 32px 16px);
+}
+
+#splitbrowser-view-expand-all {
+	list-style-image: url(./small/buttons.png);
+	-moz-image-region: rect(16px 16px 32px 0px);
+}
+
 
 
 .splitbrowser-menuitem-add-top {

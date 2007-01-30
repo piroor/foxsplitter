@@ -22,6 +22,11 @@
 
 
 <!ENTITY splitbrowser.file.removeAll.label "分割したブラウザをすべて閉じる">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.view.collapseAll.label     "分割したブラウザをすべてたたむ">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.view.expandAll.label       "分割したブラウザをすべてひろげる">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "x">
 
 <!ENTITY splitbrowser.add.label        "ブラウザを分割">
 <!ENTITY splitbrowser.add.top.label    "上に分割">

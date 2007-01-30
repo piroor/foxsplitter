@@ -57,12 +57,29 @@
 
 
 <popup id="menu_FilePopup">
-	<menuitem id="splitbrowser-remove-all"
+	<menuitem id="splitbrowser-file-remove-all"
 		insertafter="menu_close"
 		class="menuitem-iconic"
 		label="&splitbrowser.file.removeAll.label;"
+		accesskey="&splitbrowser.file.removeAll.accesskey;"
 		command="splitbrowser-removeAll-command"
 		observes="splitbrowser-removeAll-broadcaster"/>
+</popup>
+
+<popup id="menu_viewPopup">
+	<menuseparator id="splitbrowser-view-separator"/>
+	<menuitem id="splitbrowser-view-collapse-all"
+		class="menuitem-iconic"
+		label="&splitbrowser.view.collapseAll.label;"
+		accesskey="&splitbrowser.view.collapseAll.accesskey;"
+		command="splitbrowser-collapseAll-command"
+		observes="splitbrowser-collapseAll-broadcaster"/>
+	<menuitem id="splitbrowser-view-expand-all"
+		class="menuitem-iconic"
+		label="&splitbrowser.view.expandAll.label;"
+		accesskey="&splitbrowser.view.expandAll.accesskey;"
+		command="splitbrowser-expandAll-command"
+		observes="splitbrowser-expandAll-broadcaster"/>
 </popup>
 
 <popup id="contentAreaContextMenu">
