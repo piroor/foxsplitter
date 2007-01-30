@@ -2,6 +2,7 @@
 <!ENTITY splitbrowser.tab.general         "Général">
 <!ENTITY splitbrowser.general.caption     "Général">
 <!ENTITY splitbrowser.state.restore       "Sauvegarder l'état des fenêtres partagées">
+<!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d&quot;outils dans les fenêtres partagées.">
 <!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
 <!ENTITY splitbrowser.show.addbuttons.caption "Montrer les boutons &quot;Split&quot; sur les cotés de la fenêtre">
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
@@ -19,11 +20,11 @@
 
 
 <!ENTITY splitbrowser.file.removeAll.label "Fermer toutes fenêtres partagées">
-<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
-<!ENTITY splitbrowser.view.collapseAll.label     "Collapse All Split Browsers">
-<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
-<!ENTITY splitbrowser.view.expandAll.label       "Expand All Split Browsers">
-<!ENTITY splitbrowser.view.expandAll.accesskey   "x">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "F">
+<!ENTITY splitbrowser.view.collapseAll.label     "Réduire toutes les fenêtres partagées">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "R">
+<!ENTITY splitbrowser.view.expandAll.label       "Déployer toutes les fenêtres partagées">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "D">
 
 <!ENTITY splitbrowser.add.label        "Partager la fenêtre">
 <!ENTITY splitbrowser.add.top.label    "Au dessus">
@@ -67,9 +68,9 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "Fermer">
 
 
-<!ENTITY splitbrowser.button.collapseAll.label   "Collapse">
-<!ENTITY splitbrowser.button.collapseAll.tooltip "Collapse all of split browsers">
-<!ENTITY splitbrowser.button.expandAll.label     "Expand">
-<!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of split browsers">
-<!ENTITY splitbrowser.button.removeAll.label      "Close All">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "Close all of split browsers">
+<!ENTITY splitbrowser.button.collapseAll.label   "Réduire">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Réduire toutes les fenêtres partagées">
+<!ENTITY splitbrowser.button.expandAll.label     "Déployer">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Déployer toutes les fenêtres partagées">
+<!ENTITY splitbrowser.button.removeAll.label      "Fermer tout">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "Fermer toutes les fenêtres partagées">
