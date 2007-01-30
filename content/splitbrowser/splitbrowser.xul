@@ -13,44 +13,56 @@
 <script type="application/x-javascript" src="splitbrowser.js"/>
 <script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
-<keyset id="mainKeyset"/>
-
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="splitbrowser-collapseAll-broadcaster"
 		disabled="true"/>
 	<broadcaster id="splitbrowser-expandAll-broadcaster"
 		disabled="true"/>
-	<broadcaster id="splitbrowser-closeAll-broadcaster"
+	<broadcaster id="splitbrowser-removeAll-broadcaster"
 		disabled="true"/>
 </broadcasterset>
+
+<commandset id="mainCommandSet">
+	<command id="splitbrowser-collapseAll-command"
+		oncommand="SplitBrowser.collapseAllSubBrowsers();"
+		observes="splitbrowser-collapseAll-broadcaster"/>
+	<command id="splitbrowser-expandAll-command"
+		oncommand="SplitBrowser.expandAllSubBrowsers();"
+		observes="splitbrowser-expandAll-broadcaster"/>
+	<command id="splitbrowser-removeAll-command"
+		oncommand="SplitBrowser.removeAllSubBrowsers();"
+		observes="splitbrowser-removeAll-broadcaster"/>
+</commandset>
 
 <toolbarpalette id="BrowserToolbarPalette">
 	<toolbarbutton id="splitbrowser-collapseAll-button"
 		class="splitbrowser-button toolbarbutton-1"
-		oncommand="SplitBrowser.collapseAllSubBrowsers();"
 		label="&splitbrowser.button.collapseAll.label;"
 		tooltiptext="&splitbrowser.button.collapseAll.tooltip;"
+		command="splitbrowser-collapseAll-command"
 		observes="splitbrowser-collapseAll-broadcaster"/>
 	<toolbarbutton id="splitbrowser-expandAll-button"
 		class="splitbrowser-button toolbarbutton-1"
-		oncommand="SplitBrowser.expandAllSubBrowsers();"
 		label="&splitbrowser.button.expandAll.label;"
 		tooltiptext="&splitbrowser.button.expandAll.tooltip;"
+		command="splitbrowser-expandAll-command"
 		observes="splitbrowser-expandAll-broadcaster"/>
-	<toolbarbutton id="splitbrowser-closeAll-button"
+	<toolbarbutton id="splitbrowser-removeAll-button"
 		class="splitbrowser-button toolbarbutton-1"
-		oncommand="SplitBrowser.removeAllSubBrowsers();"
-		label="&splitbrowser.button.closeAll.label;"
-		tooltiptext="&splitbrowser.button.closeAll.tooltip;"
-		observes="splitbrowser-closeAll-broadcaster"/>
+		label="&splitbrowser.button.removeAll.label;"
+		tooltiptext="&splitbrowser.button.removeAll.tooltip;"
+		command="splitbrowser-removeAll-command"
+		observes="splitbrowser-removeAll-broadcaster"/>
 </toolbarpalette>
 
 
 <popup id="menu_FilePopup">
 	<menuitem id="splitbrowser-remove-all"
 		insertafter="menu_close"
+		class="menuitem-iconic"
 		label="&splitbrowser.file.removeAll.label;"
-		oncommand="SplitBrowser.removeAllSubBrowsers();"/>
+		command="splitbrowser-removeAll-command"
+		observes="splitbrowser-removeAll-broadcaster"/>
 </popup>
 
 <popup id="contentAreaContextMenu">

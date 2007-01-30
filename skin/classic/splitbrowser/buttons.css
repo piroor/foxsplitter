@@ -32,16 +32,16 @@
 	-moz-image-region: rect(48px 48px 72px 24px);
 }
 
-#splitbrowser-closeAll-button {
+#splitbrowser-removeAll-button {
 	-moz-image-region: rect(0px 72px 24px 48px);
 }
-#splitbrowser-closeAll-button[buttonover="true"],
-#splitbrowser-closeAll-button:hover {
+#splitbrowser-removeAll-button[buttonover="true"],
+#splitbrowser-removeAll-button:hover {
 	-moz-image-region: rect(24px 72px 48px 48px);
 }
-#splitbrowser-closeAll-button[disabled="true"],
-#splitbrowser-closeAll-button[disabled="true"][buttonover="true"],
-#splitbrowser-closeAll-button[disabled="true"]:hover {
+#splitbrowser-removeAll-button[disabled="true"],
+#splitbrowser-removeAll-button[disabled="true"][buttonover="true"],
+#splitbrowser-removeAll-button[disabled="true"]:hover {
 	-moz-image-region: rect(48px 72px 72px 48px);
 }
 
@@ -77,15 +77,15 @@
 	-moz-image-region: rect(32px 32px 48px 16px);
 }
 
-[iconsize="small"] #splitbrowser-closeAll-button {
+[iconsize="small"] #splitbrowser-removeAll-button {
 	-moz-image-region: rect(0px 48px 16px 32px);
 }
-[iconsize="small"] #splitbrowser-closeAll-button[buttonover="true"],
-[iconsize="small"] #splitbrowser-closeAll-button:hover {
+[iconsize="small"] #splitbrowser-removeAll-button[buttonover="true"],
+[iconsize="small"] #splitbrowser-removeAll-button:hover {
 	-moz-image-region: rect(16px 48px 32px 32px);
 }
-[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"],
-[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"][buttonover="true"],
-[iconsize="small"] #splitbrowser-closeAll-button[disabled="true"]:hover {
+[iconsize="small"] #splitbrowser-removeAll-button[disabled="true"],
+[iconsize="small"] #splitbrowser-removeAll-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #splitbrowser-removeAll-button[disabled="true"]:hover {
 	-moz-image-region: rect(32px 48px 48px 32px);
 }

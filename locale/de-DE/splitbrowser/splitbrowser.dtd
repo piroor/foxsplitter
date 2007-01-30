@@ -66,5 +66,5 @@
 <!ENTITY splitbrowser.button.collapseAll.tooltip "Collapse all of split browsers">
 <!ENTITY splitbrowser.button.expandAll.label     "Expand">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of split browsers">
-<!ENTITY splitbrowser.button.closeAll.label      "Close All">
-<!ENTITY splitbrowser.button.closeAll.tooltip    "Close all of split browsers">
+<!ENTITY splitbrowser.button.removeAll.label      "Close All">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "Close all of split browsers">

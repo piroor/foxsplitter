@@ -69,5 +69,5 @@
 <!ENTITY splitbrowser.button.collapseAll.tooltip "分割したブラウザをすべてたたむ">
 <!ENTITY splitbrowser.button.expandAll.label     "ひろげる">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "分割したブラウザをすべてひろげる">
-<!ENTITY splitbrowser.button.closeAll.label      "分割を解除">
-<!ENTITY splitbrowser.button.closeAll.tooltip    "分割したブラウザをすべて閉じる">
+<!ENTITY splitbrowser.button.removeAll.label      "分割を解除">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "分割したブラウザをすべて閉じる">

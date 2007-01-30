@@ -33,9 +33,9 @@ var SplitBrowser = {
 		return document.getElementById('appcontent').contentWrapper;
 	},
  
-	get closeAllBroadcaster() 
+	get removeAllBroadcaster() 
 	{
-		return document.getElementById('splitbrowser-closeAll-broadcaster');
+		return document.getElementById('splitbrowser-removeAll-broadcaster');
 	},
 	get collapseAllBroadcaster()
 	{
@@ -48,12 +48,12 @@ var SplitBrowser = {
 	updateBroadcasters : function()
 	{
 		if (!this.browsers.length) {
-			this.closeAllBroadcaster.setAttribute('disabled', true);
+			this.removeAllBroadcaster.setAttribute('disabled', true);
 			this.collapseAllBroadcaster.setAttribute('disabled', true);
 			this.expandAllBroadcaster.setAttribute('disabled', true);
 		}
 		else {
-			this.closeAllBroadcaster.removeAttribute('disabled');
+			this.removeAllBroadcaster.removeAttribute('disabled');
 
 			var collapsed = 0;
 			var expanded  = 0;

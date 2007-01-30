@@ -5,7 +5,7 @@
 
 		<em:id>{29c4afe1-db19-4298-8785-fcc94d1d6c1d}</em:id>
 
-		<em:version>0.3.2007012601</em:version>
+		<em:version>0.3.2007013101</em:version>
 
 
 		<em:targetApplication>
@@ -22,6 +22,8 @@
 		<em:creator>SHIMODA Hiroshi</em:creator>
 		<em:contributor>Menet (fr-FR locale)</em:contributor>
 		<em:contributor>ReinekeFux (de-DE locale)</em:contributor>
+		<em:contributor>ReinekeFux (de-DE locale)</em:contributor>
+		<em:contributor>sushizang (ko-KR locale)</em:contributor>
 		<em:homepageURL>http://piro.sakura.ne.jp/xul/_splitbrowser.html.en</em:homepageURL>
 		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
 

@@ -2,6 +2,11 @@
 @namespace html url("http://www.w3.org/1999/xhtml");
 
 
+#splitbrowser-remove-all {
+	list-style-image: url(./small/buttons.png);
+	-moz-image-region: rect(16px 48px 32px 32px);
+}
+
 
 .splitbrowser-menuitem-add-top {
 	list-style-image: url(./large/up-gray.png);
