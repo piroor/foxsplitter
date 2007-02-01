@@ -25,7 +25,7 @@
 			]]></getter>
 		</property>
 
-		<property name="collapsableParent" readonly="true">
+		<property name="flexibleParent" readonly="true">
 			<getter><![CDATA[
 				var c = this;
 				while (
@@ -39,6 +39,14 @@
 				return c == document.documentElement ? null : c ;
 			]]></getter>
 		</property>
+
+		<property name="contentCollapsed" readonly="true"
+			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
+		<property name="contentCompletelyCollapsed" readonly="true"
+			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+
+		<field name="lastwidth">-1</field>
+		<field name="lastheight">-1</field>
 	</implementation>
 </binding>
 
@@ -81,10 +89,15 @@
 
 		]]></constructor>
 
-		<field name="contentCollapsed">false</field>
+		<property name="vContentCollapsed" readonly="true"
+			onget="return this.vContainer.vContentCollapsed || (this.hContainer ? this.hContainer.vContentCollapsed : false );"/>
+		<property name="hContentCollapsed" readonly="true"
+			onget="return this.vContainer.hContentCollapsed || (this.hContainer ? this.hContainer.hContentCollapsed : false );"/>
 
-		<field name="lastwidth">-1</field>
-		<field name="lastheight">-1</field>
+		<property name="vContentCompletelyCollapsed" readonly="true"
+			onget="return this.vContainer.vContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.vContentCompletelyCollapsed : true );"/>
+		<property name="hContentCompletelyCollapsed" readonly="true"
+			onget="return this.vContainer.hContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.hContentCompletelyCollapsed : true );"/>
 	</implementation>
 
 	<handlers>
@@ -95,6 +108,122 @@
 			this.dispatchEvent(newEvent);
 		]]></handler>
 	</handlers>
+</binding>
+
+<binding id="horizontal-container" extends="xul:hbox">
+	<implementation>
+		<property name="contentCollapsed" readonly="true"
+			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
+		<property name="vContentCollapsed" readonly="true">
+			<getter><![CDATA[
+				var collapsed = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (nodes[i].vContentCollapsed)
+						return true;
+
+				return false;
+			]]></getter>
+		</property>
+		<property name="hContentCollapsed" readonly="true">
+			<getter><![CDATA[
+				var collapsed = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (nodes[i].hContentCollapsed)
+						return true;
+
+				return false;
+			]]></getter>
+		</property>
+
+		<property name="contentCompletelyCollapsed" readonly="true"
+			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+		<property name="vContentCompletelyCollapsed" readonly="true">
+			<getter><![CDATA[
+				var expanded = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (!nodes[i].vContentCompletelyCollapsed)
+						return false;
+
+				return true;
+			]]></getter>
+		</property>
+		<property name="hContentCompletelyCollapsed" readonly="true">
+			<getter><![CDATA[
+				var expanded = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (!nodes[i].hContentCompletelyCollapsed)
+						return false;
+
+				return true;
+			]]></getter>
+		</property>
+	</implementation>
+</binding>
+
+<binding id="vertical-container" extends="xul:vbox">
+	<implementation>
+		<property name="contentCollapsed" readonly="true"
+			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
+		<property name="vContentCollapsed" readonly="true">
+			<getter><![CDATA[
+				var collapsed = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (nodes[i].vContentCollapsed)
+						return true;
+
+				return false;
+			]]></getter>
+		</property>
+		<property name="hContentCollapsed" readonly="true">
+			<getter><![CDATA[
+				var collapsed = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (nodes[i].hContentCollapsed)
+						return true;
+
+				return false;
+			]]></getter>
+		</property>
+
+		<property name="contentCompletelyCollapsed" readonly="true"
+			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+		<property name="vContentCompletelyCollapsed" readonly="true">
+			<getter><![CDATA[
+				var expanded = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (!nodes[i].vContentCompletelyCollapsed)
+						return false;
+
+				return true;
+			]]></getter>
+		</property>
+		<property name="hContentCompletelyCollapsed" readonly="true">
+			<getter><![CDATA[
+				var expanded = 0;
+
+				var nodes = this.childNodes;
+				for (var i = 0, maxi = nodes.length; i < maxi; i = i+2)
+					if (!nodes[i].hContentCompletelyCollapsed)
+						return false;
+
+				return true;
+			]]></getter>
+		</property>
+	</implementation>
 </binding>
 
 <binding id="toplevel-container" extends="#container">
@@ -180,86 +309,125 @@
 		<property name="src" readonly="true"
 			onget="return gBrowser.currentURI.spec;"/>
 
-		<field name="FORCE_COLLAPSE">1</field>
-		<field name="FORCE_EXPAND">2</field>
-
 		<method name="toggleCollapsed">
-			<parameter name="aForceFlag"/>
 			<body><![CDATA[
-				var c = this.collapsableParent;
+				if (this.contentCollapsed)
+					this.expand();
+				else
+					this.collapse();
+			]]></body>
+		</method>
 
-				if (!aForceFlag || aForceFlag == this.FORCE_EXPAND) {
-					var cTemp = c;
-					var cTemp2;
-					var appcontent = document.getElementById('appcontent');
-					while (cTemp && cTemp != appcontent)
-					{
-						if (cTemp.contentCollapsed) cTemp2 = cTemp;
-						cTemp = cTemp.parentNode;
-					}
-					if (cTemp2) c = cTemp2;
-				}
-				else {
-					var cTemp = c;
-					var cTemp2;
-					var appcontent = document.getElementById('appcontent');
-					while (cTemp && cTemp != appcontent)
-					{
-						cTemp2 = cTemp;
-						cTemp = cTemp.parentContainer;
-					}
-					if (cTemp2) c = cTemp2;
-				}
-
+		<method name="collapse">
+			<body><![CDATA[
+				var c = this.flexibleParent;
 				if (!c) return;
 
+				var splitter = c.nextSibling || c.previousSibling;
+				var prop     = (splitter.getAttribute('orient') != 'vertical') ? 'width' : 'height' ;
+				var cProp    = (splitter.getAttribute('orient') != 'vertical') ? 'hContentCollapsed' : 'vContentCollapsed' ;
+				var cCProp   = (splitter.getAttribute('orient') != 'vertical') ? 'hContentCompletelyCollapsed' : 'vContentCompletelyCollapsed' ;
 
-				var sideBox;
-				var splitter;
-				if (c.getAttribute('splitter') == 'before') {
-					sideBox = c.previousSibling ? c.previousSibling.previousSibling : c.nextSibling.nextSibling ;
-					splitter = c.previousSibling || c.nextSibling;
-				}
-				else {
-					sideBox = c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling ;
-					splitter = c.nextSibling || c.previousSibling;
-				}
+				if (this[cProp]) return;
 
-				if (!c.contentCollapsed && sideBox.contentCollapsed) {
-					if (c.getAttribute('splitter') == 'before') {
-						if (c.nextSibling) {
-							sideBox = c.nextSibling.nextSibling;
-							splitter.nextSibling;
-						}
-					}
-					else if (c.previousSibling) {
-						sideBox = c.previousSibling.previousSibling;
-						splitter.previousSibling;
-					}
-				}
+				var sideBox = this.findSideBox(
+						c,
+						(c.getAttribute('splitter') == 'before' ? -1 : 1 ),
+						(splitter.getAttribute('orient') != 'vertical' ? 'horizontal' : 'vertical' )
+					);
+				if (!sideBox) return;
 
-				var prop = (splitter.getAttribute('orient') == 'horizontal') ? 'width' : 'height' ;
+/*
+var col = (['red', 'blue', 'green'])[parseInt(Math.random() * 3)];
+c.setAttribute('style', 'border: 2px dotted '+col+' !important;');
+sideBox.setAttribute('style', 'border: 2px solid '+col+' !important;');
+window.setTimeout(function() {
+c.removeAttribute('style');
+sideBox.removeAttribute('style');
+}, 2000);
+*/
 
 				var origSize = c.boxObject[prop];
 				var sideSize = sideBox.boxObject[prop];
-				if (!this.contentCollapsed) {
-					c['last'+prop] = origSize;
-					c.setAttribute(prop, 0);
-					sideBox.removeAttribute('max'+prop);
-					sideBox.setAttribute(prop, sideSize + origSize);
-					c.contentCollapsed = true;
-					c.setAttribute('max'+prop, 0);
-					this.focused = false;
+
+				c['last'+prop] = origSize;
+				c.setAttribute(prop, 0);
+				sideBox.removeAttribute('max'+prop);
+				sideBox.setAttribute(prop, sideSize + origSize);
+				c.setAttribute('max'+prop, 0);
+				this.focused = false;
+
+				window.setTimeout(function(aThis) {
+					aThis.toggleToolbar(false, true, 0);
+					if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
+						aThis.mUpdateToolbarMode();
+
+					var node = c.parentNode;
+					var appcontent = document.getElementById('appcontent');
+					while (node && node != appcontent)
+					{
+						if (cCProp in node && node[cCProp])
+							node.setAttribute('max'+prop, 0);
+						node = node.parentNode;
+					}
+				}, 0, this);
+			]]></body>
+		</method>
+
+		<method name="expand">
+			<parameter name="aForce"/>
+			<body><![CDATA[
+				var c = this.flexibleParent;
+				if (!c) return;
+
+				var splitter = c.nextSibling || c.previousSibling;
+				var prop     = (splitter.getAttribute('orient') == 'horizontal') ? 'width' : 'height' ;
+				var cProp    = (splitter.getAttribute('orient') != 'vertical') ? 'hContentCollapsed' : 'vContentCollapsed' ;
+
+				if (!this[cProp]) return;
+
+				var sideBox = this.findSideBox(
+						c,
+						(c.getAttribute('splitter') == 'before' ? -1 : 1 ),
+						(splitter.getAttribute('orient') != 'vertical' ? 'horizontal' : 'vertical' )
+					);
+				if (!sideBox) return;
+
+/*
+var col = (['red', 'blue', 'green'])[parseInt(Math.random() * 3)];
+c.setAttribute('style', 'border: 2px dotted '+col+' !important;');
+sideBox.setAttribute('style', 'border: 2px solid '+col+' !important;');
+window.setTimeout(function() {
+c.removeAttribute('style');
+sideBox.removeAttribute('style');
+}, 2000);
+*/
+
+				var origSize = c.boxObject[prop];
+				var sideSize = sideBox.boxObject[prop];
+
+				var node = c;
+				var appcontent = document.getElementById('appcontent');
+				var sideBoxPos = 'before';
+				do {
+					node.removeAttribute('max'+prop);
+					if (node.nextSibling && node.nextSibling.nextSibling == sideBox)
+						sideBoxPos = 'after';
+					node = node.parentNode;
 				}
-				else {
-					c.removeAttribute('max'+prop);
-					c.contentCollapsed = false;
-					if (c['last'+prop] === void(0) || c['last'+prop] <= 0)
-						c['last'+prop] = parseInt(sideSize * 2 / 5);
-					c.setAttribute(prop, c['last'+prop]);
-					sideBox.setAttribute(prop, sideSize - (c['last'+prop] - origSize));
-					c['last'+prop] = -1;
-				}
+				while (node && node != appcontent)
+
+				if (c['last'+prop] === void(0) || c['last'+prop] <= 0)
+					c['last'+prop] = parseInt(sideSize * 2 / 5);
+				c.setAttribute(prop, c['last'+prop]);
+				sideBox.setAttribute(prop, sideSize - (c['last'+prop] - origSize));
+				c['last'+prop] = -1;
+
+				this.mClearMaxSizeProp(
+					((sideBoxPos == 'after') ? sideBox.previousSibling.previousSibling : sideBox.nextSibling.nextSibling ),
+					prop
+				);
+
 
 				window.setTimeout(function(aThis) {
 					aThis.toggleToolbar(false, true, 0);
@@ -268,7 +436,88 @@
 				}, 0, this);
 			]]></body>
 		</method>
+		<method name="mClearMaxSizeProp">
+			<parameter name="aNode"/>
+			<parameter name="aProp"/>
+			<body><![CDATA[
+				if (aNode == this) return;
+				aNode.removeAttribute('max'+aProp);
+				if (aNode['last'+aProp]) aNode['last'+aProp] = -1;
+				for (var i = 0, maxi = aNode.childNodes.length; i < maxi; i = i+2)
+				{
+					this.mClearMaxSizeProp(aNode.childNodes[i], aProp);
+				}
+			]]></body>
+		</method>
 
+
+		<method name="findSideBox">
+			<parameter name="aBox"/>
+			<parameter name="aDir"/>
+			<parameter name="aOrient"/>
+			<body><![CDATA[
+				var cProp  = (aOrient != 'vertical') ? 'hContentCollapsed' : 'vContentCollapsed' ;
+
+				var target = aBox;
+				if (aDir < 0) {
+					while (target && target.previousSibling)
+					{
+						target = target.previousSibling.previousSibling;
+						if (!target[cProp])
+							return target;
+					}
+
+					target = aBox;
+					while (target && target.nextSibling)
+					{
+						target = target.nextSibling.nextSibling;
+						if (!target[cProp]) return target;
+					}
+				}
+				else {
+					while (target && target.nextSibling)
+					{
+						target = target.nextSibling.nextSibling;
+						if (!target[cProp]) return target;
+					}
+
+					target = aBox;
+					while (target && target.previousSibling)
+					{
+						target = target.previousSibling.previousSibling;
+						if (!target[cProp]) return target;
+					}
+				}
+
+				var appcontent = document.getElementById('appcontent');
+
+				target = aBox;
+				var orientBox;
+				do {
+					target = target.parentNode;
+
+					orientBox = (target.localName == 'subbrowser-container') ? (target.previousSibling || target.nextSibling || target.parentNode) : target ;
+					if (orientBox.localName == 'splitter') {
+						if (orientBox.getAttribute('orient') != aOrient)
+							continue;
+						else
+							break;
+					}
+					else {
+						if (window.getComputedStyle(orientBox, '').getPropertyValue('-moz-box-orient') != aOrient)
+							continue;
+						else
+							break;
+					}
+				}
+				while (target != appcontent);
+
+				if (target == appcontent)
+					return null;
+				else
+					return this.findSideBox(target, aDir, aOrient);
+			]]></body>
+		</method>
 
 		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
@@ -444,6 +693,19 @@
 	</handlers>
 </binding>
 
+<binding id="subbrowser-primary" extends="#subbrowser-base">
+	<implementation>
+		<property name="vContentCollapsed" readonly="true"
+			onget="return this.boxObject.width == 0;"/>
+		<property name="hContentCollapsed" readonly="true"
+			onget="return this.boxObject.height == 0;"/>
+		<property name="vContentCompletelyCollapsed" readonly="true"
+			onget="return this.vContentCollapsed"/>
+		<property name="hContentCompletelyCollapsed" readonly="true"
+			onget="return this.hContentCollapsed"/>
+	</implementation>
+</binding>
+
 <binding id="subbrowser" extends="#subbrowser-base">
 	<content orient="vertical"
 		context="_child">
@@ -459,10 +721,10 @@
 				oncommand="this.parentNode.parentNode.close();"/>
 			<xul:menuitem class="subbrowser-context-collapse"
 				label="&splitbrowser.subbrowser.menu.collapse;"
-				oncommand="this.parentNode.parentNode.toggleCollapsed();"/>
+				oncommand="this.parentNode.parentNode.collapse();"/>
 			<xul:menuitem class="subbrowser-context-expand"
 				label="&splitbrowser.subbrowser.menu.expand;"
-				oncommand="this.parentNode.parentNode.toggleCollapsed();"/>
+				oncommand="this.parentNode.parentNode.expand();"/>
 			<xul:menuseparator/>
 			<xul:menuitem class="subbrowser-context-openNewTab"
 				label="&splitbrowser.subbrowser.menu.openNewTab;"
@@ -493,13 +755,13 @@
 				<xul:toolbarbutton
 					anonid="collapse-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.collapse();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button collapse"/>
 				<xul:toolbarbutton
 					anonid="expand-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.expand();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button expand"/>
 				<xul:box class="subbrowser-toolbar-item favicon-box">
@@ -634,13 +896,13 @@
 					<xul:toolbarbutton
 						anonid="collapse-button"
 						tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.collapse();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button collapse"/>
 					<xul:toolbarbutton
 						anonid="expand-button"
 						tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.expand();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button expand"/>
 					<xul:toolbarbutton
@@ -801,12 +1063,14 @@
 			-1
 		</field>
 
-		<property name="contentCollapsed"
-			onset="return val;">
-			<getter><![CDATA[
-				return this.boxObject.width <= this.minSize || this.boxObject.height <= this.minSize;
-			]]></getter>
-		</property>
+		<property name="vContentCollapsed" readonly="true"
+			onget="return this.boxObject.height &lt;= this.minSize;"/>
+		<property name="hContentCollapsed" readonly="true"
+			onget="return this.boxObject.width &lt;= this.minSize;"/>
+		<property name="vContentCompletelyCollapsed" readonly="true"
+			onget="return this.vContentCollapsed"/>
+		<property name="hContentCompletelyCollapsed" readonly="true"
+			onget="return this.hContentCollapsed"/>
 
 		<method name="updateContextMenu">
 			<parameter name="aEvent"/>
@@ -1528,49 +1792,48 @@
 
 		<method name="mUpdateToolbarMode">
 			<body><![CDATA[
-				var c = this.collapsableParent;
+				var c = this.flexibleParent;
 				while (c && c.parentNode && !c.splitterDragging)
 					c = c.parentNode;
 				if (c && c == document) c = null;
 
+				var collapse;
+
 				if (this.boxObject.width <= this.minSize) {
 					if (this.boxObject.height <= this.minSize) {
 						this.setAttribute('toolbar-mode', 'horizontal');
-						if (c) {
-							c.setAttribute('maxheight', 0);
-							c.contentCollapsed = true;
-						}
+						if (c) c.setAttribute('maxheight', 0);
 					}
 					else {
 						this.setAttribute('toolbar-mode', 'vertical');
-						if (c) {
-							c.setAttribute('maxwidth', 0);
-							c.contentCollapsed = true;
-						}
+						if (c) c.setAttribute('maxwidth', 0);
 					}
+					collapse = true;
+				}
+				else {
+					this.setAttribute('toolbar-mode', 'horizontal');
+					if (this.boxObject.height <= this.minSize) {
+						if (c) c.setAttribute('maxheight', 0);
+						collapse = true;
+					}
+					else {
+						collapse = false;
+					}
+				}
+
+				if (collapse) {
+					if (!this.contentCollapsed)
+						this.collapse();
 					this.setAttribute('content-collapsed', 'true');
 					var newEvent = document.createEvent('Events');
 					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
 					document.documentElement.dispatchEvent(newEvent);
 				}
 				else {
-					this.setAttribute('toolbar-mode', 'horizontal');
-					if (this.boxObject.height <= this.minSize) {
-						if (c) {
-							c.setAttribute('maxheight', 0);
-							c.contentCollapsed = true;
-						}
-						this.setAttribute('content-collapsed', 'true');
-						var newEvent = document.createEvent('Events');
-						newEvent.initEvent('SubBrowserContentCollapsed', false, true);
-						document.documentElement.dispatchEvent(newEvent);
-					}
-					else {
-						this.removeAttribute('content-collapsed');
-						var newEvent = document.createEvent('Events');
-						newEvent.initEvent('SubBrowserContentExpanded', false, true);
-						document.documentElement.dispatchEvent(newEvent);
-					}
+					this.removeAttribute('content-collapsed');
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent('SubBrowserContentExpanded', false, true);
+					document.documentElement.dispatchEvent(newEvent);
 				}
 			]]></body>
 		</method>

@@ -10,7 +10,7 @@
 }
 
 #appcontent > vbox > hbox > .primary-browser-wrapper {
-	-moz-binding: url("./splitbrowser.xml#subbrowser-base") !important;
+	-moz-binding: url("./splitbrowser.xml#subbrowser-primary") !important;
 }
 
 subbrowser-container {
@@ -20,6 +20,15 @@ subbrowser-container {
 subbrowser {
 	-moz-binding: url("./splitbrowser.xml#subbrowser") !important;
 }
+
+vbox.vertical-container > hbox.horizontal-container {
+	-moz-binding: url("./splitbrowser.xml#horizontal-container") !important;
+}
+
+vbox.vertical-container {
+	-moz-binding: url("./splitbrowser.xml#vertical-container") !important;
+}
+
 
 
 /* tabbed browsing mode / simple mode */

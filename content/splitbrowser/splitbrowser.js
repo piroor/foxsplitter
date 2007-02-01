@@ -47,6 +47,14 @@ var SplitBrowser = {
 	},
 	updateBroadcasters : function()
 	{
+		if (this.updateBroadcastersTimer) {
+			window.clearTimeout(this.updateBroadcastersTimer);
+			this.updateBroadcastersTimer = null;
+		}
+		this.updateBroadcastersTimer = window.setTimeout('SplitBrowser.updateBroadcastersCallback();', 1);
+	},
+	updateBroadcastersCallback : function()
+	{
 		if (!this.browsers.length) {
 			this.removeAllBroadcaster.setAttribute('disabled', true);
 			this.collapseAllBroadcaster.setAttribute('disabled', true);
@@ -66,7 +74,6 @@ var SplitBrowser = {
 
 				if (collapsed && expanded) break;
 			}
-
 			if (collapsed)
 				this.expandAllBroadcaster.removeAttribute('disabled');
 			else
@@ -77,6 +84,8 @@ var SplitBrowser = {
 			else
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
+
+		this.updateBroadcastersTimer = null;
 	},
  
 	POSITION_LEFT   : 1, 
@@ -465,15 +474,19 @@ var SplitBrowser = {
 				if (cont.previousSibling &&
 					cont.previousSibling.localName == 'splitter') {
 					box = cont.previousSibling.previousSibling;
-					box.height = box.boxObject.height + cont.boxObject.height;
-					cont.previousSibling.previousSibling.removeAttribute('collapsed');
+					if (box) {
+						box.height = box.boxObject.height + cont.boxObject.height;
+						box.removeAttribute('collapsed');
+					}
 					container.vContainer.removeChild(cont.previousSibling);
 				}
 				else if (cont.nextSibling &&
 					cont.nextSibling.localName == 'splitter') {
 					box = cont.nextSibling.nextSibling;
-					box.height = box.boxObject.height + cont.boxObject.height;
-					cont.nextSibling.nextSibling.removeAttribute('collapsed');
+					if (box) {
+						box.height = box.boxObject.height + cont.boxObject.height;
+						box.removeAttribute('collapsed');
+					}
 					container.vContainer.removeChild(cont.nextSibling);
 				}
 				container.vContainer.removeChild(cont);
@@ -504,14 +517,18 @@ var SplitBrowser = {
 			var box;
 			if (container.previousSibling && container.previousSibling.localName == 'splitter') {
 				box = container.previousSibling.previousSibling;
-				box.width = box.boxObject.width + container.boxObject.width;
-				container.previousSibling.previousSibling.removeAttribute('collapsed');
+				if (box) {
+					box.width = box.boxObject.width + container.boxObject.width;
+					box.removeAttribute('collapsed');
+				}
 				container.parentNode.removeChild(container.previousSibling);
 			}
 			else if (container.nextSibling && container.nextSibling.localName == 'splitter') {
 				box = container.nextSibling.nextSibling;
-				box.width = box.boxObject.width + container.boxObject.width;
-				container.nextSibling.nextSibling.removeAttribute('collapsed');
+				if (box) {
+					box.width = box.boxObject.width + container.boxObject.width;
+					box.removeAttribute('collapsed');
+				}
 				container.parentNode.removeChild(container.nextSibling);
 			}
 			container.parentNode.removeChild(container);
@@ -553,16 +570,16 @@ var SplitBrowser = {
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
 			if (!this.browsers[i].contentCollapsed)
-				this.browsers[i].toggleCollapsed(this.browsers[i].FORCE_COLLAPSE);
+				this.browsers[i].collapse();
 		}
 	},
  
 	expandAllSubBrowsers : function()
 	{
-		for (var i = this.browsers.length -1; i > -1; i--)
+		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
 			if (this.browsers[i].contentCollapsed)
-				this.browsers[i].toggleCollapsed(this.browsers[i].FORCE_EXPAND);
+				this.browsers[i].expand(true);
 		}
 	},
   
@@ -576,9 +593,8 @@ var SplitBrowser = {
 	
 	getContainerState : function(aContainer) 
 	{
-		var state = {
-				children : []
-			};
+		var state = {};
+		state.children = [];
 
 		var hContainer = aContainer.hContainer;
 		if (hContainer) {
@@ -606,7 +622,9 @@ var SplitBrowser = {
 				};
 			}
 			else {
-				state.content = this.getContainerState(originalContent);
+				state.children.push(this.getContainerState(originalContent));
+				state.children[state.children.length-1].position = this.POSITION_RIGHT;
+				state.children[state.children.length-1].width    = originalContent.boxObject.width;
 			}
 
 			var node = originalContent.previousSibling;
@@ -658,7 +676,9 @@ var SplitBrowser = {
 			state.content.lastHeight = aContainer.lastheight;
 		}
 		else if (!state.content) {
-			state.content = this.getContainerState(originalContent);
+			state.children.push(this.getContainerState(originalContent));
+			state.children[state.children.length-1].position = this.POSITION_BOTTOM;
+			state.children[state.children.length-1].height   = originalContent.boxObject.height;
 		}
 
 		var node = originalContent.previousSibling;
@@ -819,6 +839,7 @@ var SplitBrowser = {
 			eval('state = '+state);
 		}
 		catch(e) {
+alert(e+'\n\n'+state);
 			return;
 		}
 
@@ -827,41 +848,52 @@ var SplitBrowser = {
 	
 	buildContent : function(aState, aContainer) 
 	{
-		switch (aState.content.type)
-		{
-			case 'root':
-				aContainer.contentWrapper.width  = aState.content.width;
-				aContainer.contentWrapper.height = aState.content.height;
-				break;
+		var content;
+		if (aState.content && aState.content.type) {
+			switch (aState.content.type)
+			{
+				case 'root':
+					aContainer.contentWrapper.width  = aState.content.width;
+					aContainer.contentWrapper.height = aState.content.height;
+					content = aContainer.contentWrapper;
+					break;
 
-			default:
-			case 'subbrowser':
-				if (aState.content.history) {
-					aState.content.histories = [aState.content.history];
-				}
+				case 'subbrowser':
+					if (aState.content.history) {
+						aState.content.histories = [aState.content.history];
+					}
 
-				var b = this.createSubBrowser(
-						aState.content.histories && aState.content.histories.length ? null : aState.content.uri
-					);
-				aContainer.hContainer.appendChild(b);
-				aContainer.hContainer.width  = aState.content.width;
-				aContainer.hContainer.height = aState.content.height;
+					var b = this.createSubBrowser(
+							aState.content.histories && aState.content.histories.length ? null : aState.content.uri
+						);
+					aContainer.hContainer.appendChild(b);
+					aContainer.hContainer.width  = aState.content.width;
+					aContainer.hContainer.height = aState.content.height;
 
-				this.deserializeBrowserState(b.browser, aState.content);
+					this.deserializeBrowserState(b.browser, aState.content);
 
-				aContainer.lastwidth  = aState.content.lastWidth;
-				aContainer.lastheight = aState.content.lastHeight;
-/*
-				if (aState.content.collapsed) {
-					aContainer.contentCollapsed = true;
-					if (aState.position & this.POSITION_HORIZONTAL)
-						aContainer.setAttribute('maxwidth', 0);
-					else
-						aContainer.setAttribute('maxheight', 0);
-				}
-*/
+					aContainer.lastwidth  = aState.content.lastWidth;
+					aContainer.lastheight = aState.content.lastHeight;
+	/*
+					if (aState.content.collapsed) {
+						if (aState.position & this.POSITION_HORIZONTAL)
+							aContainer.setAttribute('maxwidth', 0);
+						else
+							aContainer.setAttribute('maxheight', 0);
+					}
+	*/
 
-				break;
+					content = b;
+					break;
+
+				default:
+					break;
+			}
+		}
+		if (!content) {
+			content = document.createElement('spacer');
+			content.setAttribute('flex', 1);
+			aContainer.hContainer.appendChild(content);
 		}
 
 		var container;
@@ -872,7 +904,7 @@ var SplitBrowser = {
 			container = this.addContainerTo(
 				aContainer,
 				aState.children[i].position,
-				null,
+				content,
 				aState.children[i].width,
 				aState.children[i].height
 			);
@@ -881,8 +913,13 @@ var SplitBrowser = {
 			this.buildContent(aState.children[i], container);
 		}
 
-		if (!aContainer.hContainer.hasChildNodes()) {
-			aContainer.vContainer.removeChild(aContainer.hContainer);
+		if (content && content.localName == 'spacer') {
+			if (content.nextSibling)
+				aContainer.hContainer.removeChild(content.nextSibling);
+			else if (content.previousSibling)
+				aContainer.hContainer.removeChild(content.previousSibling);
+			aContainer.hContainer.removeChild(content);
+			this.cleanUpContainer(aContainer);
 		}
 	},
  
@@ -1239,10 +1276,10 @@ catch(e) {
 	updateSplitterSideBoxes : function(aEvent, aProp) 
 	{
 		var splitter = aEvent.originalTarget || aEvent.target;
-		this.updateSplitterSideBox(splitter.previousSibling, aEvent, aProp);
-		this.updateSplitterSideBox(splitter.nextSibling, aEvent, aProp);
+		this.updateSplitterSideBox(splitter, splitter.previousSibling, aEvent, aProp);
+		this.updateSplitterSideBox(splitter, splitter.nextSibling, aEvent, aProp);
 	},
-	updateSplitterSideBox : function(aNode, aEvent, aProp)
+	updateSplitterSideBox : function(aSplitter, aNode, aEvent, aProp)
 	{
 		if (aEvent.type == 'mousedown') {
 			aNode.splitterDragging = true;
@@ -1252,11 +1289,11 @@ catch(e) {
 			else {
 				aNode['tempLast'+aProp] = -1;
 			}
-			aNode.contentCollapsed = false;
 			aNode.removeAttribute('max'+aProp);
 		}
 		else {
-			if (aNode.contentCollapsed &&
+			var cCProp = aProp == 'width' ? 'hContentCompletelyCollapsed' : 'vContentCompletelyCollapsed' ;
+			if (aNode[cCProp] &&
 				aNode['tempLast'+aProp] !== void(0) &&
 				aNode['tempLast'+aProp] > -1 &&
 				(
@@ -1265,7 +1302,6 @@ catch(e) {
 				)
 				) {
 				aNode['last'+aProp] = aNode['tempLast'+aProp];
-				aNode.contentCollapsed = true;
 				aNode.setAttribute('max'+aProp, 0);
 			}
 			aNode['tempLast'+aProp] = -1;
@@ -1273,12 +1309,16 @@ catch(e) {
 				aNode.splitterDragging = false;
 			}, 0);
 		}
+
+		for (var i = 0, maxi = aNode.childNodes.length; i < maxi; i = i+2)
+		{
+			this.updateSplitterSideBox(aSplitter, aNode.childNodes[i], aEvent, aProp);
+		}
 	},
  
 	updateSplitterContextMenu : function() 
 	{
 		var c = this.getSplitterTarget(document.popupNode);
-		alert(c);
 		if (!c) return;
 
 		var popup = document.getElementById('subbrowser-splitter-contextmenu');
