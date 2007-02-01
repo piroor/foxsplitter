@@ -1429,6 +1429,12 @@ catch(e) {
 
 		this.activeSubBrowser = this.mainBrowserBox;
 
+		if (nsPreferences.getBoolPref('splitbrowser.show.collapseexpand'))
+			document.documentElement.setAttribute('subbrowser-show-togglecollapsed-button', true);
+		else
+			document.documentElement.removeAttribute('subbrowser-show-togglecollapsed-button');
+
+
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);
 //			this.load();

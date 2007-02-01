@@ -4,6 +4,7 @@
 <!ENTITY splitbrowser.state.restore       "Sauvegarder l'état des fenêtres partagées">
 <!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d&quot;outils dans les fenêtres partagées.">
 <!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
+<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
 <!ENTITY splitbrowser.show.addbuttons.caption "Montrer les boutons &quot;Split&quot; sur les cotés de la fenêtre">
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
@@ -60,6 +61,8 @@
 <!ENTITY splitbrowser.subbrowser.stop.tooltip      "Arrêter le chargement de la page">
 <!ENTITY splitbrowser.subbrowser.go.label          "Go">
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "Se rendre à la page indiquée dans la barre d'adresse">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Collapse">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Expand">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nouvel onglet">

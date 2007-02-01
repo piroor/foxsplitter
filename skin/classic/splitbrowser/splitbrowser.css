@@ -129,6 +129,8 @@ subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox {
 }
 
 
+
+
 subbrowser[subbrowser-focused="true"] .subbrowser-title {
 	font-weight: bold !important;
 }

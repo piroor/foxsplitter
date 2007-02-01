@@ -490,12 +490,23 @@
 					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"
 					ondblclick="event.stopPropagation();"/>
+				<xul:toolbarbutton
+					anonid="collapse-button-vertical"
+					tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+					ondblclick="event.stopPropagation();"
+					class="subbrowser-toolbar-item button collapse"/>
+				<xul:toolbarbutton
+					anonid="expand-button-vertical"
+					tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
+					oncommand="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+					ondblclick="event.stopPropagation();"
+					class="subbrowser-toolbar-item button expand"/>
 				<xul:box class="subbrowser-toolbar-item favicon-box">
 					<xul:image class="subbrowser-toolbar-item favicon"
 						anonid="vertical-favicon"
 						validate="never"
-						ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 				</xul:box>
 				<xul:description anonid="vertical-title"
 					class="subbrowser-title subbrowser-vertical-title"
@@ -620,6 +631,18 @@
 								ondblclick="event.stopPropagation();"/>
 						</xul:hbox>
 					</xul:deck>
+					<xul:toolbarbutton
+						anonid="collapse-button"
+						tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+						ondblclick="event.stopPropagation();"
+						class="subbrowser-toolbar-item button collapse"/>
+					<xul:toolbarbutton
+						anonid="expand-button"
+						tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
+						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();"
+						ondblclick="event.stopPropagation();"
+						class="subbrowser-toolbar-item button expand"/>
 					<xul:toolbarbutton
 						anonid="close-button"
 						class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
@@ -1525,6 +1548,7 @@
 							c.contentCollapsed = true;
 						}
 					}
+					this.setAttribute('content-collapsed', 'true');
 					var newEvent = document.createEvent('Events');
 					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
 					document.documentElement.dispatchEvent(newEvent);
@@ -1536,8 +1560,13 @@
 							c.setAttribute('maxheight', 0);
 							c.contentCollapsed = true;
 						}
+						this.setAttribute('content-collapsed', 'true');
+						var newEvent = document.createEvent('Events');
+						newEvent.initEvent('SubBrowserContentCollapsed', false, true);
+						document.documentElement.dispatchEvent(newEvent);
 					}
 					else {
+						this.removeAttribute('content-collapsed');
 						var newEvent = document.createEvent('Events');
 						newEvent.initEvent('SubBrowserContentExpanded', false, true);
 						document.documentElement.dispatchEvent(newEvent);

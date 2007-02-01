@@ -47,33 +47,47 @@
 
 
 
-[iconsize="small"] .toolbarbutton-1.splitbrowser-button {
+[iconsize="small"] .toolbarbutton-1.splitbrowser-button,
+.subbrowser-toolbar-item.button.collapse,
+.subbrowser-toolbar-item.button.expand {
 	list-style-image: url("./small/buttons.png");
 }
 
-[iconsize="small"] #splitbrowser-expandAll-button {
+[iconsize="small"] #splitbrowser-expandAll-button,
+.subbrowser-toolbar-item.button.expand {
 	-moz-image-region: rect(0px 16px 16px 0px);
 }
 [iconsize="small"] #splitbrowser-expandAll-button[buttonover="true"],
-[iconsize="small"] #splitbrowser-expandAll-button:hover {
+[iconsize="small"] #splitbrowser-expandAll-button:hover,
+.subbrowser-toolbar-item.button.expand[buttonover="true"],
+.subbrowser-toolbar-item.button.expand:hover {
 	-moz-image-region: rect(16px 16px 32px 0px);
 }
 [iconsize="small"] #splitbrowser-expandAll-button[disabled="true"],
 [iconsize="small"] #splitbrowser-expandAll-button[disabled="true"][buttonover="true"],
-[iconsize="small"] #splitbrowser-expandAll-button[disabled="true"]:hover {
+[iconsize="small"] #splitbrowser-expandAll-button[disabled="true"]:hover,
+.subbrowser-toolbar-item.button.expand[disabled="true"],
+.subbrowser-toolbar-item.button.expand[disabled="true"][buttonover="true"],
+.subbrowser-toolbar-item.button.expand[disabled="true"]:hover {
 	-moz-image-region: rect(32px 16px 48px 0px);
 }
 
-[iconsize="small"] #splitbrowser-collapseAll-button {
+[iconsize="small"] #splitbrowser-collapseAll-button,
+.subbrowser-toolbar-item.button.collapse {
 	-moz-image-region: rect(0px 32px 16px 16px);
 }
 [iconsize="small"] #splitbrowser-collapseAll-button[buttonover="true"],
-[iconsize="small"] #splitbrowser-collapseAll-button:hover {
+[iconsize="small"] #splitbrowser-collapseAll-button:hover,
+.subbrowser-toolbar-item.button.collapse[buttonover="true"],
+.subbrowser-toolbar-item.button.collapse:hover {
 	-moz-image-region: rect(16px 32px 32px 16px);
 }
 [iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"],
 [iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"][buttonover="true"],
-[iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"]:hover {
+[iconsize="small"] #splitbrowser-collapseAll-button[disabled="true"]:hover,
+.subbrowser-toolbar-item.button.collapse[disabled="true"],
+.subbrowser-toolbar-item.button.collapse[disabled="true"][buttonover="true"],
+.subbrowser-toolbar-item.button.collapse[disabled="true"]:hover {
 	-moz-image-region: rect(32px 32px 48px 16px);
 }
 

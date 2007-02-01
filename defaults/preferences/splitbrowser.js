@@ -5,8 +5,9 @@ pref("splitbrowser.tabs.autoHide",            true);
 pref("splitbrowser.show.addbuttons.hover",    true);
 pref("splitbrowser.show.addbuttons.dragdrop", true);
 pref("splitbrowser.show.toolbar.always",      true);
+pref("splitbrowser.show.collapseexpand",        false);
 
-pref("splitbrowser.appearance.scrollbar.size", 16);
+pref("splitbrowser.appearance.scrollbar.size",  16);
 pref("splitbrowser.appearance.addbuttons.size", 16);
 pref("splitbrowser.appearance.addbuttons.area", 150);
 

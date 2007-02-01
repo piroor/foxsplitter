@@ -20,6 +20,9 @@
 		<preference id="splitbrowser.show.toolbar.always"
 			name="splitbrowser.show.toolbar.always"
 			type="bool"/>
+		<preference id="splitbrowser.show.collapseexpand"
+			name="splitbrowser.show.collapseexpand"
+			type="bool"/>
 		<preference id="splitbrowser.show.addbuttons.hover"
 			name="splitbrowser.show.addbuttons.hover"
 			type="bool"/>
@@ -44,6 +47,9 @@
 		<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
 			label="&splitbrowser.show.toolbar.always;"
 			preference="splitbrowser.show.toolbar.always"/>
+		<checkbox id="splitbrowser.show.collapseexpand-check" flex="1"
+			label="&splitbrowser.show.collapseexpand;"
+			preference="splitbrowser.show.collapseexpand"/>
 	</groupbox>
 
 	<groupbox>
