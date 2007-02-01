@@ -468,7 +468,7 @@
 				label="&splitbrowser.subbrowser.menu.openNewTab;"
 				oncommand="this.parentNode.parentNode.openNewTab();"/>
 		</xul:menupopup>
-		<xul:hbox flex="1">
+		<xul:hbox flex="1" class="subbrowser-content">
 			<xul:toolbox anonid="subbrowser-toolbox-vertical"
 				orient="vertical"
 				class="subbrowser-toolbox subbrowser-toolbox-vertical">

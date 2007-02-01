@@ -422,6 +422,8 @@ var SplitBrowser = {
 		splitter.setAttribute('onmousedown', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 		splitter.setAttribute('onmouseup', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 
+//		splitter.appendChild(document.createElement('grippy'));
+
 		return splitter;
 	},
   

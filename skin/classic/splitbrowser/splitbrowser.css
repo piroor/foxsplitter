@@ -135,10 +135,10 @@ subbrowser[subbrowser-focused="true"] .subbrowser-title {
 	font-weight: bold !important;
 }
 
-subbrowser > hbox {
+subbrowser > .subbrowser-content {
 	border: 1px solid transparent;
 }
 
-subbrowser[subbrowser-focused="true"] > hbox {
+subbrowser[subbrowser-focused="true"] > .subbrowser-content {
 	border: 1px solid ThreeDDarkShadow;
 }
