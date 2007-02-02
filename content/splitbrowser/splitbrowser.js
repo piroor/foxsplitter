@@ -440,6 +440,15 @@ var SplitBrowser = {
 	
 	removeSubBrowser : function(aBrowser) 
 	{
+		var c = aBrowser.flexibleParent;
+		if (c &&
+			(c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling).contentCollapsed) {
+			var splitter = c.nextSibling || c.previousSibling;
+			var orient  = (splitter.getAttribute('orient') != 'vertical' ? 'horizontal' : 'vertical' );
+			aBrowser.clearMaxSizeProp(c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling, orient == 'horizontal' ? 'width' : 'height' );
+		}
+
+
 //dump('SubBrowserRemoveRequest\n');
 		var appcontent = document.getElementById('appcontent');
 		var browser   = aBrowser;

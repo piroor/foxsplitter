@@ -43,7 +43,7 @@
 		<property name="contentCollapsed" readonly="true"
 			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
 		<property name="contentCompletelyCollapsed" readonly="true"
-			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+			onget="return this.vContentCompletelyCollapsed || this.hContentCompletelyCollapsed;"/>
 
 		<field name="lastwidth">-1</field>
 		<field name="lastheight">-1</field>
@@ -95,9 +95,9 @@
 			onget="return this.vContainer.hContentCollapsed || (this.hContainer ? this.hContainer.hContentCollapsed : false );"/>
 
 		<property name="vContentCompletelyCollapsed" readonly="true"
-			onget="return this.vContainer.vContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.vContentCompletelyCollapsed : true );"/>
+			onget="return this.vContainer.vContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.vContentCompletelyCollapsed : false );"/>
 		<property name="hContentCompletelyCollapsed" readonly="true"
-			onget="return this.vContainer.hContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.hContentCompletelyCollapsed : true );"/>
+			onget="return this.vContainer.hContentCompletelyCollapsed &amp;&amp; (this.hContainer ? this.hContainer.hContentCompletelyCollapsed : false );"/>
 	</implementation>
 
 	<handlers>
@@ -140,7 +140,7 @@
 		</property>
 
 		<property name="contentCompletelyCollapsed" readonly="true"
-			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+			onget="return this.vContentCompletelyCollapsed || this.hContentCompletelyCollapsed;"/>
 		<property name="vContentCompletelyCollapsed" readonly="true">
 			<getter><![CDATA[
 				var expanded = 0;
@@ -198,7 +198,7 @@
 		</property>
 
 		<property name="contentCompletelyCollapsed" readonly="true"
-			onget="return this.vContentCompletelyCollapsed &amp;&amp; this.hContentCompletelyCollapsed;"/>
+			onget="return this.vContentCompletelyCollapsed || this.hContentCompletelyCollapsed;"/>
 		<property name="vContentCompletelyCollapsed" readonly="true">
 			<getter><![CDATA[
 				var expanded = 0;
@@ -423,7 +423,7 @@ sideBox.removeAttribute('style');
 				sideBox.setAttribute(prop, sideSize - (c['last'+prop] - origSize));
 				c['last'+prop] = -1;
 
-				this.mClearMaxSizeProp(
+				this.clearMaxSizeProp(
 					((sideBoxPos == 'after') ? sideBox.previousSibling.previousSibling : sideBox.nextSibling.nextSibling ),
 					prop
 				);
@@ -436,16 +436,16 @@ sideBox.removeAttribute('style');
 				}, 0, this);
 			]]></body>
 		</method>
-		<method name="mClearMaxSizeProp">
+		<method name="clearMaxSizeProp">
 			<parameter name="aNode"/>
 			<parameter name="aProp"/>
 			<body><![CDATA[
-				if (aNode == this) return;
 				aNode.removeAttribute('max'+aProp);
 				if (aNode['last'+aProp]) aNode['last'+aProp] = -1;
+				if (aNode == this) return;
 				for (var i = 0, maxi = aNode.childNodes.length; i < maxi; i = i+2)
 				{
-					this.mClearMaxSizeProp(aNode.childNodes[i], aProp);
+					this.clearMaxSizeProp(aNode.childNodes[i], aProp);
 				}
 			]]></body>
 		</method>
@@ -455,6 +455,7 @@ sideBox.removeAttribute('style');
 			<parameter name="aBox"/>
 			<parameter name="aDir"/>
 			<parameter name="aOrient"/>
+			<parameter name="aFindAny"/>
 			<body><![CDATA[
 				var cProp  = (aOrient != 'vertical') ? 'hContentCollapsed' : 'vContentCollapsed' ;
 
@@ -463,29 +464,28 @@ sideBox.removeAttribute('style');
 					while (target && target.previousSibling)
 					{
 						target = target.previousSibling.previousSibling;
-						if (!target[cProp])
-							return target;
+						if (aFindAny || !target[cProp]) return target;
 					}
 
 					target = aBox;
 					while (target && target.nextSibling)
 					{
 						target = target.nextSibling.nextSibling;
-						if (!target[cProp]) return target;
+						if (aFindAny || !target[cProp]) return target;
 					}
 				}
 				else {
 					while (target && target.nextSibling)
 					{
 						target = target.nextSibling.nextSibling;
-						if (!target[cProp]) return target;
+						if (aFindAny || !target[cProp]) return target;
 					}
 
 					target = aBox;
 					while (target && target.previousSibling)
 					{
 						target = target.previousSibling.previousSibling;
-						if (!target[cProp]) return target;
+						if (aFindAny || !target[cProp]) return target;
 					}
 				}
 
