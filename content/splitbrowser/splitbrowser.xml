@@ -359,8 +359,7 @@ sideBox.removeAttribute('style');
 
 				window.setTimeout(function(aThis) {
 					aThis.toggleToolbar(false, true, 0);
-					if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
-						aThis.mUpdateToolbarMode();
+					aThis.mUpdateToolbarMode();
 
 					var node = c.parentNode;
 					var appcontent = document.getElementById('appcontent');
@@ -431,8 +430,7 @@ sideBox.removeAttribute('style');
 
 				window.setTimeout(function(aThis) {
 					aThis.toggleToolbar(false, true, 0);
-					if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
-						aThis.mUpdateToolbarMode();
+					aThis.mUpdateToolbarMode();
 				}, 0, this);
 			]]></body>
 		</method>
@@ -1813,21 +1811,23 @@ sideBox.removeAttribute('style');
 
 				var collapse;
 
+				var toolbarShown = nsPreferences.getBoolPref('splitbrowser.show.toolbar.always');
+
 				if (this.boxObject.width <= this.minSize) {
 					if (this.boxObject.height <= this.minSize) {
 						this.setAttribute('toolbar-mode', 'horizontal');
-						if (c) c.setAttribute('maxheight', 0);
+						if (c && toolbarShown) c.setAttribute('maxheight', 0);
 					}
 					else {
 						this.setAttribute('toolbar-mode', 'vertical');
-						if (c) c.setAttribute('maxwidth', 0);
+						if (c && toolbarShown) c.setAttribute('maxwidth', 0);
 					}
 					collapse = true;
 				}
 				else {
 					this.setAttribute('toolbar-mode', 'horizontal');
 					if (this.boxObject.height <= this.minSize) {
-						if (c) c.setAttribute('maxheight', 0);
+						if (c && toolbarShown) c.setAttribute('maxheight', 0);
 						collapse = true;
 					}
 					else {
