@@ -1489,6 +1489,8 @@ catch(e) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
 			window.handleLinkClick = this.contentAreaHandleLinkClick;
 		}
+		if (nsPreferences.getBoolPref('splitbrowser.tabs.enabled') != this.tabbedBrowsingEnabled)
+			nsPreferences.setBoolPref('splitbrowser.tabs.enabled', this.tabbedBrowsingEnabled);
 
 		this.activeSubBrowser = this.mainBrowserBox;
 
