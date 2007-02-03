@@ -653,23 +653,28 @@ sideBox.removeAttribute('style');
 				if (this.contentCollapsed)
 					val = false;
 
-				var b = gBrowser.mCurrentBrowser;
+				var b = this.browser;
+				if (b && b.localName == 'tabbrowser')
+					b = b.mCurrentBrowser;
+
 				if (val) {
 					this.setAttribute('subbrowser-focused', true);
 					if (SplitBrowser.activeSubBrowser != this)
 						SplitBrowser.activeSubBrowser = this;
-					b.removeAttribute('type');
-					b.setAttribute('type', 'content-primary');
+					if (b) {
+						b.removeAttribute('type');
+						b.setAttribute('type', 'content-primary');
+					}
 				}
-				else if (!val) {
+				else {
 					this.removeAttribute('subbrowser-focused');
-					b.removeAttribute('type');
-					b.setAttribute('type', 'content');
-					if (SplitBrowser.activeSubBrowser) {
-						if (SplitBrowser.activeSubBrowser == this)
-							SplitBrowser.activeSubBrowser = null;
-						else
-							SplitBrowser.activeSubBrowser.focused = true;
+					if (b) {
+						b.removeAttribute('type');
+						b.setAttribute('type', 'content');
+					}
+					if (SplitBrowser.activeSubBrowser &&
+						SplitBrowser.activeSubBrowser != this)
+						SplitBrowser.activeSubBrowser.focused = true;
 					}
 				}
 				return val;
@@ -678,6 +683,36 @@ sideBox.removeAttribute('style');
 				return this.getAttribute('subbrowser-focused') == 'true';
 			]]></getter>
 		</property>
+
+		<method name="autoFocus">
+			<body><![CDATA[
+				var delay = SplitBrowser.subBrowserAutoFocusDelay;
+				if (
+					this.focused ||
+					this.mAutoFocusTimer ||
+					delay < 0
+					)
+					return;
+
+				this.mAutoFocusTimer = window.setTimeout(
+					function(aThis) {
+						aThis.focused = true;
+						aThis.cancelAutoFocus();
+					},
+					delay,
+					this
+				);
+			]]></body>
+		</method>
+		<method name="cancelAutoFocus">
+			<body><![CDATA[
+				if (this.mAutoFocusTimer) {
+					window.clearInterval(this.mAutoFocusTimer);
+					this.mAutoFocusTimer = null;
+				}
+			]]></body>
+		</method>
+		<field name="mAutoFocusTimer">null</field>
 
 	</implementation>
 
@@ -690,6 +725,12 @@ sideBox.removeAttribute('style');
 
 		<handler event="focus" phase="capturing"
 			action="this.focused = true;"/>
+
+		<handler event="mouseover"
+			action="window.setTimeout(function(aThis) { aThis.autoFocus(); }, 0, this);"/>
+
+		<handler event="mouseout"
+			action="this.cancelAutoFocus();"/>
 	</handlers>
 </binding>
 
@@ -703,6 +744,8 @@ sideBox.removeAttribute('style');
 			onget="return this.vContentCollapsed"/>
 		<property name="hContentCompletelyCollapsed" readonly="true"
 			onget="return this.hContentCollapsed"/>
+		<property name="browser" readonly="true"
+			onget="return gBrowser;"/>
 	</implementation>
 </binding>
 
@@ -1196,25 +1239,31 @@ sideBox.removeAttribute('style');
 			<body><![CDATA[
 				if (this.contentCollapsed) aShow = false;
 
-				if (this.mIsToolbarHover == aShow) return;
+				if (this.mIsToolbarHover == aShow) {
+					if (!aShow && this.mToggleToolbarTimer) {
+						window.clearTimeout(this.mToggleToolbarTimer);
+						this.mToggleToolbarTimer = null;
+					}
+					return;
+				}
 
 				this.mIsToolbarHover = aShow;
 
 				if (aForce && aDelay === void(0)) {
 					this.toolbarDeck.selectedIndex = aShow ? 1 : 0 ;
-					if (this.toggleToolbarTimer) {
-						window.clearTimeout(this.toggleToolbarTimer);
-						this.toggleToolbarTimer = null;
+					if (this.mToggleToolbarTimer) {
+						window.clearTimeout(this.mToggleToolbarTimer);
+						this.mToggleToolbarTimer = null;
 					}
 					return;
 				}
 
-				this.toggleToolbarTimer = window.setTimeout(
+				this.mToggleToolbarTimer = window.setTimeout(
 					function(aShowFlag, aThis) {
 						if (aShowFlag == aThis.mIsToolbarHover &&
 							aThis.toolbarDeck)
 							aThis.toolbarDeck.selectedIndex = aShowFlag ? 1 : 0 ;
-						aThis.toggleToolbarTimer = null;
+						aThis.mToggleToolbarTimer = null;
 					},
 					(
 						aDelay !== void(0) ? aDelay :
@@ -1227,7 +1276,7 @@ sideBox.removeAttribute('style');
 				);
 			]]></body>
 		</method>
-		<field name="toggleToolbarTimer">null</field>
+		<field name="mToggleToolbarTimer">null</field>
 
 
 		<method name="setIcon">
@@ -1756,39 +1805,6 @@ sideBox.removeAttribute('style');
 				}
 			})
 		]]></field>
-
-		<property name="focused">
-			<setter><![CDATA[
-				if (this.contentCollapsed)
-					val = false;
-
-				var b = this.browser;
-				if (b.localName == 'tabbrowser')
-					b = b.mCurrentBrowser;
-				if (val) {
-					this.setAttribute('subbrowser-focused', true);
-					if (SplitBrowser.activeSubBrowser != this)
-						SplitBrowser.activeSubBrowser = this;
-					b.removeAttribute('type');
-					b.setAttribute('type', 'content-primary');
-				}
-				else if (!val) {
-					this.removeAttribute('subbrowser-focused');
-					b.removeAttribute('type');
-					b.setAttribute('type', 'content');
-					if (SplitBrowser.activeSubBrowser) {
-						if (SplitBrowser.activeSubBrowser == this)
-							SplitBrowser.activeSubBrowser = null;
-						else
-							SplitBrowser.activeSubBrowser.focused = true;
-					}
-				}
-				return val;
-			]]></setter>
-			<getter><![CDATA[
-				return this.getAttribute('subbrowser-focused') == 'true';
-			]]></getter>
-		</property>
 
 		<method name="mUpdateToolbarMode">
 			<body><![CDATA[

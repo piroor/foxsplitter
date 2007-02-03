@@ -11,6 +11,10 @@ var SplitBrowser = {
 		return nsPreferences.getIntPref('splitbrowser.delay.subbrowser.toolbar.hide');
 	},
  
+	get subBrowserAutoFocusDelay() { 
+		return nsPreferences.getBoolPref('splitbrowser.subbrowser.autoFocus') ? nsPreferences.getIntPref('splitbrowser.delay.subbrowser.autoFocus') : -1 ;
+	},
+ 
 	get isLinux() 
 	{
 		return (navigator.platform.indexOf('Linux') > -1);
@@ -45,22 +49,24 @@ var SplitBrowser = {
 	{
 		return document.getElementById('splitbrowser-expandAll-broadcaster');
 	},
-	updateBroadcasters : function()
+	updateStatus : function()
 	{
-		if (this.updateBroadcastersTimer) {
-			window.clearTimeout(this.updateBroadcastersTimer);
-			this.updateBroadcastersTimer = null;
+		if (this.updateStatusTimer) {
+			window.clearTimeout(this.updateStatusTimer);
+			this.updateStatusTimer = null;
 		}
-		this.updateBroadcastersTimer = window.setTimeout('SplitBrowser.updateBroadcastersCallback();', 1);
+		this.updateStatusTimer = window.setTimeout('SplitBrowser.updateStatusCallback();', 1);
 	},
-	updateBroadcastersCallback : function()
+	updateStatusCallback : function()
 	{
 		if (!this.browsers.length) {
+			document.documentElement.removeAttribute('splitbrowser-split');
 			this.removeAllBroadcaster.setAttribute('disabled', true);
 			this.collapseAllBroadcaster.setAttribute('disabled', true);
 			this.expandAllBroadcaster.setAttribute('disabled', true);
 		}
 		else {
+			document.documentElement.setAttribute('splitbrowser-split', true);
 			this.removeAllBroadcaster.removeAttribute('disabled');
 
 			var collapsed = 0;
@@ -85,7 +91,7 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
-		this.updateBroadcastersTimer = null;
+		this.updateStatusTimer = null;
 	},
  
 	POSITION_LEFT   : 1, 
@@ -1665,7 +1671,7 @@ catch(e) {
 			case 'SubBrowserRemoved':
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':
-				this.updateBroadcasters();
+				this.updateStatus();
 				break;
 
 			case 'SubBrowserEnterContentAreaEdge':

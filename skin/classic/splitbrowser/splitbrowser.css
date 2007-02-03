@@ -136,10 +136,12 @@ subbrowser[subbrowser-focused="true"] .subbrowser-title {
 	font-weight: bold !important;
 }
 
-subbrowser > .subbrowser-content {
+subbrowser > .subbrowser-content,
+:root[splitbrowser-split="true"] .primary-browser-wrapper {
 	border: 1px solid transparent;
 }
 
-subbrowser[subbrowser-focused="true"] > .subbrowser-content {
+subbrowser[subbrowser-focused="true"] > .subbrowser-content,
+:root[splitbrowser-split="true"] .primary-browser-wrapper[subbrowser-focused="true"] {
 	border: 1px solid ThreeDDarkShadow;
 }
