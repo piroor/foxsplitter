@@ -19,5 +19,10 @@ pref("splitbrowser.delay.subbrowser.toolbar.hide", 4000);
 pref("splitbrowser.delay.subbrowser.autoFocus",    1000);
 
 
+
+pref("splitbrowser.tabs.enabled",             true);
+
+
+
 pref("extensions.{29c4afe1-db19-4298-8785-fcc94d1d6c1d}.name", "chrome://splitbrowser/locale/splitbrowser.properties");
 pref("extensions.{29c4afe1-db19-4298-8785-fcc94d1d6c1d}.description", "chrome://splitbrowser/locale/splitbrowser.properties");
