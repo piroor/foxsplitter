@@ -37,63 +37,6 @@ var SplitBrowser = {
 		return document.getElementById('appcontent').contentWrapper;
 	},
  
-	get removeAllBroadcaster() 
-	{
-		return document.getElementById('splitbrowser-removeAll-broadcaster');
-	},
-	get collapseAllBroadcaster()
-	{
-		return document.getElementById('splitbrowser-collapseAll-broadcaster');
-	},
-	get expandAllBroadcaster()
-	{
-		return document.getElementById('splitbrowser-expandAll-broadcaster');
-	},
-	updateStatus : function()
-	{
-		if (this.updateStatusTimer) {
-			window.clearTimeout(this.updateStatusTimer);
-			this.updateStatusTimer = null;
-		}
-		this.updateStatusTimer = window.setTimeout('SplitBrowser.updateStatusCallback();', 1);
-	},
-	updateStatusCallback : function()
-	{
-		if (!this.browsers.length) {
-			document.documentElement.removeAttribute('splitbrowser-split');
-			this.removeAllBroadcaster.setAttribute('disabled', true);
-			this.collapseAllBroadcaster.setAttribute('disabled', true);
-			this.expandAllBroadcaster.setAttribute('disabled', true);
-		}
-		else {
-			document.documentElement.setAttribute('splitbrowser-split', true);
-			this.removeAllBroadcaster.removeAttribute('disabled');
-
-			var collapsed = 0;
-			var expanded  = 0;
-			for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
-			{
-				if (this.browsers[i].contentCollapsed)
-					collapsed++;
-				else
-					expanded++;
-
-				if (collapsed && expanded) break;
-			}
-			if (collapsed)
-				this.expandAllBroadcaster.removeAttribute('disabled');
-			else
-				this.expandAllBroadcaster.setAttribute('disabled', true);
-
-			if (expanded)
-				this.collapseAllBroadcaster.removeAttribute('disabled');
-			else
-				this.collapseAllBroadcaster.setAttribute('disabled', true);
-		}
-
-		this.updateStatusTimer = null;
-	},
- 
 	POSITION_LEFT   : 1, 
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
@@ -106,6 +49,7 @@ var SplitBrowser = {
 	POSITION_AFTER  : 10,
  
 	browsers  : [], 
+	splitters : {},
  
 /* utilities */ 
 	
@@ -142,7 +86,7 @@ var SplitBrowser = {
 		}
 		return null;
 	},
- 
+	
 	get browserWindows() 
 	{
 		var browserWindows = [];
@@ -166,7 +110,7 @@ var SplitBrowser = {
 		return this._WindowManager;
 	},
 	_WindowManager : null,
- 
+  
 	getSubBrowserFromFrame : function(aFrame) 
 	{
 		var docShell = aFrame
@@ -179,24 +123,6 @@ var SplitBrowser = {
 				return this.browsers[i];
 		}
 		return null;
-	},
- 
-	getDropPositionOnContentArea : function(aEvent, aBox) 
-	{
-		var W = aBox.boxObject.width;
-		var H = aBox.boxObject.height;
-		var X = aBox.boxObject.screenX;
-		var Y = aBox.boxObject.screenY;
-		var x = aEvent.screenX - X;
-		var y = aEvent.screenY - Y;
-
-		var isTL = x <= W - (y * W / H);
-		var isBL = x <= y * W / H;
-
-		return (isTL && isBL) ? SplitBrowser.POSITION_LEFT :
-			(isTL && !isBL) ? SplitBrowser.POSITION_TOP :
-			(!isTL && isBL) ? SplitBrowser.POSITION_BOTTOM :
-			SplitBrowser.POSITION_RIGHT ;
 	},
  
 	get activeSubBrowser() 
@@ -228,6 +154,67 @@ var SplitBrowser = {
 	{
 		var b = this.activeSubBrowser;
 		return b && b.browser ? b.browser : gBrowser ;
+	},
+  
+	updateStatus : function() 
+	{
+		if (this.updateStatusTimer) {
+			window.clearTimeout(this.updateStatusTimer);
+			this.updateStatusTimer = null;
+		}
+		this.updateStatusTimer = window.setTimeout('SplitBrowser.updateStatusCallback();', 1);
+	},
+	
+	updateStatusCallback : function() 
+	{
+		if (!this.browsers.length) {
+			document.documentElement.removeAttribute('splitbrowser-split');
+			this.removeAllBroadcaster.setAttribute('disabled', true);
+			this.collapseAllBroadcaster.setAttribute('disabled', true);
+			this.expandAllBroadcaster.setAttribute('disabled', true);
+		}
+		else {
+			document.documentElement.setAttribute('splitbrowser-split', true);
+			this.removeAllBroadcaster.removeAttribute('disabled');
+
+			var collapsed = 0;
+			var expanded  = 0;
+			for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+			{
+				if (this.browsers[i].contentCollapsed)
+					collapsed++;
+				else
+					expanded++;
+
+				if (collapsed && expanded) break;
+			}
+			if (collapsed)
+				this.expandAllBroadcaster.removeAttribute('disabled');
+			else
+				this.expandAllBroadcaster.setAttribute('disabled', true);
+
+			if (expanded)
+				this.collapseAllBroadcaster.removeAttribute('disabled');
+			else
+				this.collapseAllBroadcaster.setAttribute('disabled', true);
+		}
+
+		this.updateStatusTimer = null;
+	},
+ 
+	get removeAllBroadcaster() 
+	{
+		return document.getElementById('splitbrowser-removeAll-broadcaster');
+	},
+ 
+	get collapseAllBroadcaster() 
+	{
+		return document.getElementById('splitbrowser-collapseAll-broadcaster');
+	},
+ 
+	get expandAllBroadcaster() 
+	{
+		return document.getElementById('splitbrowser-expandAll-broadcaster');
 	},
    
 /* add sub-browser (split contents) */ 
@@ -430,14 +417,19 @@ var SplitBrowser = {
 		splitter.setAttribute('state', 'open');
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
 
+		splitter.setAttribute('_collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
 		if (!nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
-			splitter.setAttribute('collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
+			splitter.setAttribute('collapse', splitter.getAttribute('_collapse'));
 
 		var prop = (aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ;
 		splitter.setAttribute('onmousedown', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 		splitter.setAttribute('onmouseup', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 
 //		splitter.appendChild(document.createElement('grippy'));
+
+		var id = 'splitbrowser-splitter-'+parseInt(Math.random() * 65000);
+		splitter.setAttribute('id', id);
+		this.splitters[id] = splitter;
 
 		return splitter;
 	},
@@ -493,7 +485,7 @@ var SplitBrowser = {
 						box.height = box.boxObject.height + cont.boxObject.height;
 						box.removeAttribute('collapsed');
 					}
-					container.vContainer.removeChild(cont.previousSibling);
+					this.removeSplitter(cont.previousSibling);
 				}
 				else if (cont.nextSibling &&
 					cont.nextSibling.localName == 'splitter') {
@@ -502,28 +494,13 @@ var SplitBrowser = {
 						box.height = box.boxObject.height + cont.boxObject.height;
 						box.removeAttribute('collapsed');
 					}
-					container.vContainer.removeChild(cont.nextSibling);
+					this.removeSplitter(cont.nextSibling);
 				}
 				container.vContainer.removeChild(cont);
 				container.hContainer = null;
 			}
-			else if (cont.childNodes.length % 2 == 0) {
-				if (cont.firstChild.localName == 'splitter') {
-					cont.removeChild(cont.firstChild);
-				}
-				else if (cont.lastChild.localName == 'splitter') {
-					cont.removeChild(cont.lastChild);
-				}
-				else {
-					for (var i = 0, maxi = cont.childNodes.length-1; i < maxi; i++)
-					{
-						if (cont.childNodes[i].localName == 'splitter' &&
-							cont.childNodes[i+1].localName == 'splitter') {
-							cont.removeChild(cont.childNodes[i]);
-							break;
-						}
-					}
-				}
+			else {
+				this.cleanUpSplitters(cont);
 			}
 		}
 
@@ -536,7 +513,7 @@ var SplitBrowser = {
 					box.width = box.boxObject.width + container.boxObject.width;
 					box.removeAttribute('collapsed');
 				}
-				container.parentNode.removeChild(container.previousSibling);
+				this.removeSplitter(container.previousSibling);
 			}
 			else if (container.nextSibling && container.nextSibling.localName == 'splitter') {
 				box = container.nextSibling.nextSibling;
@@ -544,32 +521,43 @@ var SplitBrowser = {
 					box.width = box.boxObject.width + container.boxObject.width;
 					box.removeAttribute('collapsed');
 				}
-				container.parentNode.removeChild(container.nextSibling);
+				this.removeSplitter(container.nextSibling);
 			}
 			container.parentNode.removeChild(container);
 		}
-		else if (cont.childNodes.length % 2 == 0) {
-			if (cont.firstChild.localName == 'splitter') {
-				cont.removeChild(cont.firstChild);
-			}
-			else if (cont.lastChild.localName == 'splitter') {
-				cont.removeChild(cont.lastChild);
-			}
-			else {
-				for (var i = 0, maxi = cont.childNodes.length-1; i < maxi; i++)
-				{
-					if (cont.childNodes[i].localName == 'splitter' &&
-						cont.childNodes[i+1].localName == 'splitter') {
-						cont.removeChild(cont.childNodes[i]);
-						break;
-					}
-				}
-			}
+		else {
+			this.cleanUpSplitters(cont);
 		}
 
 		if (parentContainer) {
 			this.cleanUpContainer(parentContainer);
 		}
+	},
+	cleanUpSplitters : function(aContainer)
+	{
+		if (aContainer.childNodes.length % 2 != 0) return;
+
+		if (aContainer.firstChild.localName == 'splitter') {
+			this.removeSplitter(aContainer.firstChild);
+		}
+		else if (aContainer.lastChild.localName == 'splitter') {
+			this.removeSplitter(aContainer.lastChild);
+		}
+		else {
+			for (var i = 0, maxi = aContainer.childNodes.length-1; i < maxi; i++)
+			{
+				if (aContainer.childNodes[i].localName == 'splitter' &&
+					aContainer.childNodes[i+1].localName == 'splitter') {
+					this.removeSplitter(aContainer.childNodes[i]);
+					break;
+				}
+			}
+		}
+	},
+	removeSplitter : function(aSplitter)
+	{
+		delete this.splitters[aSplitter.getAttribute('id')];
+		aSplitter.parentNode.removeChild(aSplitter);
 	},
   
 	removeAllSubBrowsers : function() 
@@ -579,8 +567,8 @@ var SplitBrowser = {
 			this.removeSubBrowser(this.browsers[i]);
 		}
 	},
- 
-	collapseAllSubBrowsers : function()
+  
+	collapseAllSubBrowsers : function() 
 	{
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
@@ -589,7 +577,7 @@ var SplitBrowser = {
 		}
 	},
  
-	expandAllSubBrowsers : function()
+	expandAllSubBrowsers : function() 
 	{
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
@@ -597,7 +585,7 @@ var SplitBrowser = {
 				this.browsers[i].expand(true);
 		}
 	},
-  
+ 
 /* save / load */ 
 	
 	save : function() 
@@ -1224,6 +1212,24 @@ alert(e+'\n\n'+state);
   
 /* drag-and-drop */ 
 	
+	getDropPositionOnContentArea : function(aEvent, aBox) 
+	{
+		var W = aBox.boxObject.width;
+		var H = aBox.boxObject.height;
+		var X = aBox.boxObject.screenX;
+		var Y = aBox.boxObject.screenY;
+		var x = aEvent.screenX - X;
+		var y = aEvent.screenY - Y;
+
+		var isTL = x <= W - (y * W / H);
+		var isBL = x <= y * W / H;
+
+		return (isTL && isBL) ? SplitBrowser.POSITION_LEFT :
+			(isTL && !isBL) ? SplitBrowser.POSITION_TOP :
+			(!isTL && isBL) ? SplitBrowser.POSITION_BOTTOM :
+			SplitBrowser.POSITION_RIGHT ;
+	},
+ 
 	getURIFromDragData : function(aXferData, aDragSession, aEvent) 
 	{
 try{
@@ -1486,11 +1492,13 @@ catch(e) {
 
 		this.activeSubBrowser = this.mainBrowserBox;
 
-		if (nsPreferences.getBoolPref('splitbrowser.show.collapseexpand'))
-			document.documentElement.setAttribute('subbrowser-show-togglecollapsed-button', true);
-		else
-			document.documentElement.removeAttribute('subbrowser-show-togglecollapsed-button');
-
+		try {
+			var pbi = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranchInternal);
+			pbi.addObserver('splitbrowser', this, false);
+		}
+		catch(e) {
+		}
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			window.setTimeout('SplitBrowser.load();', 0);
@@ -1643,6 +1651,13 @@ catch(e) {
 
 		window.removeEventListener('resize', this, false);
 		window.removeEventListener('unload', this, false);
+
+		try {
+			var pbi = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranchInternal);
+			pbi.removeObserver('splitbrowser', this);
+		}
+		catch(e) {
+		}
 	},
  
 	handleEvent : function(aEvent) 
@@ -1701,6 +1716,42 @@ catch(e) {
 
 			case 'SubBrowserTabbrowserInserted':
 				this.insertSeparateTabItem(aEvent.tabbrowser);
+				break;
+		}
+	},
+ 
+	observe : function(aSubject, aTopic, aPrefstring) 
+	{
+		if (aTopic != 'nsPref:changed') return;
+
+		switch (aPrefstring)
+		{
+			case 'splitbrowser.show.collapseexpand':
+				if (nsPreferences.getBoolPref(aPrefstring))
+					document.documentElement.setAttribute('subbrowser-show-togglecollapsed-button', true);
+				else
+					document.documentElement.removeAttribute('subbrowser-show-togglecollapsed-button');
+				break;
+
+			case 'splitbrowser.show.toolbar.always':
+				if (nsPreferences.getBoolPref(aPrefstring)) {
+					for (var i in this.splitters)
+						this.splitters[i].removeAttribute('collapse');
+				}
+				else {
+					for (var i in this.splitters)
+						this.splitters[i].setAttribute('collapse', this.splitters[i].getAttribute('_collapse'));
+				}
+				break;
+
+			case 'splitbrowser.tabs.autoHide':
+				if (!this.tabbedBrowsingEnabled) return;
+				var visible = !nsPreferences.getBoolPref(aPrefstring);
+				for (var i in this.browsers)
+				{
+					if (this.browsers[i].browser.mTabContainer.childNodes.length == 1)
+						this.browsers[i].browser.setStripVisibilityTo(visible);
+				}
 				break;
 		}
 	}
