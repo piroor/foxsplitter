@@ -1,16 +1,27 @@
 <!ENTITY splitbrowser.title           "Split Browser - Einstellungen">
+
 <!ENTITY splitbrowser.tab.general         "Allgemein">
+
 <!ENTITY splitbrowser.general.caption     "Allgemein">
 <!ENTITY splitbrowser.state.restore       "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
-<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+
 <!ENTITY splitbrowser.show.addbuttons.caption "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
 <!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
 
 <!ENTITY splitbrowser.tab.caption   "Tabs">
-<!ENTITY splitbrowser.tabs.autoHide "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
 <!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">
+
+
+<!ENTITY splitbrowser.tab.appearance     "Appearance">
+
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
+<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.tabs.autoHide "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
+
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Nach oben teilen">

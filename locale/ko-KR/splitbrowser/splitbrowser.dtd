@@ -1,16 +1,27 @@
 <!ENTITY splitbrowser.title           "Split Browser 설정">
+
 <!ENTITY splitbrowser.tab.general     "일반">
+
 <!ENTITY splitbrowser.general.caption     "일반">
 <!ENTITY splitbrowser.state.restore       "브라우저 분할 상태 저장">
-<!ENTITY splitbrowser.show.toolbar.always "항상 분할 브라우저에 도구 모음 보이기">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+
 <!ENTITY splitbrowser.show.addbuttons.caption  "컨텐트 영역의 위쪽/아래쪽/왼쪽/오른쪽 가장자리에 &quot;분할&quot; 버튼 보이기">
 <!ENTITY splitbrowser.show.addbuttons.hover    "보통 시간">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "링크, 파일 등을 드래그 하는 동안">
 
 <!ENTITY splitbrowser.tab.caption   "탭">
-<!ENTITY splitbrowser.tabs.autoHide "항상 분할 브라우저에 탭 도구 모음 보이기">
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
+
+
+<!ENTITY splitbrowser.tab.appearance     "Appearance">
+
+<!ENTITY splitbrowser.show.toolbar.always "항상 분할 브라우저에 도구 모음 보이기">
+<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.tabs.autoHide "항상 분할 브라우저에 탭 도구 모음 보이기">
+
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "위쪽으로 분할">

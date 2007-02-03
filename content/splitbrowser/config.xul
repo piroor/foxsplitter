@@ -17,11 +17,14 @@
 		<preference id="splitbrowser.state.restore"
 			name="splitbrowser.state.restore"
 			type="bool"/>
-		<preference id="splitbrowser.show.toolbar.always"
-			name="splitbrowser.show.toolbar.always"
+		<preference id="splitbrowser.subbrowser.autoFocus"
+			name="splitbrowser.subbrowser.autoFocus"
 			type="bool"/>
-		<preference id="splitbrowser.show.collapseexpand"
-			name="splitbrowser.show.collapseexpand"
+		<preference id="splitbrowser.delay.subbrowser.autoFocus"
+			name="splitbrowser.delay.subbrowser.autoFocus"
+			type="int"/>
+		<preference id="splitbrowser.tab.closetab"
+			name="splitbrowser.tab.closetab"
 			type="bool"/>
 		<preference id="splitbrowser.show.addbuttons.hover"
 			name="splitbrowser.show.addbuttons.hover"
@@ -29,38 +32,29 @@
 		<preference id="splitbrowser.show.addbuttons.dragdrop"
 			name="splitbrowser.show.addbuttons.dragdrop"
 			type="bool"/>
-		<preference id="splitbrowser.tabs.autoHide"
-			name="splitbrowser.tabs.autoHide"
-			type="bool"
-			inverted="true"/>
-		<preference id="splitbrowser.tab.closetab"
-			name="splitbrowser.tab.closetab"
-			type="bool"/>
 	</preferences>
 
+	<checkbox id="splitbrowser.state.restore-check" flex="1"
+		label="&splitbrowser.state.restore;"
+		preference="splitbrowser.state.restore"/>
+	<checkbox id="splitbrowser.subbrowser.autoFocus-check" flex="1"
+		label="&splitbrowser.subbrowser.autoFocus;"
+		preference="splitbrowser.subbrowser.autoFocus"/>
+	<hbox align="center">
+		<spacer style="width:1em;"/>
+		<label value="&splitbrowser.delay.subbrowser.autoFocus.before;"
+			control="splitbrowser.delay.subbrowser.autoFocus-check"/>
+		<textbox id="splitbrowser.delay.subbrowser.autoFocus-check" style="width:5em;"
+			preference="splitbrowser.delay.subbrowser.autoFocus"
+			type="number" min="1" max="100" increment="1"/>
+		<label value="&splitbrowser.delay.subbrowser.autoFocus.after;"
+			control="splitbrowser.delay.subbrowser.autoFocus-check"/>
+	</hbox>
 
-	<groupbox>
-		<caption label="&splitbrowser.general.caption;"/>
-		<checkbox id="splitbrowser.state.restore-check" flex="1"
-			label="&splitbrowser.state.restore;"
-			preference="splitbrowser.state.restore"/>
-		<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
-			label="&splitbrowser.show.toolbar.always;"
-			preference="splitbrowser.show.toolbar.always"/>
-		<checkbox id="splitbrowser.show.collapseexpand-check" flex="1"
-			label="&splitbrowser.show.collapseexpand;"
-			preference="splitbrowser.show.collapseexpand"/>
-	</groupbox>
+	<checkbox id="splitbrowser.tab.closetab-check" flex="1"
+		label="&splitbrowser.tab.closetab;"
+		preference="splitbrowser.tab.closetab"/>
 
-	<groupbox>
-		<caption label="&splitbrowser.tab.caption;"/>
-		<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
-			label="&splitbrowser.tabs.autoHide;"
-			preference="splitbrowser.tabs.autoHide"/>
-		<checkbox id="splitbrowser.tab.closetab-check" flex="1"
-			label="&splitbrowser.tab.closetab;"
-			preference="splitbrowser.tab.closetab"/>
-	</groupbox>
 
 	<groupbox>
 		<caption label="&splitbrowser.show.addbuttons.caption;"/>
@@ -71,6 +65,33 @@
 			label="&splitbrowser.show.addbuttons.dragdrop;"
 			preference="splitbrowser.show.addbuttons.dragdrop"/>
 	</groupbox>
+
+</prefpane>
+
+<prefpane id="prefpane-appearance" label="&splitbrowser.tab.appearance;">
+	<preferences>
+		<preference id="splitbrowser.show.toolbar.always"
+			name="splitbrowser.show.toolbar.always"
+			type="bool"/>
+		<preference id="splitbrowser.show.collapseexpand"
+			name="splitbrowser.show.collapseexpand"
+			type="bool"/>
+		<preference id="splitbrowser.tabs.autoHide"
+			name="splitbrowser.tabs.autoHide"
+			type="bool"
+			inverted="true"/>
+	</preferences>
+
+
+	<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
+		label="&splitbrowser.show.toolbar.always;"
+		preference="splitbrowser.show.toolbar.always"/>
+	<checkbox id="splitbrowser.show.collapseexpand-check" flex="1"
+		label="&splitbrowser.show.collapseexpand;"
+		preference="splitbrowser.show.collapseexpand"/>
+	<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
+		label="&splitbrowser.tabs.autoHide;"
+		preference="splitbrowser.tabs.autoHide"/>
 
 </prefpane>
 

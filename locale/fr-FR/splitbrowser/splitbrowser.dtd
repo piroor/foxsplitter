@@ -1,17 +1,26 @@
 <!ENTITY splitbrowser.title           "Configuration de Split Browser">
+
 <!ENTITY splitbrowser.tab.general         "Général">
+
 <!ENTITY splitbrowser.general.caption     "Général">
 <!ENTITY splitbrowser.state.restore       "Sauvegarder l'état des fenêtres partagées">
-<!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d&quot;outils dans les fenêtres partagées.">
-<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+
 <!ENTITY splitbrowser.show.addbuttons.caption "Montrer les boutons &quot;Split&quot; sur les cotés de la fenêtre">
 <!ENTITY splitbrowser.show.addbuttons.hover    "En temps normal">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Pendant le glissement des liens, fichiers, etc...">
 
 <!ENTITY splitbrowser.tab.caption   "Onglet">
-<!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 <!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
+
+
+<!ENTITY splitbrowser.tab.appearance     "Appearance">
+
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
+<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">

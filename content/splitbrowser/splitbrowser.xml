@@ -719,7 +719,6 @@ sideBox.removeAttribute('style');
 	<handlers>
 		<handler event="mousemove"
 			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.hover')) this.handleMouseOverEvent(event); return true;"/>
-
 		<handler event="dragover" phase="capturing"
 			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
 
@@ -728,7 +727,6 @@ sideBox.removeAttribute('style');
 
 		<handler event="mouseover"
 			action="window.setTimeout(function(aThis) { aThis.autoFocus(); }, 0, this);"/>
-
 		<handler event="mouseout"
 			action="this.cancelAutoFocus();"/>
 	</handlers>
