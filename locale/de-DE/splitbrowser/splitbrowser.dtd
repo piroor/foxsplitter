@@ -4,9 +4,10 @@
 
 <!ENTITY splitbrowser.general.caption     "Allgemein">
 <!ENTITY splitbrowser.state.restore       "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
-<!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
-<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
-<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+<!--ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover"-->
+<!ENTITY splitbrowser.subbrowser.autoFocus "Geteilte Browser-Ansichten beim Überfahren mit der Maus fokussieren">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Automatisch fokussieren nach ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
 
 <!ENTITY splitbrowser.show.addbuttons.caption "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
 <!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
@@ -16,10 +17,10 @@
 <!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">
 
 
-<!ENTITY splitbrowser.tab.appearance     "Appearance">
+<!ENTITY splitbrowser.tab.appearance     "Aussehen">
 
-<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.always "Symbolleiste in geteilten Browser-Ansichten immer anzeigen">
+<!ENTITY splitbrowser.show.collapseexpand "Schaltfläche zum Ein-/Ausklappen in geteilten Browser-Ansichten anzeigen">
 <!ENTITY splitbrowser.tabs.autoHide "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
 
 
@@ -31,11 +32,11 @@
 
 
 <!ENTITY splitbrowser.file.removeAll.label "Alle geteilten Ansichten schließen">
-<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
-<!ENTITY splitbrowser.view.collapseAll.label     "Collapse All Split Browsers">
-<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
-<!ENTITY splitbrowser.view.expandAll.label       "Expand All Split Browsers">
-<!ENTITY splitbrowser.view.expandAll.accesskey   "x">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "g">
+<!ENTITY splitbrowser.view.collapseAll.label     "Alle geteilten Ansichten einklappen">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "k">
+<!ENTITY splitbrowser.view.expandAll.label       "Alle geteilten Ansichten ausklappen">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "u">
 
 <!ENTITY splitbrowser.add.label        "Seite in geteilter Ansicht öffnen">
 <!ENTITY splitbrowser.add.top.label    "Oben">
@@ -71,8 +72,8 @@
 <!ENTITY splitbrowser.subbrowser.stop.tooltip      "Stopp">
 <!ENTITY splitbrowser.subbrowser.go.label          "Go">
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "Diese Adresse laden">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Collapse">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Expand">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Einklappen">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Ausklappen">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Neuer Tab">
@@ -81,9 +82,9 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "Schließen">
 
 
-<!ENTITY splitbrowser.button.collapseAll.label   "Collapse">
-<!ENTITY splitbrowser.button.collapseAll.tooltip "Collapse all of split browsers">
-<!ENTITY splitbrowser.button.expandAll.label     "Expand">
-<!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of split browsers">
-<!ENTITY splitbrowser.button.removeAll.label      "Close All">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "Close all of split browsers">
+<!ENTITY splitbrowser.button.collapseAll.label   "Einklappen">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Alle geteilten Ansichten einklappen">
+<!ENTITY splitbrowser.button.expandAll.label     "Ausklappen">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Alle geteilten Ansichten ausklappen">
+<!ENTITY splitbrowser.button.removeAll.label      "Alle schließen">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "Alle geteilten Ansichten schließen">
