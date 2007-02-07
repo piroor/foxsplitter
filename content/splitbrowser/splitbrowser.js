@@ -1466,6 +1466,7 @@ catch(e) {
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
 		window.addEventListener('resize', this, false);
+		window.addEventListener('fullscreen', this, false);
 		window.addEventListener('unload', this, false);
 
 		window.removeEventListener('load', this, false);
@@ -1652,6 +1653,7 @@ catch(e) {
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
 		window.removeEventListener('resize', this, false);
+		window.removeEventListener('fullscreen', this, false);
 		window.removeEventListener('unload', this, false);
 
 		try {
@@ -1706,6 +1708,15 @@ catch(e) {
 
 			case 'resize':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
+				break;
+
+			case 'fullscreen':
+				window.setTimeout(function() {
+					if (window.fullScreen)
+						document.documentElement.setAttribute('splitbrowser-fullscreen', true);
+					else
+						document.documentElement.removeAttribute('splitbrowser-fullscreen');
+				}, 0);
 				break;
 
 			case 'popupshowing':

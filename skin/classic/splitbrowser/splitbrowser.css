@@ -143,5 +143,11 @@ subbrowser > .subbrowser-content,
 
 subbrowser[subbrowser-focused="true"] > .subbrowser-content,
 :root[splitbrowser-split="true"] .primary-browser-wrapper[subbrowser-focused="true"] {
-	border: 1px solid ThreeDDarkShadow;
+	border: 1px solid;
+/*	border: 1px solid ThreeDDarkShadow;*/
+}
+
+:root[sizemode="maximized"][splitbrowser-split="true"] #appcontent,
+:root[splitbrowser-fullscreen="true"][splitbrowser-split="true"] #appcontent {
+	margin: 0 -1px -1px;
 }
