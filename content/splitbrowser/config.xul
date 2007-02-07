@@ -11,9 +11,6 @@
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	title="&splitbrowser.title;">
 
-<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
-
-
 <prefpane id="prefpane-general" label="&splitbrowser.tab.general;">
 	<preferences>
 		<preference id="splitbrowser.state.restore"
@@ -103,5 +100,7 @@
 		preference="splitbrowser.tabs.autoHide"/>
 
 </prefpane>
+
+<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
 </prefwindow>
