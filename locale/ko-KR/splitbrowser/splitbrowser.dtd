@@ -4,9 +4,9 @@
 
 <!ENTITY splitbrowser.general.caption     "일반">
 <!ENTITY splitbrowser.state.restore       "브라우저 분할 상태 저장">
-<!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
-<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
-<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+<!ENTITY splitbrowser.subbrowser.autoFocus "마우스가 위치하면 자동으로 초점 맞추기">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "초점 맞추기 대기 시간: ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "밀리초">
 
 <!ENTITY splitbrowser.show.addbuttons.caption  "컨텐트 영역의 위쪽/아래쪽/왼쪽/오른쪽 가장자리에 &quot;분할&quot; 버튼 보이기">
 <!ENTITY splitbrowser.show.addbuttons.hover    "보통 시간">
@@ -16,11 +16,11 @@
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
 
 
-<!ENTITY splitbrowser.tab.appearance     "Appearance">
+<!ENTITY splitbrowser.tab.appearance     "모양">
 
-<!ENTITY splitbrowser.show.toolbar.always "항상 분할 브라우저에 도구 모음 보이기">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
-<!ENTITY splitbrowser.tabs.autoHide "항상 분할 브라우저에 탭 도구 모음 보이기">
+<!ENTITY splitbrowser.show.toolbar.always "항상 분할된 브라우저에 도구 모음 보이기">
+<!ENTITY splitbrowser.show.collapseexpand "분할된 브라우저에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
+<!ENTITY splitbrowser.tabs.autoHide "항상 분할된 브라우저에 탭 도구 모음 보이기">
 
 
 
@@ -30,11 +30,11 @@
 <!ENTITY splitbrowser.add.button.left.tooltip   "왼쪽으로 분할">
 
 
-<!ENTITY splitbrowser.file.removeAll.label       "분할 브라우저 모두 닫기">
+<!ENTITY splitbrowser.file.removeAll.label       "분할된 브라우저 모두 닫기">
 <!ENTITY splitbrowser.file.removeAll.accesskey   "b">
-<!ENTITY splitbrowser.view.collapseAll.label     "Collapse All Split Browsers">
+<!ENTITY splitbrowser.view.collapseAll.label     "분할된 화면 모두 감추기">
 <!ENTITY splitbrowser.view.collapseAll.accesskey "l">
-<!ENTITY splitbrowser.view.expandAll.label       "Expand All Split Browsers">
+<!ENTITY splitbrowser.view.expandAll.label       "분할된 화면 모두 보이기">
 <!ENTITY splitbrowser.view.expandAll.accesskey   "x">
 
 <!ENTITY splitbrowser.add.label        "브라우저 분할 방향">
@@ -71,8 +71,8 @@
 <!ENTITY splitbrowser.subbrowser.stop.tooltip      "중지">
 <!ENTITY splitbrowser.subbrowser.go.label          "가기">
 <!ENTITY splitbrowser.subbrowser.go.tooltip        "현재 URI 로드">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Collapse">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Expand">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "감추기">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip    "보이기">
 <!ENTITY splitbrowser.subbrowser.close.tooltip     "닫기">
 
 <!ENTITY splitbrowser.subbrowser.menu.openNewTab   "새 탭">
@@ -81,9 +81,9 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
 
 
-<!ENTITY splitbrowser.button.collapseAll.label   "Collapse">
-<!ENTITY splitbrowser.button.collapseAll.tooltip "Collapse all of split browsers">
-<!ENTITY splitbrowser.button.expandAll.label     "Expand">
-<!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of split browsers">
-<!ENTITY splitbrowser.button.removeAll.label      "Close All">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "Close all of split browsers">
+<!ENTITY splitbrowser.button.collapseAll.label   "감추기">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "분할된 화면을 모두 감춥니다">
+<!ENTITY splitbrowser.button.expandAll.label     "보이기">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "분할된 화면을 모두 보입니다">
+<!ENTITY splitbrowser.button.removeAll.label      "모두 닫기">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "분할된 화면을 모두 닫습니다">
