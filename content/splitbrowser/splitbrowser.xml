@@ -655,19 +655,21 @@ sideBox.removeAttribute('style');
 				if (b && b.localName == 'tabbrowser')
 					b = b.mCurrentBrowser;
 
-				if (val) {
+				if (val || !SplitBrowser.browsers.length) {
 					this.setAttribute('subbrowser-focused', true);
 					if (SplitBrowser.activeSubBrowser != this)
 						SplitBrowser.activeSubBrowser = this;
 					if (b) {
 						b.removeAttribute('type');
+//dump('SET TO PRIMARY\n');
 						b.setAttribute('type', 'content-primary');
 					}
 				}
-				else {
+				else if (SplitBrowser.browsers.length) {
 					this.removeAttribute('subbrowser-focused');
 					if (b) {
 						b.removeAttribute('type');
+//dump('SET TO SUB\n');
 						b.setAttribute('type', 'content');
 					}
 					if (SplitBrowser.activeSubBrowser &&

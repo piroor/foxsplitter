@@ -1503,9 +1503,10 @@ catch(e) {
 		}
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 
-		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
-			window.setTimeout('SplitBrowser.load();', 0);
+		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
+			window.setTimeout('SplitBrowser.load();', 0);
+		}
 	},
 	
 	insertSeparateTabItem : function(aBrowser) 
