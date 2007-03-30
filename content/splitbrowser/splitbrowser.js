@@ -1485,6 +1485,7 @@ catch(e) {
 		this.overrideFindBar();
 		this.overrideZoomManager();
 		this.moveAppContentContents();
+		this.hackForOtherExtensions();
 
 		if (this.tabbedBrowsingEnabled) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
@@ -1529,7 +1530,7 @@ catch(e) {
  
 	moveAppContentContents : function() 
 	{
-		// hack for ScrapBook
+		// this is a hack, mainly for ScrapBook
 		var appcontent = document.getElementById('appcontent');
 		var contents = appcontent.childNodes;
 		var isAfter = false;
@@ -1545,6 +1546,25 @@ catch(e) {
 				appcontent.postContents.appendChild(node);
 			else
 				appcontent.preContents.appendChild(node);
+		}
+	},
+ 
+	hackForOtherExtensions : function() 
+	{
+		// hack for Grab and Drag
+		if ('gadInit' in window) {
+			eval(
+				'window.gadInit = '+
+				window.gadInit.toSource().replace(
+					/document\.getElementById\(['"]content['"]\)/g,
+					'SplitBrowser.activeBrowser'
+				)
+			);
+			document.documentElement.addEventListener('SubBrowserFocusMoved', gadInit, false);
+			window.addEventListener('unload', function() {
+				document.documentElement.removeEventListener('SubBrowserFocusMoved', gadInit, false);
+			}, false);
+			gadInit();
 		}
 	},
  
