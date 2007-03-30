@@ -1505,6 +1505,7 @@ catch(e) {
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
+			this.moveAppContentContents();
 			window.setTimeout('SplitBrowser.load();', 0);
 		}
 	},
@@ -1527,7 +1528,28 @@ catch(e) {
 		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 65000)));
 	},
  
-	newUpdateCurrentBrowser: function (aEvent, aXferData, aDragSession) 
+	moveAppContentContents : function() 
+	{
+		// hack for ScrapBook
+		var appcontent = document.getElementById('appcontent');
+		var contents = appcontent.childNodes;
+		var isAfter = false;
+		var node;
+		for (var i = 0, maxi = contents.length; i < maxi; i++)
+		{
+			if (contents[i] == gBrowser) {
+				isAfter = true;
+				continue;
+			}
+			node = appcontent.removeChild(contents[i])
+			if (isAfter)
+				appcontent.postContents.appendChild(node);
+			else
+				appcontent.preContents.appendChild(node);
+		}
+	},
+ 
+	newUpdateCurrentBrowser : function(aEvent, aXferData, aDragSession) 
 	{
 		var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
 
@@ -1540,7 +1562,7 @@ catch(e) {
 		return result;
 	},
  
-	contentAreaOnDrop: function (aEvent, aXferData, aDragSession) 
+	contentAreaOnDrop : function(aEvent, aXferData, aDragSession) 
 	{
 		var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 		if (!uri) return;

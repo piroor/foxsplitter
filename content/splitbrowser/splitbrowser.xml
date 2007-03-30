@@ -234,7 +234,9 @@
 				class="horizontal-container">
 				<xul:vbox anonid="primary-browser-wrapper" flex="1"
 					class="primary-browser-wrapper">
+					<xul:vbox anonid="primary-browser-preContents"/>
 					<children/>
+					<xul:vbox anonid="primary-browser-postContents"/>
 				</xul:vbox>
 			</xul:hbox>
 		</xul:vbox>
@@ -247,6 +249,11 @@
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'vertical-container'); } catch(e) { return null; }"/>
 		<property name="contentWrapper" readonly="true"
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-wrapper'); } catch(e) { return null; }"/>
+
+		<property name="preContents" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-preContents'); } catch(e) { return null; }"/>
+		<property name="postContents" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-postContents'); } catch(e) { return null; }"/>
 	</implementation>
 </binding>
 
