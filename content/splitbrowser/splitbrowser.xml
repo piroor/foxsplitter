@@ -791,7 +791,7 @@ sideBox.removeAttribute('style');
 			<xul:toolbar anonid="subbrowser-toolbar-vertical"
 				orient="vertical"
 				flex="1"
-				class="subbrowser-toolbar subbrowser-toolbar-vertical chromeclass-extrachrome"
+				class="subbrowser-toolbar subbrowser-toolbar-vertical"
 				align="center"
 			 	ondraggesture="
 			 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.pageDNDObserver);
@@ -802,7 +802,7 @@ sideBox.removeAttribute('style');
 				ondblclick="this.parentNode.parentNode.parentNode.toggleCollapsed();">
 				<xul:toolbarbutton
 					anonid="close-button-vertical"
-					class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
+					class="tabs-closebutton toolbarbutton-1"
 					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"
 					ondblclick="event.stopPropagation();"/>
@@ -834,7 +834,7 @@ sideBox.removeAttribute('style');
 					orient="horizontal"
 					class="subbrowser-toolbox subbrowser-toolbox-horizontal">
 				<xul:toolbar anonid="subbrowser-toolbar-horizontal"
-					class="subbrowser-toolbar subbrowser-toolbar-horizontal chromeclass-extrachrome"
+					class="subbrowser-toolbar subbrowser-toolbar-horizontal"
 					align="center"
 					flex="1"
 				 	ondraggesture="
@@ -961,7 +961,7 @@ sideBox.removeAttribute('style');
 						class="subbrowser-toolbar-item button expand"/>
 					<xul:toolbarbutton
 						anonid="close-button"
-						class="tabs-closebutton toolbarbutton-1 chromeclass-toolbar-additional"
+						class="tabs-closebutton toolbarbutton-1"
 						tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
 						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.close();"
 						ondblclick="event.stopPropagation();"/>
