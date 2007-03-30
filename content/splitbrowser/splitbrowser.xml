@@ -1603,10 +1603,14 @@ sideBox.removeAttribute('style');
 					}
 				}
 
-				browser.webProgress.removeProgressListener(this.mTabFilters[count]);
-				this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
-				this.mTabFilters.splice(count, 1);
-				this.mTabListeners.splice(count, 1);
+				try {
+					browser.webProgress.removeProgressListener(this.mTabFilters[count]);
+					this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
+					this.mTabFilters.splice(count, 1);
+					this.mTabListeners.splice(count, 1);
+				}
+				catch(e) {
+				}
 			]]></body>
 		</method>
 
@@ -1773,6 +1777,9 @@ sideBox.removeAttribute('style');
 
 				var b = this.browser;
 				if (b.localName == 'tabbrowser') {
+					if (b.mCurrentBrowser.getAttribute('type') == 'content-primary')
+						document.getElementById('appcontent').contentWrapper.focused = true;
+
 					b.mCurrentBrowser.removeAttribute('type');
 					b.mCurrentBrowser.setAttribute('type', 'content');
 					for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
@@ -1782,6 +1789,9 @@ sideBox.removeAttribute('style');
 					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 				}
 				else {
+					if (b.getAttribute('type') == 'content-primary')
+						document.getElementById('appcontent').contentWrapper.focused = true;
+
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content');
 					this.removeProgressListener();
@@ -1792,6 +1802,8 @@ sideBox.removeAttribute('style');
 				document.documentElement.dispatchEvent(newEvent);
 
 				b.parentSubBrowser = null;
+
+				b.parentNode.removeChild(b);
 			]]></body>
 		</method>
 
