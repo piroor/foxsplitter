@@ -277,6 +277,7 @@
 
 		<property name="contentAreaSizeObject" readonly="true">
 			<getter><![CDATA[
+				if (!this.browser) return null;
 				var box, retVal;
 				if (this.localName == 'subbrowser') {
 					if (this.browser.localName == 'tabbrowser')
@@ -539,6 +540,7 @@ sideBox.removeAttribute('style');
 
 				var offset   = SplitBrowser.addButtonSize;
 				var box      = this.contentAreaSizeObject;
+				if (!box) return null;
 
 				if (aForceFire || aEvent.ctrlKey) {
 					var pos = SplitBrowser.getDropPositionOnContentArea(aEvent, box.box);
@@ -581,6 +583,8 @@ sideBox.removeAttribute('style');
 			<parameter name="aForceFire"/>
 			<body><![CDATA[
 				var check = this.checkEventFiredOnEdge(aEvent, aForceFire);
+				if (!check) return;
+
 				if (
 					check.isTop ||
 					check.isBottom ||
@@ -636,6 +640,8 @@ sideBox.removeAttribute('style');
 					session.isDataFlavorSupported('application/x-moz-file')) {
 					this.handleMouseOverEvent(aEvent, isSubBrowser);
 					var check = this.checkEventFiredOnEdge(aEvent, isSubBrowser);
+					if (!check) return;
+
 					if (
 						SplitBrowser.isLinux &&
 						SplitBrowser.addButton.targetBrowser == this &&
@@ -1488,6 +1494,8 @@ sideBox.removeAttribute('style');
 				// in Linux, "dragdrop" event doesn't fire on the button.
 				var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
 				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
+				if (!check) return;
+
 				if (
 					(forceCheck || SplitBrowser.isLinux) &&
 					SplitBrowser.addButton.targetSubBrowser == this.mOwner &&
@@ -1603,14 +1611,14 @@ sideBox.removeAttribute('style');
 					}
 				}
 
-				try {
-					browser.webProgress.removeProgressListener(this.mTabFilters[count]);
-					this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
-					this.mTabFilters.splice(count, 1);
-					this.mTabListeners.splice(count, 1);
-				}
-				catch(e) {
-				}
+				delete this.mTabListeners[count].mOwner;
+				delete this.mTabListeners[count].mTab;
+				delete this.mTabListeners[count].mBrowser;
+
+				browser.webProgress.removeProgressListener(this.mTabFilters[count]);
+				this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
+				this.mTabFilters.splice(count, 1);
+				this.mTabListeners.splice(count, 1);
 			]]></body>
 		</method>
 
@@ -1713,9 +1721,7 @@ sideBox.removeAttribute('style');
 
 				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
-				window.setTimeout(function(aThis) {
-					aThis.mDelayedTabbrowserStartup();
-				}, 0, this);
+				window.setTimeout(this.mDelayedTabbrowserStartup, 0, this);
 
 				var newEvent = document.createEvent('Events');
 				newEvent.tabbrowser = b;
@@ -1725,9 +1731,7 @@ sideBox.removeAttribute('style');
 			else {
 				this.addProgressListener(null);
 
-				window.setTimeout(function(aThis) {
-					aThis.mDelayedBrowserStartup();
-				}, 0, this);
+				window.setTimeout(this.mDelayedBrowserStartup, 0, this);
 
 				if (this.getAttribute('src'))
 					this.load(this.getAttribute('src'));
@@ -1735,21 +1739,23 @@ sideBox.removeAttribute('style');
 		]]></constructor>
 
 		<method name="mDelayedBrowserStartup">
+			<parameter name="aThis"/>
 			<body><![CDATA[
-				this.focused = false;
-				this.mUpdateToolbarMode();
+				aThis.focused = false;
+				aThis.mUpdateToolbarMode();
 
 				var newEvent = document.createEvent('Events');
 				newEvent.initEvent('SubBrowserAdded', false, true);
-				this.dispatchEvent(newEvent);
+				aThis.dispatchEvent(newEvent);
 			]]></body>
 		</method>
 		<method name="mDelayedTabbrowserStartup">
+			<parameter name="aThis"/>
 			<body><![CDATA[
-			this.mDelayedBrowserStartup();
+			aThis.mDelayedBrowserStartup(aThis);
 
-			var b = this.browser;
-			this.addProgressListener(b.mCurrentTab);
+			var b = aThis.browser;
+			aThis.addProgressListener(b.mCurrentTab);
 
 			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
 			b.setStripVisibilityTo(!autoHide);
@@ -1762,8 +1768,8 @@ sideBox.removeAttribute('style');
 			b.removeAttribute('disablehistory');
 			b.docShell.QueryInterface(Components.interfaces.nsIDocShellHistory).useGlobalHistory = true;
 
-			if (this.getAttribute('src'))
-				this.load(this.getAttribute('src'));
+			if (aThis.getAttribute('src'))
+				aThis.load(aThis.getAttribute('src'));
 			]]></body>
 		</method>
 
@@ -1785,6 +1791,11 @@ sideBox.removeAttribute('style');
 					for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
 					{
 						this.removeProgressListener(b.mTabContainer.childNodes[i]);
+						try {
+							b.browsers[i].destroy();
+						}
+						catch(e) {
+						}
 					}
 					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 				}
@@ -1795,6 +1806,12 @@ sideBox.removeAttribute('style');
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content');
 					this.removeProgressListener();
+
+					try {
+						b.destroy();
+					}
+					catch(e) {
+					}
 				}
 
 				var newEvent = document.createEvent('Events');

@@ -452,9 +452,6 @@ var SplitBrowser = {
 		var browser   = aBrowser;
 		var container = browser.parentContainer || appcontent;
 
-		gBrowser.setAttribute('type', 'content');
-		gBrowser.setAttribute('type', 'content-primary');
-
 		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
 		{
 			if (this.browsers[i] == browser) {
@@ -1089,7 +1086,9 @@ alert(e+'\n\n'+state);
 
 		aThis.hideAddButton();
 
-		var box    = node.contentAreaSizeObject;
+		var box = node.contentAreaSizeObject;
+		if (!box) return;
+
 		var button = aThis.addButton;
 		button.hidden = button.parentNode.hidden = false;
 
@@ -1574,6 +1573,8 @@ catch(e) {
 
 		var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
 		var check = box.checkEventFiredOnEdge(aEvent, forceCheck);
+		if (!check) return;
+
 		if (
 			(forceCheck || SplitBrowser.isLinux) &&
 			SplitBrowser.addButton.targetSubBrowser == box &&
@@ -1685,6 +1686,12 @@ catch(e) {
 		}
 		catch(e) {
 		}
+
+		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+		{
+			this.browsers[i].destroy();
+			this.browsers[i].parentNode.removeChild(this.browsers[i]);
+		}
 	},
  
 	handleEvent : function(aEvent) 
@@ -1734,12 +1741,7 @@ catch(e) {
 				break;
 
 			case 'fullscreen':
-				window.setTimeout(function() {
-					if (window.fullScreen)
-						document.documentElement.setAttribute('splitbrowser-fullscreen', true);
-					else
-						document.documentElement.removeAttribute('splitbrowser-fullscreen');
-				}, 0);
+				window.setTimeout('SplitBrowser.toggleFullScreen();', 0);
 				break;
 
 			case 'popupshowing':
@@ -1754,6 +1756,13 @@ catch(e) {
 				this.insertSeparateTabItem(aEvent.tabbrowser);
 				break;
 		}
+	},
+	toggleFullScreen : function()
+	{
+		if (window.fullScreen)
+			document.documentElement.setAttribute('splitbrowser-fullscreen', true);
+		else
+			document.documentElement.removeAttribute('splitbrowser-fullscreen');
 	},
  
 	observe : function(aSubject, aTopic, aPrefstring) 
