@@ -1485,6 +1485,7 @@ catch(e) {
 
 		this.overrideFindBar();
 		this.overrideZoomManager();
+		this.moveAppContentContents();
 
 		if (this.tabbedBrowsingEnabled) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
@@ -1505,7 +1506,6 @@ catch(e) {
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
-			this.moveAppContentContents();
 			window.setTimeout('SplitBrowser.load();', 0);
 		}
 	},
