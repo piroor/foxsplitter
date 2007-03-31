@@ -1484,7 +1484,6 @@ catch(e) {
 
 		this.overrideFindBar();
 		this.overrideZoomManager();
-		this.moveAppContentContents();
 		this.hackForOtherExtensions();
 
 		if (this.tabbedBrowsingEnabled) {
@@ -1528,29 +1527,14 @@ catch(e) {
 		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 65000)));
 	},
  
-	moveAppContentContents : function() 
-	{
-		// this is a hack, mainly for ScrapBook
-		var appcontent = document.getElementById('appcontent');
-		var contents = appcontent.childNodes;
-		var isAfter = false;
-		var node;
-		for (var i = 0, maxi = contents.length; i < maxi; i++)
-		{
-			if (contents[i] == gBrowser) {
-				isAfter = true;
-				continue;
-			}
-			node = appcontent.removeChild(contents[i])
-			if (isAfter)
-				appcontent.postContents.appendChild(node);
-			else
-				appcontent.preContents.appendChild(node);
-		}
-	},
- 
 	hackForOtherExtensions : function() 
 	{
+		// hack for ScrapBook
+		var ScrapBookToolbox;
+		if (ScrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
+			this.moveAppContentContents(ScrapBookToolbox, 1);
+		}
+
 		// hack for Grab and Drag
 		if ('gadInit' in window) {
 			eval(
@@ -1566,6 +1550,19 @@ catch(e) {
 			}, false);
 			gadInit();
 		}
+	},
+ 
+	moveAppContentContents : function(aContent, aDir) 
+	{
+		// this is a hack, mainly for ScrapBook
+		var appcontent = document.getElementById('appcontent');
+		var node = appcontent.removeChild(aContent);
+		if (aDir > 0)
+			appcontent.postContents.appendChild(aContent);
+		else if (appcontent.preContents.hasChildNodes())
+			appcontent.preContents.insertBefore(aContent, appcontent.preContents.firstChild);
+		else
+			appcontent.preContents.appendChild(aContent);
 	},
  
 	newUpdateCurrentBrowser : function(aEvent, aXferData, aDragSession) 
