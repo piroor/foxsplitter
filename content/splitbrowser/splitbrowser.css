@@ -62,6 +62,15 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 }
 
 
+stack[anonid="toolbar-deck"]:not([selectedIndex="1"]) > [anonid="toolbar-deck-navbar"],
+stack[anonid="toolbar-deck"]:not([selectedIndex="0"]) > [anonid="toolbar-deck-titlebar"] {
+	visibility: hidden;
+}
+stack[anonid="toolbar-deck"]:not([selectedIndex="1"]) > [anonid="toolbar-deck-navbar"] .urlbar-favicon {
+	visibility: collapse;
+}
+
+
 /* vertical toolbar */
 
 .subbrowser-toolbox-vertical,

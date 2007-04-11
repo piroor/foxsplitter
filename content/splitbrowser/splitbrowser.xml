@@ -845,17 +845,19 @@ sideBox.removeAttribute('style');
 					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 				 	onclick="
 				 		if (event.button == 0 &amp;&amp;
-				 			this.firstChild.selectedIndex == 0)
+				 			this.firstChild.getAttribute('selectedIndex') == '0')
 							this.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false, true, 0);
 				 		if (event.button == 1)
 				 			this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();
 				 	"
 					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
-					<xul:deck anonid="toolbar-deck"
+					<xul:stack anonid="toolbar-deck"
 						flex="1"
 						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(true);"
-						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false);">
-						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleToolbar(false);"
+						selectedIndex="0">
+						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center"
+							anonid="toolbar-deck-titlebar">
 							<xul:box class="subbrowser-toolbar-item favicon-box">
 								<xul:image class="subbrowser-toolbar-item favicon"
 									anonid="favicon"
@@ -876,7 +878,8 @@ sideBox.removeAttribute('style');
 									crop="end"/>
 							</xul:stack>
 						</xul:hbox>
-						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center">
+						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center"
+							anonid="toolbar-deck-navbar">
 							<xul:toolbarbutton
 								anonid="back-button"
 								tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
@@ -946,7 +949,7 @@ sideBox.removeAttribute('style');
 								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.go();"
 								ondblclick="event.stopPropagation();"/>
 						</xul:hbox>
-					</xul:deck>
+					</xul:stack>
 					<xul:toolbarbutton
 						anonid="collapse-button"
 						tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
@@ -1261,7 +1264,7 @@ sideBox.removeAttribute('style');
 				this.mIsToolbarHover = aShow;
 
 				if (aForce && aDelay === void(0)) {
-					this.toolbarDeck.selectedIndex = aShow ? 1 : 0 ;
+					this.toolbarDeck.setAttribute('selectedIndex', aShow ? '1' : '0' );
 					if (this.mToggleToolbarTimer) {
 						window.clearTimeout(this.mToggleToolbarTimer);
 						this.mToggleToolbarTimer = null;
@@ -1273,7 +1276,7 @@ sideBox.removeAttribute('style');
 					function(aShowFlag, aThis) {
 						if (aShowFlag == aThis.mIsToolbarHover &&
 							aThis.toolbarDeck)
-							aThis.toolbarDeck.selectedIndex = aShowFlag ? 1 : 0 ;
+							aThis.toolbarDeck.setAttribute('selectedIndex', aShowFlag ? '1' : '0' );
 						aThis.mToggleToolbarTimer = null;
 					},
 					(
@@ -1834,6 +1837,11 @@ sideBox.removeAttribute('style');
 					{
 						case 'select':
 							this.mOwner.updateToolbarForCurrentTab(true);
+
+							var newEvent = document.createEvent('Events');
+							newEvent.initEvent('SubBrowserTabSelect', false, true);
+							newEvent.targetTab = this.mOwner.browser.selectedTab;
+							this.mOwner.dispatchEvent(newEvent);
 							break;
 					}
 				}

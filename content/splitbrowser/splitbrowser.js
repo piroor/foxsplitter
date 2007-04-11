@@ -1550,6 +1550,36 @@ catch(e) {
 			}, false);
 			gadInit();
 		}
+
+		// hack for Google Notebook Extension
+		if (document.getElementById('gnotes-overlay')) {
+			var gnotesBox = document.getElementById('gnotes-overlay');
+			var gnotesReattach = function(aEvent) {
+				if (window.getComputedStyle(gnotesBox, '').getPropertyValue('display') != 'block') return;
+
+				var box  = gnotesBox.boxObject;
+				var bBox = (aEvent.originalTarget || aEvent.target).boxObject;
+				if (box.screenX + box.width < bBox.screenX ||
+					box.screenX > bBox.screenX + bBox.width ||
+					box.screenY + box.height < bBox.screenY ||
+					box.screenY > bBox.screenY + bBox.height)
+					return;
+
+				gnotesBox.style.display = 'none';
+				window.setTimeout(function() {
+					gnotesBox.style.display = 'block';
+				}, 500);
+			};
+
+			document.documentElement.addEventListener('SubBrowserAdded', gnotesReattach, false);
+			document.documentElement.addEventListener('SubBrowserTabSelect', gnotesReattach, false);
+
+			window.addEventListener('unload', function() {
+				document.documentElement.removeEventListener('SubBrowserAdded', gnotesReattach, false);
+				document.documentElement.removeEventListener('SubBrowserTabSelect', gnotesReattach, false);
+				delete gnotesBox;
+			}, false);
+		}
 	},
  
 	moveAppContentContents : function(aContent, aDir) 
