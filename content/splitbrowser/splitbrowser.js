@@ -1529,6 +1529,12 @@ catch(e) {
  
 	hackForOtherExtensions : function() 
 	{
+		// hack for ScrapBook
+		var scrapBookToolbox;
+		if (scrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
+			this.moveAppContentContents(scrapBookToolbox, 1);
+		}
+
 		// hack for MultiSidebar
 		var sidebarTop;
 		if (sidebarTop = document.getElementById('sidebar-3-box')) {
@@ -1536,12 +1542,6 @@ catch(e) {
 			this.moveAppContentContents(sidebarTop, -1);
 			this.moveAppContentContents(document.getElementById('sidebar-4-splitter'), 1);
 			this.moveAppContentContents(document.getElementById('sidebar-4-box'), 1);
-		}
-
-		// hack for ScrapBook
-		var ScrapBookToolbox;
-		if (ScrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
-			this.moveAppContentContents(ScrapBookToolbox, 1);
 		}
 
 		// hack for Grab and Drag

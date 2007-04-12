@@ -84,6 +84,7 @@
 
 <popup id="contentAreaContextMenu">
 	<menu id="splitbrowser-context-item-link"
+		class="menu-iconic"
 		insertafter="context-openlinkintab"
 		label="&splitbrowser.link.add.label;">
 		<menupopup>
@@ -105,6 +106,7 @@
 
 	<menuseparator id="splitbrowser-context-splitter"/>
 	<menu id="splitbrowser-context-item"
+		class="menu-iconic"
 		label="&splitbrowser.add.label;">
 		<menupopup>
 			<menuitem label="&splitbrowser.add.top.label;"
@@ -127,6 +129,7 @@
 	<menupopup id="frame_popup">
 		<menuseparator/>
 		<menu id="splitbrowser-context-item-frame"
+			class="menu-iconic"
 			label="&splitbrowser.frame.add.label;">
 			<menupopup>
 				<menuitem label="&splitbrowser.frame.add.top.label;"
@@ -161,6 +164,7 @@
 	</vbox>
 	<data id="splitbrowser-template" collapsed="true">
 		<menu id="splitbrowser-tab-context-item-link-template"
+			class="menu-iconic splitbrowser-tab-context-item"
 			label="&splitbrowser.tab.add.label;">
 			<menupopup
 				oncommand="
