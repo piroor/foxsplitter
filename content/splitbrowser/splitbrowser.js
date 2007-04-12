@@ -1529,6 +1529,15 @@ catch(e) {
  
 	hackForOtherExtensions : function() 
 	{
+		// hack for MultiSidebar
+		var sidebarTop;
+		if (sidebarTop = document.getElementById('sidebar-3-box')) {
+			this.moveAppContentContents(document.getElementById('sidebar-3-splitter'), -1);
+			this.moveAppContentContents(sidebarTop, -1);
+			this.moveAppContentContents(document.getElementById('sidebar-4-splitter'), 1);
+			this.moveAppContentContents(document.getElementById('sidebar-4-box'), 1);
+		}
+
 		// hack for ScrapBook
 		var ScrapBookToolbox;
 		if (ScrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
@@ -1552,8 +1561,8 @@ catch(e) {
 		}
 
 		// hack for Google Notebook Extension
-		if (document.getElementById('gnotes-overlay')) {
-			var gnotesBox = document.getElementById('gnotes-overlay');
+		var gnotesBox;
+		if (gnotesBox = document.getElementById('gnotes-overlay')) {
 			var gnotesReattach = function(aEvent) {
 				if (window.getComputedStyle(gnotesBox, '').getPropertyValue('display') != 'block') return;
 
@@ -1588,11 +1597,9 @@ catch(e) {
 		var appcontent = document.getElementById('appcontent');
 		var node = appcontent.removeChild(aContent);
 		if (aDir > 0)
-			appcontent.postContents.appendChild(aContent);
-		else if (appcontent.preContents.hasChildNodes())
-			appcontent.preContents.insertBefore(aContent, appcontent.preContents.firstChild);
+			appcontent.innerContainer.appendChild(aContent);
 		else
-			appcontent.preContents.appendChild(aContent);
+			appcontent.innerContainer.insertBefore(aContent, appcontent.innerContainer.firstChild);
 	},
  
 	newUpdateCurrentBrowser : function(aEvent, aXferData, aDragSession) 

@@ -228,17 +228,17 @@
 
 <binding id="toplevel-container" extends="#container">
 	<content orient="vertical">
-		<xul:vbox anonid="vertical-container" flex="1"
-			class="vertical-container">
-			<xul:hbox anonid="horizontal-container" flex="1"
-				class="horizontal-container">
-				<xul:vbox anonid="primary-browser-wrapper" flex="1"
-					class="primary-browser-wrapper">
-					<xul:vbox anonid="primary-browser-preContents"/>
-					<children/>
-					<xul:vbox anonid="primary-browser-postContents"/>
-				</xul:vbox>
-			</xul:hbox>
+		<xul:vbox anonid="primary-browser-inner-container" flex="1">
+			<xul:vbox anonid="vertical-container" flex="1"
+				class="vertical-container">
+				<xul:hbox anonid="horizontal-container" flex="1"
+					class="horizontal-container">
+					<xul:vbox anonid="primary-browser-wrapper" flex="1"
+						class="primary-browser-wrapper">
+						<children/>
+					</xul:vbox>
+				</xul:hbox>
+			</xul:vbox>
 		</xul:vbox>
 	</content>
 
@@ -250,10 +250,8 @@
 		<property name="contentWrapper" readonly="true"
 			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-wrapper'); } catch(e) { return null; }"/>
 
-		<property name="preContents" readonly="true"
-			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-preContents'); } catch(e) { return null; }"/>
-		<property name="postContents" readonly="true"
-			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-postContents'); } catch(e) { return null; }"/>
+		<property name="innerContainer" readonly="true"
+			onget="try { return document.getAnonymousElementByAttribute(this, 'anonid', 'primary-browser-inner-container'); } catch(e) { return null; }"/>
 	</implementation>
 </binding>
 
