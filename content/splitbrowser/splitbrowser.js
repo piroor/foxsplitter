@@ -1540,6 +1540,87 @@ catch(e) {
 		if (fbSplitter = document.getElementById('fbContentSplitter')) {
 			this.moveAppContentContents(fbSplitter, 1);
 			this.moveAppContentContents(document.getElementById('fbContentBox'), 1);
+/*
+			var getTabBrowser = function() {
+				return window.__splitbrowser_firebug__lastBrowser || SplitBrowser.activeBrowser ;
+			};
+
+			window.__defineGetter__('tabBrowser', getTabBrowser);
+			window.__defineSetter__('tabBrowser', getTabBrowser);
+			Firebug.__defineGetter__('tabBrowser', getTabBrowser);
+			Firebug.__defineSetter__('tabBrowser', getTabBrowser);
+
+			eval(
+				'Firebug.toggleBar = '+
+				Firebug.toggleBar.toSource().replace(
+					'{',
+					'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
+				)
+			);
+			eval(
+				'Firebug.showBar = '+
+				Firebug.showBar.toSource().replace(
+					'{',
+					'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
+				)
+			);
+			eval(
+				'TabWatcher.initialize = '+
+				TabWatcher.initialize.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+			eval(
+				'TabWatcher.destroy = '+
+				TabWatcher.destroy.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+			eval(
+				'TabWatcher.activate = '+
+				TabWatcher.activate.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+			eval(
+				'TabWatcher.deactivate = '+
+				TabWatcher.deactivate.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+			eval(
+				'TabWatcher.watchTopWindow = '+
+				TabWatcher.watchTopWindow.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+			eval(
+				'TabWatcher.getBrowserByWindow = '+
+				TabWatcher.getBrowserByWindow.toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+
+			window.__splitbrowser_firebug__fireBugToggle = function(aEvent) {
+				if (aEgent &&
+					(aEvent.originalTarget || aEvent.target) != window.__splitbrowser_firebug__lastBrowser)
+					return;
+				if (!contentBox.collapsed)
+					Firebug.toggleBar();
+				window.__splitbrowser_firebug__lastBrowser = null;
+			};
+			document.documentElement.addEventListener('SubBrowserRemoveRequest', __splitbrowser_firebug__fireBugToggle, true);
+			window.addEventListener('unload', function() {
+				document.documentElement.removeEventListener('SubBrowserRemoveRequest', __splitbrowser_firebug__fireBugToggle, true);
+				window.removeEventListener('unload', arguments.callee, false);
+			}, false);
+*/
 			FirebugChrome.initialize();
 		}
 
@@ -1564,6 +1645,7 @@ catch(e) {
 			document.documentElement.addEventListener('SubBrowserFocusMoved', gadInit, false);
 			window.addEventListener('unload', function() {
 				document.documentElement.removeEventListener('SubBrowserFocusMoved', gadInit, false);
+				window.removeEventListener('unload', arguments.callee, false);
 			}, false);
 			gadInit();
 		}
@@ -1599,6 +1681,7 @@ catch(e) {
 				document.documentElement.removeEventListener('SubBrowserTabOpen', gnotesReattach, false);
 				document.documentElement.removeEventListener('SubBrowserTabClose', gnotesReattach, false);
 				delete gnotesBox;
+				window.removeEventListener('unload', arguments.callee, false);
 			}, false);
 		}
 	},
