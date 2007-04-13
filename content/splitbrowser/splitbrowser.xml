@@ -1545,8 +1545,15 @@ sideBox.removeAttribute('style');
 		<method name="newAddTab">
 			<body><![CDATA[
 				var tab = this.__splitbrowser__addTab.apply(this, arguments);
-				if (this.parentSubBrowser)
+				if (this.parentSubBrowser) {
 					this.parentSubBrowser.addProgressListener(tab);
+
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent('SubBrowserTabOpen', false, true);
+					newEvent.targetTab = this.selectedTab;
+					this.parentSubBrowser.dispatchEvent(newEvent);
+				}
+
 				return tab;
 			]]></body>
 		</method>
@@ -1560,6 +1567,12 @@ sideBox.removeAttribute('style');
 
 				if (this.mTabContainer.childNodes.length == 1) {
 					this.setStripVisibilityTo(!nsPreferences.getBoolPref('splitbrowser.tabs.autoHide'));
+				}
+
+				if (this.parentSubBrowser) {
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent('SubBrowserTabClose', false, true);
+					this.parentSubBrowser.dispatchEvent(newEvent);
 				}
 
 				return result;

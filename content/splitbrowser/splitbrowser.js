@@ -1535,6 +1535,14 @@ catch(e) {
 			this.moveAppContentContents(scrapBookToolbox, 1);
 		}
 
+		// hack for FireBug
+		var fbSplitter;
+		if (fbSplitter = document.getElementById('fbContentSplitter')) {
+			this.moveAppContentContents(fbSplitter, 1);
+			this.moveAppContentContents(document.getElementById('fbContentBox'), 1);
+			FirebugChrome.initialize();
+		}
+
 		// hack for MultiSidebar
 		var sidebarTop;
 		if (sidebarTop = document.getElementById('sidebar-3-box')) {
@@ -1582,10 +1590,14 @@ catch(e) {
 
 			document.documentElement.addEventListener('SubBrowserAdded', gnotesReattach, false);
 			document.documentElement.addEventListener('SubBrowserTabSelect', gnotesReattach, false);
+			document.documentElement.addEventListener('SubBrowserTabOpen', gnotesReattach, false);
+			document.documentElement.addEventListener('SubBrowserTabClose', gnotesReattach, false);
 
 			window.addEventListener('unload', function() {
 				document.documentElement.removeEventListener('SubBrowserAdded', gnotesReattach, false);
 				document.documentElement.removeEventListener('SubBrowserTabSelect', gnotesReattach, false);
+				document.documentElement.removeEventListener('SubBrowserTabOpen', gnotesReattach, false);
+				document.documentElement.removeEventListener('SubBrowserTabClose', gnotesReattach, false);
 				delete gnotesBox;
 			}, false);
 		}
