@@ -1656,12 +1656,45 @@ catch(e) {
 			var gnotesReattach = function(aEvent) {
 				if (window.getComputedStyle(gnotesBox, '').getPropertyValue('display') != 'block') return;
 
+				var target = (aEvent.originalTarget || aEvent.target);
+
 				var box  = gnotesBox.boxObject;
-				var bBox = (aEvent.originalTarget || aEvent.target).boxObject;
-				if (box.screenX + box.width < bBox.screenX ||
+				var bBox = target.boxObject;
+				var forceUpdate = false;
+
+				if (aEvent.type == 'TabClose') {
+					var b = target;
+					while (b.localName != 'tabbrowser')
+						b = b.parentNode;
+
+					var cIndex = -1,
+						sIndex = -1,
+						tabs = b.mTabContainer.childNodes;
+					for (var i = 0, maxi = tabs.length; i < maxi; i++)
+					{
+						if (tabs[i] == target)
+							cIndex = i;
+						else if (tabs[i] == b.selectedTab)
+							sIndex = i;
+
+						if (cIndex > -1 && sIndex > -1)
+							break;
+					}
+
+					if (cIndex > sIndex) return;
+
+					bBox = target.linkedBrowser.boxObject;
+				}
+
+				if (
+					!forceUpdate &&
+					(
+					box.screenX + box.width < bBox.screenX ||
 					box.screenX > bBox.screenX + bBox.width ||
 					box.screenY + box.height < bBox.screenY ||
-					box.screenY > bBox.screenY + bBox.height)
+					box.screenY > bBox.screenY + bBox.height
+					)
+					)
 					return;
 
 				gnotesBox.style.display = 'none';
@@ -1672,14 +1705,12 @@ catch(e) {
 
 			document.documentElement.addEventListener('SubBrowserAdded', gnotesReattach, false);
 			document.documentElement.addEventListener('SubBrowserTabSelect', gnotesReattach, false);
-			document.documentElement.addEventListener('SubBrowserTabOpen', gnotesReattach, false);
-			document.documentElement.addEventListener('SubBrowserTabClose', gnotesReattach, false);
+			document.documentElement.addEventListener('TabClose', gnotesReattach, false);
 
 			window.addEventListener('unload', function() {
 				document.documentElement.removeEventListener('SubBrowserAdded', gnotesReattach, false);
 				document.documentElement.removeEventListener('SubBrowserTabSelect', gnotesReattach, false);
-				document.documentElement.removeEventListener('SubBrowserTabOpen', gnotesReattach, false);
-				document.documentElement.removeEventListener('SubBrowserTabClose', gnotesReattach, false);
+				document.documentElement.removeEventListener('TabClose', gnotesReattach, false);
 				delete gnotesBox;
 				window.removeEventListener('unload', arguments.callee, false);
 			}, false);
