@@ -361,7 +361,7 @@ sideBox.removeAttribute('style');
 				sideBox.removeAttribute('max'+prop);
 				sideBox.setAttribute(prop, sideSize + origSize);
 				c.setAttribute('max'+prop, 0);
-				this.focused = false;
+				this.blur();
 
 				window.setTimeout(function(aThis) {
 					aThis.toggleNavigation(false);
@@ -668,11 +668,8 @@ sideBox.removeAttribute('style');
 
 				if (val || !SplitBrowser.browsers.length) {
 					this.setAttribute('subbrowser-focused', true);
-					if (SplitBrowser.activeSubBrowser != this)
-						SplitBrowser.activeSubBrowser = this;
 					if (b) {
 						b.removeAttribute('type');
-//dump('SET TO PRIMARY\n');
 						b.setAttribute('type', 'content-primary');
 					}
 				}
@@ -680,12 +677,7 @@ sideBox.removeAttribute('style');
 					this.removeAttribute('subbrowser-focused');
 					if (b) {
 						b.removeAttribute('type');
-//dump('SET TO SUB\n');
 						b.setAttribute('type', 'content');
-					}
-					if (SplitBrowser.activeSubBrowser &&
-						SplitBrowser.activeSubBrowser != this)
-						SplitBrowser.activeSubBrowser.focused = true;
 					}
 				}
 				return val;
@@ -694,6 +686,21 @@ sideBox.removeAttribute('style');
 				return this.getAttribute('subbrowser-focused') == 'true';
 			]]></getter>
 		</property>
+
+		<method name="focus">
+			<body><![CDATA[
+				if (SplitBrowser.activeSubBrowser != this)
+					SplitBrowser.activeSubBrowser = this;
+				this.focused = true;
+			]]></body>
+		</method>
+		<method name="blur">
+			<body><![CDATA[
+				if (SplitBrowser.activeSubBrowser == this)
+					SplitBrowser.activeSubBrowser = null;
+				this.focused = false;
+			]]></body>
+		</method>
 
 		<method name="autoFocus">
 			<body><![CDATA[
@@ -707,7 +714,7 @@ sideBox.removeAttribute('style');
 
 				this.mAutoFocusTimer = window.setTimeout(
 					function(aThis) {
-						aThis.focused = true;
+						aThis.focus();
 						aThis.cancelAutoFocus();
 					},
 					delay,
@@ -734,7 +741,7 @@ sideBox.removeAttribute('style');
 			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
 
 		<handler event="focus" phase="capturing"
-			action="this.focused = true;"/>
+			action="this.focus();"/>
 
 		<handler event="mouseover"
 			action="window.setTimeout(function(aThis) { aThis.autoFocus(); }, 0, this);"/>
@@ -1591,13 +1598,13 @@ sideBox.removeAttribute('style');
 				var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
 
 				if (this.parentSubBrowser.focused) {
-					SplitBrowser.mainBrowserBox.focused = false;
+					SplitBrowser.mainBrowserBox.blur();
 				}
 				else {
 					var node = SplitBrowser.activeSubBrowser;
-					this.parentSubBrowser.focused = false;
+					this.parentSubBrowser.blur();
 					if (node)
-						node.focused = true;
+						node.focus();
 				}
 
 				return result;
@@ -1767,7 +1774,7 @@ sideBox.removeAttribute('style');
 		<method name="mDelayedBrowserStartup">
 			<parameter name="aThis"/>
 			<body><![CDATA[
-				aThis.focused = false;
+				aThis.blur();
 				aThis.mUpdateToolbarMode();
 
 				var newEvent = document.createEvent('Events');
@@ -1805,12 +1812,12 @@ sideBox.removeAttribute('style');
 				if (this.focused) {
 					gBrowser.contentWindow.focus();
 				}
-				this.focused = false;
+				this.blur();
 
 				var b = this.browser;
 				if (b.localName == 'tabbrowser') {
 					if (b.mCurrentBrowser.getAttribute('type') == 'content-primary')
-						document.getElementById('appcontent').contentWrapper.focused = true;
+						document.getElementById('appcontent').contentWrapper.focus();
 
 					b.mCurrentBrowser.removeAttribute('type');
 					b.mCurrentBrowser.setAttribute('type', 'content');
@@ -1827,7 +1834,7 @@ sideBox.removeAttribute('style');
 				}
 				else {
 					if (b.getAttribute('type') == 'content-primary')
-						document.getElementById('appcontent').contentWrapper.focused = true;
+						document.getElementById('appcontent').contentWrapper.focus();
 
 					b.removeAttribute('type');
 					b.setAttribute('type', 'content');
@@ -1938,7 +1945,7 @@ sideBox.removeAttribute('style');
 			action="this.mUpdateToolbarMode();"/>
 
 		<handler event="click"
-			action="this.browser.contentWindow.focus();"/>
+			action="if (!this.contentCollapsed) this.browser.contentWindow.focus();"/>
 
 	</handlers>
 </binding>
