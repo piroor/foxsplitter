@@ -364,7 +364,7 @@ sideBox.removeAttribute('style');
 				this.focused = false;
 
 				window.setTimeout(function(aThis) {
-					aThis.toggleToolbar(this.getAttribute('toolbar-navigation') == 'true', true, 0);
+					aThis.toggleNavigation(false);
 					aThis.mUpdateToolbarMode();
 
 					var node = c.parentNode;
@@ -435,7 +435,7 @@ sideBox.removeAttribute('style');
 
 
 				window.setTimeout(function(aThis) {
-					aThis.toggleToolbar((this.getAttribute('toolbar-navigation') == 'true'), true, 0);
+					aThis.toggleNavigation((aThis.getAttribute('toolbar-navigation') == 'true'));
 					aThis.mUpdateToolbarMode();
 				}, 0, this);
 			]]></body>
@@ -763,10 +763,10 @@ sideBox.removeAttribute('style');
 		context="_child">
 		<xul:menupopup anonid="contextmenu"
 			onpopupshowing="
-				this.parentNode.resetToolbar();
+				this.parentNode.resetNavigation();
 				this.parentNode.updateContextMenu(event);
 			"
-			oncommand="this.parentNode.resetToolbar();"
+			oncommand="this.parentNode.resetNavigation();"
 			ondraggesture="event.stopPropagation();">
 			<xul:menuitem class="subbrowser-context-close"
 				label="&splitbrowser.subbrowser.menu.close;"
@@ -836,7 +836,7 @@ sideBox.removeAttribute('style');
 					align="center"
 					flex="1"
 				 	ondraggesture="
-						this.parentNode.parentNode.parentNode.parentNode.resetToolbar();
+						this.parentNode.parentNode.parentNode.parentNode.resetNavigation();
 				 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);
 				 	"
 					ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
@@ -844,15 +844,15 @@ sideBox.removeAttribute('style');
 				 	onclick="
 				 		if (event.button == 0 &amp;&amp;
 				 			this.firstChild.getAttribute('selectedIndex') == '0')
-							this.parentNode.parentNode.parentNode.parentNode.resetToolbar();
+							this.parentNode.parentNode.parentNode.parentNode.resetNavigation();
 				 		if (event.button == 1)
 				 			this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();
 				 	"
 					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
 					<xul:stack anonid="toolbar-deck"
 						flex="1"
-						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.onToolbarMouseOver();"
-						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.onToolbarMouseOut();"
+						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleNavigationOnHover(true);"
+						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleNavigationOnHover(false);"
 						selectedIndex="0">
 						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center"
 							anonid="toolbar-deck-titlebar">
@@ -1244,17 +1244,30 @@ sideBox.removeAttribute('style');
 
 
 
-		<method name="toggleToolbar">
+		<method name="toggleNavigation">
+			<parameter name="aShow"/>
+			<body><![CDATA[
+				this.toolbarDeck.setAttribute('selectedIndex', aShow ? '1' : '0' );
+				if (this.mToggleNavigationOnHoverTimer) {
+					window.clearTimeout(this.mToggleNavigationOnHoverTimer);
+					this.mToggleNavigationOnHoverTimer = null;
+				}
+			]]></body>
+		</method>
+
+		<method name="toggleNavigationOnHover">
 			<parameter name="aShow"/>
 			<parameter name="aForce"/>
 			<parameter name="aDelay"/>
 			<body><![CDATA[
+				if (this.getAttribute('toolbar-navigation') == 'true') return;
+
 				if (this.contentCollapsed) aShow = false;
 
 				if (this.mIsToolbarHover == aShow) {
-					if (!aShow && this.mToggleToolbarTimer) {
-						window.clearTimeout(this.mToggleToolbarTimer);
-						this.mToggleToolbarTimer = null;
+					if (!aShow && this.mToggleNavigationOnHoverTimer) {
+						window.clearTimeout(this.mToggleNavigationOnHoverTimer);
+						this.mToggleNavigationOnHoverTimer = null;
 					}
 					return;
 				}
@@ -1262,20 +1275,16 @@ sideBox.removeAttribute('style');
 				this.mIsToolbarHover = aShow;
 
 				if (aForce && aDelay === void(0)) {
-					this.toolbarDeck.setAttribute('selectedIndex', aShow ? '1' : '0' );
-					if (this.mToggleToolbarTimer) {
-						window.clearTimeout(this.mToggleToolbarTimer);
-						this.mToggleToolbarTimer = null;
-					}
+					this.toggleNavigation(aShow);
 					return;
 				}
 
-				this.mToggleToolbarTimer = window.setTimeout(
+				this.mToggleNavigationOnHoverTimer = window.setTimeout(
 					function(aShowFlag, aThis) {
 						if (aShowFlag == aThis.mIsToolbarHover &&
 							aThis.toolbarDeck)
-							aThis.toolbarDeck.setAttribute('selectedIndex', aShowFlag ? '1' : '0' );
-						aThis.mToggleToolbarTimer = null;
+							aThis.toggleNavigation(aShowFlag);
+						aThis.mToggleNavigationOnHoverTimer = null;
 					},
 					(
 						aDelay !== void(0) ? aDelay :
@@ -1288,25 +1297,12 @@ sideBox.removeAttribute('style');
 				);
 			]]></body>
 		</method>
-		<field name="mToggleToolbarTimer">null</field>
+		<field name="mToggleNavigationOnHoverTimer">null</field>
 
-		<method name="resetToolbar">
+		<method name="resetNavigation">
 			<body><![CDATA[
 				if (this.getAttribute('toolbar-navigation') != 'true')
-					this.toggleToolbar(false, true, 0);
-			]]></body>
-		</method>
-
-		<method name="onToolbarMouseOver">
-			<body><![CDATA[
-				if (this.getAttribute('toolbar-navigation') != 'true')
-					this.toggleToolbar(true);
-			]]></body>
-		</method>
-		<method name="onToolbarMouseOut">
-			<body><![CDATA[
-				if (this.getAttribute('toolbar-navigation') != 'true')
-					this.toggleToolbar(false);
+					this.toggleNavigation(false);
 			]]></body>
 		</method>
 
@@ -1554,7 +1550,7 @@ sideBox.removeAttribute('style');
 			<body><![CDATA[
 				var b = this.browser;
 				var t = b.addTab('about:blank');
-				this.toggleToolbar(true, true, 0);
+				this.toggleNavigation(true);
 				window.setTimeout(function(aUrlbar) {
 					b.selectedTab = t;
 					window.setTimeout(function(aUrlbar) {
@@ -1738,7 +1734,7 @@ sideBox.removeAttribute('style');
 
 			if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.navigation.always')) {
 				this.setAttribute('toolbar-navigation', true);
-				this.toggleToolbar(true, true);
+				this.toggleNavigation(true);
 			}
 
 			if (b.localName == 'tabbrowser') {
@@ -1914,7 +1910,7 @@ sideBox.removeAttribute('style');
 
 					this.setAttribute('content-collapsed', 'true');
 					if (this.getAttribute('toolbar-navigation') == 'true')
-						this.toggleToolbar(false, true);
+						this.toggleNavigation(false);
 
 					var newEvent = document.createEvent('Events');
 					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
@@ -1923,7 +1919,7 @@ sideBox.removeAttribute('style');
 				else {
 					this.removeAttribute('content-collapsed');
 					if (this.getAttribute('toolbar-navigation') == 'true')
-						this.toggleToolbar(true, true);
+						this.toggleNavigation(true);
 
 					var newEvent = document.createEvent('Events');
 					newEvent.initEvent('SubBrowserContentExpanded', false, true);
