@@ -22,6 +22,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "分割されたブラウザのツールバーを常に表示する">
 <!ENTITY splitbrowser.show.collapseexpand "分割されたブラウザのツールバーに「たたむ」「ひろげる」ボタンを表示する">
 <!ENTITY splitbrowser.tabs.autoHide       "分割ブラウザで常にタブを表示する">
+<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "分割ブラウザのツールバーでナビゲーションを常に表示する">
 
 
 

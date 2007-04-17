@@ -15,6 +15,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "總是在分割瀏覽區顯示工具列">
 <!ENTITY splitbrowser.show.collapseexpand "在分割瀏覽區顯示「收摺」與「展開」的工具列按鈕">
 <!ENTITY splitbrowser.tabs.autoHide "總是在分割瀏覽區顯示分頁列">
+<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "Always show navigations of the toolbar in split browsers.">
 <!ENTITY splitbrowser.add.button.top.tooltip "分割到上方">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "分割到下方">
 <!ENTITY splitbrowser.add.button.right.tooltip "分割到右方">

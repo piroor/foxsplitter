@@ -21,6 +21,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
 <!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
 <!ENTITY splitbrowser.tabs.autoHide "Always show tab bar in split browsers">
+<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "Always show navigations of the toolbar in split browsers.">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Split to Above">

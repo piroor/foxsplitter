@@ -63,11 +63,16 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 
 
 stack[anonid="toolbar-deck"]:not([selectedIndex="1"]) > [anonid="toolbar-deck-navbar"],
-stack[anonid="toolbar-deck"]:not([selectedIndex="0"]) > [anonid="toolbar-deck-titlebar"] {
+stack[anonid="toolbar-deck"]:not([selectedIndex="0"]) > [anonid="toolbar-deck-titlebar"],
+#appcontent[subbrowser-toolbar-shown="true"] stack[anonid="toolbar-deck"] > [anonid="toolbar-deck-titlebar"] {
 	visibility: hidden;
 }
 stack[anonid="toolbar-deck"]:not([selectedIndex="1"]) > [anonid="toolbar-deck-navbar"] .urlbar-favicon {
 	visibility: collapse;
+}
+#appcontent[subbrowser-toolbar-shown="true"] stack[anonid="toolbar-deck"] > [anonid="toolbar-deck-navbar"],
+#appcontent[subbrowser-toolbar-shown="true"] stack[anonid="toolbar-deck"] > [anonid="toolbar-deck-navbar"] .urlbar-favicon {
+	visibility: visible !important;
 }
 
 

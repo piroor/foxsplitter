@@ -1502,6 +1502,7 @@ catch(e) {
 		catch(e) {
 		}
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.appearance.toolbar.alwaysShown');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
@@ -1977,6 +1978,14 @@ catch(e) {
 					if (this.browsers[i].browser.mTabContainer.childNodes.length == 1)
 						this.browsers[i].browser.setStripVisibilityTo(visible);
 				}
+				break;
+
+			case 'splitbrowser.appearance.toolbar.alwaysShown':
+				var appcontent = document.getElementById('appcontent');
+				if (nsPreferences.getBoolPref(aPrefstring))
+					appcontent.setAttribute('subbrowser-toolbar-shown', true);
+				else
+					appcontent.removeAttribute('subbrowser-toolbar-shown');
 				break;
 		}
 	}

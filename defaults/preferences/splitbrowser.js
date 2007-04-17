@@ -11,6 +11,7 @@ pref("splitbrowser.show.collapseexpand",      false);
 pref("splitbrowser.appearance.scrollbar.size",  16);
 pref("splitbrowser.appearance.addbuttons.size", 16);
 pref("splitbrowser.appearance.addbuttons.area", 150);
+pref("splitbrowser.appearance.toolbar.alwaysShown", false);
 
 pref("splitbrowser.delay.addbuttons.show", 500);
 pref("splitbrowser.delay.addbuttons.hide", 2200);

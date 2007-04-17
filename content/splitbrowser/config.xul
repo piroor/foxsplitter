@@ -86,6 +86,9 @@
 			name="splitbrowser.tabs.autoHide"
 			type="bool"
 			inverted="true"/>
+		<preference id="splitbrowser.appearance.toolbar.alwaysShown"
+			name="splitbrowser.appearance.toolbar.alwaysShown"
+			type="bool"/>
 	</preferences>
 
 
@@ -98,6 +101,9 @@
 	<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
 		label="&splitbrowser.tabs.autoHide;"
 		preference="splitbrowser.tabs.autoHide"/>
+	<checkbox id="splitbrowser.appearance.toolbar.alwaysShown-check" flex="1"
+		label="&splitbrowser.appearance.toolbar.alwaysShown;"
+		preference="splitbrowser.appearance.toolbar.alwaysShown"/>
 
 </prefpane>
 
