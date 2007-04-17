@@ -79,6 +79,9 @@
 		<preference id="splitbrowser.show.toolbar.always"
 			name="splitbrowser.show.toolbar.always"
 			type="bool"/>
+		<preference id="splitbrowser.show.toolbar.navigation.always"
+			name="splitbrowser.show.toolbar.navigation.always"
+			type="bool"/>
 		<preference id="splitbrowser.show.collapseexpand"
 			name="splitbrowser.show.collapseexpand"
 			type="bool"/>
@@ -86,24 +89,21 @@
 			name="splitbrowser.tabs.autoHide"
 			type="bool"
 			inverted="true"/>
-		<preference id="splitbrowser.appearance.toolbar.alwaysShown"
-			name="splitbrowser.appearance.toolbar.alwaysShown"
-			type="bool"/>
 	</preferences>
 
 
 	<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
 		label="&splitbrowser.show.toolbar.always;"
 		preference="splitbrowser.show.toolbar.always"/>
+	<checkbox id="splitbrowser.show.toolbar.navigation.always-check" flex="1"
+		label="&splitbrowser.show.toolbar.navigation.always;"
+		preference="splitbrowser.show.toolbar.navigation.always"/>
 	<checkbox id="splitbrowser.show.collapseexpand-check" flex="1"
 		label="&splitbrowser.show.collapseexpand;"
 		preference="splitbrowser.show.collapseexpand"/>
 	<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
 		label="&splitbrowser.tabs.autoHide;"
 		preference="splitbrowser.tabs.autoHide"/>
-	<checkbox id="splitbrowser.appearance.toolbar.alwaysShown-check" flex="1"
-		label="&splitbrowser.appearance.toolbar.alwaysShown;"
-		preference="splitbrowser.appearance.toolbar.alwaysShown"/>
 
 </prefpane>
 

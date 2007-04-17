@@ -6,12 +6,12 @@ pref("splitbrowser.subbrowser.autoFocus",     false);
 pref("splitbrowser.show.addbuttons.hover",    true);
 pref("splitbrowser.show.addbuttons.dragdrop", true);
 pref("splitbrowser.show.toolbar.always",      true);
+pref("splitbrowser.show.toolbar.navigation.always", false);
 pref("splitbrowser.show.collapseexpand",      false);
 
 pref("splitbrowser.appearance.scrollbar.size",  16);
 pref("splitbrowser.appearance.addbuttons.size", 16);
 pref("splitbrowser.appearance.addbuttons.area", 150);
-pref("splitbrowser.appearance.toolbar.alwaysShown", false);
 
 pref("splitbrowser.delay.addbuttons.show", 500);
 pref("splitbrowser.delay.addbuttons.hide", 2200);

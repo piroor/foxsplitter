@@ -3,7 +3,7 @@
 <!ENTITY splitbrowser.tab.general     "全般">
 
 <!ENTITY splitbrowser.general.caption     "全般">
-<!ENTITY splitbrowser.state.restore       "分割されたブラウザの状態を保存する">
+<!ENTITY splitbrowser.state.restore       "分割ブラウザの状態を保存する">
 
 <!ENTITY splitbrowser.subbrowser.autoFocus "マウスオーバーで分割されたブラウザに自動的にフォーカスする">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "ブラウザの上に">
@@ -19,10 +19,10 @@
 
 <!ENTITY splitbrowser.tab.appearance      "外観">
 
-<!ENTITY splitbrowser.show.toolbar.always "分割されたブラウザのツールバーを常に表示する">
-<!ENTITY splitbrowser.show.collapseexpand "分割されたブラウザのツールバーに「たたむ」「ひろげる」ボタンを表示する">
+<!ENTITY splitbrowser.show.toolbar.always "分割ブラウザのツールバーを常に表示する">
+<!ENTITY splitbrowser.show.collapseexpand "分割ブラウザのツールバーに「たたむ」「ひろげる」ボタンを表示する">
 <!ENTITY splitbrowser.tabs.autoHide       "分割ブラウザで常にタブを表示する">
-<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "分割ブラウザのツールバーでナビゲーションを常に表示する">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "分割ブラウザのツールバーでナビゲーションを常に表示する">
 
 
 

@@ -21,7 +21,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d'outils dans les fenêtres partagées.">
 <!ENTITY splitbrowser.show.collapseexpand "Montrer la barre d'outils avec les boutons &quot;Réduire&quot;/&quot;Déployer&quot; dans les fenêtres partagées.">
 <!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
-<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "Always show navigations of the toolbar in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "Partager au dessus">

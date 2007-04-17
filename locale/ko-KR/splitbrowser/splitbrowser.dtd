@@ -21,7 +21,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "항상 분할된 브라우저에 도구 모음 보이기">
 <!ENTITY splitbrowser.show.collapseexpand "분할된 브라우저에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
 <!ENTITY splitbrowser.tabs.autoHide "항상 분할된 브라우저에 탭 도구 모음 보이기">
-<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "Always show navigations of the toolbar in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
 
 
 

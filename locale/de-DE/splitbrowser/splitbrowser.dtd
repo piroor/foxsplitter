@@ -22,7 +22,7 @@
 <!ENTITY splitbrowser.show.toolbar.always "Symbolleiste in geteilten Browser-Ansichten immer anzeigen">
 <!ENTITY splitbrowser.show.collapseexpand "Schaltfläche zum Ein-/Ausklappen in geteilten Browser-Ansichten anzeigen">
 <!ENTITY splitbrowser.tabs.autoHide "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
-<!ENTITY splitbrowser.appearance.toolbar.alwaysShown "Always show navigations of the toolbar in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
 
 
 

@@ -1502,7 +1502,7 @@ catch(e) {
 		catch(e) {
 		}
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.appearance.toolbar.alwaysShown');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
@@ -1980,12 +1980,22 @@ catch(e) {
 				}
 				break;
 
-			case 'splitbrowser.appearance.toolbar.alwaysShown':
-				var appcontent = document.getElementById('appcontent');
-				if (nsPreferences.getBoolPref(aPrefstring))
-					appcontent.setAttribute('subbrowser-toolbar-shown', true);
-				else
-					appcontent.removeAttribute('subbrowser-toolbar-shown');
+			case 'splitbrowser.show.toolbar.navigation.always':
+				if (nsPreferences.getBoolPref(aPrefstring)) {
+					for (var i in this.browsers)
+					{
+						this.browsers[i].setAttribute('toolbar-navigation', true);
+						if (!this.browsers[i].contentCollapsed)
+							this.browsers[i].toggleToolbar(true, true);
+					}
+				}
+				else {
+					for (var i in this.browsers)
+					{
+						this.browsers[i].removeAttribute('toolbar-navigation');
+						this.browsers[i].toggleToolbar(false, true);
+					}
+				}
 				break;
 		}
 	}
