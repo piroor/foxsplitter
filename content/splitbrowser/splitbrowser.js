@@ -1530,6 +1530,50 @@ catch(e) {
  
 	hackForOtherExtensions : function() 
 	{
+		var appcontent = document.getElementById('appcontent');
+
+		// hack for Multiple Tab Handler
+		if ('MultipleTabService' in window &&
+			this.tabbedBrowsingEnabled) {
+			MultipleTabService.__defineGetter__('browser', function() {
+				return SplitBrowser.activeBrowser;
+			});
+			var initMTS = function(aEvent) {
+				MultipleTabService.initTabBrowser(aEvent.originalTarget.browser);
+			};
+			var destroyMTS = function(aEvent) {
+				MultipleTabService.destroyTabBrowser(aEvent.originalTarget.browser);
+			};
+			appcontent.addEventListener('SubBrowserAdded', initMTS, false);
+			appcontent.addEventListener('SubBrowserRemoveRequest', destroyMTS, false);
+			window.addEventListener('unload', function() {
+				appcontent.removeEventListener('SubBrowserAdded', initMTS, false);
+				appcontent.removeEventListener('SubBrowserRemoveRequest', destroyMTS, false);
+				window.removeEventListener('unload', arguments.callee, false);
+			}, false);
+		}
+
+		// hack for Informational Tab
+		if ('InformationalTabService' in window &&
+			this.tabbedBrowsingEnabled) {
+			InformationalTabService.__defineGetter__('browser', function() {
+				return SplitBrowser.activeBrowser;
+			});
+			var initITS = function(aEvent) {
+				InformationalTabService.initTabBrowser(aEvent.originalTarget.browser);
+			};
+			var destroyITS = function(aEvent) {
+				InformationalTabService.destroyTabBrowser(aEvent.originalTarget.browser);
+			};
+			appcontent.addEventListener('SubBrowserAdded', initITS, false);
+			appcontent.addEventListener('SubBrowserRemoveRequest', destroyITS, false);
+			window.addEventListener('unload', function() {
+				appcontent.removeEventListener('SubBrowserAdded', initITS, false);
+				appcontent.removeEventListener('SubBrowserRemoveRequest', destroyITS, false);
+				window.removeEventListener('unload', arguments.callee, false);
+			}, false);
+		}
+
 		// hack for ScrapBook
 		var scrapBookToolbox;
 		if (scrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
