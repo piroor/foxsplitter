@@ -48,7 +48,10 @@ var SplitBrowser = {
 	POSITION_BEFORE : 5,
 	POSITION_AFTER  : 10,
  
-	browsers  : [], 
+	_browsers : [], 
+	get browsers() {
+		return this._browsers;
+	},
 	splitters : {},
  
 /* utilities */ 
@@ -117,10 +120,10 @@ var SplitBrowser = {
 			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIWebNavigation)
 			.QueryInterface(Components.interfaces.nsIDocShell);
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+		for (var i = 0, maxi = this._browsers.length; i < maxi; i++)
 		{
-			if (this.browsers[i].browser.docShell == docShell)
-				return this.browsers[i];
+			if (this._browsers[i].browser.docShell == docShell)
+				return this._browsers[i];
 		}
 		return null;
 	},
@@ -167,7 +170,7 @@ var SplitBrowser = {
 	
 	updateStatusCallback : function() 
 	{
-		if (!this.browsers.length) {
+		if (!this._browsers.length) {
 			document.documentElement.removeAttribute('splitbrowser-split');
 			this.removeAllBroadcaster.setAttribute('disabled', true);
 			this.collapseAllBroadcaster.setAttribute('disabled', true);
@@ -179,9 +182,9 @@ var SplitBrowser = {
 
 			var collapsed = 0;
 			var expanded  = 0;
-			for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+			for (var i = 0, maxi = this._browsers.length; i < maxi; i++)
 			{
-				if (this.browsers[i].contentCollapsed)
+				if (this._browsers[i].contentCollapsed)
 					collapsed++;
 				else
 					expanded++;
@@ -221,6 +224,9 @@ var SplitBrowser = {
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
+		if (!aURI) aURI = 'about:blank';
+		if (!aPosition) aPosition = this.POSITION_BOTTOM;
+
 		var appcontent = document.getElementById('appcontent');
 		var b = aBrowser || this.getSubBrowserFromFrame(document.commandDispatcher.focusedWindow.top);
 		var target = (b && b.parentContainer) ? b.parentContainer : appcontent ;
@@ -388,13 +394,13 @@ var SplitBrowser = {
 	{
 		var browser = document.createElement('subbrowser');
 		browser.setAttribute('flex', 1);
-		if (aURI)
+		if (aURI && aURI != 'about:blank')
 			browser.setAttribute('src', aURI);
 
 		browser.setAttribute('browsertype', this.tabbedBrowsingEnabled ? 'tabbrowser' : 'simple' );
 		browser.setAttribute('id', 'splitbrowser-subbrowser-'+parseInt(Math.random() * 65000));
 
-		this.browsers.push(browser);
+		this._browsers.push(browser);
 
 		return browser;
 	},
@@ -452,10 +458,10 @@ var SplitBrowser = {
 		var browser   = aBrowser;
 		var container = browser.parentContainer || appcontent;
 
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
+		for (var i = 0, maxi = this._browsers.length; i < maxi; i++)
 		{
-			if (this.browsers[i] == browser) {
-				this.browsers.splice(i, 1);
+			if (this._browsers[i] == browser) {
+				this._browsers.splice(i, 1);
 				break;
 			}
 		}
@@ -559,9 +565,9 @@ var SplitBrowser = {
   
 	removeAllSubBrowsers : function() 
 	{
-		for (var i = this.browsers.length-1; i > -1; i--)
+		for (var i = this._browsers.length-1; i > -1; i--)
 		{
-			this.removeSubBrowser(this.browsers[i]);
+			this.removeSubBrowser(this._browsers[i]);
 		}
 	},
   
@@ -569,7 +575,7 @@ var SplitBrowser = {
 	 
 	collapseAllSubBrowsers : function() 
 	{
-		this.browsers.forEach(function(aBrowser) {
+		this._browsers.forEach(function(aBrowser) {
 			if (!aBrowser.contentCollapsed)
 				aBrowser.collapse();
 		});
@@ -577,7 +583,7 @@ var SplitBrowser = {
  
 	expandAllSubBrowsers : function() 
 	{
-		this.browsers.forEach(function(aBrowser) {
+		this._browsers.forEach(function(aBrowser) {
 			if (aBrowser.contentCollapsed)
 				aBrowser.expand(true);
 		});
@@ -594,7 +600,7 @@ var SplitBrowser = {
 	activeBrowserCloseWindow : function() 
 	{
 		if (this.activeBrowser == gBrowser) {
-			if (this.browsers.length)
+			if (this._browsers.length)
 				gBrowser.removeCurrentTab();
 			else
 				BrowserCloseWindow();
@@ -1735,7 +1741,7 @@ catch(e) {
 		catch(e) {
 		}
 
-		this.browsers.forEach(function(aBrowser) {
+		this._browsers.forEach(function(aBrowser) {
 			aBrowser.destroy();
 			aBrowser.parentNode.removeChild(aBrowser);
 		});
@@ -1847,7 +1853,7 @@ catch(e) {
 				break;
 
 			case 'splitbrowser.show.toolbar.navigation.always':
-				this.browsers.forEach(
+				this._browsers.forEach(
 					nsPreferences.getBoolPref(aPrefstring) ?
 						function(aBrowser) {
 							aBrowser.setAttribute('toolbar-navigation', true);
