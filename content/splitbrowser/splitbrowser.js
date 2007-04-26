@@ -1,5 +1,5 @@
 var SplitBrowser = { 
-	
+	 
 	get scrollbarSize() { 
 		return nsPreferences.getIntPref('splitbrowser.appearance.scrollbar.size');
 	},
@@ -565,24 +565,86 @@ var SplitBrowser = {
 		}
 	},
   
+/* features */ 
+	 
 	collapseAllSubBrowsers : function() 
 	{
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
-		{
-			if (!this.browsers[i].contentCollapsed)
-				this.browsers[i].collapse();
-		}
+		this.browsers.forEach(function(aBrowser) {
+			if (!aBrowser.contentCollapsed)
+				aBrowser.collapse();
+		});
 	},
  
 	expandAllSubBrowsers : function() 
 	{
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
-		{
-			if (this.browsers[i].contentCollapsed)
-				this.browsers[i].expand(true);
+		this.browsers.forEach(function(aBrowser) {
+			if (aBrowser.contentCollapsed)
+				aBrowser.expand(true);
+		});
+	},
+ 
+	activeBrowserOpenTab : function() 
+	{
+		if (this.activeBrowser == gBrowser)
+			BrowserOpenTab();
+		else
+			this.activeBrowser.openNewTab();
+	},
+ 
+	activeBrowserCloseWindow : function() 
+	{
+		if (this.activeBrowser == gBrowser) {
+			if (this.browsers.length)
+				gBrowser.removeCurrentTab();
+			else
+				BrowserCloseWindow();
+		}
+		else {
+			this.activeBrowser.parentSubBrowser.close();
+		}
+	},
+ 	
+	activeBrowserStop : function() 
+	{
+		const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
+		this.activeBrowser.webNavigation.stop(nsIWebNavigation.STOP_ALL);
+	},
+ 
+	activeBrowserReload : function() 
+	{
+		const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
+		this.activeBrowserReloadWithFlags(nsIWebNavigation.LOAD_FLAGS_NONE);
+	},
+ 
+	activeBrowserReloadSkipCache : function() 
+	{
+		const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
+		this.activeBrowserReloadWithFlags(nsIWebNavigation.LOAD_FLAGS_BYPASS_PROXY | nsIWebNavigation.LOAD_FLAGS_BYPASS_CACHE);
+	},
+ 
+	activeBrowserReloadWithFlags : function(aReloadFlags) 
+	{
+		var webNav = this.activeBrowser.webNavigation;
+		try {
+			var sh = webNav.sessionHistory;
+			if (sh)
+				webNav = sh.QueryInterface(nsIWebNavigation);
+		}
+		catch (e) {
+		}
+
+		try {
+			webNav.reload(aReloadFlags);
+		}
+		catch (e) {
 		}
 	},
  
+	activeBrowserPageInfo : function() 
+	{
+		BrowserPageInfo(this.activeBrowser.contentDocument);
+	},
+  
 /* save / load */ 
 	
 	save : function() 
@@ -899,19 +961,18 @@ alert(e+'\n\n'+state);
 		var container;
 		var spacer = document.createElement('spacer');
 		spacer.setAttribute('flex', 1);
-		for (var i = 0, maxi = aState.children.length; i < maxi; i++)
-		{
+		aState.children.forEach(function(aChild) {
 			container = this.addContainerTo(
 				aContainer,
-				aState.children[i].position,
+				aChild.position,
 				content,
-				aState.children[i].width,
-				aState.children[i].height
+				aChild.width,
+				aChild.height
 			);
-			if (aState.children[i].collapsed)
-				(aState.children[i].position & this.POSITION_BEFORE ? container.nextSibling : container.previousSibling).setAttribute('state', 'collapsed');
-			this.buildContent(aState.children[i], container);
-		}
+			if (aChild.collapsed)
+				(aChild.position & this.POSITION_BEFORE ? container.nextSibling : container.previousSibling).setAttribute('state', 'collapsed');
+			this.buildContent(aChild, container);
+		}, this);
 
 		if (content && content.localName == 'spacer') {
 			if (content.nextSibling)
@@ -945,23 +1006,22 @@ alert(e+'\n\n'+state);
 		}
 
 		if (aBrowserState.histories) {
-			for (var i = 0, maxi = aBrowserState.histories.length; i < maxi; i++)
-			{
-				if (i) {
+			aBrowserState.histories.forEach(function(aHistory, aIndex) {
+				if (aIndex) {
 					tab     = aBrowser.addTab('about:blank');
 					browser = aBrowser.getBrowserForTab(tab);
 				}
-				SplitBrowser.deserializeSessionHistory(browser, aBrowserState.histories[i]);
+				SplitBrowser.deserializeSessionHistory(browser, aHistory);
 
-				if (aBrowserState.textZoom[i])
-					browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[i];
+				if (aBrowserState.textZoom[aIndex])
+					browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[aIndex];
 				if (aBrowserState.toolbarMode)
 					browser.setAttribute('toolbar-mode', aBrowserState.toolbarMode);
 
 				if (aBrowser.localName == 'tabbrowser' &&
-					aBrowserState.selectedTab == i)
+					aBrowserState.selectedTab == aIndex)
 					aBrowser.selectedTab = tab;
-			}
+			});
 		}
 
 		if (aCallback && typeof aCallback == 'function')
@@ -971,11 +1031,9 @@ alert(e+'\n\n'+state);
 	deserializeSessionHistory : function(aBrowser, aData) 
 	{
 		var SHInternal = aBrowser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
-		for (var j in aData.entries)
-			SHInternal.addEntry(
-				this.deserializeSessionHistoryEntry(aData.entries[j]),
-				true
-			);
+		aData.entries.forEach(function(aEntry) {
+			SHInternal.addEntry(this.deserializeSessionHistoryEntry(aEntry), true);
+		});
 		try {
 			aBrowser.gotoIndex(aData.index);
 		}
@@ -1014,13 +1072,9 @@ alert(e+'\n\n'+state);
 		if (!aData.children || !aData.children.length) return entry;
 
 		entry = entry.QueryInterface(Components.interfaces.nsISHContainer);
-		for (var i in aData.children)
-			entry.AddChild(
-				this.deserializeSessionHistoryEntry(
-					aData.children[i]
-				),
-				i
-			);
+		aData.children.forEach(function(aChild, aIndex) {
+			entry.AddChild(this.deserializeSessionHistoryEntry(aChild), aIndex);
+		});
 
 		return entry;
 	},
@@ -1373,11 +1427,10 @@ catch(e) {
 				'findPrevious'
 			];
 		var base = ('gFindBar' in window) ? gFindBar : window ;
-		for (var i = 0; i < functions.length; i++)
-		{
-			if (base[functions[i]])
-				eval('base.'+functions[i]+' = '+base[functions[i]].toSource().replace(/getBrowser\(\)/g, newGetBrowser));
-		}
+		functions.forEach(function(aFunction) {
+			if (base[aFunction])
+				eval('base.'+aFunction+' = '+base[aFunction].toSource().replace(/getBrowser\(\)/g, newGetBrowser));
+		});
 	},
  
 	updateFindBar : function(aEvent) 
@@ -1530,236 +1583,6 @@ catch(e) {
  
 	hackForOtherExtensions : function() 
 	{
-		var appcontent = document.getElementById('appcontent');
-
-		// hack for Multiple Tab Handler
-		if ('MultipleTabService' in window &&
-			this.tabbedBrowsingEnabled) {
-			MultipleTabService.__defineGetter__('browser', function() {
-				return SplitBrowser.activeBrowser;
-			});
-			var initMTS = function(aEvent) {
-				MultipleTabService.initTabBrowser(aEvent.originalTarget.browser);
-			};
-			var destroyMTS = function(aEvent) {
-				MultipleTabService.destroyTabBrowser(aEvent.originalTarget.browser);
-			};
-			appcontent.addEventListener('SubBrowserAdded', initMTS, false);
-			appcontent.addEventListener('SubBrowserRemoveRequest', destroyMTS, false);
-			window.addEventListener('unload', function() {
-				appcontent.removeEventListener('SubBrowserAdded', initMTS, false);
-				appcontent.removeEventListener('SubBrowserRemoveRequest', destroyMTS, false);
-				window.removeEventListener('unload', arguments.callee, false);
-			}, false);
-		}
-
-		// hack for Informational Tab
-		if ('InformationalTabService' in window &&
-			this.tabbedBrowsingEnabled) {
-			InformationalTabService.__defineGetter__('browser', function() {
-				return SplitBrowser.activeBrowser;
-			});
-			var initITS = function(aEvent) {
-				InformationalTabService.initTabBrowser(aEvent.originalTarget.browser);
-			};
-			var destroyITS = function(aEvent) {
-				InformationalTabService.destroyTabBrowser(aEvent.originalTarget.browser);
-			};
-			appcontent.addEventListener('SubBrowserAdded', initITS, false);
-			appcontent.addEventListener('SubBrowserRemoveRequest', destroyITS, false);
-			window.addEventListener('unload', function() {
-				appcontent.removeEventListener('SubBrowserAdded', initITS, false);
-				appcontent.removeEventListener('SubBrowserRemoveRequest', destroyITS, false);
-				window.removeEventListener('unload', arguments.callee, false);
-			}, false);
-		}
-
-		// hack for ScrapBook
-		var scrapBookToolbox;
-		if (scrapBookToolbox = document.getElementById('ScrapBookToolbox')) {
-			this.moveAppContentContents(scrapBookToolbox, 1);
-		}
-
-		// hack for FireBug
-		var fbSplitter;
-		if (fbSplitter = document.getElementById('fbContentSplitter')) {
-			this.moveAppContentContents(fbSplitter, 1);
-			this.moveAppContentContents(document.getElementById('fbContentBox'), 1);
-/*
-			var getTabBrowser = function() {
-				return window.__splitbrowser_firebug__lastBrowser || SplitBrowser.activeBrowser ;
-			};
-
-			window.__defineGetter__('tabBrowser', getTabBrowser);
-			window.__defineSetter__('tabBrowser', getTabBrowser);
-			Firebug.__defineGetter__('tabBrowser', getTabBrowser);
-			Firebug.__defineSetter__('tabBrowser', getTabBrowser);
-
-			eval(
-				'Firebug.toggleBar = '+
-				Firebug.toggleBar.toSource().replace(
-					'{',
-					'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
-				)
-			);
-			eval(
-				'Firebug.showBar = '+
-				Firebug.showBar.toSource().replace(
-					'{',
-					'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
-				)
-			);
-			eval(
-				'TabWatcher.initialize = '+
-				TabWatcher.initialize.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-			eval(
-				'TabWatcher.destroy = '+
-				TabWatcher.destroy.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-			eval(
-				'TabWatcher.activate = '+
-				TabWatcher.activate.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-			eval(
-				'TabWatcher.deactivate = '+
-				TabWatcher.deactivate.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-			eval(
-				'TabWatcher.watchTopWindow = '+
-				TabWatcher.watchTopWindow.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-			eval(
-				'TabWatcher.getBrowserByWindow = '+
-				TabWatcher.getBrowserByWindow.toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
-
-			window.__splitbrowser_firebug__fireBugToggle = function(aEvent) {
-				if (aEgent &&
-					(aEvent.originalTarget || aEvent.target) != window.__splitbrowser_firebug__lastBrowser)
-					return;
-				if (!contentBox.collapsed)
-					Firebug.toggleBar();
-				window.__splitbrowser_firebug__lastBrowser = null;
-			};
-			document.documentElement.addEventListener('SubBrowserRemoveRequest', __splitbrowser_firebug__fireBugToggle, true);
-			window.addEventListener('unload', function() {
-				document.documentElement.removeEventListener('SubBrowserRemoveRequest', __splitbrowser_firebug__fireBugToggle, true);
-				window.removeEventListener('unload', arguments.callee, false);
-			}, false);
-*/
-			FirebugChrome.initialize();
-		}
-
-		// hack for MultiSidebar
-		var sidebarTop;
-		if (sidebarTop = document.getElementById('sidebar-3-box')) {
-			this.moveAppContentContents(document.getElementById('sidebar-3-splitter'), -1);
-			this.moveAppContentContents(sidebarTop, -1);
-			this.moveAppContentContents(document.getElementById('sidebar-4-splitter'), 1);
-			this.moveAppContentContents(document.getElementById('sidebar-4-box'), 1);
-		}
-
-		// hack for Grab and Drag
-		if ('gadInit' in window) {
-			eval(
-				'window.gadInit = '+
-				window.gadInit.toSource().replace(
-					/document\.getElementById\(['"]content['"]\)/g,
-					'SplitBrowser.activeBrowser'
-				)
-			);
-			document.documentElement.addEventListener('SubBrowserFocusMoved', gadInit, false);
-			window.addEventListener('unload', function() {
-				document.documentElement.removeEventListener('SubBrowserFocusMoved', gadInit, false);
-				window.removeEventListener('unload', arguments.callee, false);
-			}, false);
-			gadInit();
-		}
-
-		// hack for Google Notebook Extension
-		var gnotesBox;
-		if (gnotesBox = document.getElementById('gnotes-overlay')) {
-			var gnotesReattach = function(aEvent) {
-				if (window.getComputedStyle(gnotesBox, '').getPropertyValue('display') != 'block') return;
-
-				var target = (aEvent.originalTarget || aEvent.target);
-
-				var box  = gnotesBox.boxObject;
-				var bBox = target.boxObject;
-				var forceUpdate = false;
-
-				if (aEvent.type == 'TabClose') {
-					var b = target;
-					while (b.localName != 'tabbrowser')
-						b = b.parentNode;
-
-					var cIndex = -1,
-						sIndex = -1,
-						tabs = b.mTabContainer.childNodes;
-					for (var i = 0, maxi = tabs.length; i < maxi; i++)
-					{
-						if (tabs[i] == target)
-							cIndex = i;
-						else if (tabs[i] == b.selectedTab)
-							sIndex = i;
-
-						if (cIndex > -1 && sIndex > -1)
-							break;
-					}
-
-					if (cIndex > sIndex) return;
-
-					bBox = target.linkedBrowser.boxObject;
-				}
-
-				if (
-					!forceUpdate &&
-					(
-					box.screenX + box.width < bBox.screenX ||
-					box.screenX > bBox.screenX + bBox.width ||
-					box.screenY + box.height < bBox.screenY ||
-					box.screenY > bBox.screenY + bBox.height
-					)
-					)
-					return;
-
-				gnotesBox.style.display = 'none';
-				window.setTimeout(function() {
-					gnotesBox.style.display = 'block';
-				}, 500);
-			};
-
-			document.documentElement.addEventListener('SubBrowserAdded', gnotesReattach, false);
-			document.documentElement.addEventListener('SubBrowserTabSelect', gnotesReattach, false);
-			document.documentElement.addEventListener('TabClose', gnotesReattach, false);
-
-			window.addEventListener('unload', function() {
-				document.documentElement.removeEventListener('SubBrowserAdded', gnotesReattach, false);
-				document.documentElement.removeEventListener('SubBrowserTabSelect', gnotesReattach, false);
-				document.documentElement.removeEventListener('TabClose', gnotesReattach, false);
-				delete gnotesBox;
-				window.removeEventListener('unload', arguments.callee, false);
-			}, false);
-		}
 	},
  
 	moveAppContentContents : function(aContent, aDir) 
@@ -1912,11 +1735,10 @@ catch(e) {
 		catch(e) {
 		}
 
-		for (var i = 0, maxi = this.browsers.length; i < maxi; i++)
-		{
-			this.browsers[i].destroy();
-			this.browsers[i].parentNode.removeChild(this.browsers[i]);
-		}
+		this.browsers.forEach(function(aBrowser) {
+			aBrowser.destroy();
+			aBrowser.parentNode.removeChild(aBrowser);
+		});
 	},
  
 	handleEvent : function(aEvent) 
@@ -2004,42 +1826,39 @@ catch(e) {
 				break;
 
 			case 'splitbrowser.show.toolbar.always':
-				if (nsPreferences.getBoolPref(aPrefstring)) {
-					for (var i in this.splitters)
-						this.splitters[i].removeAttribute('collapse');
-				}
-				else {
-					for (var i in this.splitters)
-						this.splitters[i].setAttribute('collapse', this.splitters[i].getAttribute('_collapse'));
-				}
+				this.splitters.forEach(
+					nsPreferences.getBoolPref(aPrefstring) ?
+						function(aSplitter) {
+							aSplitter.removeAttribute('collapse');
+						} :
+						function(aSplitter) {
+							aSplitter.setAttribute('collapse', aSplitter.getAttribute('_collapse'));
+						}
+				);
 				break;
 
 			case 'splitbrowser.tabs.autoHide':
 				if (!this.tabbedBrowsingEnabled) return;
 				var visible = !nsPreferences.getBoolPref(aPrefstring);
-				for (var i in this.browsers)
-				{
-					if (this.browsers[i].browser.mTabContainer.childNodes.length == 1)
-						this.browsers[i].browser.setStripVisibilityTo(visible);
-				}
+				this.splitters.forEach(function(aBrowser) {
+					if (aBrowser.browser.mTabContainer.childNodes.length == 1)
+						aBrowser.browser.setStripVisibilityTo(visible);
+				});
 				break;
 
 			case 'splitbrowser.show.toolbar.navigation.always':
-				if (nsPreferences.getBoolPref(aPrefstring)) {
-					for (var i in this.browsers)
-					{
-						this.browsers[i].setAttribute('toolbar-navigation', true);
-						if (!this.browsers[i].contentCollapsed)
-							this.browsers[i].toggleToolbar(true, true);
-					}
-				}
-				else {
-					for (var i in this.browsers)
-					{
-						this.browsers[i].removeAttribute('toolbar-navigation');
-						this.browsers[i].toggleToolbar(false, true);
-					}
-				}
+				this.browsers.forEach(
+					nsPreferences.getBoolPref(aPrefstring) ?
+						function(aBrowser) {
+							aBrowser.setAttribute('toolbar-navigation', true);
+							if (!aBrowser.contentCollapsed)
+								aBrowser.toggleToolbar(true, true);
+						} :
+						function(aBrowser) {
+							aBrowser.removeAttribute('toolbar-navigation');
+							aBrowser.toggleToolbar(false, true);
+						}
+				);
 				break;
 		}
 	}

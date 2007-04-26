@@ -11,6 +11,7 @@
 	xmlns:html="http://www.w3.org/1999/xhtml">
 
 <script type="application/x-javascript" src="splitbrowser.js"/>
+<script type="application/x-javascript" src="hacks.js"/>
 <script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
