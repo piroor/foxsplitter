@@ -639,10 +639,10 @@ var SplitBrowser = {
 				var tabs = Array.prototype.slice.call(b.mTabs);
 
 				var t = gBrowser.addTab();
-				self.duplicateBrowser(b.selectedTab.linkedBrowser, t.linkedBrowser);
+				self.duplicateBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
 
 				tabs.forEach(function(aTab) {
-					if (aTab == b.selectedTab) return;
+					if (aTab == tabs[0]) return;
 					var childT = gBrowser.addTab();
 					self.duplicateBrowser(aTab.linkedBrowser, childT.linkedBrowser);
 					childT.parentTab = t;
