@@ -594,16 +594,34 @@ var SplitBrowser = {
 		var b = aSubBrowser.browser;
 		var tabs = Array.prototype.slice.call(b.mTabs);
 		var isAfter = false;
+		var isHorizontal = (aAlign == this.ALIGN_HORIZONTAL);
 		var self = this;
+
+		var TBETabGroupEnabled = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
+
+		if (TBETabGroupEnabled)
+			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
+
 		tabs.forEach(function(aTab) {
 			if (aTab == b.selectedTab) {
 				isAfter = true;
 				return;
 			}
 			var pos = isAfter ?
-					(aAlign == self.ALIGN_HORIZONTAL ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
-					(aAlign == self.ALIGN_HORIZONTAL ? self.POSITION_LEFT : self.POSITION_TOP);
-			self.addSubBrowserFromTab(aTab, pos, true);
+					(isHorizontal ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
+					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);
+
+			var children = (TBETabGroupEnabled) ? aTab.allChildTabs : null ;
+
+			var subbrowser = self.addSubBrowserFromTab(aTab, pos, true);
+
+			if (TBETabGroupEnabled && children && children.length) {
+				children.forEach(function(aChildTab) {
+					var t = subbrowser.browser.addTab();
+					self.duplicateBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
+					b.removeTabInternal(aChildTab, { preventUndo : true });
+				});
+			}
 		});
 	},
 	ALIGN_HORIZONTAL : 1,
@@ -615,7 +633,7 @@ var SplitBrowser = {
 		this.browsers.forEach(function(aSubBrowser) {
 			var browsers = aSubBrowser.browser.localName == 'tabbrowser' ? aSubBrowser.browser.browsers : [aSubBrowser.browser] ;
 			browsers.forEach(function(aBrowser) {
-				var t = gBrowser.addTab('about:blank');
+				var t = gBrowser.addTab();
 				self.duplicateBrowser(aBrowser, t.linkedBrowser);
 			});
 			window.setTimeout(function() {

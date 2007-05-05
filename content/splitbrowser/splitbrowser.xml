@@ -1791,7 +1791,8 @@ sideBox.removeAttribute('style');
 			aThis.addProgressListener(b.mCurrentTab);
 
 			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
-			b.setStripVisibilityTo(!autoHide);
+			if (b.mTabs.length == 1)
+				b.setStripVisibilityTo(!autoHide);
 
 			b = b.mCurrentBrowser;
 			b.webNavigation.sessionHistory = Components.classes['@mozilla.org/browser/shistory;1'].createInstance(Components.interfaces.nsISHistory);
