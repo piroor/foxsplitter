@@ -605,7 +605,7 @@ var SplitBrowser = {
 		});
 	},
  
-	alignTabs : function(aSubBrowser, aAlign) 
+	tileTabs : function(aSubBrowser, aAlign) 
 	{
 		var b = aSubBrowser.browser;
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
@@ -613,12 +613,12 @@ var SplitBrowser = {
 		var isHorizontal = (aAlign == this.ALIGN_HORIZONTAL);
 		var self = this;
 
-		var TBETabGroup = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
+		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
+
+		var TBETabGroup = (!shouldDoFiltering && this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
 
 		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
-
-		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
 
 		tabs.forEach(function(aTab) {
 			var shouldSplit = shouldDoFiltering ? MultipleTabService.isSelected(aTab) : true ;
@@ -1660,8 +1660,8 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.align.horizontal');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.align.vertical');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.horizontal');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.vertical');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
@@ -1678,9 +1678,9 @@ catch(e) {
 
 		var fragment = document.createDocumentFragment();
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-align-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-align-horizontal-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-align-vertical-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-tile-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-horizontal-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-vertical-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather-template').cloneNode(true));
 
 		Array.prototype.slice.call(fragment.childNodes).forEach(function(aNode) {
@@ -1998,8 +1998,8 @@ catch(e) {
 
 			case 'splitbrowser.show.menu':
 			case 'splitbrowser.show.tab.context.split':
-			case 'splitbrowser.show.tab.context.align.horizontal':
-			case 'splitbrowser.show.tab.context.align.vertical':
+			case 'splitbrowser.show.tab.context.tile.horizontal':
+			case 'splitbrowser.show.tab.context.tile.vertical':
 			case 'splitbrowser.show.tab.context.gather':
 				var attrName = aPrefstring.replace(/\./g, '-');
 				if (nsPreferences.getBoolPref(aPrefstring))
