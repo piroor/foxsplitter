@@ -8,20 +8,20 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <preferences id="prefpane-selection-menu-preferences">
-	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-align-horizontal"
-		name="extensions.multipletab.show.multipletab-selection-splitbrowser-align-horizontal"
+	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
+		name="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
 		type="bool"/>
-	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-align-vertical"
-		name="extensions.multipletab.show.multipletab-selection-splitbrowser-align-vertical"
+	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-vertical"
+		name="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-vertical"
 		type="bool"/>
 </preferences>
 <vbox id="prefpane-selection-menu-items">
-	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-align-horizontal-check"
-		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-align-horizontal"
-		label="&multipletab.align.horizontal.label;"/>
-	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-align-vertical-check"
-		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-align-vertical"
-		label="&multipletab.align.vertical.label;"/>
+	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal-check"
+		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
+		label="&multipletab.tile.horizontal.label;"/>
+	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-vertical-check"
+		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-vertical"
+		label="&multipletab.tile.vertical.label;"/>
 </vbox>
 
 </overlay>
