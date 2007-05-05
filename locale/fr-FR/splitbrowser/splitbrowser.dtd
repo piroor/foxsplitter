@@ -63,6 +63,13 @@
 
 
 
+
+<!ENTITY splitbrowser.tab.align.horizontal.label "Align all tabs Horizontally">
+<!ENTITY splitbrowser.tab.align.vertical.label   "Align all tabs Vertically">
+<!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
 <!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">

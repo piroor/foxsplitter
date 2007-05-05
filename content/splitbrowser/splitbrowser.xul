@@ -164,9 +164,10 @@
 			hidden="true"/>
 	</vbox>
 	<data id="splitbrowser-template" collapsed="true">
-		<menu id="splitbrowser-tab-context-item-link-template"
-			class="menu-iconic splitbrowser-tab-context-item"
-			label="&splitbrowser.tab.add.label;">
+		<menu id="splitbrowser-tab-context-item-split-template"
+			class="menu-iconic splitbrowser-tab-context-split-item"
+			label="&splitbrowser.tab.add.label;"
+			tbattr="tabbrowser-multiple">
 			<menupopup
 				oncommand="
 					var b = this;
@@ -188,6 +189,31 @@
 					splitbrowser-position="POSITION_BOTTOM"/>
 			</menupopup>
 		</menu>
+		<menuseparator id="splitbrowser-tab-context-separator-align-template"/>
+		<menuitem id="splitbrowser-tab-context-item-align-horizontal-template"
+			class="menuitem-iconic splitbrowser-tab-context-align-horizontal-item"
+			label="&splitbrowser.tab.align.horizontal.label;"
+			tbattr="tabbrowser-multiple"
+			oncommand="
+				var b = this;
+				while (b.localName != 'tabbrowser')
+					b = b.parentNode;
+				SplitBrowser.alignTabs(b.parentSubBrowser, SplitBrowser.ALIGN_HORIZONTAL);
+			"/>
+		<menuitem id="splitbrowser-tab-context-item-align-vertical-template"
+			class="menuitem-iconic splitbrowser-tab-context-align-vertical-item"
+			label="&splitbrowser.tab.align.vertical.label;"
+			tbattr="tabbrowser-multiple"
+			oncommand="
+				var b = this;
+				while (b.localName != 'tabbrowser')
+					b = b.parentNode;
+				SplitBrowser.alignTabs(b.parentSubBrowser, SplitBrowser.ALIGN_VERTICAL);
+			"/>
+		<menuitem id="splitbrowser-tab-context-item-gather-template"
+			class="menuitem-iconic splitbrowser-tab-context-gather-item"
+			label="&splitbrowser.tab.gather.label;"
+			oncommand="SplitBrowser.gatherSubBrowsers();"/>
 	</data>
 
 </window>

@@ -221,7 +221,7 @@ var SplitBrowser = {
 	},
    
 /* add sub-browser (split contents) */ 
-	
+	 
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
 		if (!aURI) aURI = 'about:blank';
@@ -271,8 +271,8 @@ var SplitBrowser = {
 
 		return browser;
 	},
-	
-	addSubBrowserFromTab : function(aTab, aPosition) 
+	 
+	addSubBrowserFromTab : function(aTab, aPosition, aForceRemove) 
 	{
 		var b = aTab;
 		while (b.localName != 'tabbrowser')
@@ -294,14 +294,14 @@ var SplitBrowser = {
 				aTab.linkedBrowser,
 				browser.browser,
 				function() {
-					if (nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
+					if (aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
 						b.removeTab(aTab);
 				}
 			);
 
 		return browser;
 	},
-	
+	 
 	duplicateBrowser : function(aSource, aTarget, aCallback) 
 	{
 		var state = SplitBrowser.serializeBrowserState(aSource);
@@ -589,6 +589,41 @@ var SplitBrowser = {
 		});
 	},
  
+	alignTabs : function(aSubBrowser, aAlign) 
+	{
+		var b = aSubBrowser.browser;
+		var tabs = Array.prototype.slice.call(b.mTabs);
+		var isAfter = false;
+		var self = this;
+		tabs.forEach(function(aTab) {
+			if (aTab == b.selectedTab) {
+				isAfter = true;
+				return;
+			}
+			var pos = isAfter ?
+					(aAlign == self.ALIGN_HORIZONTAL ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
+					(aAlign == self.ALIGN_HORIZONTAL ? self.POSITION_LEFT : self.POSITION_TOP);
+			self.addSubBrowserFromTab(aTab, pos, true);
+		});
+	},
+	ALIGN_HORIZONTAL : 1,
+	ALIGN_VERTICAL   : 2,
+ 
+	gatherSubBrowsers : function() 
+	{
+		var self = this;
+		this.browsers.forEach(function(aSubBrowser) {
+			var browsers = aSubBrowser.browser.localName == 'tabbrowser' ? aSubBrowser.browser.browsers : [aSubBrowser.browser] ;
+			browsers.forEach(function(aBrowser) {
+				var t = gBrowser.addTab('about:blank');
+				self.duplicateBrowser(aBrowser, t.linkedBrowser);
+			});
+			window.setTimeout(function() {
+				aSubBrowser.close();
+			}, 0);
+		});
+	},
+ 	
 	activeBrowserOpenTab : function() 
 	{
 		if (this.activeBrowser == gBrowser)
@@ -609,7 +644,7 @@ var SplitBrowser = {
 			this.activeBrowser.parentSubBrowser.close();
 		}
 	},
- 	
+ 
 	activeBrowserStop : function() 
 	{
 		const nsIWebNavigation = Components.interfaces.nsIWebNavigation;
@@ -968,7 +1003,7 @@ alert(e+'\n\n'+state);
 		var spacer = document.createElement('spacer');
 		spacer.setAttribute('flex', 1);
 		aState.children.forEach(function(aChild) {
-			container = this.addContainerTo(
+			container = SplitBrowser.addContainerTo(
 				aContainer,
 				aChild.position,
 				content,
@@ -977,8 +1012,8 @@ alert(e+'\n\n'+state);
 			);
 			if (aChild.collapsed)
 				(aChild.position & this.POSITION_BEFORE ? container.nextSibling : container.previousSibling).setAttribute('state', 'collapsed');
-			this.buildContent(aChild, container);
-		}, this);
+			SplitBrowser.buildContent(aChild, container);
+		});
 
 		if (content && content.localName == 'spacer') {
 			if (content.nextSibling)
@@ -1038,7 +1073,7 @@ alert(e+'\n\n'+state);
 	{
 		var SHInternal = aBrowser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
 		aData.entries.forEach(function(aEntry) {
-			SHInternal.addEntry(this.deserializeSessionHistoryEntry(aEntry), true);
+			SHInternal.addEntry(SplitBrowser.deserializeSessionHistoryEntry(aEntry), true);
 		});
 		try {
 			aBrowser.gotoIndex(aData.index);
@@ -1079,7 +1114,7 @@ alert(e+'\n\n'+state);
 
 		entry = entry.QueryInterface(Components.interfaces.nsISHContainer);
 		aData.children.forEach(function(aChild, aIndex) {
-			entry.AddChild(this.deserializeSessionHistoryEntry(aChild), aIndex);
+			entry.AddChild(SplitBrowser.deserializeSessionHistoryEntry(aChild), aIndex);
 		});
 
 		return entry;
@@ -1529,7 +1564,7 @@ catch(e) {
 
 		window.removeEventListener('load', this, false);
 
-		this.insertSeparateTabItem(gBrowser);
+		this.insertCustomTabContextMenuItems(gBrowser);
 
 		gBrowser.__splitbrowser__updateCurrentBrowser = gBrowser.updateCurrentBrowser;
 		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
@@ -1552,6 +1587,7 @@ catch(e) {
 		if (nsPreferences.getBoolPref('splitbrowser.tabs.enabled') != this.tabbedBrowsingEnabled)
 			nsPreferences.setBoolPref('splitbrowser.tabs.enabled', this.tabbedBrowsingEnabled);
 
+		gBrowser.parentSubBrowser = this.mainBrowserBox;
 		this.activeSubBrowser = this.mainBrowserBox;
 
 		try {
@@ -1569,9 +1605,20 @@ catch(e) {
 		}
 	},
 	
-	insertSeparateTabItem : function(aBrowser) 
+	insertCustomTabContextMenuItems : function(aBrowser) 
 	{
-		var menu = document.getElementById('splitbrowser-tab-context-item-link-template').cloneNode(true);
+		var id = aBrowser.id || parseInt(Math.random() * 65000) ;
+
+		var fragment = document.createDocumentFragment();
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-align-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-align-horizontal-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-align-vertical-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather-template').cloneNode(true));
+
+		Array.prototype.slice.call(fragment.childNodes).forEach(function(aNode) {
+			aNode.setAttribute('id', aNode.getAttribute('id').replace('template', id));
+		});
 
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		var separator = tabContext.firstChild;
@@ -1580,11 +1627,9 @@ catch(e) {
 			separator = separator.nextSibling;
 		}
 		if (separator)
-			tabContext.insertBefore(menu, separator);
+			tabContext.insertBefore(fragment, separator);
 		else
-			tabContext.appendChild(menu);
-
-		menu.setAttribute('id', 'splitbrowser-tab-context-item-link-'+(aBrowser.id || parseInt(Math.random() * 65000)));
+			tabContext.appendChild(fragment);
 	},
  
 	hackForOtherExtensions : function() 
@@ -1745,6 +1790,8 @@ catch(e) {
 			aBrowser.destroy();
 			aBrowser.parentNode.removeChild(aBrowser);
 		});
+
+		delete gBrowser.parentSubBrowser;
 	},
  
 	handleEvent : function(aEvent) 
@@ -1806,7 +1853,7 @@ catch(e) {
 				break;
 
 			case 'SubBrowserTabbrowserInserted':
-				this.insertSeparateTabItem(aEvent.tabbrowser);
+				this.insertCustomTabContextMenuItems(aEvent.tabbrowser);
 				break;
 		}
 	},

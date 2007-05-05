@@ -66,6 +66,13 @@
 
 
 
+
+<!ENTITY splitbrowser.tab.align.horizontal.label "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.tab.align.vertical.label   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.tab.gather.label           "すべての分割したブラウザをタブに集める">
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "（タイトルなし）">
 <!ENTITY splitbrowser.subbrowser.loading           "読み込み中...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "戻る">

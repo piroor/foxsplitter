@@ -46,6 +46,15 @@
 <!ENTITY splitbrowser.tab.add.bottom.label "下方">
 <!ENTITY splitbrowser.tab.add.right.label "右方">
 <!ENTITY splitbrowser.tab.add.left.label "左方">
+
+
+
+
+<!ENTITY splitbrowser.tab.align.horizontal.label "Align all tabs Horizontally">
+<!ENTITY splitbrowser.tab.align.vertical.label   "Align all tabs Vertically">
+<!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
+
+
 <!ENTITY splitbrowser.subbrowser.blank "(空)">
 <!ENTITY splitbrowser.subbrowser.loading "載入中...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip "上一頁">

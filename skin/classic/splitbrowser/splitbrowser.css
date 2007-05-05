@@ -4,7 +4,7 @@
 #splitbrowser-context-item-link,
 #splitbrowser-context-item,
 #splitbrowser-context-item-frame,
-.splitbrowser-tab-context-item {
+.splitbrowser-tab-context-split-item {
 	list-style-image: url(./icon16.png);
 }
 
