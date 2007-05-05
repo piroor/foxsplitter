@@ -630,12 +630,32 @@ var SplitBrowser = {
 	gatherSubBrowsers : function() 
 	{
 		var self = this;
+
+		var TBETabGroupEnabled = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && gBrowser.tabGroupsAvailable);
+
 		this.browsers.forEach(function(aSubBrowser) {
-			var browsers = aSubBrowser.browser.localName == 'tabbrowser' ? aSubBrowser.browser.browsers : [aSubBrowser.browser] ;
-			browsers.forEach(function(aBrowser) {
+			var b = aSubBrowser.browser;
+			if (TBETabGroupEnabled) {
+				var tabs = Array.prototype.slice.call(b.mTabs);
+
 				var t = gBrowser.addTab();
-				self.duplicateBrowser(aBrowser, t.linkedBrowser);
-			});
+				self.duplicateBrowser(b.selectedTab.linkedBrowser, t.linkedBrowser);
+
+				tabs.forEach(function(aTab) {
+					if (aTab == b.selectedTab) return;
+					var childT = gBrowser.addTab();
+					self.duplicateBrowser(aTab.linkedBrowser, childT.linkedBrowser);
+					childT.parentTab = t;
+					gBrowser.moveTabToGroupEdge(childT, t);
+				});
+			}
+			else {
+				var browsers = b.localName == 'tabbrowser' ? b.browsers : [b] ;
+				browsers.forEach(function(aBrowser) {
+					var t = gBrowser.addTab();
+					self.duplicateBrowser(aBrowser, t.linkedBrowser);
+				});
+			}
 			window.setTimeout(function() {
 				aSubBrowser.close();
 			}, 0);
