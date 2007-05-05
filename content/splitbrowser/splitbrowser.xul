@@ -272,7 +272,8 @@
 					splitbrowser-position="POSITION_BOTTOM"/>
 			</menupopup>
 		</menu>
-		<menuseparator id="splitbrowser-tab-context-separator-align-template"/>
+		<menuseparator id="splitbrowser-tab-context-separator-align-template"
+			class="splitbrowser-tab-context-separator"/>
 		<menuitem id="splitbrowser-tab-context-item-align-horizontal-template"
 			class="menuitem-iconic splitbrowser-align-horizontal-item tab-context"
 			label="&splitbrowser.tab.align.horizontal.label;"

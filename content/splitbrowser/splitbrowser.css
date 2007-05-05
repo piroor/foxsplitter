@@ -132,6 +132,11 @@ subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
 :root[splitbrowser-show-menu="true"] #splitbrowser-view-separator,
 :root[splitbrowser-show-menu="true"] #splitbrowser-view-collapse-all,
 :root[splitbrowser-show-menu="true"] #splitbrowser-view-expand-all,
-:root:not([splitbrowser-show-menu="true"]) #splitbrowser-menu {
+:root:not([splitbrowser-show-menu="true"]) #splitbrowser-menu,
+:root:not([splitbrowser-show-tab-context-split="true"]) .splitbrowser-split-item.tab-context,
+:root:not([splitbrowser-show-tab-context-align-horizontal="true"]) .splitbrowser-align-horizontal-item.tab-context,
+:root:not([splitbrowser-show-tab-context-align-vertical="true"]) .splitbrowser-align-vertical-item.tab-context,
+:root:not([splitbrowser-show-tab-context-gather="true"]) .splitbrowser-gather-item.tab-context,
+:root:not([splitbrowser-show-tab-context-align-horizontal="true"]):not([splitbrowser-show-tab-context-align-vertical="true"]):not([splitbrowser-show-tab-context-gather="true"]) .splitbrowser-tab-context-separator {
 	display: none;
 }

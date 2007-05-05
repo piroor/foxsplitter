@@ -1652,6 +1652,10 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.align.horizontal');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.align.vertical');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
 //			this.load();
@@ -1986,10 +1990,15 @@ catch(e) {
 				break;
 
 			case 'splitbrowser.show.menu':
+			case 'splitbrowser.show.tab.context.split':
+			case 'splitbrowser.show.tab.context.align.horizontal':
+			case 'splitbrowser.show.tab.context.align.vertical':
+			case 'splitbrowser.show.tab.context.gather':
+				var attrName = aPrefstring.replace(/\./g, '-');
 				if (nsPreferences.getBoolPref(aPrefstring))
-					document.documentElement.setAttribute('splitbrowser-show-menu', true);
+					document.documentElement.setAttribute(attrName, true);
 				else
-					document.documentElement.removeAttribute('splitbrowser-show-menu');
+					document.documentElement.removeAttribute(attrName);
 				break;
 		}
 	}
