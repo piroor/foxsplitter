@@ -172,13 +172,13 @@ var SplitBrowser = {
 	{
 		if (!this._browsers.length) {
 			document.documentElement.removeAttribute('splitbrowser-split');
-			this.removeAllBroadcaster.setAttribute('disabled', true);
+			this.featuresForSplitBrowsersBroadcaster.setAttribute('disabled', true);
 			this.collapseAllBroadcaster.setAttribute('disabled', true);
 			this.expandAllBroadcaster.setAttribute('disabled', true);
 		}
 		else {
 			document.documentElement.setAttribute('splitbrowser-split', true);
-			this.removeAllBroadcaster.removeAttribute('disabled');
+			this.featuresForSplitBrowsersBroadcaster.removeAttribute('disabled');
 
 			var collapsed = 0;
 			var expanded  = 0;
@@ -205,9 +205,9 @@ var SplitBrowser = {
 		this.updateStatusTimer = null;
 	},
  
-	get removeAllBroadcaster() 
+	get featuresForSplitBrowsersBroadcaster() 
 	{
-		return document.getElementById('splitbrowser-removeAll-broadcaster');
+		return document.getElementById('splitbrowser-featuresForSplitBrowsers-broadcaster');
 	},
  
 	get collapseAllBroadcaster() 
@@ -597,9 +597,9 @@ var SplitBrowser = {
 		var isHorizontal = (aAlign == this.ALIGN_HORIZONTAL);
 		var self = this;
 
-		var TBETabGroupEnabled = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
+		var TBETabGroup = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
 
-		if (TBETabGroupEnabled)
+		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
 
 		tabs.forEach(function(aTab) {
@@ -611,11 +611,11 @@ var SplitBrowser = {
 					(isHorizontal ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
 					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);
 
-			var children = (TBETabGroupEnabled) ? aTab.allChildTabs : null ;
+			var children = (TBETabGroup) ? aTab.allChildTabs : null ;
 
 			var subbrowser = self.addSubBrowserFromTab(aTab, pos, true);
 
-			if (TBETabGroupEnabled && children && children.length) {
+			if (TBETabGroup && children && children.length) {
 				children.forEach(function(aChildTab) {
 					var t = subbrowser.browser.addTab();
 					self.duplicateBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
@@ -631,11 +631,11 @@ var SplitBrowser = {
 	{
 		var self = this;
 
-		var TBETabGroupEnabled = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && gBrowser.tabGroupsAvailable);
+		var TBETabGroup = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && gBrowser.tabGroupsAvailable);
 
 		this.browsers.forEach(function(aSubBrowser) {
 			var b = aSubBrowser.browser;
-			if (TBETabGroupEnabled) {
+			if (TBETabGroup) {
 				var tabs = Array.prototype.slice.call(b.mTabs);
 
 				var t = gBrowser.addTab();

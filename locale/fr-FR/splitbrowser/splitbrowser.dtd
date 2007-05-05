@@ -70,6 +70,29 @@
 
 
 
+<!ENTITY splitbrowser.menu.label     "Split">
+<!ENTITY splitbrowser.menu.accesskey "p">
+
+<!ENTITY splitbrowser.menu.removeAll.label "Fermer toutes fenêtres partagées">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "F">
+<!ENTITY splitbrowser.menu.collapseAll.label     "Réduire toutes les fenêtres partagées">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "R">
+<!ENTITY splitbrowser.menu.expandAll.label       "Déployer toutes les fenêtres partagées">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "D">
+<!ENTITY splitbrowser.menu.add.label             "Partager l'onglet">
+<!ENTITY splitbrowser.menu.add.top.label         "Au dessus">
+<!ENTITY splitbrowser.menu.add.bottom.label      "Au dessous">
+<!ENTITY splitbrowser.menu.add.right.label       "À droite">
+<!ENTITY splitbrowser.menu.add.left.label        "À gauche">
+<!ENTITY splitbrowser.menu.align.horizontal.label     "Align all tabs Horizontally">
+<!ENTITY splitbrowser.menu.align.horizontal.accesskey "h">
+<!ENTITY splitbrowser.menu.align.vertical.label       "Align all tabs Vertically">
+<!ENTITY splitbrowser.menu.align.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
 <!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">

@@ -64,6 +64,36 @@
 
 
 
+<!ENTITY splitbrowser.tab.align.horizontal.label "Align all tabs Horizontally">
+<!ENTITY splitbrowser.tab.align.vertical.label   "Align all tabs Vertically">
+<!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
+
+
+
+
+<!ENTITY splitbrowser.menu.label     "Split">
+<!ENTITY splitbrowser.menu.accesskey "p">
+<!ENTITY splitbrowser.menu.removeAll.label       "분할된 브라우저 모두 닫기">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.collapseAll.label     "분할된 화면 모두 감추기">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.menu.expandAll.label       "분할된 화면 모두 보이기">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "x">
+<!ENTITY splitbrowser.menu.add.label        "탭 분할 방향">
+<!ENTITY splitbrowser.menu.add.top.label    "위쪽">
+<!ENTITY splitbrowser.menu.add.bottom.label "아래쪽">
+<!ENTITY splitbrowser.menu.add.right.label  "오른쪽">
+<!ENTITY splitbrowser.menu.add.left.label   "왼쪽">
+<!ENTITY splitbrowser.menu.align.horizontal.label     "Align all tabs Horizontally">
+<!ENTITY splitbrowser.menu.align.horizontal.accesskey "h">
+<!ENTITY splitbrowser.menu.align.vertical.label       "Align all tabs Vertically">
+<!ENTITY splitbrowser.menu.align.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
 <!ENTITY splitbrowser.subbrowser.loading           "로드 중...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "뒤로">

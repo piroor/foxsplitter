@@ -4,22 +4,22 @@
 #splitbrowser-context-item-link,
 #splitbrowser-context-item,
 #splitbrowser-context-item-frame,
-.splitbrowser-tab-context-split-item {
+.splitbrowser-split-item {
 	list-style-image: url(./icon16.png);
 }
 
 
-#splitbrowser-file-remove-all {
+.splitbrowser-remove-all-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 48px 32px 32px);
 }
 
-#splitbrowser-view-collapse-all {
+.splitbrowser-collapse-all-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 32px 32px 16px);
 }
 
-#splitbrowser-view-expand-all {
+.splitbrowser-expand-all-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 16px 32px 0px);
 }

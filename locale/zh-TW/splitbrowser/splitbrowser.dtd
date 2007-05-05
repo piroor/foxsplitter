@@ -55,6 +55,27 @@
 <!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
 
 
+<!ENTITY splitbrowser.menu.label     "Split">
+<!ENTITY splitbrowser.menu.accesskey "p">
+<!ENTITY splitbrowser.menu.removeAll.label "關閉所有分割瀏覽區">
+<!ENTITY splitbrowser.menu.removeAll.accesskey "b">
+<!ENTITY splitbrowser.menu.collapseAll.label "收摺所有分割瀏覽區">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.menu.expandAll.label "展開所有分割瀏覽區">
+<!ENTITY splitbrowser.menu.expandAll.accesskey "x">
+<!ENTITY splitbrowser.menu.add.label "分割這個分頁到">
+<!ENTITY splitbrowser.menu.add.top.label "上方">
+<!ENTITY splitbrowser.menu.add.bottom.label "下方">
+<!ENTITY splitbrowser.menu.add.right.label "右方">
+<!ENTITY splitbrowser.menu.add.left.label "左方">
+<!ENTITY splitbrowser.menu.align.horizontal.label     "Align all tabs Horizontally">
+<!ENTITY splitbrowser.menu.align.horizontal.accesskey "h">
+<!ENTITY splitbrowser.menu.align.vertical.label       "Align all tabs Vertically">
+<!ENTITY splitbrowser.menu.align.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+
+
 <!ENTITY splitbrowser.subbrowser.blank "(空)">
 <!ENTITY splitbrowser.subbrowser.loading "載入中...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip "上一頁">

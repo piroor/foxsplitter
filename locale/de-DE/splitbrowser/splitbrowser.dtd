@@ -72,6 +72,29 @@
 
 
 
+<!ENTITY splitbrowser.menu.label     "Split">
+<!ENTITY splitbrowser.menu.accesskey "p">
+
+<!ENTITY splitbrowser.menu.removeAll.label "Alle geteilten Ansichten schließen">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "g">
+<!ENTITY splitbrowser.menu.collapseAll.label     "Alle geteilten Ansichten einklappen">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "k">
+<!ENTITY splitbrowser.menu.expandAll.label       "Alle geteilten Ansichten ausklappen">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "u">
+<!ENTITY splitbrowser.menu.add.label             "Tab in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.menu.add.top.label         "Oben">
+<!ENTITY splitbrowser.menu.add.bottom.label      "Unten">
+<!ENTITY splitbrowser.menu.add.right.label       "Rechts">
+<!ENTITY splitbrowser.menu.add.left.label        "Links">
+<!ENTITY splitbrowser.menu.align.horizontal.label     "Align all tabs Horizontally">
+<!ENTITY splitbrowser.menu.align.horizontal.accesskey "h">
+<!ENTITY splitbrowser.menu.align.vertical.label       "Align all tabs Vertically">
+<!ENTITY splitbrowser.menu.align.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
 <!ENTITY splitbrowser.subbrowser.loading           "Laden...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">

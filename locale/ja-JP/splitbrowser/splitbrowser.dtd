@@ -73,6 +73,31 @@
 
 
 
+<!ENTITY splitbrowser.menu.label     "分割">
+<!ENTITY splitbrowser.menu.accesskey "p">
+
+<!ENTITY splitbrowser.menu.removeAll.label       "分割したブラウザをすべて閉じる">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.collapseAll.label     "分割したブラウザをすべてたたむ">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.menu.expandAll.label       "分割したブラウザをすべてひろげる">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "x">
+<!ENTITY splitbrowser.menu.add.label             "現在のタブを分割">
+<!ENTITY splitbrowser.menu.add.top.label         "上に分割">
+<!ENTITY splitbrowser.menu.add.bottom.label      "下に分割">
+<!ENTITY splitbrowser.menu.add.right.label       "右に分割">
+<!ENTITY splitbrowser.menu.add.left.label        "左に分割">
+<!ENTITY splitbrowser.menu.align.horizontal.label     "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.menu.align.horizontal.accesskey "h">
+<!ENTITY splitbrowser.menu.align.vertical.label       "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.menu.align.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.gather.label               "すべての分割したブラウザをタブに集める">
+<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+
+
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "（タイトルなし）">
 <!ENTITY splitbrowser.subbrowser.loading           "読み込み中...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "戻る">
