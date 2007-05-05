@@ -9,6 +9,12 @@ pref("splitbrowser.show.toolbar.always",      true);
 pref("splitbrowser.show.toolbar.navigation.always", false);
 pref("splitbrowser.show.collapseexpand",      false);
 
+pref("splitbrowser.show.menu",                         true);
+pref("splitbrowser.show.tab.context.split",            true);
+pref("splitbrowser.show.tab.context.align.horizontal", true);
+pref("splitbrowser.show.tab.context.align.vertical",   true);
+pref("splitbrowser.show.tab.context.gather",           true);
+
 pref("splitbrowser.appearance.scrollbar.size",  16);
 pref("splitbrowser.appearance.addbuttons.size", 16);
 pref("splitbrowser.appearance.addbuttons.area", 150);

@@ -1755,11 +1755,6 @@ sideBox.removeAttribute('style');
 				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
 				window.setTimeout(this.mDelayedTabbrowserStartup, 0, this);
-
-				var newEvent = document.createEvent('Events');
-				newEvent.tabbrowser = b;
-				newEvent.initEvent('SubBrowserTabbrowserInserted', false, true);
-				this.dispatchEvent(newEvent);
 			}
 			else {
 				this.addProgressListener(null);

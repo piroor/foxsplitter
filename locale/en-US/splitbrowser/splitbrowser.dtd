@@ -24,6 +24,16 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
 
 
+<!ENTITY splitbrowser.tab.menu              "Menu">
+<!ENTITY splitbrowser.show.menu             "Show &quot;Split&quot; menu in the menu bar">
+<!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">
+<!ENTITY splitbrowser.show.tab.context.split            "Split Tab to...">
+<!ENTITY splitbrowser.show.tab.context.align.horizontal "Align all tabs Horizontally">
+<!ENTITY splitbrowser.show.tab.context.align.vertical   "Align all tabs Vertically">
+<!ENTITY splitbrowser.show.tab.context.gather           "Gather all split browsers here as tabs">
+
+
+
 <!ENTITY splitbrowser.add.button.top.tooltip    "Split to Above">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "Split to Below">
 <!ENTITY splitbrowser.add.button.right.tooltip  "Split to Right">

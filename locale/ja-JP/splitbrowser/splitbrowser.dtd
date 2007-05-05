@@ -25,6 +25,15 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "分割ブラウザのツールバーでナビゲーションを常に表示する">
 
 
+<!ENTITY splitbrowser.tab.menu              "メニュー">
+<!ENTITY splitbrowser.show.menu             "メニューバーに「分割」メニューを追加">
+<!ENTITY splitbrowser.show.context.caption  "タブのコンテキストメニューに以下の項目を追加する：">
+<!ENTITY splitbrowser.show.tab.context.split            "タブを分割">
+<!ENTITY splitbrowser.show.tab.context.align.horizontal "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.show.tab.context.align.vertical   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.show.tab.context.gather           "すべての分割したブラウザをタブに集める">
+
+
 
 
 <!ENTITY splitbrowser.add.button.top.tooltip    "上に分割">

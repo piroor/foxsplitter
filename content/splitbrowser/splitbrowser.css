@@ -122,3 +122,16 @@ subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
 	min-width: 0 !important;
 }
 
+
+
+
+
+/* menu */
+
+:root[splitbrowser-show-menu="true"] #splitbrowser-file-remove-all,
+:root[splitbrowser-show-menu="true"] #splitbrowser-view-separator,
+:root[splitbrowser-show-menu="true"] #splitbrowser-view-collapse-all,
+:root[splitbrowser-show-menu="true"] #splitbrowser-view-expand-all,
+:root:not([splitbrowser-show-menu="true"]) #splitbrowser-menu {
+	display: none;
+}

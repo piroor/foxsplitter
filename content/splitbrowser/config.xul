@@ -107,6 +107,47 @@
 
 </prefpane>
 
+<prefpane id="prefpane-menu" label="&splitbrowser.tab.menu;">
+	<preferences>
+		<preference id="splitbrowser.show.menu"
+			name="splitbrowser.show.menu"
+			type="bool"/>
+		<preference id="splitbrowser.show.tab.context.split"
+			name="splitbrowser.show.tab.context.split"
+			type="bool"/>
+		<preference id="splitbrowser.show.tab.context.align.horizontal"
+			name="splitbrowser.show.tab.context.align.horizontal"
+			type="bool"/>
+		<preference id="splitbrowser.show.tab.context.align.vertical"
+			name="splitbrowser.show.tab.context.align.vertical"
+			type="bool"/>
+		<preference id="splitbrowser.show.tab.context.gather"
+			name="splitbrowser.show.tab.context.gather"
+			type="bool"/>
+	</preferences>
+
+	<checkbox id="splitbrowser.show.menu-check" flex="1"
+		label="&splitbrowser.show.menu;"
+		preference="splitbrowser.show.menu"/>
+
+	<groupbox>
+		<caption label="&splitbrowser.show.context.caption;"/>
+		<checkbox id="splitbrowser.show.tab.context.split-check" flex="1"
+			label="&splitbrowser.show.tab.context.split;"
+			preference="splitbrowser.show.tab.context.split"/>
+		<checkbox id="splitbrowser.show.tab.context.align.horizontal-check" flex="1"
+			label="&splitbrowser.show.tab.context.align.horizontal;"
+			preference="splitbrowser.show.tab.context.align.horizontal"/>
+		<checkbox id="splitbrowser.show.tab.context.align.vertical-check" flex="1"
+			label="&splitbrowser.show.tab.context.align.vertical;"
+			preference="splitbrowser.show.tab.context.align.vertical"/>
+		<checkbox id="splitbrowser.show.tab.context.gather-check" flex="1"
+			label="&splitbrowser.show.tab.context.gather;"
+			preference="splitbrowser.show.tab.context.gather"/>
+	</groupbox>
+
+</prefpane>
+
 <script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
 </prefwindow>
