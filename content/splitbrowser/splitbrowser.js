@@ -613,12 +613,12 @@ var SplitBrowser = {
 		var isHorizontal = (aAlign == this.ALIGN_HORIZONTAL);
 		var self = this;
 
-		var TBETabGroup = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
+		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
+
+		var TBETabGroup = (!shouldDoFiltering && this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
 
 		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
-
-		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
 
 		tabs.forEach(function(aTab) {
 			var shouldSplit = shouldDoFiltering ? MultipleTabService.isSelected(aTab) : true ;
