@@ -618,11 +618,18 @@ var SplitBrowser = {
 		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
 
+		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
+
 		tabs.forEach(function(aTab) {
+			var shouldSplit = shouldDoFiltering ? MultipleTabService.isSelected(aTab) : true ;
+
 			if (aTab == b.selectedTab) {
 				isAfter = true;
-				return;
+				if (!shouldDoFiltering || !shouldSplit)
+					return;
 			}
+			if (!shouldSplit) return;
+
 			var pos = isAfter ?
 					(isHorizontal ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
 					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);

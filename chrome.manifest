@@ -1,5 +1,6 @@
 content	splitbrowser	jar:chrome/splitbrowser.jar!/content/splitbrowser/
 overlay	chrome://browser/content/browser.xul	chrome://splitbrowser/content/splitbrowser.xul
+overlay	chrome://multipletab/content/config.xul	chrome://splitbrowser/content/multipletabConfigOverlay.xul
 
 locale	splitbrowser	en-US	jar:chrome/splitbrowser.jar!/locale/en-US/splitbrowser/
 locale	splitbrowser	ja-JP	jar:chrome/splitbrowser.jar!/locale/ja-JP/splitbrowser/

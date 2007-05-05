@@ -105,6 +105,10 @@
 
 
 
+<!ENTITY multipletab.align.horizontal.label     "横に並べる">
+<!ENTITY multipletab.align.vertical.label       "縦に並べる">
+
+
 
 
 <!ENTITY splitbrowser.subbrowser.blank             "（タイトルなし）">

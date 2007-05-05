@@ -31,5 +31,9 @@ pref("splitbrowser.tabs.enabled",             true);
 
 
 
+pref("extensions.multipletab.show.multipletab-selection-splitbrowser-align-horizontal", true);
+pref("extensions.multipletab.show.multipletab-selection-splitbrowser-align-vertical", true);
+
+
 pref("extensions.{29c4afe1-db19-4298-8785-fcc94d1d6c1d}.name", "chrome://splitbrowser/locale/splitbrowser.properties");
 pref("extensions.{29c4afe1-db19-4298-8785-fcc94d1d6c1d}.description", "chrome://splitbrowser/locale/splitbrowser.properties");

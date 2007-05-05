@@ -105,6 +105,11 @@
 
 
 
+<!ENTITY multipletab.align.horizontal.label     "Align Horizontally">
+<!ENTITY multipletab.align.vertical.label       "Align Vertically">
+
+
+
 <!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
 <!ENTITY splitbrowser.subbrowser.loading           "Laden...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">

@@ -103,6 +103,11 @@
 
 
 
+<!ENTITY multipletab.align.horizontal.label     "Align Horizontally">
+<!ENTITY multipletab.align.vertical.label       "Align Vertically">
+
+
+
 
 <!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
 <!ENTITY splitbrowser.subbrowser.loading           "로드 중...">

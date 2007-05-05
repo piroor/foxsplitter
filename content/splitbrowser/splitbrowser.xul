@@ -318,4 +318,25 @@
 </popupset>
 
 
+<menupopup id="multipletab-selection-menu">
+	<menuseparator id="multipletab-selection-splitbrowser-separator"/>
+	<menuitem id="multipletab-selection-splitbrowser-align-horizontal"
+		class="menuitem-iconic splitbrowser-align-horizontal-item"
+		label="&multipletab.align.horizontal.label;"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.alignTabs(b.parentSubBrowser, SplitBrowser.ALIGN_HORIZONTAL);
+		"/>
+	<menuitem id="multipletab-selection-splitbrowser-align-vertical"
+		class="menuitem-iconic splitbrowser-align-vertical-item"
+		label="&multipletab.align.vertical.label;"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.alignTabs(b.parentSubBrowser, SplitBrowser.ALIGN_VERTICAL);
+		"/>
+</menupopup>
+
+
 </overlay>

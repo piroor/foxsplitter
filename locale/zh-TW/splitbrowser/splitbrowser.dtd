@@ -85,6 +85,11 @@
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
 
 
+
+<!ENTITY multipletab.align.horizontal.label     "Align Horizontally">
+<!ENTITY multipletab.align.vertical.label       "Align Vertically">
+
+
 <!ENTITY splitbrowser.subbrowser.blank "(空)">
 <!ENTITY splitbrowser.subbrowser.loading "載入中...">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip "上一頁">
