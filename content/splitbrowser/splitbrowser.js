@@ -635,6 +635,10 @@ var SplitBrowser = {
 		var lastSubBrowser  = null;
 
 		tabs.forEach(function(aTab) {
+			/*
+				通常、現在のタブは平面に展開しない。
+				ただし、フィルタリングを行う（選択されたタブだけを処理する）場合は、現在のタブも展開する。
+			*/
 			var shouldSplit = shouldDoFiltering ? MultipleTabService.isSelected(aTab) : true ;
 
 			if (aTab == b.selectedTab) {
@@ -645,19 +649,29 @@ var SplitBrowser = {
 			if (!shouldSplit) return;
 
 			var pos;
+			/*
+				今のタブより後のタブを展開する際には、最後に展開した分割ブラウザを基準にする。
+				そうでないと、最後に展開した分割ブラウザと現在のブラウザの間に展開されてしまう。
+				ただし、これには例外がある。下記<※1>を参照。
+			*/
 			var hPosTarget = isAfter ? lastSubBrowser : null ;
-			if (horizontalMax > 0) {
+
+			if (horizontalMax > 0) { // 平面に自動で並べる場合
 				pos = (horizontalCount < horizontalMax) ?
 					(isAfter ? self.POSITION_RIGHT : self.POSITION_LEFT ) :
 					self.POSITION_BOTTOM;
 				if (horizontalCount >= horizontalMax) {
 					horizontalCount = 1;
+					/*
+						<※1>今のタブより後でも、行が変わる時（次のタブを今のブラウザの
+						真下に展開しないといけない時）は配置の基準をリセットする。
+					*/
 					hPosTarget      = null;
 				}
 				else
 					horizontalCount++;
 			}
-			else {
+			else { // 水平または垂直に並べる場合
 				pos = isAfter ?
 					(isHorizontal ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
 					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);
@@ -669,6 +683,10 @@ var SplitBrowser = {
 			lastSubBrowser = subbrowser;
 
 			if (horizontalMax > 0 && pos == self.POSITION_BOTTOM) {
+				/*
+					行が変わったので、次のタブを水平に展開する際には、
+					この新しい行の分割ブラウザを基準にする。
+				*/
 				vPosTarget = lastSubBrowser;
 			}
 
