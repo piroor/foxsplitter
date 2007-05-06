@@ -610,7 +610,7 @@ var SplitBrowser = {
 		var b = aSubBrowser.browser;
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
 		var isAfter = false;
-		var isHorizontal = (aAlign == this.ALIGN_HORIZONTAL);
+		var isHorizontal = (aAlign == this.TILE_HORIZONTAL);
 		var self = this;
 
 		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
@@ -647,8 +647,9 @@ var SplitBrowser = {
 			}
 		});
 	},
-	ALIGN_HORIZONTAL : 1,
-	ALIGN_VERTICAL   : 2,
+	TILE_2D         : 0,
+	TILE_HORIZONTAL : 1,
+	TILE_VERTICAL   : 2,
  
 	gatherSubBrowsers : function() 
 	{
@@ -1660,6 +1661,7 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.horizontal');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.vertical');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
@@ -1679,6 +1681,7 @@ catch(e) {
 		var fragment = document.createDocumentFragment();
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-tile-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-horizontal-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-vertical-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather-template').cloneNode(true));
@@ -1998,6 +2001,7 @@ catch(e) {
 
 			case 'splitbrowser.show.menu':
 			case 'splitbrowser.show.tab.context.split':
+			case 'splitbrowser.show.tab.context.tile':
 			case 'splitbrowser.show.tab.context.tile.horizontal':
 			case 'splitbrowser.show.tab.context.tile.vertical':
 			case 'splitbrowser.show.tab.context.gather':

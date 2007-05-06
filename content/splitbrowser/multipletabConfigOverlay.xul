@@ -8,6 +8,9 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
 <preferences id="prefpane-selection-menu-preferences">
+	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile"
+		name="extensions.multipletab.show.multipletab-selection-splitbrowser-tile"
+		type="bool"/>
 	<preference id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
 		name="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
 		type="bool"/>
@@ -16,6 +19,9 @@
 		type="bool"/>
 </preferences>
 <vbox id="prefpane-selection-menu-items">
+	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-check"
+		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-tile"
+		label="&multipletab.tile.label;"/>
 	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal-check"
 		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal"
 		label="&multipletab.tile.horizontal.label;"/>

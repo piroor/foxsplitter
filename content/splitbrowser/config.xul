@@ -115,6 +115,9 @@
 		<preference id="splitbrowser.show.tab.context.split"
 			name="splitbrowser.show.tab.context.split"
 			type="bool"/>
+		<preference id="splitbrowser.show.tab.context.tile"
+			name="splitbrowser.show.tab.context.tile"
+			type="bool"/>
 		<preference id="splitbrowser.show.tab.context.tile.horizontal"
 			name="splitbrowser.show.tab.context.tile.horizontal"
 			type="bool"/>
@@ -135,6 +138,9 @@
 		<checkbox id="splitbrowser.show.tab.context.split-check" flex="1"
 			label="&splitbrowser.show.tab.context.split;"
 			preference="splitbrowser.show.tab.context.split"/>
+		<checkbox id="splitbrowser.show.tab.context.tile-check" flex="1"
+			label="&splitbrowser.show.tab.context.tile;"
+			preference="splitbrowser.show.tab.context.tile"/>
 		<checkbox id="splitbrowser.show.tab.context.tile.horizontal-check" flex="1"
 			label="&splitbrowser.show.tab.context.tile.horizontal;"
 			preference="splitbrowser.show.tab.context.tile.horizontal"/>

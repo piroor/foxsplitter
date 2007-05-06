@@ -28,8 +28,9 @@
 <!ENTITY splitbrowser.show.menu             "Show &quot;Split&quot; menu in the menu bar">
 <!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">
 <!ENTITY splitbrowser.show.tab.context.split            "탭 분할 방향...">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Align all tabs Horizontally">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Align all tabs Vertically">
+<!ENTITY splitbrowser.show.tab.context.tile            "Tile all tabs">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Horizontally">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Vertically">
 <!ENTITY splitbrowser.show.tab.context.gather           "Gather all split browsers here as tabs">
 
 
@@ -74,8 +75,9 @@
 
 
 
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Align all tabs Horizontally">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Align all tabs Vertically">
+<!ENTITY splitbrowser.tab.tile.label            "Tile all tabs">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Horizontally">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Vertically">
 <!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
 
 
@@ -94,17 +96,20 @@
 <!ENTITY splitbrowser.menu.add.bottom.label "아래쪽">
 <!ENTITY splitbrowser.menu.add.right.label  "오른쪽">
 <!ENTITY splitbrowser.menu.add.left.label   "왼쪽">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Align all tabs Horizontally">
+<!ENTITY splitbrowser.menu.tile.label                "Tile all tabs">
+<!ENTITY splitbrowser.menu.tile.accesskey            "t">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Horizontally">
 <!ENTITY splitbrowser.menu.tile.horizontal.accesskey "h">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Align all tabs Vertically">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Vertically">
 <!ENTITY splitbrowser.menu.tile.vertical.accesskey   "v">
 <!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
 
 
 
-<!ENTITY multipletab.tile.horizontal.label     "Align Horizontally">
-<!ENTITY multipletab.tile.vertical.label       "Align Vertically">
+<!ENTITY multipletab.tile.label                "Tile">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Horizontally">
+<!ENTITY multipletab.tile.vertical.label       "Tile Vertically">
 
 
 

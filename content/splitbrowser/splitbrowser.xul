@@ -112,12 +112,21 @@
 			</menu>
 			<menuseparator id="splitbrowser-tile-separator"/>
 			<menuitem id="splitbrowser-tile-horizontal"
+				class="menuitem-iconic splitbrowser-tile-item"
+				label="&splitbrowser.menu.tile.label;"
+				oncommand="
+					var b = SplitBrowser.activeBrowser;
+					if (b.localName != 'tabbrowser') b = gBrowser;
+					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+				"
+				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+			<menuitem id="splitbrowser-tile-horizontal"
 				class="menuitem-iconic splitbrowser-tile-horizontal-item"
 				label="&splitbrowser.menu.tile.horizontal.label;"
 				oncommand="
 					var b = SplitBrowser.activeBrowser;
 					if (b.localName != 'tabbrowser') b = gBrowser;
-					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_HORIZONTAL);
+					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
 				"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-tile-vertical"
@@ -126,7 +135,7 @@
 				oncommand="
 					var b = SplitBrowser.activeBrowser;
 					if (b.localName != 'tabbrowser') b = gBrowser;
-					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_VERTICAL);
+					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
 				"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-gather"
@@ -274,6 +283,17 @@
 		</menu>
 		<menuseparator id="splitbrowser-tab-context-separator-tile-template"
 			class="splitbrowser-tab-context-separator"/>
+		<menuitem id="splitbrowser-tab-context-item-tile-template"
+			class="menuitem-iconic splitbrowser-tile-item tab-context"
+			label="&splitbrowser.tab.tile.label;"
+			tbattr="tabbrowser-multiple"
+			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
+			oncommand="
+				var b = this;
+				while (b.localName != 'tabbrowser')
+					b = b.parentNode;
+				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+			"/>
 		<menuitem id="splitbrowser-tab-context-item-tile-horizontal-template"
 			class="menuitem-iconic splitbrowser-tile-horizontal-item tab-context"
 			label="&splitbrowser.tab.tile.horizontal.label;"
@@ -283,7 +303,7 @@
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_HORIZONTAL);
+				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-tile-vertical-template"
 			class="menuitem-iconic splitbrowser-tile-vertical-item tab-context"
@@ -294,7 +314,7 @@
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_VERTICAL);
+				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-gather-template"
 			class="menuitem-iconic splitbrowser-gather-item tab-context"
@@ -320,13 +340,21 @@
 
 <menupopup id="multipletab-selection-menu">
 	<menuseparator id="multipletab-selection-splitbrowser-separator"/>
+	<menuitem id="multipletab-selection-splitbrowser-tile"
+		class="menuitem-iconic splitbrowser-tile-item"
+		label="&multipletab.tile.label;"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+		"/>
 	<menuitem id="multipletab-selection-splitbrowser-tile-horizontal"
 		class="menuitem-iconic splitbrowser-tile-horizontal-item"
 		label="&multipletab.tile.horizontal.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_HORIZONTAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
 		"/>
 	<menuitem id="multipletab-selection-splitbrowser-tile-vertical"
 		class="menuitem-iconic splitbrowser-tile-vertical-item"
@@ -334,7 +362,7 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.ALIGN_VERTICAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
 		"/>
 </menupopup>
 
