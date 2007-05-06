@@ -288,7 +288,7 @@ var SplitBrowser = {
 		return browser;
 	},
 	 
-	addSubBrowserFromTab : function(aTab, aPosition, aForceRemove) 
+	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aForceRemove) 
 	{
 		var b = aTab;
 		while (b.localName != 'tabbrowser')
@@ -301,7 +301,7 @@ var SplitBrowser = {
 		var uri = this.tabbedBrowsingEnabled ? null : aTab.linkedBrowser.currentURI.spec ;
 
 
-		var browser = this.addSubBrowser(uri, b.parentSubBrowser || this.mainBrowserBox, aPosition);
+		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
 		if (this.tabbedBrowsingEnabled)
 			window.setTimeout(
@@ -607,10 +607,12 @@ var SplitBrowser = {
  
 	tileTabs : function(aSubBrowser, aAlign) 
 	{
-		var b = aSubBrowser.browser;
+		var b    = aSubBrowser.browser;
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
-		var isAfter = false;
-		var isHorizontal = (aAlign == this.TILE_HORIZONTAL);
+
+		var isAfter      = false;
+		var isHorizontal = (aAlign != this.TILE_HORIZONTAL);
+
 		var self = this;
 
 		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
@@ -620,23 +622,55 @@ var SplitBrowser = {
 		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
 
+		var horizontalMax   = (aAlign == this.TILE_2D) ? Math.ceil(Math.sqrt(tabs.length)) : -1 ;
+		var horizontalCount = 0;
+
+		if (shouldDoFiltering) {
+			horizontalMax = Math.ceil(Math.sqrt(
+				tabs.filter(function(aTab) { return MultipleTabService.isSelected(aTab); }).length
+			));
+		}
+
+		var vPosTarget      = null;
+		var lastSubBrowser  = null;
+
 		tabs.forEach(function(aTab) {
 			var shouldSplit = shouldDoFiltering ? MultipleTabService.isSelected(aTab) : true ;
 
 			if (aTab == b.selectedTab) {
 				isAfter = true;
-				if (!shouldDoFiltering || !shouldSplit)
-					return;
+				horizontalCount++;
+				if (!shouldDoFiltering) return;
 			}
 			if (!shouldSplit) return;
 
-			var pos = isAfter ?
+			var pos;
+			var hPosTarget = isAfter ? lastSubBrowser : null ;
+			if (horizontalMax > 0) {
+				pos = (horizontalCount < horizontalMax) ?
+					(isAfter ? self.POSITION_RIGHT : self.POSITION_LEFT ) :
+					self.POSITION_BOTTOM;
+				if (horizontalCount >= horizontalMax) {
+					horizontalCount = 1;
+					hPosTarget      = null;
+				}
+				else
+					horizontalCount++;
+			}
+			else {
+				pos = isAfter ?
 					(isHorizontal ? self.POSITION_RIGHT : self.POSITION_BOTTOM) :
 					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);
+			}
 
 			var children = (TBETabGroup) ? aTab.allChildTabs : null ;
 
-			var subbrowser = self.addSubBrowserFromTab(aTab, pos, true);
+			var subbrowser = self.addSubBrowserFromTab(aTab, pos, hPosTarget || vPosTarget, true);
+			lastSubBrowser = subbrowser;
+
+			if (horizontalMax > 0 && pos == self.POSITION_BOTTOM) {
+				vPosTarget = lastSubBrowser;
+			}
 
 			if (TBETabGroup && children && children.length) {
 				children.forEach(function(aChildTab) {
