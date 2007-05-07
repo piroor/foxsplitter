@@ -79,49 +79,16 @@ SplitBrowser.hackForOtherExtensions = function() {
 				'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
 			)
 		);
-		eval(
-			'TabWatcher.initialize = '+
-			TabWatcher.initialize.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-		eval(
-			'TabWatcher.destroy = '+
-			TabWatcher.destroy.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-		eval(
-			'TabWatcher.activate = '+
-			TabWatcher.activate.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-		eval(
-			'TabWatcher.deactivate = '+
-			TabWatcher.deactivate.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-		eval(
-			'TabWatcher.watchTopWindow = '+
-			TabWatcher.watchTopWindow.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-		eval(
-			'TabWatcher.getBrowserByWindow = '+
-			TabWatcher.getBrowserByWindow.toSource().replace(
-				/tabBrowser/g,
-				'window.tabBrowser'
-			)
-		);
-
+		var funcs = 'initialize,destroy,activate,deactivate,watchTopWindow,getBrowserByWindow'.split(',');
+		funcs.forEach(function(aFunc) {
+			eval(
+				'TabWatcher.'+aFunc+' = '+
+				TabWatcher[aFunc].toSource().replace(
+					/tabBrowser/g,
+					'window.tabBrowser'
+				)
+			);
+		});
 		window.__splitbrowser_firebug__fireBugToggle = function(aEvent) {
 			if (aEgent &&
 				(aEvent.originalTarget || aEvent.target) != window.__splitbrowser_firebug__lastBrowser)
@@ -231,6 +198,44 @@ SplitBrowser.hackForOtherExtensions = function() {
 		}, false);
 	}
 
+	// hack for Tab Clicking Options
+	if ('tabClicking' in window &&
+		this.tabbedBrowsingEnabled) {
+		var funcs = 'switchCase,onTabClick,onTabBarDblClick,duplicateInTab,closeAllTabs'.split(',');
+		funcs.forEach(function(aFunc) {
+			eval(
+				'tabClicking.'+aFunc+' = '+
+				tabClicking[aFunc].toSource().replace(
+					/gBrowser|getBrowser\(\)/g,
+					'SplitBrowser.activeBrowser'
+				).replace(
+					/gURLBar.select()/g,
+					'SplitBrowser.activeBrowserSelectURLBar()'
+				)
+			);
+		});
+		tabClicking.__splitbrowser__selectURLBar = tabClicking.selectURLBar;
+		tabClicking.selectURLBar = function() {
+			if (SplitBrowser.activeBrowser &&
+				SplitBrowser.activeBrowser.parentSubBrowser &&
+				SplitBrowser.activeBrowser.parentSubBrowser.localName == 'subbrowser') {
+				SplitBrowser.activeBrowserFocusURLBar();
+				return;
+			}
+			return this.__splitbrowser__selectURLBar();
+		};
+		var initTCO = function(aEvent) {
+			var b = aEvent.originalTarget.browser;
+			b.onTabClick = tabClicking.onTabClick;
+			b.mTabContainer.setAttribute('ondblclick', 'tabClicking.onTabBarDblClick(event);');
+		};
+		appcontent.addEventListener('SubBrowserAdded', initTCO, false);
+		window.addEventListener('unload', function() {
+			appcontent.removeEventListener('SubBrowserAdded', initTCO, false);
+			window.removeEventListener('unload', arguments.callee, false);
+		}, false);
+	}
+
 	// hack for All-in-One Gestures
 	if ('aioInit' in window) {
 		gBrowser.aioTabsNb = gBrowser.mPanelContainer.childNodes.length;
@@ -248,7 +253,7 @@ SplitBrowser.hackForOtherExtensions = function() {
 			window.__splitbrowser__aioInit = window.aioInit;
 			window.aioInit = function() {
 				window.__splitbrowser__aioInit();
-				SplitBrowser.browsers.forEach(
+				SplitBrowser._browsers.forEach(
 					aioTabSwitching ?
 						function(aBrowser) {
 							aBrowser.browser.mStrip.addEventListener('DOMMouseScroll', aioSwitchTabs, true);
@@ -302,42 +307,24 @@ SplitBrowser.hackForOtherExtensions = function() {
 				'(b.mPanelContainer || b)'
 			)
 		);
-
-		eval('window.aioStartTrail = '+window.aioStartTrail.toSource().replace(
-			/e.target.ownerDocument/,
-			'e.originalTarget.ownerDocument'
-		));
-		eval('window.aioIsAreaOK = '+window.aioIsAreaOK.toSource().replace(
-			/e.target/g,
-			'e.originalTarget'
-		));
-		eval('window.aioIsPastable = '+window.aioIsPastable.toSource().replace(
-			/e.target/g,
-			'e.originalTarget'
-		));
-		eval('window.aioMouseDown = '+window.aioMouseDown.toSource().replace(
-			/e.target/g,
-			'e.originalTarget'
-		));
-		eval('window.aioAddMarker = '+window.aioAddMarker.toSource().replace(
-			/e.target/g,
-			'e.originalTarget'
-		));
-		eval('window.aioWheelScroll = '+window.aioWheelScroll.toSource().replace(
-			/e.target/g,
-			'e.originalTarget'
-		));
-
+		var funcs = 'aioStartTrail,aioIsAreaOK,aioIsPastable,aioMouseDown,aioAddMarker,aioWheelScroll'.split(',');
+		funcs.forEach(function(aFunc) {
+			eval(
+				'window.'+aFunc+' = '+
+				window[aFunc].toSource().replace(
+					/e.target/g,
+					'e.originalTarget'
+				)
+			);
+		});
 		eval('window.aioOpenInNewTab = '+window.aioOpenInNewTab.toSource().replace(
 			/BrowserOpenTab\(\);/,
 			'SplitBrowser.activeBrowserOpenTab();'
 		));
-
 		eval('window.aioCloseCurrTab = '+window.aioCloseCurrTab.toSource().replace(
 			/BrowserCloseWindow\(\);/,
 			'SplitBrowser.activeBrowserCloseWindow();'
 		));
-
 		var initAIOG = function(aEvent) {
 			var b = aEvent.originalTarget.browser;
 			b.mTabBox.addEventListener('select', aioTabFocus, true);

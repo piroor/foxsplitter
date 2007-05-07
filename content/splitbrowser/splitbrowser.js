@@ -588,7 +588,7 @@ var SplitBrowser = {
 	},
   
 /* features */ 
-	
+	 
 	collapseAllSubBrowsers : function() 
 	{
 		this._browsers.forEach(function(aBrowser) {
@@ -799,7 +799,35 @@ var SplitBrowser = {
 	{
 		BrowserPageInfo(this.activeBrowser.contentDocument);
 	},
-  
+ 
+	activeBrowserFocusURLBar : function() 
+	{
+		if (this.activeBrowser &&
+			this.activeBrowser.parentSubBrowser &&
+			this.activeBrowser.parentSubBrowser.localName == 'subbrowser') {
+			var b = this.activeBrowser.parentSubBrowser;
+			b.toggleNavigation(true);
+			b.urlbar.focus();
+		}
+		else if (gURLBar) {
+			gURLBar.focus();
+		}
+	},
+ 
+	activeBrowserSelectURLBar : function() 
+	{
+		if (this.activeBrowser &&
+			this.activeBrowser.parentSubBrowser &&
+			this.activeBrowser.parentSubBrowser.localName == 'subbrowser') {
+			var b = this.activeBrowser.parentSubBrowser;
+			b.toggleNavigation(true);
+			b.urlbar.select();
+		}
+		else if (gURLBar) {
+			gURLBar.select();
+		}
+	},
+ 	 
 /* save / load */ 
 	
 	save : function() 
@@ -1763,7 +1791,7 @@ catch(e) {
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
 	},
- 	
+ 
 	hackForOtherExtensions : function() 
 	{
 	},
