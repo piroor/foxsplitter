@@ -15,16 +15,18 @@
 <!ENTITY splitbrowser.show.toolbar.always "總是在分割瀏覽區顯示工具列">
 <!ENTITY splitbrowser.show.collapseexpand "在分割瀏覽區顯示「收摺」與「展開」的工具列按鈕">
 <!ENTITY splitbrowser.tabs.autoHide "總是在分割瀏覽區顯示分頁列">
-<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.navigation.always
+"總是在分割瀏覽區顯示瀏覽工具列">
 
-<!ENTITY splitbrowser.tab.menu              "Menu">
-<!ENTITY splitbrowser.show.menu             "Show &quot;Split&quot; menu in the menu bar">
-<!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">
+<!ENTITY splitbrowser.tab.menu              "選單">
+<!ENTITY splitbrowser.show.menu             "在選單列顯示 &quot;Split&quot; 選單">
+<!ENTITY splitbrowser.show.context.caption  "分頁標籤上右鍵選單的項目:">
 <!ENTITY splitbrowser.show.tab.context.split            "分割這個分頁到...">
-<!ENTITY splitbrowser.show.tab.context.tile            "Tile all tabs">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Horizontally">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Vertically">
-<!ENTITY splitbrowser.show.tab.context.gather           "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.show.tab.context.tile            "鋪排所有分頁">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "水平排列所有分頁">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "垂直排列所有分頁">
+<!ENTITY splitbrowser.show.tab.context.gather
+"集結此處所有的分割瀏覽區到各分頁">
 
 <!ENTITY splitbrowser.add.button.top.tooltip "分割到上方">
 <!ENTITY splitbrowser.add.button.bottom.tooltip "分割到下方">
@@ -60,10 +62,10 @@
 
 
 
-<!ENTITY splitbrowser.tab.tile.label            "Tile all tabs">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Horizontally">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Vertically">
-<!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.tab.tile.label            "鋪排所有分頁">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "水平排列所有分頁">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "垂直排列所有分頁">
+<!ENTITY splitbrowser.tab.gather.label "集結此處所有的分割瀏覽區到各分頁">
 
 
 <!ENTITY splitbrowser.menu.label     "Split">
@@ -79,20 +81,20 @@
 <!ENTITY splitbrowser.menu.add.bottom.label "下方">
 <!ENTITY splitbrowser.menu.add.right.label "右方">
 <!ENTITY splitbrowser.menu.add.left.label "左方">
-<!ENTITY splitbrowser.menu.tile.label                "Tile all tabs">
+<!ENTITY splitbrowser.menu.tile.label                "鋪排所有分頁">
 <!ENTITY splitbrowser.menu.tile.accesskey            "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Horizontally">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "水平排列所有分頁">
 <!ENTITY splitbrowser.menu.tile.horizontal.accesskey "h">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Vertically">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "垂直排列所有分頁">
 <!ENTITY splitbrowser.menu.tile.vertical.accesskey   "v">
-<!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
+<!ENTITY splitbrowser.menu.gather.label               "集結此處所有的分割瀏覽區到各分頁">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
 
 
 
-<!ENTITY multipletab.tile.label                "Tile">
-<!ENTITY multipletab.tile.horizontal.label     "Tile Horizontally">
-<!ENTITY multipletab.tile.vertical.label       "Tile Vertically">
+<!ENTITY multipletab.tile.label                "排列">
+<!ENTITY multipletab.tile.horizontal.label     "水平排列">
+<!ENTITY multipletab.tile.vertical.label       "垂直排列">
 
 
 <!ENTITY splitbrowser.subbrowser.blank "(空)">
