@@ -88,7 +88,7 @@ subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-vertical {
 .subbrowser-vertical-title {
 	overflow: hidden;
 	white-space: pre;
-	text-tile: center;
+	text-align: center;
 	line-height: 1;
 }
 
