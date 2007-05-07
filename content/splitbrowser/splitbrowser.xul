@@ -111,7 +111,7 @@
 				</menupopup>
 			</menu>
 			<menuseparator id="splitbrowser-tile-separator"/>
-			<menuitem id="splitbrowser-tile-horizontal"
+			<menuitem id="splitbrowser-tile"
 				class="menuitem-iconic splitbrowser-tile-item"
 				label="&splitbrowser.menu.tile.label;"
 				oncommand="
