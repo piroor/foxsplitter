@@ -902,7 +902,7 @@ sideBox.removeAttribute('style');
 							<xul:toolbarbutton
 								anonid="reload-button"
 								tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.reload();"
+								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.reload(event.shiftKey);"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button reload"
 								disabled="true"/>
@@ -1088,8 +1088,26 @@ sideBox.removeAttribute('style');
 			]]></body>
 		</method>
 		<method name="reload">
+			<parameter name="aBypassCache"/>
 			<body><![CDATA[
-				this.browser.reload();
+				if (aBypassCache) {
+					var webNav = this.browser.webNavigation;
+					try {
+						var sh = webNav.sessionHistory;
+						if (sh)
+							webNav = sh.QueryInterface(nsIWebNavigation);
+					}
+					catch(e) {
+					}
+					const reloadFlags = webNav.LOAD_FLAGS_BYPASS_PROXY | webNav.LOAD_FLAGS_BYPASS_CACHE;
+					try {
+						webNav.reload(reloadFlags);
+					}
+					catch(e) {
+					}
+				}
+				else
+					this.browser.reload();
 			]]></body>
 		</method>
 		<method name="stop">
