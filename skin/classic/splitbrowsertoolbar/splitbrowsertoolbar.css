@@ -65,6 +65,9 @@ subbrowser[busy="true"] .subbrowser-toolbar-item.urlbar-favicon {
 .subbrowser-toolbar-item.button .toolbarbutton-icon {
   -moz-margin-end: 0px;
 }
+.subbrowser-toolbar-item.button label {
+  display: none;
+}
 
 
 /* back button-- */
