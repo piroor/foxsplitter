@@ -40,6 +40,11 @@
 	-moz-image-region: rect(16px 96px 32px 80px);
 }
 
+.splitbrowser-gather-item {
+	list-style-image: url(./small/buttons.png);
+	-moz-image-region: rect(16px 112px 32px 96px);
+}
+
 
 
 

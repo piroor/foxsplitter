@@ -227,6 +227,10 @@ var SplitBrowser = {
   
 	updateMenu : function(aPopup) 
 	{
+	},
+ 
+	updateMultipleTabsState : function() 
+	{
 		var tabBroadcaster = this.featuresForMultipleTabsBroadcaster;
 		var b = SplitBrowser.activeBrowser;
 		if (b.localName != 'tabbrowser') b = gBrowser;
@@ -1696,6 +1700,8 @@ catch(e) {
 		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, true);
 		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, true);
 		document.documentElement.addEventListener('SubBrowserFocusMoved', this, true);
+		document.documentElement.addEventListener('TabOpen', this, true);
+		document.documentElement.addEventListener('TabClose', this, true);
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
@@ -1940,6 +1946,8 @@ catch(e) {
 		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, true);
 		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, true);
 		document.documentElement.removeEventListener('SubBrowserFocusMoved', this, true);
+		document.documentElement.removeEventListener('TabOpen', this, true);
+		document.documentElement.removeEventListener('TabClose', this, true);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
@@ -2007,6 +2015,12 @@ catch(e) {
 
 			case 'SubBrowserFocusMoved':
 				this.updateFindBar(aEvent);
+				this.updateMultipleTabsState();
+				break;
+
+			case 'TabOpen':
+			case 'TabClose':
+				window.setTimeout('SplitBrowser.updateMultipleTabsState();', 0);
 				break;
 
 			case 'resize':
