@@ -128,11 +128,6 @@ subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
 
 /* menu */
 
-:root[splitbrowser-show-menu="true"] #splitbrowser-file-remove-all,
-:root[splitbrowser-show-menu="true"] #splitbrowser-view-separator,
-:root[splitbrowser-show-menu="true"] #splitbrowser-view-collapse-all,
-:root[splitbrowser-show-menu="true"] #splitbrowser-view-expand-all,
-:root:not([splitbrowser-show-menu="true"]) #splitbrowser-menu,
 :root:not([splitbrowser-show-tab-context-split="true"]) .splitbrowser-split-item.tab-context,
 :root:not([splitbrowser-show-tab-context-tile="true"]) .splitbrowser-tile-item.tab-context,
 :root:not([splitbrowser-show-tab-context-tile-horizontal="true"]) .splitbrowser-tile-horizontal-item.tab-context,

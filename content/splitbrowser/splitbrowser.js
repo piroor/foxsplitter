@@ -2103,6 +2103,23 @@ catch(e) {
 				break;
 
 			case 'splitbrowser.show.menu':
+				var ids = 'menu,file-remove-all,view-separator,view-collapse-all,view-expand-all'.split(',');
+				if (nsPreferences.getBoolPref(aPrefstring)) {
+					document.getElementById(ids[0]).removeAttribute('hidden');
+					for (var i = 1, maxi = ids.length; i++)
+					{
+						document.getElementById(ids[i]).setAttribute('hidden', true);
+					}
+				}
+				else {
+					document.getElementById(ids[0]).setAttribute('hidden', true);
+					for (var i = 1, maxi = ids.length; i++)
+					{
+						document.getElementById(ids[i]).removeAttribute('hidden');
+					}
+				}
+				break;
+
 			case 'splitbrowser.show.tab.context.split':
 			case 'splitbrowser.show.tab.context.tile':
 			case 'splitbrowser.show.tab.context.tile.horizontal':
