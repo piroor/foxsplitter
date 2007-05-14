@@ -699,8 +699,7 @@ sideBox.removeAttribute('style');
 				if (SplitBrowser.activeSubBrowser == this)
 					SplitBrowser.activeSubBrowser = null;
 				this.focused = false;
-				if (this.urlbar)
-					this.urlbar.focused = false;
+				this.isUrlbarFocused = false;
 			]]></body>
 		</method>
 
@@ -805,31 +804,31 @@ sideBox.removeAttribute('style');
 			 	"
 				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
 				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
-				onclick="if (event.button == 1) this.parentNode.parentNode.parentNode.toggleCollapsed();"
+				onclick="if (event.button == 1) var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleCollapsed();"
 				ondblclick="this.parentNode.parentNode.parentNode.toggleCollapsed();">
 				<xul:toolbarbutton
 					anonid="close-button-vertical"
 					class="tabs-closebutton toolbarbutton-1"
 					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.close();"
+					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.close();"
 					ondblclick="event.stopPropagation();"/>
 				<xul:toolbarbutton
 					anonid="collapse-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.collapse();"
+					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.collapse();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button collapse"/>
 				<xul:toolbarbutton
 					anonid="expand-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-					oncommand="this.parentNode.parentNode.parentNode.parentNode.expand();"
+					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.expand();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button expand"/>
 				<xul:box class="subbrowser-toolbar-item favicon-box">
 					<xul:image class="subbrowser-toolbar-item favicon"
 						anonid="vertical-favicon"
 						validate="never"
-						onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+						onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 				</xul:box>
 				<xul:description anonid="vertical-title"
 					class="subbrowser-title subbrowser-vertical-title"
@@ -845,23 +844,25 @@ sideBox.removeAttribute('style');
 					align="center"
 					flex="1"
 				 	ondraggesture="
-						this.parentNode.parentNode.parentNode.parentNode.resetNavigation();
-				 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);
+				 		var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; };
+						s.resetNavigation();
+				 		nsDragAndDrop.startDrag(event, s.pageDNDObserver);
 				 	"
 					ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 				 	onclick="
+				 		var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; };
 				 		if (event.button == 0 &amp;&amp;
 				 			this.firstChild.getAttribute('selectedIndex') == '0')
-							this.parentNode.parentNode.parentNode.parentNode.resetNavigation();
+							s.resetNavigation();
 				 		if (event.button == 1)
-				 			this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();
+				 			s.toggleCollapsed();
 				 	"
 					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
 					<xul:stack anonid="toolbar-deck"
 						flex="1"
-						onmouseover="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleNavigationOnHover(true);"
-						onmouseout="this.parentNode.parentNode.parentNode.parentNode.parentNode.toggleNavigationOnHover(false);"
+						onmouseover="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleNavigationOnHover(true);"
+						onmouseout="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleNavigationOnHover(false);"
 						selectedIndex="0">
 						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center"
 							anonid="toolbar-deck-titlebar">
@@ -870,7 +871,7 @@ sideBox.removeAttribute('style');
 									anonid="favicon"
 									validate="never"
 									ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-									onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+									onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 							</xul:box>
 							<xul:stack flex="1">
 								<xul:progressmeter class="subbrowser-toolbar-item progress"
@@ -890,28 +891,28 @@ sideBox.removeAttribute('style');
 							<xul:toolbarbutton
 								anonid="back-button"
 								tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goBack();"
+								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.goBack();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goBack"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="forward-button"
 								tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.goForward();"
+								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.goForward();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goForward"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="reload-button"
 								tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.reload(event.shiftKey);"
+								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.reload(event.shiftKey);"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button reload"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="stop-button"
 								tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.stop();"
+								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.stop();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button stop"
 								disabled="true"/>
@@ -926,10 +927,9 @@ sideBox.removeAttribute('style');
 									<xul:textbox flex="1"
 										anonid="urlbar"
 										class="subbrowser-toolbar-item urlbar-textbox"
-										ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
-										ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
-										onfocus="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.urlbar.focused = true;"
-										onblur="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.urlbar.focused = false;"
+										ontextentered="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.load(this.value);"
+										ontextreverted="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.load(this.value);"
+										onfocus="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.isUrlbarFocused = true;"
 										onclick="event.stopPropagation();"
 										ondblclick="event.stopPropagation();"
 										sizetopopup="pref"
@@ -945,7 +945,7 @@ sideBox.removeAttribute('style');
 											<xul:image class="subbrowser-toolbar-item urlbar-favicon"
 												anonid="urlbar-favicon"
 												validate="never"
-												onerror="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+												onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 										</xul:box>
 									</xul:textbox>
 								 </xul:stack>
@@ -955,27 +955,27 @@ sideBox.removeAttribute('style');
 								class="subbrowser-toolbar-item go"
 								label="&splitbrowser.subbrowser.go.label;"
 								tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
-								oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.go();"
+								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.go();"
 								ondblclick="event.stopPropagation();"/>
 						</xul:hbox>
 					</xul:stack>
 					<xul:toolbarbutton
 						anonid="collapse-button"
 						tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.collapse();"
+						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.collapse();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button collapse"/>
 					<xul:toolbarbutton
 						anonid="expand-button"
 						tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.expand();"
+						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.expand();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button expand"/>
 					<xul:toolbarbutton
 						anonid="close-button"
 						class="tabs-closebutton toolbarbutton-1"
 						tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-						oncommand="this.parentNode.parentNode.parentNode.parentNode.parentNode.close();"
+						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.close();"
 						ondblclick="event.stopPropagation();"/>
 				</xul:toolbar>
 				</xul:toolbox>
@@ -1292,7 +1292,7 @@ sideBox.removeAttribute('style');
 				if (
 					this.getAttribute('toolbar-navigation') == 'true' ||
 					(
-						this.urlbar.focused &&
+						this.isUrlbarFocused &&
 						!aShow
 					)
 					) return;
@@ -1981,6 +1981,14 @@ sideBox.removeAttribute('style');
 				) {
 				event.preventDefault();
 				this.close();
+			}
+		]]></handler>
+
+		<handler event="blur" phase="capturing"><![CDATA[
+			if (event.originalTarget.ownerDocument == document &&
+				event.originalTarget.localName == 'input') {
+				this.isUrlbarFocused = false;
+				this.toggleNavigationOnHover(false);
 			}
 		]]></handler>
 
