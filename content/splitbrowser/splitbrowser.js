@@ -1687,15 +1687,15 @@ catch(e) {
   
 	init : function() 
 	{
-		document.documentElement.addEventListener('SubBrowserAddRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, false);
-		document.documentElement.addEventListener('SubBrowserAdded', this, false);
-		document.documentElement.addEventListener('SubBrowserRemoved', this, false);
-		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, false);
-		document.documentElement.addEventListener('SubBrowserContentExpanded', this, false);
-		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, false);
-		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, false);
-		document.documentElement.addEventListener('SubBrowserFocusMoved', this, false);
+		document.documentElement.addEventListener('SubBrowserAddRequest', this, true);
+		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, true);
+		document.documentElement.addEventListener('SubBrowserAdded', this, true);
+		document.documentElement.addEventListener('SubBrowserRemoved', this, true);
+		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, true);
+		document.documentElement.addEventListener('SubBrowserContentExpanded', this, true);
+		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, true);
+		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, true);
+		document.documentElement.addEventListener('SubBrowserFocusMoved', this, true);
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
@@ -1931,15 +1931,15 @@ catch(e) {
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
 			this.save();
 
-		document.documentElement.removeEventListener('SubBrowserAddRequest', this, false);
-		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, false);
-		document.documentElement.removeEventListener('SubBrowserAdded', this, false);
-		document.documentElement.removeEventListener('SubBrowserRemoved', this, false);
-		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, false);
-		document.documentElement.removeEventListener('SubBrowserContentExpanded', this, false);
-		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, false);
-		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, false);
-		document.documentElement.removeEventListener('SubBrowserFocusMoved', this, false);
+		document.documentElement.removeEventListener('SubBrowserAddRequest', this, true);
+		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, true);
+		document.documentElement.removeEventListener('SubBrowserAdded', this, true);
+		document.documentElement.removeEventListener('SubBrowserRemoved', this, true);
+		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, true);
+		document.documentElement.removeEventListener('SubBrowserContentExpanded', this, true);
+		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, true);
+		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, true);
+		document.documentElement.removeEventListener('SubBrowserFocusMoved', this, true);
 
 		document.getElementById('contentAreaContextMenu').removeEventListener('popupshowing', this, false);
 
