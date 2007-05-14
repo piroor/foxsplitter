@@ -134,9 +134,15 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "閉じる">
 
 
+<!ENTITY splitbrowser.button.menu.label          "分割">
+<!ENTITY splitbrowser.button.menu.tooltip        "ブラウズ領域の分割">
+<!ENTITY splitbrowser.button.tile.label          "並べる">
+<!ENTITY splitbrowser.button.tile.tooltip        "タブを平面に並べる">
+<!ENTITY splitbrowser.button.gather.label        "集める">
+<!ENTITY splitbrowser.button.gather.tooltip      "分割したブラウザをタブに集める">
 <!ENTITY splitbrowser.button.collapseAll.label   "たたむ">
 <!ENTITY splitbrowser.button.collapseAll.tooltip "分割したブラウザをすべてたたむ">
 <!ENTITY splitbrowser.button.expandAll.label     "ひろげる">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "分割したブラウザをすべてひろげる">
-<!ENTITY splitbrowser.button.removeAll.label      "分割を解除">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "分割したブラウザをすべて閉じる">
+<!ENTITY splitbrowser.button.removeAll.label     "分割を解除">
+<!ENTITY splitbrowser.button.removeAll.tooltip   "分割したブラウザをすべて閉じる">

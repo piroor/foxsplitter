@@ -112,6 +112,12 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse "收摺">
 <!ENTITY splitbrowser.subbrowser.menu.expand "展開">
 <!ENTITY splitbrowser.subbrowser.menu.close "關閉">
+<!ENTITY splitbrowser.button.menu.label          "Split">
+<!ENTITY splitbrowser.button.menu.tooltip        "Split Browsing Area">
+<!ENTITY splitbrowser.button.tile.label          "Tile">
+<!ENTITY splitbrowser.button.tile.tooltip        "Tile all tabs">
+<!ENTITY splitbrowser.button.gather.label        "Gather">
+<!ENTITY splitbrowser.button.gather.tooltip      "Gather split browsers as tabs">
 <!ENTITY splitbrowser.button.collapseAll.label "收摺">
 <!ENTITY splitbrowser.button.collapseAll.tooltip "收摺所有分割瀏覽區">
 <!ENTITY splitbrowser.button.expandAll.label "展開">

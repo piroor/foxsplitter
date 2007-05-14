@@ -132,6 +132,12 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
 
 
+<!ENTITY splitbrowser.button.menu.label          "Split">
+<!ENTITY splitbrowser.button.menu.tooltip        "Split Browsing Area">
+<!ENTITY splitbrowser.button.tile.label          "Tile">
+<!ENTITY splitbrowser.button.tile.tooltip        "Tile all tabs">
+<!ENTITY splitbrowser.button.gather.label        "Gather">
+<!ENTITY splitbrowser.button.gather.tooltip      "Gather split browsers as tabs">
 <!ENTITY splitbrowser.button.collapseAll.label   "감추기">
 <!ENTITY splitbrowser.button.collapseAll.tooltip "분할된 화면을 모두 감춥니다">
 <!ENTITY splitbrowser.button.expandAll.label     "보이기">

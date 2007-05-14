@@ -35,9 +35,119 @@
 	<command id="splitbrowser-removeAll-command"
 		oncommand="SplitBrowser.removeAllSubBrowsers();"
 		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+	<command id="splitbrowser-tile-command"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+		"
+		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+	<command id="splitbrowser-tile-horizontal-command"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
+		"
+		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+	<command id="splitbrowser-tile-vertical-command"
+		oncommand="
+			var b = SplitBrowser.activeBrowser;
+			if (b.localName != 'tabbrowser') b = gBrowser;
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
+		"
+		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+	<command id="splitbrowser-gather-command"
+		oncommand="SplitBrowser.gatherSubBrowsers();"
+		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
 </commandset>
 
 <toolbarpalette id="BrowserToolbarPalette">
+	<toolbarbutton id="splitbrowser-menu-button"
+		type="menu"
+		class="splitbrowser-button toolbarbutton-1"
+		label="&splitbrowser.button.menu.label;"
+		tooltiptext="&splitbrowser.button.menu.tooltip;">
+		<menupopup id="splitbrowser-toolbarbutton-menu-popup"
+			onpopupshowing="SplitBrowser.updateMenu(this);">
+			<menuitem id="splitbrowser-toolbarbutton-remove-all"
+				class="menuitem-iconic splitbrowser-remove-all-item"
+				label="&splitbrowser.menu.removeAll.label;"
+				accesskey="&splitbrowser.menu.removeAll.accesskey;"
+				command="splitbrowser-removeAll-command"
+				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+			<menuseparator id="splitbrowser-toolbarbutton-collapse-separator"/>
+			<menuitem id="splitbrowser-toolbarbutton-collapse-all"
+				class="menuitem-iconic splitbrowser-collapse-all-item"
+				label="&splitbrowser.menu.collapseAll.label;"
+				accesskey="&splitbrowser.menu.collapseAll.accesskey;"
+				command="splitbrowser-collapseAll-command"
+				observes="splitbrowser-collapseAll-broadcaster"/>
+			<menuitem id="splitbrowser-toolbarbutton-expand-all"
+				class="menuitem-iconic splitbrowser-expand-all-item"
+				label="&splitbrowser.menu.expandAll.label;"
+				accesskey="&splitbrowser.menu.expandAll.accesskey;"
+				command="splitbrowser-expandAll-command"
+				observes="splitbrowser-expandAll-broadcaster"/>
+			<menuseparator id="splitbrowser-toolbarbutton-split-separator"/>
+			<menu id="splitbrowser-toolbarbutton-split"
+				class="menu-iconic splitbrowser-split-item"
+				label="&splitbrowser.menu.add.label;"
+				observes="splitbrowser-featuresForMultipleTabs-broadcaster">
+				<menupopup
+					oncommand="
+						var b = SplitBrowser.activeBrowser;
+						if (b.localName != 'tabbrowser') b = gBrowser;
+						SplitBrowser.addSubBrowserFromTab(b.selectedTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')]);
+					">
+					<menuitem label="&splitbrowser.menu.add.top.label;"
+						class="menuitem-iconic splitbrowser-menuitem-add-top"
+						splitbrowser-position="POSITION_TOP"/>
+					<menuitem label="&splitbrowser.menu.add.right.label;"
+						class="menuitem-iconic splitbrowser-menuitem-add-right"
+						splitbrowser-position="POSITION_RIGHT"/>
+					<menuitem label="&splitbrowser.menu.add.left.label;"
+						class="menuitem-iconic splitbrowser-menuitem-add-left"
+						splitbrowser-position="POSITION_LEFT"/>
+					<menuitem label="&splitbrowser.menu.add.bottom.label;"
+						class="menuitem-iconic splitbrowser-menuitem-add-bottom"
+						splitbrowser-position="POSITION_BOTTOM"/>
+				</menupopup>
+			</menu>
+			<menuseparator id="splitbrowser-toolbarbutton-tile-separator"/>
+			<menuitem id="splitbrowser-toolbarbutton-tile"
+				class="menuitem-iconic splitbrowser-tile-item"
+				label="&splitbrowser.menu.tile.label;"
+				command="splitbrowser-tile-command"
+				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+			<menuitem id="splitbrowser-toolbarbutton-tile-horizontal"
+				class="menuitem-iconic splitbrowser-tile-horizontal-item"
+				label="&splitbrowser.menu.tile.horizontal.label;"
+				command="splitbrowser-tile-horizontal-command"
+				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+			<menuitem id="splitbrowser-toolbarbutton-tile-vertical"
+				class="menuitem-iconic splitbrowser-tile-vertical-item"
+				label="&splitbrowser.menu.tile.vertical.label;"
+				command="splitbrowser-tile-vertical-command"
+				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+			<menuitem id="splitbrowser-toolbarbutton-gather"
+				class="menuitem-iconic splitbrowser-gather-item"
+				label="&splitbrowser.menu.gather.label;"
+				command="splitbrowser-gather-command"
+				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+		</menupopup>
+	</toolbarbutton>
+	<toolbarbutton id="splitbrowser-tile-button"
+		class="splitbrowser-button toolbarbutton-1"
+		label="&splitbrowser.button.tile.label;"
+		tooltiptext="&splitbrowser.button.tile.tooltip;"
+		command="splitbrowser-tile-command"
+		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
+	<toolbarbutton id="splitbrowser-gather-button"
+		class="splitbrowser-button toolbarbutton-1"
+		label="&splitbrowser.button.gather.label;"
+		tooltiptext="&splitbrowser.button.gather.tooltip;"
+		command="splitbrowser-gather-command"
+		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
 	<toolbarbutton id="splitbrowser-collapseAll-button"
 		class="splitbrowser-button toolbarbutton-1"
 		label="&splitbrowser.button.collapseAll.label;"
@@ -64,7 +174,7 @@
 		label="&splitbrowser.menu.label;"
 		accesskey="&splitbrowser.menu.accesskey;"
 		insertafter="bookmarks-menu">
-		<menupopup id="menu_FilePopup"
+		<menupopup id="splitbrowser-menu-popup"
 			onpopupshowing="SplitBrowser.updateMenu(this);">
 			<menuitem id="splitbrowser-remove-all"
 				class="menuitem-iconic splitbrowser-remove-all-item"
@@ -114,34 +224,22 @@
 			<menuitem id="splitbrowser-tile"
 				class="menuitem-iconic splitbrowser-tile-item"
 				label="&splitbrowser.menu.tile.label;"
-				oncommand="
-					var b = SplitBrowser.activeBrowser;
-					if (b.localName != 'tabbrowser') b = gBrowser;
-					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
-				"
+				command="splitbrowser-tile-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-tile-horizontal"
 				class="menuitem-iconic splitbrowser-tile-horizontal-item"
 				label="&splitbrowser.menu.tile.horizontal.label;"
-				oncommand="
-					var b = SplitBrowser.activeBrowser;
-					if (b.localName != 'tabbrowser') b = gBrowser;
-					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
-				"
+				command="splitbrowser-tile-horizontal-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-tile-vertical"
 				class="menuitem-iconic splitbrowser-tile-vertical-item"
 				label="&splitbrowser.menu.tile.vertical.label;"
-				oncommand="
-					var b = SplitBrowser.activeBrowser;
-					if (b.localName != 'tabbrowser') b = gBrowser;
-					SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
-				"
+				command="splitbrowser-tile-vertical-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-gather"
 				class="menuitem-iconic splitbrowser-gather-item"
 				label="&splitbrowser.menu.gather.label;"
-				oncommand="SplitBrowser.gatherSubBrowsers();"
+				command="splitbrowser-gather-command"
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
 		</menupopup>
 	</menu>
