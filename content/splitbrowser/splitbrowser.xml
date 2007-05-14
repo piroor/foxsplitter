@@ -699,7 +699,8 @@ sideBox.removeAttribute('style');
 				if (SplitBrowser.activeSubBrowser == this)
 					SplitBrowser.activeSubBrowser = null;
 				this.focused = false;
-				this.urlbar.focused = false;
+				if (this.urlbar)
+					this.urlbar.focused = false;
 			]]></body>
 		</method>
 

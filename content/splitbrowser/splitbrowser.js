@@ -152,7 +152,7 @@ var SplitBrowser = {
 		return val;
 	},
 	_mFocusedSubBrowser : null,
-	
+	 
 	get activeBrowser() 
 	{
 		var b = this.activeSubBrowser;
@@ -588,7 +588,7 @@ var SplitBrowser = {
 	},
   
 /* features */ 
-	 
+	
 	collapseAllSubBrowsers : function() 
 	{
 		this._browsers.forEach(function(aBrowser) {
@@ -827,7 +827,7 @@ var SplitBrowser = {
 			gURLBar.select();
 		}
 	},
- 	 
+  
 /* save / load */ 
 	
 	save : function() 
@@ -1717,6 +1717,15 @@ catch(e) {
 			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
+		if (this.tabbedBrowsingEnabled) {
+			eval('window.nsBrowserAccess.prototype.openURI = '+
+				window.nsBrowserAccess.prototype.openURI.toSource().replace(
+					/gBrowser/g,
+					'SplitBrowser.activeBrowser'
+				)
+			);
+		}
+
 		this.overrideFindBar();
 		this.overrideZoomManager();
 		this.hackForOtherExtensions();
@@ -1916,7 +1925,7 @@ catch(e) {
 
 		return this.__splitbrowser__handleLinkClick.apply(this, arguments);
 	},
-  
+  	
 	destroy : function() 
 	{
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
