@@ -128,6 +128,48 @@ var SplitBrowser = {
 		return null;
 	},
  
+	getSubBrowserAndBrowserFromFrame : function(aFrame) 
+	{
+		var docShell = aFrame.top
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShell);
+
+		for (var i = 0, maxi = this._browsers.length; i < maxi; i++)
+		{
+			if (this._browsers[i].browser.localName == 'tabbrowser') {
+				for (var j = 0, maxj = this._browsers[i].browser.browsers.length; j < maxj; j++)
+				{
+					if (this._browsers[i].browser.browsers[j].docShell == docShell)
+						return {
+							subBrowser : this._browsers[i],
+							browser    : this._browsers[i].browser.browsers[j]
+						};
+				}
+			}
+			else if (this._browsers[i].browser.docShell == docShell) {
+				return {
+					subBrowser : this._browsers[i],
+					browser    : this._browsers[i].browser
+				};
+			}
+		}
+
+		for (var j = 0, maxj = gBrowser.browsers.length; j < maxj; j++)
+		{
+			if (gBrowser.browsers[j].docShell == docShell)
+				return {
+					subBrowser : null,
+					browser    : gBrowser.browsers[j]
+				};
+		}
+
+		return {
+			subBrowser : null,
+			browser    : null
+		};
+	},
+ 
 	get activeSubBrowser() 
 	{
 		return this._mFocusedSubBrowser;
@@ -1769,6 +1811,9 @@ catch(e) {
 	 
 	updateTabBrowser : function(aBrowser) 
 	{
+//		aBrowser.addEventListener('SubBrowserAddRequestFromInternal', this, true);
+//		aBrowser.addEventListener('SubBrowserRemoveRequestFromInternal', this, true);
+
 		if (aBrowser.localName != 'tabbrowser') return;
 
 		var id = aBrowser.id || parseInt(Math.random() * 65000) ;
@@ -1801,6 +1846,9 @@ catch(e) {
  
 	destroyTabBrowser : function(aBrowser) 
 	{
+//		aBrowser.removeEventListener('SubBrowserAddRequestFromInternal', this, true);
+//		aBrowser.removeEventListener('SubBrowserRemoveRequestFromInternal', this, true);
+
 		if (aBrowser.localName != 'tabbrowser') return;
 
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
@@ -1985,16 +2033,45 @@ catch(e) {
 				this.destroy();
 				break;
 
+
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.addSubBrowser(aEvent.targetURI, aEvent.targetSubBrowser, aEvent.targetPosition);
 				break;
+
+			case 'SubBrowserAddRequestFromInternal':
+alert('SubBrowserAddRequestFromInternal');
+				window.setTimeout('SplitBrowser.hideAddButton();', 0);
+				var target = aEvent.originalTarget;
+				var win = !('nodeType' in target) ? target :
+						(target.nodeType == document.DOCUMENT_NODE) ? target.defaultView :
+						target.ownerDocument.defaultView;
+alert(win);
+				var b = this.getSubBrowserAndBrowserFromFrame(win);
+alert(b.browser);
+				if (!b.browser) return;
+				urlSecurityCheck(aEvent.targetURI, win.location.href);
+				this.addSubBrowser(aEvent.targetURI, b.subBrowser, aEvent.targetPosition);
+				break;
+
 
 			case 'SubBrowserRemoveRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.destroyTabBrowser((aEvent.originalTarget || aEvent.target).browser);
 				this.removeSubBrowser(aEvent.originalTarget || aEvent.target);
 				break;
+
+			case 'SubBrowserRemoveRequestFromInternal':
+				window.setTimeout('SplitBrowser.hideAddButton();', 0);
+				var target = aEvent.originalTarget;
+				var win = !('nodeType' in target) ? target :
+						(target.nodeType == document.DOCUMENT_NODE) ? target.defaultView :
+						target.ownerDocument.defaultView;
+				var b = this.getSubBrowserAndBrowserFromFrame(win);
+				if (b.subBrowser)
+					this.removeSubBrowser(b.subBrowser);
+				break;
+
 
 			case 'SubBrowserAdded':
 				this.updateTabBrowser((aEvent.originalTarget || aEvent.target).browser);
@@ -2106,17 +2183,17 @@ catch(e) {
 				var ids = 'menu,file-remove-all,view-separator,view-collapse-all,view-expand-all'.split(',');
 				if (nsPreferences.getBoolPref(aPrefstring)) {
 					document.getElementById('splitbrowser-'+ids[0]).removeAttribute('hidden');
-					for (var i = 1, maxi = ids.length; i < maxi; i++)
-					{
-						document.getElementById('splitbrowser-'+ids[i]).setAttribute('hidden', true);
-					}
+					ids.splice(0, 1);
+					ids.forEach(function(aID) {
+						document.getElementById('splitbrowser-'+aID).setAttribute('hidden', true);
+					});
 				}
 				else {
 					document.getElementById('splitbrowser-'+ids[0]).setAttribute('hidden', true);
-					for (var i = 1, maxi = ids.length; i < maxi; i++)
-					{
-						document.getElementById('splitbrowser-'+ids[i]).removeAttribute('hidden');
-					}
+					ids.splice(0, 1);
+					ids.forEach(function(aID) {
+						document.getElementById('splitbrowser-'+aID).removeAttribute('hidden');
+					});
 				}
 				break;
 
