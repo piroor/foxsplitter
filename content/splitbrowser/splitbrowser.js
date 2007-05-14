@@ -2105,17 +2105,17 @@ catch(e) {
 			case 'splitbrowser.show.menu':
 				var ids = 'menu,file-remove-all,view-separator,view-collapse-all,view-expand-all'.split(',');
 				if (nsPreferences.getBoolPref(aPrefstring)) {
-					document.getElementById(ids[0]).removeAttribute('hidden');
-					for (var i = 1, maxi = ids.length; i++)
+					document.getElementById('splitbrowser-'+ids[0]).removeAttribute('hidden');
+					for (var i = 1, maxi = ids.length; i < maxi; i++)
 					{
-						document.getElementById(ids[i]).setAttribute('hidden', true);
+						document.getElementById('splitbrowser-'+ids[i]).setAttribute('hidden', true);
 					}
 				}
 				else {
-					document.getElementById(ids[0]).setAttribute('hidden', true);
-					for (var i = 1, maxi = ids.length; i++)
+					document.getElementById('splitbrowser-'+ids[0]).setAttribute('hidden', true);
+					for (var i = 1, maxi = ids.length; i < maxi; i++)
 					{
-						document.getElementById(ids[i]).removeAttribute('hidden');
+						document.getElementById('splitbrowser-'+ids[i]).removeAttribute('hidden');
 					}
 				}
 				break;
