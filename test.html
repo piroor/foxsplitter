@@ -1,0 +1,30 @@
+<html>
+
+<script type="application/x-javascript">
+
+function add()
+{
+	var newEvent = document.createEvent('Events');
+	newEvent.initEvent('SubBrowserAddRequestFromInternal', true, true);
+
+	newEvent.targetPosition = 2;
+	newEvent.targetURI = 'http://www.google.co.jp/';
+	document.dispatchEvent(newEvent);
+	alert(newEvent.type);
+}
+
+function remove()
+{
+	var newEvent = document.createEvent('Events');
+	newEvent.initEvent('SubBrowserRemoveRequestFromInternal', true, true);
+	document.dispatchEvent(newEvent);
+	alert(newEvent);
+}
+
+</script>
+
+<button onclick="add();">add</button>
+<button onclick="remove();">remove</button>
+
+</html>
+
