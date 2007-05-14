@@ -699,6 +699,7 @@ sideBox.removeAttribute('style');
 				if (SplitBrowser.activeSubBrowser == this)
 					SplitBrowser.activeSubBrowser = null;
 				this.focused = false;
+				this.urlbar.focused = false;
 			]]></body>
 		</method>
 
@@ -926,6 +927,8 @@ sideBox.removeAttribute('style');
 										class="subbrowser-toolbar-item urlbar-textbox"
 										ontextentered="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
 										ontextreverted="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.load(this.value);"
+										onfocus="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.urlbar.focused = true;"
+										onblur="this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.urlbar.focused = false;"
 										onclick="event.stopPropagation();"
 										ondblclick="event.stopPropagation();"
 										sizetopopup="pref"
@@ -1285,7 +1288,13 @@ sideBox.removeAttribute('style');
 			<parameter name="aForce"/>
 			<parameter name="aDelay"/>
 			<body><![CDATA[
-				if (this.getAttribute('toolbar-navigation') == 'true') return;
+				if (
+					this.getAttribute('toolbar-navigation') == 'true' ||
+					(
+						this.urlbar.focused &&
+						!aShow
+					)
+					) return;
 
 				if (this.contentCollapsed) aShow = false;
 
@@ -1960,6 +1969,19 @@ sideBox.removeAttribute('style');
 
 		<handler event="click"
 			action="if (!this.contentCollapsed) this.browser.contentWindow.focus();"/>
+
+		<handler event="DOMWindowClose" phase="capturing"><![CDATA[
+			if (
+				(
+					this.browser.localName != 'tabbrowser' ||
+					this.browser.browsers.length == 1
+				) &&
+				event.target == this.browser.contentWindow
+				) {
+				event.preventDefault();
+				this.close();
+			}
+		]]></handler>
 
 	</handlers>
 </binding>
