@@ -1104,7 +1104,7 @@ sideBox.removeAttribute('style');
 					try {
 						var sh = webNav.sessionHistory;
 						if (sh)
-							webNav = sh.QueryInterface(nsIWebNavigation);
+							webNav = sh.QueryInterface(Components.interfaces.nsIWebNavigation);
 					}
 					catch(e) {
 					}

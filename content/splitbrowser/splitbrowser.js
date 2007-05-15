@@ -1767,6 +1767,101 @@ catch(e) {
 			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
+		eval('window.nsBrowserAccess.prototype.openURI = '+
+			window.nsBrowserAccess.prototype.openURI.toSource().replace(
+				/return newWindow/,
+				<><![CDATA[
+					var splitBrowserCheckToReopen = function(aTarget) {
+						var b = aTarget.localName == 'tab' ? aTarget.linkedBrowser : aTarget.gBrowser ;
+						var url = b.currentURI.spec;
+						if (url.indexOf('?') < 0 ||
+							!url.substring(url.indexOf('?')).match(/[\?\&\;](-moz-split-browser=(top|right|bottom|left))/i)) return;
+
+						var pos = SplitBrowser['POSITION_'+RegExp.$2.toUpperCase()];
+
+						var target = null;
+						var browsers = SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener);
+						if (browsers.subBrowser)
+							target = browsers.subBrowser;
+
+						if (aTarget.localName == 'tab') {
+							SplitBrowser.addSubBrowserFromTab(aTarget, pos, target, true);
+							return;
+						}
+
+						var referrer = null;
+						if (b.contentDocument.referrer)
+							referrer = Components.classes['@mozilla.org/network/io-service;1']
+									.getService(Components.interfaces.nsIIOService)
+									.newURI(b.contentDocument.referrer, null, null);
+
+						url = url.replace(RegExp.$1, '');
+						var subbrowser = SplitBrowser.addSubBrowser(url, target, pos);
+						var win = subbrowser.browser.docShell
+									.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+									.getInterface(Components.interfaces.nsIDOMWindow);
+						try {
+							win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+								.getInterface(Components.interfaces.nsIWebNavigation)
+								.loadURI(url, loadflags, referrer, null, null);
+						}
+						catch(e) {
+						}
+						aWindow.close();
+					};
+					var listener;
+					switch(aWhere)
+					{
+						case Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWWINDOW:
+							newWindow.addEventListener('load', function() {
+								newWindow.removeEventListener('load', arguments.callee, false);
+								newWindow.addEventListener('load', function() {
+									newWindow.removeEventListener('load', arguments.callee, true);
+									splitBrowserCheckToReopen(newWindow);
+								}, true);
+							}, false);
+							break;
+						case Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB:
+							if (url != 'about:blank') break;
+							var count = 0;
+							listener = {
+								last : 'about:blank',
+								onStateChange : function(aWebProgress, aRequest, aStateFlags, aStatus) {
+									const nsIWebProgressListener = Components.interfaces.nsIWebProgressListener;
+									if (aStateFlags & nsIWebProgressListener.STATE_STOP &&
+										aStateFlags & nsIWebProgressListener.STATE_IS_NETWORK) {
+										count++;
+										if (aWebProgress.DOMWindow.location.href != this.last) {
+											newTab.linkedBrowser.removeProgressListener(listener);
+											splitBrowserCheckToReopen(newTab);
+										}
+										else if (count > 2) {
+											newTab.linkedBrowser.removeProgressListener(listener);
+										}
+									}
+								},
+								onStatusChange : function() {},
+								onProgressChange : function() {},
+								onLocationChange : function() {},
+								onSecurityChange : function() {},
+								QueryInterface : function(aIID) {
+									if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+										aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+										aIID.equals(Components.interfaces.nsISupports))
+										return this;
+									throw Components.results.NS_NOINTERFACE;
+								}
+							};
+							newTab.linkedBrowser.addProgressListener(listener);
+							break;
+						default:
+							break;
+					}
+					return newWindow
+				]]></>
+			)
+		);
+
 		if (this.tabbedBrowsingEnabled) {
 			eval('window.nsBrowserAccess.prototype.openURI = '+
 				window.nsBrowserAccess.prototype.openURI.toSource().replace(
