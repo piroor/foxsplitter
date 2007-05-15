@@ -4,7 +4,8 @@
 
 function add()
 {
-	window.open(location.href+'?-moz-split-browser=TOP');
+	var pos = 'top,bottom,left,right'.split(',')[parseInt(Math.random() * 4)];
+	window.open(location.href+'?-moz-split-browser='+pos);
 }
 
 function remove()
