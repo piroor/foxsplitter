@@ -2021,7 +2021,6 @@ catch(e) {
  
 	handleEvent : function(aEvent) 
 	{
-dump(aEvent.type+'\n');
 		switch (aEvent.type)
 		{
 			case 'load':
@@ -2039,15 +2038,12 @@ dump(aEvent.type+'\n');
 				break;
 
 			case 'SubBrowserAddRequestFromInternal':
-alert('SubBrowserAddRequestFromInternal - internal');
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				var target = aEvent.originalTarget;
 				var win = !('nodeType' in target) ? target :
 						(target.nodeType == document.DOCUMENT_NODE) ? target.defaultView :
 						target.ownerDocument.defaultView;
-alert(win);
 				var b = this.getSubBrowserAndBrowserFromFrame(win);
-alert(b.browser);
 				if (!b.browser) return;
 				urlSecurityCheck(aEvent.targetURI, win.location.href);
 				this.addSubBrowser(aEvent.targetURI, b.subBrowser, aEvent.targetPosition);

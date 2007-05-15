@@ -611,7 +611,12 @@ sideBox.removeAttribute('style');
 						this.dispatchEvent(newEvent);
 					}
 				}
-				else {
+				else if (
+					this.mIsMouseOverTop ||
+					this.mIsMouseOverBottom ||
+					this.mIsMouseOverLeft ||
+					this.mIsMouseOverRight
+					) {
 					this.mIsMouseOverTop    = false;
 					this.mIsMouseOverBottom = false;
 					this.mIsMouseOverLeft   = false;
