@@ -5,7 +5,9 @@
 function add()
 {
 	var pos = 'top,bottom,left,right'.split(',')[parseInt(Math.random() * 4)];
+	document.documentElement.setAttribute('_moz-split-browser-to', pos);
 	window.open(location.href+'?-moz-split-browser='+pos);
+	document.documentElement.removeAttribute('_moz-split-browser-to');
 }
 
 function remove()
