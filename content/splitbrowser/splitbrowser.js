@@ -1791,7 +1791,7 @@ catch(e) {
 									.newURI(aOpener.location, null, null);
 
 						url = url.replace(RegExp.$1, '');
-						var subbrowser = SplitBrowser.addSubBrowser(url, target, pos);
+						var subbrowser = SplitBrowser.addSubBrowser(null, target, pos);
 						var win = subbrowser.browser.docShell
 									.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 									.getInterface(Components.interfaces.nsIDOMWindow);
