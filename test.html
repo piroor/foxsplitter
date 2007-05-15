@@ -9,6 +9,12 @@ function add()
 	window.open(location.href);
 	document.documentElement.removeAttribute('_moz-split-browser-to');
 }
+function addTab()
+{
+	document.documentElement.setAttribute('_moz-split-browser-to', 'tab');
+	window.open(location.href);
+	document.documentElement.removeAttribute('_moz-split-browser-to');
+}
 
 function remove()
 {
@@ -19,6 +25,7 @@ function remove()
 </script>
 
 <button onclick="add();">add</button>
+<button onclick="addTab();">addTab</button>
 <button onclick="remove();">remove</button>
 
 </html>

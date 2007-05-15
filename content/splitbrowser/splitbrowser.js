@@ -1771,24 +1771,24 @@ catch(e) {
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
 				<><![CDATA[
-					var pos;
-					if (aOpener &&
-						aOpener.document &&
-						aOpener.document.documentElement &&
-						(pos = aOpener.document.documentElement.getAttribute('_moz-split-browser-to')) &&
-						/^(top|right|bottom|left)$/i.test(pos)
-						) {
-						pos = SplitBrowser['POSITION_'+pos.toUpperCase()];
+					var pos = aOpener &&
+							aOpener.document &&
+							aOpener.document.documentElement &&
+							(pos = aOpener.document.documentElement.getAttribute('_moz-split-browser-to')) &&
+							/^(top|right|bottom|left|tab)$/i.test(pos) ? pos.toUpperCase() : null ;
+					if (pos && pos == 'TAB') {
+						aWhere = Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB;
+					}
+					else if (pos) {
+						pos = SplitBrowser['POSITION_'+pos];
 						var target = null;
 						var browsers = SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener);
 						if (browsers.subBrowser)
 							target = browsers.subBrowser;
 
-						var referrer = null;
-						if (aOpener)
-							referrer = Components.classes['@mozilla.org/network/io-service;1']
-									.getService(Components.interfaces.nsIIOService)
-									.newURI(aOpener.location, null, null);
+						var referrer = Components.classes['@mozilla.org/network/io-service;1']
+								.getService(Components.interfaces.nsIIOService)
+								.newURI(aOpener.location, null, null);
 
 						url = url.replace(RegExp.$1, '');
 						var subbrowser = SplitBrowser.addSubBrowser(null, target, pos);
