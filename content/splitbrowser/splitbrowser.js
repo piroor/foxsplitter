@@ -1734,7 +1734,9 @@ catch(e) {
 	init : function() 
 	{
 		document.documentElement.addEventListener('SubBrowserAddRequest', this, true);
+//		document.documentElement.addEventListener('SubBrowserAddRequestFromInternal', this, true);
 		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, true);
+//		document.documentElement.addEventListener('SubBrowserRemoveRequestFromInternal', this, true);
 		document.documentElement.addEventListener('SubBrowserAdded', this, true);
 		document.documentElement.addEventListener('SubBrowserRemoved', this, true);
 		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, true);
@@ -1811,9 +1813,6 @@ catch(e) {
 	 
 	updateTabBrowser : function(aBrowser) 
 	{
-//		aBrowser.addEventListener('SubBrowserAddRequestFromInternal', this, true);
-//		aBrowser.addEventListener('SubBrowserRemoveRequestFromInternal', this, true);
-
 		if (aBrowser.localName != 'tabbrowser') return;
 
 		var id = aBrowser.id || parseInt(Math.random() * 65000) ;
@@ -1846,9 +1845,6 @@ catch(e) {
  
 	destroyTabBrowser : function(aBrowser) 
 	{
-//		aBrowser.removeEventListener('SubBrowserAddRequestFromInternal', this, true);
-//		aBrowser.removeEventListener('SubBrowserRemoveRequestFromInternal', this, true);
-
 		if (aBrowser.localName != 'tabbrowser') return;
 
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
@@ -1986,7 +1982,9 @@ catch(e) {
 			this.save();
 
 		document.documentElement.removeEventListener('SubBrowserAddRequest', this, true);
+//		document.documentElement.removeEventListener('SubBrowserAddRequestFromInternal', this, true);
 		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, true);
+//		document.documentElement.removeEventListener('SubBrowserRemoveRequestFromInternal', this, true);
 		document.documentElement.removeEventListener('SubBrowserAdded', this, true);
 		document.documentElement.removeEventListener('SubBrowserRemoved', this, true);
 		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, true);
@@ -2023,6 +2021,7 @@ catch(e) {
  
 	handleEvent : function(aEvent) 
 	{
+dump(aEvent.type+'\n');
 		switch (aEvent.type)
 		{
 			case 'load':
@@ -2040,7 +2039,7 @@ catch(e) {
 				break;
 
 			case 'SubBrowserAddRequestFromInternal':
-alert('SubBrowserAddRequestFromInternal');
+alert('SubBrowserAddRequestFromInternal - internal');
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				var target = aEvent.originalTarget;
 				var win = !('nodeType' in target) ? target :

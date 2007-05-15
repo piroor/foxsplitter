@@ -10,7 +10,6 @@ function add()
 	newEvent.targetPosition = 2;
 	newEvent.targetURI = 'http://www.google.co.jp/';
 	document.dispatchEvent(newEvent);
-	alert(newEvent.type);
 }
 
 function remove()
@@ -18,8 +17,8 @@ function remove()
 	var newEvent = document.createEvent('Events');
 	newEvent.initEvent('SubBrowserRemoveRequestFromInternal', true, true);
 	document.dispatchEvent(newEvent);
-	alert(newEvent);
 }
+
 
 </script>
 
