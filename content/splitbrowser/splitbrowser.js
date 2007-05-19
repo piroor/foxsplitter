@@ -657,7 +657,7 @@ var SplitBrowser = {
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
 
 		var isAfter      = false;
-		var isHorizontal = (aAlign != this.TILE_HORIZONTAL);
+		var isHorizontal = (aAlign == this.TILE_HORIZONTAL);
 
 		var self = this;
 
@@ -671,7 +671,7 @@ var SplitBrowser = {
 		var horizontalMax   = (aAlign == this.TILE_2D) ? Math.ceil(Math.sqrt(tabs.length)) : -1 ;
 		var horizontalCount = 0;
 
-		if (shouldDoFiltering) {
+		if (shouldDoFiltering && horizontalMax > 0) {
 			horizontalMax = Math.ceil(Math.sqrt(
 				tabs.filter(function(aTab) { return MultipleTabService.isSelected(aTab); }).length
 			));
