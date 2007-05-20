@@ -351,15 +351,14 @@ var SplitBrowser = {
 
 		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
-		if (this.tabbedBrowsingEnabled)
+		if (aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
 			window.setTimeout(
 				this.duplicateBrowser,
 				0,
 				aTab.linkedBrowser,
 				browser.browser,
 				function() {
-					if (aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
-						b.removeTab(aTab);
+					b.removeTab(aTab);
 				}
 			);
 
