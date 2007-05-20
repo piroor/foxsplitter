@@ -1,0 +1,139 @@
+<!ENTITY splitbrowser.title           "Split Browser Beállítások">
+
+<!ENTITY splitbrowser.tab.general     "Általános">
+
+<!ENTITY splitbrowser.general.caption     "Általános">
+<!ENTITY splitbrowser.state.restore       "Felosztás állapotának mentése">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Automatikus előtérbe helyzés">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Előtérbe helyezés késleltetése ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ezredmásodperc">
+
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Felosztás&quot; gombok megjelenítése">
+<!ENTITY splitbrowser.show.addbuttons.hover    "Valós időben a lap szélén (kis késleltetéssel)">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Linkek, fájlok,... áthúzásakor (azonnal)">
+
+<!ENTITY splitbrowser.tab.caption   "Lap">
+<!ENTITY splitbrowser.tab.closetab  "Lap bezárása, ha új ablakban jelenik meg">
+
+
+<!ENTITY splitbrowser.tab.appearance     "Megjelenés">
+
+<!ENTITY splitbrowser.show.toolbar.always "A felosztott lapok eszköztára mindig látható">
+<!ENTITY splitbrowser.show.collapseexpand "Az &quot;Összecsukás&quot;/&quot;Kinyitás&quot; gomb megjelenítése a felosztott lapokon">
+<!ENTITY splitbrowser.tabs.autoHide "A fülek mindig láthatóak a felosztott lapokon">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "A navigációgombok mindig láthatóak a felosztott lapok eszköztárán">
+
+
+<!ENTITY splitbrowser.tab.menu              "Menü">
+<!ENTITY splitbrowser.show.menu             "&quot;Felosztás&quot; menü megjelenítése a menüsorban">
+<!ENTITY splitbrowser.show.context.caption  "Lapok helyi menüjének bővítése a következőkkel:">
+<!ENTITY splitbrowser.show.tab.context.split           "Ablak felosztása...">
+<!ENTITY splitbrowser.show.tab.context.tile            "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Lapok felosztása vízszintesen">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Lapok felosztása függőlegesen">
+<!ENTITY splitbrowser.show.tab.context.gather          "Felosztott ablakok összegyűjtése ide lapokként">
+
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "Felosztás fel">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "Felosztás le">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Felosztás jobbra">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Felosztás balra">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "Minden felosztott ablak bezárása">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.view.collapseAll.label     "Minden felosztott ablak összecsukása">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.view.expandAll.label       "Minden felosztott ablak kinyitása">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "y">
+
+<!ENTITY splitbrowser.add.label        "Ablak felosztása...">
+<!ENTITY splitbrowser.add.top.label    "Fel">
+<!ENTITY splitbrowser.add.bottom.label "Le">
+<!ENTITY splitbrowser.add.right.label  "Jobbra">
+<!ENTITY splitbrowser.add.left.label   "Balra">
+
+<!ENTITY splitbrowser.frame.add.label        "Ablak felosztása innen...">
+<!ENTITY splitbrowser.frame.add.top.label    "Fel">
+<!ENTITY splitbrowser.frame.add.bottom.label "Le">
+<!ENTITY splitbrowser.frame.add.right.label  "Jobbra">
+<!ENTITY splitbrowser.frame.add.left.label   "Balra">
+
+<!ENTITY splitbrowser.link.add.label        "Megnyitás új felosztott ablakban">
+<!ENTITY splitbrowser.link.add.top.label    "Fel">
+<!ENTITY splitbrowser.link.add.bottom.label "Le">
+<!ENTITY splitbrowser.link.add.right.label  "Jobbra">
+<!ENTITY splitbrowser.link.add.left.label   "Balra">
+
+<!ENTITY splitbrowser.tab.add.label        "Lap felosztása...">
+<!ENTITY splitbrowser.tab.add.top.label    "Fel">
+<!ENTITY splitbrowser.tab.add.bottom.label "Le">
+<!ENTITY splitbrowser.tab.add.right.label  "Jobbra">
+<!ENTITY splitbrowser.tab.add.left.label   "Balra">
+
+
+
+
+<!ENTITY splitbrowser.tab.tile.label         "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Lapok felosztása vízszintesen">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Lapok felosztása függőlegesen">
+<!ENTITY splitbrowser.tab.gather.label           "Felosztott ablakok összegyűjtése ide lapokként">
+
+
+
+
+<!ENTITY splitbrowser.menu.label     "Felosztás">
+<!ENTITY splitbrowser.menu.accesskey "L">
+<!ENTITY splitbrowser.menu.removeAll.label "Minden felosztott ablak bezárása">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.collapseAll.label     "Minden felosztott ablak összecsukása">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
+<!ENTITY splitbrowser.menu.expandAll.label       "Minden felosztott ablak kinyitása">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "y">
+<!ENTITY splitbrowser.menu.add.label             "Jelenlegi lap felosztása...">
+<!ENTITY splitbrowser.menu.add.top.label         "Fel">
+<!ENTITY splitbrowser.menu.add.bottom.label      "Le">
+<!ENTITY splitbrowser.menu.add.right.label       "Jobbra">
+<!ENTITY splitbrowser.menu.add.left.label        "Balra">
+<!ENTITY splitbrowser.menu.tile.label         "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.menu.tile.accesskey     "t">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Lapok felosztása vízszintesen">
+<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "V">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Lapok felosztása függőlegesen">
+<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "F">
+<!ENTITY splitbrowser.menu.gather.label               "Felosztott ablakok összegyűjtése ide lapokként">
+<!ENTITY splitbrowser.menu.gather.accesskey           "G">
+
+
+
+<!ENTITY multipletab.tile.label                "Felosztás egymás mellé">
+<!ENTITY multipletab.tile.horizontal.label     "Vízszintesen">
+<!ENTITY multipletab.tile.vertical.label       "Függőlegesen">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(Üres)">
+<!ENTITY splitbrowser.subbrowser.loading           "Betöltés...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Vissza">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Előre">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Újratöltés">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Megállítás">
+<!ENTITY splitbrowser.subbrowser.go.label          "Indulás">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "Betöltés">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Összecsukás">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Kinyitás">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "Bezár">
+
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Új lap">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Összecsukás">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Kinyitás">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Bezár">
+
+
+<!ENTITY splitbrowser.button.collapseAll.label   "Összecsukás">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Minden felosztott ablak összecsukása">
+<!ENTITY splitbrowser.button.expandAll.label     "Kinyitás">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Minden felosztott ablak kinyitása">
+<!ENTITY splitbrowser.button.removeAll.label      "Mindegyik bezárása">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "Minden felosztott ablak bezárása">
