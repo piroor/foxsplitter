@@ -270,6 +270,7 @@ var SplitBrowser = {
   
 	updateMenu : function(aPopup) 
 	{
+		this.updateMultipleTabsState();
 	},
  
 	updateMultipleTabsState : function() 
