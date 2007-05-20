@@ -18,6 +18,7 @@
 
 <!ENTITY splitbrowser.tab.appearance     "Megjelenés">
 
+
 <!ENTITY splitbrowser.show.toolbar.always "A felosztott lapok eszköztára mindig látható">
 <!ENTITY splitbrowser.show.collapseexpand "Az &quot;Összecsukás&quot;/&quot;Kinyitás&quot; gomb megjelenítése a felosztott lapokon">
 <!ENTITY splitbrowser.tabs.autoHide "A fülek mindig láthatóak a felosztott lapokon">
@@ -28,7 +29,7 @@
 <!ENTITY splitbrowser.show.menu             "&quot;Felosztás&quot; menü megjelenítése a menüsorban">
 <!ENTITY splitbrowser.show.context.caption  "Lapok helyi menüjének bővítése a következőkkel:">
 <!ENTITY splitbrowser.show.tab.context.split           "Ablak felosztása...">
-<!ENTITY splitbrowser.show.tab.context.tile            "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.show.tab.context.tile            "Lapok mozaikszerű felosztása">
 <!ENTITY splitbrowser.show.tab.context.tile.horizontal "Lapok felosztása vízszintesen">
 <!ENTITY splitbrowser.show.tab.context.tile.vertical   "Lapok felosztása függőlegesen">
 <!ENTITY splitbrowser.show.tab.context.gather          "Felosztott ablakok összegyűjtése ide lapokként">
@@ -75,7 +76,7 @@
 
 
 
-<!ENTITY splitbrowser.tab.tile.label         "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.tab.tile.label         "Lapok mozaikszerű felosztása">
 <!ENTITY splitbrowser.tab.tile.horizontal.label "Lapok felosztása vízszintesen">
 <!ENTITY splitbrowser.tab.tile.vertical.label   "Lapok felosztása függőlegesen">
 <!ENTITY splitbrowser.tab.gather.label           "Felosztott ablakok összegyűjtése ide lapokként">
@@ -96,7 +97,7 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "Le">
 <!ENTITY splitbrowser.menu.add.right.label       "Jobbra">
 <!ENTITY splitbrowser.menu.add.left.label        "Balra">
-<!ENTITY splitbrowser.menu.tile.label         "Lapok felosztása egymás mellé">
+<!ENTITY splitbrowser.menu.tile.label         "Lapok mozaikszerű felosztása">
 <!ENTITY splitbrowser.menu.tile.accesskey     "t">
 <!ENTITY splitbrowser.menu.tile.horizontal.label     "Lapok felosztása vízszintesen">
 <!ENTITY splitbrowser.menu.tile.horizontal.accesskey "V">
@@ -107,7 +108,7 @@
 
 
 
-<!ENTITY multipletab.tile.label                "Felosztás egymás mellé">
+<!ENTITY multipletab.tile.label                "Mozaikszerű felosztás">
 <!ENTITY multipletab.tile.horizontal.label     "Vízszintesen">
 <!ENTITY multipletab.tile.vertical.label       "Függőlegesen">
 
@@ -131,6 +132,12 @@
 <!ENTITY splitbrowser.subbrowser.menu.close        "Bezár">
 
 
+<!ENTITY splitbrowser.button.menu.label          "Felosztás">
+<!ENTITY splitbrowser.button.menu.tooltip        "Böngésző terület felosztása">
+<!ENTITY splitbrowser.button.tile.label          "Mozaik">
+<!ENTITY splitbrowser.button.tile.tooltip        "Összes lap mozaikszerű felosztása">
+<!ENTITY splitbrowser.button.gather.label        "Összegyűjtés">
+<!ENTITY splitbrowser.button.gather.tooltip      "Felosztott ablakok összegyűjtése lapokként">
 <!ENTITY splitbrowser.button.collapseAll.label   "Összecsukás">
 <!ENTITY splitbrowser.button.collapseAll.tooltip "Minden felosztott ablak összecsukása">
 <!ENTITY splitbrowser.button.expandAll.label     "Kinyitás">
