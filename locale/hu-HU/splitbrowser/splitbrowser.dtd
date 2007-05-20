@@ -4,7 +4,7 @@
 
 <!ENTITY splitbrowser.general.caption     "Általános">
 <!ENTITY splitbrowser.state.restore       "Felosztás állapotának mentése">
-<!ENTITY splitbrowser.subbrowser.autoFocus "Automatikus előtérbe helyzés">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Automatikus előtérbe helyezés">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Előtérbe helyezés késleltetése ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ezredmásodperc">
 
