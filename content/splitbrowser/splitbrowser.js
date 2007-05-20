@@ -41,6 +41,7 @@ var SplitBrowser = {
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
 	POSITION_BOTTOM : 8,
+	POSITION_TAB    : 16,
 
 	POSITION_HORIZONAL : 3,
 	POSITION_VERTICAL  : 12,
@@ -1734,9 +1735,9 @@ catch(e) {
 	init : function() 
 	{
 		document.documentElement.addEventListener('SubBrowserAddRequest', this, true);
-//		document.documentElement.addEventListener('SubBrowserAddRequestFromInternal', this, true);
+		document.documentElement.addEventListener('SubBrowserAddRequestFromContent', this, true, true);
 		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, true);
-//		document.documentElement.addEventListener('SubBrowserRemoveRequestFromInternal', this, true);
+		document.documentElement.addEventListener('SubBrowserRemoveRequestFromContent', this, true, true);
 		document.documentElement.addEventListener('SubBrowserAdded', this, true);
 		document.documentElement.addEventListener('SubBrowserRemoved', this, true);
 		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, true);
@@ -2026,9 +2027,9 @@ catch(e) {
 			this.save();
 
 		document.documentElement.removeEventListener('SubBrowserAddRequest', this, true);
-//		document.documentElement.removeEventListener('SubBrowserAddRequestFromInternal', this, true);
+		document.documentElement.removeEventListener('SubBrowserAddRequestFromContent', this, true);
 		document.documentElement.removeEventListener('SubBrowserRemoveRequest', this, true);
-//		document.documentElement.removeEventListener('SubBrowserRemoveRequestFromInternal', this, true);
+		document.documentElement.removeEventListener('SubBrowserRemoveRequestFromContent', this, true);
 		document.documentElement.removeEventListener('SubBrowserAdded', this, true);
 		document.documentElement.removeEventListener('SubBrowserRemoved', this, true);
 		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, true);
@@ -2069,19 +2070,24 @@ catch(e) {
 		{
 			case 'load':
 				this.init();
-				break;
+				return;
 
 			case 'unload':
 				this.destroy();
-				break;
+				return;
 
 
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.addSubBrowser(aEvent.targetURI, aEvent.targetSubBrowser, aEvent.targetPosition);
-				break;
+				return;
 
-			case 'SubBrowserAddRequestFromInternal':
+			case 'SubBrowserAddRequestFromContent':
+				var cmdEvent = aEvent.sourceEvent;
+				if (!cmdEvent ||
+					cmdEvent.type.indexOf('SubBrowserAddRequest') != 0)
+					return;
+
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				var target = aEvent.originalTarget;
 				var win = !('nodeType' in target) ? target :
@@ -2089,18 +2095,31 @@ catch(e) {
 						target.ownerDocument.defaultView;
 				var b = this.getSubBrowserAndBrowserFromFrame(win);
 				if (!b.browser) return;
-				urlSecurityCheck(aEvent.targetURI, win.location.href);
-				this.addSubBrowser(aEvent.targetURI, b.subBrowser, aEvent.targetPosition);
-				break;
 
+				var type = cmdEvent.type;
+				var uri = type.match(/ur[li]\s*=\s*([^\&\;]*)/i) ? decodeURIComponent(RegExp.$1) : 'about:blank' ;
+				urlSecurityCheck(uri, win.location.href);
+
+				if (!type.match(/pos(ition)?\s*=\s*(top|right|bottom|left|tab)/i)) return;
+				var pos = this['POSITION_'+RegExp.$2.toUpperCase()];
+				if (pos == this.POSITION_TAB) {
+					var browser = (b.browser.localName == 'tabbrowser') ? b.browser : gBrowser ;
+					var tab = browser.addTab(uri) ;
+					if (!this.getBoolPref('browser.tabs.loadInBackground'))
+						browser.selectedTab = tab;
+				}
+				else {
+					this.addSubBrowser(uri, b.subBrowser, pos);
+				}
+				return;
 
 			case 'SubBrowserRemoveRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.destroyTabBrowser((aEvent.originalTarget || aEvent.target).browser);
 				this.removeSubBrowser(aEvent.originalTarget || aEvent.target);
-				break;
+				return;
 
-			case 'SubBrowserRemoveRequestFromInternal':
+			case 'SubBrowserRemoveRequestFromContent':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				var target = aEvent.originalTarget;
 				var win = !('nodeType' in target) ? target :
@@ -2109,7 +2128,7 @@ catch(e) {
 				var b = this.getSubBrowserAndBrowserFromFrame(win);
 				if (b.subBrowser)
 					this.removeSubBrowser(b.subBrowser);
-				break;
+				return;
 
 
 			case 'SubBrowserAdded':
@@ -2118,34 +2137,34 @@ catch(e) {
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':
 				this.updateStatus();
-				break;
+				return;
 
 			case 'SubBrowserEnterContentAreaEdge':
 				this.showAddButton(aEvent);
-				break;
+				return;
 
 			case 'SubBrowserExitContentAreaEdge':
 //				this.hideAddButton(aEvent);
 				this.delayedHideAddButton();
-				break;
+				return;
 
 			case 'SubBrowserFocusMoved':
 				this.updateFindBar(aEvent);
 				this.updateMultipleTabsState();
-				break;
+				return;
 
 			case 'TabOpen':
 			case 'TabClose':
 				window.setTimeout('SplitBrowser.updateMultipleTabsState();', 0);
-				break;
+				return;
 
 			case 'resize':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
-				break;
+				return;
 
 			case 'fullscreen':
 				window.setTimeout('SplitBrowser.toggleFullScreen();', 0);
-				break;
+				return;
 
 			case 'popupshowing':
 				if (aEvent.target.id == 'contentAreaContextMenu') {
@@ -2158,7 +2177,7 @@ catch(e) {
 				else {
 					this.updateMenu(aEvent.target);
 				}
-				break;
+				return;
 		}
 	},
 	toggleFullScreen : function()
