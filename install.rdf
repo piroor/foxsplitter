@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 	 xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 	<Description about="urn:mozilla:install-manifest">
@@ -25,7 +25,7 @@
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
 		<em:translator>sushizang (ko-KR locale)</em:translator>
 		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszman Istvan (hu-HU locale)</em:translator>
+		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
 		<em:homepageURL>http://piro.sakura.ne.jp/xul/_splitbrowser.html.en</em:homepageURL>
 		<em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
 
