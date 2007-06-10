@@ -108,9 +108,9 @@
 
 
 
-<!ENTITY multipletab.tile.label                "Mozaikszerű felosztás">
-<!ENTITY multipletab.tile.horizontal.label     "Vízszintesen">
-<!ENTITY multipletab.tile.vertical.label       "Függőlegesen">
+<!ENTITY multipletab.tile.label                "Lapok mozaikszerű felosztása">
+<!ENTITY multipletab.tile.horizontal.label     "Lapok felosztása vízszintesen">
+<!ENTITY multipletab.tile.vertical.label       "Lapok felosztása függőlegesen">
 
 
 
