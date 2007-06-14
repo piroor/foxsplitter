@@ -1525,7 +1525,8 @@ try{
 				return null;
 
 			var sourceDoc = aDragSession.sourceDocument;
-			if (sourceDoc) {
+			if (sourceDoc &&
+				sourceDoc.documentURI.indexOf('chrome://') < 0) {
 				var sourceURI = sourceDoc.documentURI;
 				const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
 				var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
@@ -1534,7 +1535,7 @@ try{
 				}
 				catch(e) {
 					aEvent.stopPropagation();
-					throw 'Drop of ' + uri + ' denied.';
+					throw sourceURI+'\nDrop of ' + uri + ' denied.';
 				}
 			}
 
