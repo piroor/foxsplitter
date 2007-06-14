@@ -351,16 +351,13 @@ var SplitBrowser = {
 
 		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
-		if (aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab'))
-			window.setTimeout(
-				this.duplicateBrowser,
-				0,
-				aTab.linkedBrowser,
-				browser.browser,
-				function() {
-					b.removeTab(aTab);
-				}
-			);
+		window.setTimeout(
+			this.duplicateBrowser,
+			0,
+			aTab.linkedBrowser,
+			browser.browser,
+			((aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab')) ? function() { b.removeTab(aTab); } : null )
+		);
 
 		return browser;
 	},
