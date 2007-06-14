@@ -644,10 +644,8 @@ sideBox.removeAttribute('style');
 					this.handleMouseOverEvent(aEvent, isSubBrowser);
 					var check = this.checkEventFiredOnEdge(aEvent, isSubBrowser);
 					if (!check) return;
-
 					if (
 						SplitBrowser.isLinux &&
-						SplitBrowser.addButton.targetBrowser == this &&
 						(
 							check.isTop ||
 							check.isBottom ||
@@ -656,6 +654,7 @@ sideBox.removeAttribute('style');
 						)
 						) {
 						session.canDrop = true;
+						aEvent.stopPropagation();
 					}
 				}
 			]]></body>
