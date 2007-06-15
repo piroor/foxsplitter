@@ -1512,8 +1512,8 @@ alert(e+'\n\n'+state);
  
 	getURIFromDragData : function(aXferData, aDragSession, aEvent) 
 	{
+		var uri = null;
 try{
-		var uri;
 		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
 			uri = aXferData.data;
 		}
@@ -1555,7 +1555,7 @@ catch(e) {
 		newEvent.initEvent('SubBrowserAddRequest', false, true);
 
 		var button = this.addButton;
-		var browser = button.targetSubBrowser;
+		var browser = button.targetSubBrowser || this.mainBrowserBox;
 
 		newEvent.targetSubBrowser = browser;
 		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');

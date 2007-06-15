@@ -646,6 +646,7 @@ sideBox.removeAttribute('style');
 					if (!check) return;
 					if (
 						SplitBrowser.isLinux &&
+						SplitBrowser.addButton.targetSubBrowser == this &&
 						(
 							check.isTop ||
 							check.isBottom ||
