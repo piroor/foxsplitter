@@ -55,8 +55,26 @@ var SplitBrowser = {
 	},
 	splitters : {},
  
+	NSResolver : { 
+		lookupNamespaceURI : function(aPrefix)
+		{
+			switch (aPrefix)
+			{
+				case 'xul':
+					return 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
+				case 'html':
+				case 'xhtml':
+					return 'http://www.w3.org/1999/xhtml';
+				case 'xlink':
+					return 'http://www.w3.org/1999/xlink';
+				default:
+					return '';
+			}
+		}
+	},
+ 
 /* utilities */ 
-	 
+	
 	makeURIFromSpec : function(aURI) 
 	{
 		try {
@@ -873,13 +891,13 @@ var SplitBrowser = {
 	},
   
 /* save / load */ 
-	
+	 
 	save : function() 
 	{
 		var state = this.getContainerState(document.getElementById('appcontent'));
 		nsPreferences.setUnicharPref('splitbrowser.state', state.toSource());
 	},
-	
+	 
 	getContainerState : function(aContainer) 
 	{
 		var state = {};
@@ -1003,7 +1021,8 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeSubBrowserState : function(aBrowser) { 
+	serializeSubBrowserState : function(aBrowser) 
+	{
 		var state = this.serializeBrowserState(aBrowser.browser);
 
 		state.uri         = aBrowser.src;
@@ -1015,7 +1034,8 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeBrowserState : function(aBrowser) { 
+	serializeBrowserState : function(aBrowser) 
+	{
 		var state = {
 				textZoom    : [aBrowser.markupDocumentViewer.textZoom],
 				histories   : this.serializeBrowserSessionHistories(aBrowser)
@@ -1035,7 +1055,22 @@ var SplitBrowser = {
 		return state;
 	},
  
-	serializeBrowserSessionHistories : function(aBrowser) { 
+	// maximal amount of POSTDATA to be stored (in bytes, -1 = all of it) 
+	DEFAULT_POSTDATA : 0,
+ 
+	// on which sites to save text data, POSTDATA and cookies 
+	// (0 = everywhere, 1 = unencrypted sites, 2 = nowhere) default = 1
+	PRIVACY_NONE      : 0,
+	PRIVACY_ENCRYPTED : 1,
+	PRIVACY_FULL      : 2,
+ 
+	checkPrivacyLevel : function sss_checkPrivacyLevel(aIsHTTPS) 
+	{
+		return nsPreferences.getIntPref('sessionstore.privacy_level', this.PRIVACY_ENCRYPTED) < (aIsHTTPS ? this.PRIVACY_ENCRYPTED : this.PRIVACY_FULL );
+	},
+ 
+	serializeBrowserSessionHistories : function(aBrowser) 
+	{
 		var histories = [];
 		if (aBrowser.localName == 'tabbrowser') {
 			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
@@ -1048,7 +1083,7 @@ var SplitBrowser = {
 		}
 		return histories
 	},
-	
+	 
 	serializeSessionHistory : function(aBrowser) 
 	{
 		var SH = null;
@@ -1064,19 +1099,38 @@ var SplitBrowser = {
 			y       = {},
 			content;
 		if (SH)
-			for (i = 0; i < SH.count; i++)
+			for (var i = 0, maxi = SH.count; i < maxi; i++)
 			{
 				entry = this.serializeHistoryEntry(SH.getEntryAtIndex(i, false));
-				if (entry)
+				if (entry) {
+					if (i == SH.index)
+						this.storePosition(aBrowser.contentWindow, entry);
 					entries.push(entry);
+				}
 			}
 
 		return {
-			entries : entries,
-			index   : (SH ? SH.index : -1 )
+			entries   : entries,
+			index     : (SH ? SH.index : -1 ),
+			userInput : this.serializeUserInput(aBrowser.contentWindow)
 		};
 	},
-	
+	 
+	storePosition : function(aFrame, aEntry) 
+	{
+		aEntry.x = aFrame.scrollX;
+		aEntry.y = aFrame.scrollY;
+
+		var frames = aFrame.frames;
+		if (frames.length && aEntry.children && aEntry.children.length) {
+			for (var i = 0, maxi = frames.length; i < maxi; i++)
+			{
+				if (i in aEntry.children)
+					this.storePosition(frames[i], aEntry.children[i]);
+			}
+		}
+	},
+ 
 	serializeHistoryEntry : function(aEntry) 
 	{
 		if (!aEntry) return null;
@@ -1097,12 +1151,30 @@ var SplitBrowser = {
 			children   : []
 		};
 
-		// get post data
 		if ('cacheKey' in aEntry && aEntry.cacheKey) {
 			data.cacheKey = aEntry.cacheKey.QueryInterface(Components.interfaces.nsISupportsPRUint32).data;
 		}
 		else {
 			data.cacheKey = 0;
+		}
+
+		// get post data
+		try {
+			var prefPostdata = nsPreferences.getIntPref('sessionstore.postdata', this.DEFAULT_POSTDATA);
+			if (prefPostdata && aEntry.postData && this.checkPrivacyLevel(aEntry.URI.schemeIs('https'))) {
+				aEntry.postData
+						.QueryInterface(Components.interfaces.nsISeekableStream)
+						.seek(Components.interfaces.nsISeekableStream.NS_SEEK_SET, 0);
+				var stream = Components.classes['@mozilla.org/scriptableinputstream;1']
+						.createInstance(Components.interfaces.nsIScriptableInputStream);
+				stream.init(aEntry.postData);
+				var postdata = stream.read(stream.available());
+				if (prefPostdata == -1 || postdata.replace(/^(Content-.*\r\n)+(\r\n)*/, '').length <= prefPostdata) {
+					data.postdata = postdata;
+				}
+			}
+		}
+		catch (e) {
 		}
 
 		var children = [];
@@ -1119,7 +1191,92 @@ var SplitBrowser = {
 		}
 		return data;
 	},
-    
+ 
+	serializeUserInput : function(aFrame) 
+	{
+		var data = {};
+
+		var isHTTPS = aFrame.location.href.indexOf('https://') == 0;
+
+		if ((aFrame.document.designMode || '') == 'on') {
+			if (this.checkPrivacyLevel(isHTTPS))
+				data.innerHTML = aFrame.document.body.innerHTML;
+		}
+		else if (this.checkPrivacyLevel(isHTTPS)) {
+			try {
+				var xpathResult = aFrame.document.evaluate(
+						'descendant::xul:textbox | descendant::*[local-name() = "input" or local-name() = "INPUT" or local-name() = "textarea" or local-name() = "TEXTAREA"]',
+						aFrame.document,
+						this.NSResolver,
+						XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+						null
+					);
+				if (xpathResult.snapshotLength) {
+					var text = [];
+					var node;
+					for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+					{
+						node = xpathResult.snapshotItem(i);
+						if (node.wrappedJSObject) node = node.wrappedJSObject;
+						switchByName:
+						switch (node.localName.toLowerCase())
+						{
+							case 'input':
+								if (/^(true|readonly|disabled)$/i.test(node.getAttribute('readonly') || node.getAttribute('disabled') || ''))
+										break switchByName;
+
+								switchByType:
+								switch ((node.getAttribute('type') || '').toLowerCase())
+								{
+									case 'checkbox':
+										text.push((node.id ? '#id:'+encodeURIComponent(node.id) : '#name:'+encodeURIComponent(node.name) )+'='+(node.checked ? true : false ));
+										break switchByName;
+
+									case 'radio':
+										if (node.checked )
+											text.push('#name:'+encodeURIComponent(node.name)+'='+encodeURIComponent(node.value));
+										break switchByName;
+
+									case 'submit':
+									case 'reset':
+									case 'button':
+									case 'image':
+										break switchByName;
+
+									default:
+										break switchByType;
+								}
+							case 'textbox':
+							case 'textarea':
+								if (node.value)
+									text.push((node.id ? '#id:'+encodeURIComponent(node.id) : '#name:'+encodeURIComponent(node.name) )+'='+encodeURIComponent(node.value));
+								break;
+
+							default:
+								break;
+						}
+					}
+					if (text.length)
+						data.text = text.join(' ');
+				}
+			}
+			catch(e) {
+dump(e+'\n');
+			}
+		}
+
+		var frames = aFrame.frames;
+		if (frames.length) {
+			data.children = [];
+			for (var i = 0, maxi = frames.length; i < maxi; i++)
+			{
+				data.children.push(this.serializeUserInput(frames[i]));
+			}
+		}
+
+		return data;
+	},
+  	  
 	load : function() 
 	{
 		var state = nsPreferences.copyUnicharPref('splitbrowser.state');
@@ -1134,7 +1291,7 @@ alert(e+'\n\n'+state);
 
 		this.buildContent(state, document.getElementById('appcontent'));
 	},
-	
+	 
 	buildContent : function(aState, aContainer) 
 	{
 		var content;
@@ -1254,13 +1411,20 @@ alert(e+'\n\n'+state);
 		if (aCallback && typeof aCallback == 'function')
 			aCallback();
 	},
-	
+	 
 	deserializeSessionHistory : function(aBrowser, aData) 
 	{
 		var SHInternal = aBrowser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
 		aData.entries.forEach(function(aEntry) {
 			SHInternal.addEntry(SplitBrowser.deserializeSessionHistoryEntry(aEntry), true);
 		});
+
+		aBrowser.addEventListener('DOMContentLoaded', function() {
+			aBrowser.removeEventListener('DOMContentLoaded', arguments.callee, false);
+			SplitBrowser.restorePosition(aBrowser.contentWindow, aData.entries[aData.index]);
+			SplitBrowser.deserializeUserInput(aBrowser.contentWindow, aData.userInput);
+		}, false);
+
 		try {
 			aBrowser.gotoIndex(aData.index);
 		}
@@ -1269,6 +1433,20 @@ alert(e+'\n\n'+state);
 				aBrowser.gotoIndex(aBrowser.sessionHistory.count-1);
 			}
 			catch(ex) { // when there is no history, do nothing
+			}
+		}
+	},
+	 
+	restorePosition : function(aFrame, aEntry) 
+	{
+		aFrame.scrollTo(aEntry.x, aEntry.y);
+
+		var frames = aFrame.frames;
+		if (frames.length && aData.children && aData.children.length) {
+			for (var i = 0, maxi = frames.length; i < maxi; i++)
+			{
+				if (i in aData.children)
+					this.restorePosition(frames[i], aEntry.children[i]);
 			}
 		}
 	},
@@ -1296,6 +1474,13 @@ alert(e+'\n\n'+state);
 			entry.expirationStatus = 'expirationStatus' in aData ? aData.expirationStatus : null ;
 		}
 
+		if ('postdata' in aData && aData.postdata) {
+			var stream = Components.classes['@mozilla.org/io/string-input-stream;1']
+					.createInstance(Components.interfaces.nsIStringInputStream);
+			stream.setData(aEntry.postdata, -1);
+			entry.postData = stream;
+		}
+
 		if (!aData.children || !aData.children.length) return entry;
 
 		entry = entry.QueryInterface(Components.interfaces.nsISHContainer);
@@ -1305,7 +1490,117 @@ alert(e+'\n\n'+state);
 
 		return entry;
 	},
-    
+ 
+	deserializeUserInput : function(aFrame, aData) 
+	{
+		var isHTTPS = aFrame.location.href.indexOf('https://') == 0;
+
+		if (aData.innerHTML) {
+			aFrame.document.body.innerHTML = data.innerHTML;
+		}
+		else if (aData.text) {
+			try {
+				var xpathResult = aFrame.document.evaluate(
+						'descendant::xul:textbox | descendant::*[local-name() = "input" or local-name() = "INPUT" or local-name() = "textarea" or local-name() = "TEXTAREA"]',
+						aFrame.document,
+						this.NSResolver,
+						XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+						null
+					);
+				if (xpathResult.snapshotLength) {
+					var node;
+					var pos;
+					var data;
+					for (var i = 0, maxi = xpathResult.snapshotLength; i < maxi; i++)
+					{
+						node = xpathResult.snapshotItem(i);
+						if (node.wrappedJSObject) node = node.wrappedJSObject;
+						switchByName:
+						switch (node.localName.toLowerCase())
+						{
+							case 'input':
+								if (/^(true|readonly|disabled)$/i.test(node.getAttribute('readonly') || node.getAttribute('disabled') || ''))
+										break switchByName;
+
+								switchByType:
+								switch ((node.getAttribute('type') || '').toLowerCase())
+								{
+									case 'checkbox':
+										if (
+											(node.id && (pos = aData.text.indexOf('#id:'+encodeURIComponent(node.id)+'=')) > -1) ||
+											(node.name && (pos = aData.text.indexOf('#name:'+encodeURIComponent(node.name))) > -1)
+											) {
+											data = aData.text.substring(pos);
+											if ((pos = data.indexOf(' ')) > -1)
+												data = data.substring(data.indexOf('=')+1, pos);
+											else
+												data = data.substring(data.indexOf('=')+1, data.length);
+											node.checked = (data == 'true');
+										}
+										break switchByName;
+
+									case 'radio':
+										if (
+											(node.name && (pos = aData.text.indexOf('#name:'+encodeURIComponent(node.name)+'='+encodeURIComponent(node.value))) > -1)
+											) {
+											if ((pos = aData.text.indexOf(' ')) > -1)
+												data = data.substring(data.indexOf('=')+1, pos);
+											else
+												data = data.substring(data.indexOf('=')+1, data.length);
+											if (decodeURIComponent(data) == node.value)
+												node.checked = true;
+											else
+												node.checked = false;
+										}
+										else
+											node.checked = false;
+										break switchByName;
+
+									case 'submit':
+									case 'reset':
+									case 'button':
+									case 'image':
+										break switchByName;
+
+									default:
+										break switchByType;
+								}
+
+							case 'textbox':
+							case 'textarea':
+								if (
+									(node.id && (pos = aData.text.indexOf('#id:'+encodeURIComponent(node.id)+'=')) > -1) ||
+									(node.name && (pos = aData.text.indexOf('#name:'+encodeURIComponent(node.name)+'=')) > -1)
+									) {
+									data = aData.text.substring(pos);
+									if ((pos = data.indexOf(' ')) > -1)
+										data = data.substring(data.indexOf('=')+1, pos);
+									else
+										data = data.substring(data.indexOf('=')+1, data.length);
+									node.value = decodeURIComponent(data);
+								}
+								break;
+
+							default:
+								break;
+						}
+					}
+				}
+			}
+			catch(e) {
+			}
+		}
+
+		var frames = aFrame.frames;
+		if (frames.length && aData.children && aData.children.length) {
+			for (var i = 0, maxi = frames.length; i < maxi; i++)
+			{
+				if (i in aData.children)
+					this.deserializeUserInput(frames[i], aData.children[i]);
+			}
+		}
+	},
+     
 /* popup-buttons */ 
 	addButtonIsShown : false,
 	
@@ -1853,7 +2148,7 @@ catch(e) {
 			window.setTimeout('SplitBrowser.load();', 0);
 		}
 	},
-	 
+	
 	updateTabBrowser : function(aBrowser) 
 	{
 		if (aBrowser.localName != 'tabbrowser') return;
@@ -2018,7 +2313,7 @@ catch(e) {
 
 		return this.__splitbrowser__handleLinkClick.apply(this, arguments);
 	},
-  	
+  
 	destroy : function() 
 	{
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
