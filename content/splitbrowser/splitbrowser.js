@@ -74,7 +74,7 @@ var SplitBrowser = {
 	},
  
 /* utilities */ 
-	
+	 
 	makeURIFromSpec : function(aURI) 
 	{
 		try {
@@ -213,7 +213,7 @@ var SplitBrowser = {
 		return val;
 	},
 	_mFocusedSubBrowser : null,
-	 
+	
 	get activeBrowser() 
 	{
 		var b = this.activeSubBrowser;
@@ -301,7 +301,25 @@ var SplitBrowser = {
 		else
 			tabBroadcaster.setAttribute('disabled', true);
 	},
-  
+ 
+	fireSubBrowserAddRequestEvent : function(aURI, aBrowser, aPosition, aShouldDuplicate, aEventTarget) 
+	{
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
+
+		var appcontent = document.getElementById('appcontent');
+
+		if (!aBrowser)
+			aBrowser = this.mainBrowserBox;
+
+		newEvent.targetSubBrowser = aBrowser;
+		newEvent.targetContainer  = aBrowser.parentContainer || appcontent;
+		newEvent.targetPosition   = aPosition;
+		newEvent.targetURI        = aURI;
+		newEvent.shouldDuplicate  = aShouldDuplicate;
+		(aEventTarget || appcontent).dispatchEvent(newEvent);
+	},
+ 	 
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
@@ -1276,7 +1294,7 @@ dump(e+'\n');
 
 		return data;
 	},
-  	  
+    
 	load : function() 
 	{
 		var state = nsPreferences.copyUnicharPref('splitbrowser.state');
@@ -1746,16 +1764,8 @@ alert(e+'\n\n'+state);
   
 	onAddButtonCommand : function(aEvent) 
 	{
-		var newEvent = document.createEvent('Events');
-		newEvent.initEvent('SubBrowserAddRequest', false, true);
-
 		var browser   = aEvent.target.targetSubBrowser;
-		newEvent.targetSubBrowser = browser;
-		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
-		newEvent.targetPosition = SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()];
-		newEvent.targetURI = browser.src;
-		aEvent.target.dispatchEvent(newEvent);
-
+		this.fireSubBrowserAddRequestEvent(browser.src, browser, SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()], true, aEvent.target);
 		window.setTimeout('SplitBrowser.hideAddButton()', 0);
 	},
  
@@ -1770,7 +1780,9 @@ alert(e+'\n\n'+state);
 			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 			if (!uri) return;
 
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri);
+			var isTabDrag = (aDragSession.sourceNode && aDragSession.sourceNode.parentNode == SplitBrowser.activeBrowser.mTabContainer);
+
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri, isTabDrag);
 			window.setTimeout('SplitBrowser.hideAddButton();', 0);
 		},
 
@@ -1844,19 +1856,11 @@ catch(e) {
 		return uri;
 	},
  
-	fireSubBrowserAddRequestEventFromButton : function(aURI) 
+	fireSubBrowserAddRequestEventFromButton : function(aURI, aIsTabDrop) 
 	{
-		var newEvent = document.createEvent('Events');
-		newEvent.initEvent('SubBrowserAddRequest', false, true);
-
 		var button = this.addButton;
 		var browser = button.targetSubBrowser || this.mainBrowserBox;
-
-		newEvent.targetSubBrowser = browser;
-		newEvent.targetContainer = browser.parentContainer || document.getElementById('appcontent');
-		newEvent.targetPosition = SplitBrowser['POSITION_'+button.className.toUpperCase()];
-		newEvent.targetURI = aURI;
-		button.dispatchEvent(newEvent);
+		this.fireSubBrowserAddRequestEvent(aURI, browser, SplitBrowser['POSITION_'+button.className.toUpperCase()], aIsTabDrop, button);
 	},
   
 	/* splitter context menu */ 
@@ -2372,7 +2376,19 @@ catch(e) {
 
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
-				this.addSubBrowser(aEvent.targetURI, aEvent.targetSubBrowser, aEvent.targetPosition);
+				if (aEvent.shouldDuplicate) {
+					var browser = this.addSubBrowser(null, aEvent.targetSubBrowser, aEvent.targetPosition);
+					window.setTimeout(
+						this.duplicateBrowser,
+						0,
+						aEvent.targetSubBrowser.browser,
+						browser.browser,
+						null
+					);
+				}
+				else {
+					this.addSubBrowser(aEvent.targetURI, aEvent.targetSubBrowser, aEvent.targetPosition);
+				}
 				return;
 
 			case 'SubBrowserAddRequestFromContent':

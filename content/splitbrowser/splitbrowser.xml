@@ -1205,15 +1205,15 @@ sideBox.removeAttribute('style');
 				var b      = this.browser;
 				var t      = null;
 				var isBusy = this.mIsBusy;
-				var ietab  = this.getIETabOf(this.browser);
+				var ietab  = this.getIeTabOf(this.browser);
 				if (aSwitchTab) {
 					t = b.mCurrentTab;
 					isBusy = (t.getAttribute('busy') == 'true');
 					this.mTotalProgress = t.mSubbrowserTabTotalProgress || 0 ;
 				}
 
-if (ietab)
-dump('updateToolbarForCurrentTab(ietab) / '+ietab.title+' / '+ietab.url+'\n');
+//if (ietab)
+//dump('updateToolbarForCurrentTab(ietab) / '+ietab.title+' / '+ietab.url+'\n');
 
 				if (this.mTotalProgress &&
 					this.mTotalProgress < 1) {
