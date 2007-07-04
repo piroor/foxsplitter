@@ -1073,6 +1073,29 @@ sideBox.removeAttribute('style');
 			onset="this.setAttribute('src', val); this.load(val); return val;"
 			onget="return this.getAttribute('src') || 'about:blank';"/>
 
+
+		<property name="isIeTab" readonly="true"
+			onget="return ('IeTab' in window &amp;&amp; this.browser.currentURI.spec.indexOf(gIeTabChromeStr) == 0);"/>
+		<method name="getIeTabOf">
+			<parameter name="aBrowser"/>
+			<body><![CDATA[
+				if (!('IeTab' in window)) return null;
+				if (
+					aBrowser &&
+					aBrowser.currentURI &&
+					gIeTab.startsWith(aBrowser.currentURI.spec, gIeTabChromeStr)
+					) {
+					if (aBrowser.contentDocument &&
+						aBrowser.contentDocument.getElementById('IETab')) {
+						var obj = aBrowser.contentDocument.getElementById('IETab');
+						return (obj.wrappedJSObject ? obj.wrappedJSObject : obj );
+					}
+				}
+				return null;
+			]]></body>
+		</method>
+
+
 		<method name="load">
 			<parameter name="aURI"/>
 			<body><![CDATA[
@@ -1182,11 +1205,15 @@ sideBox.removeAttribute('style');
 				var b      = this.browser;
 				var t      = null;
 				var isBusy = this.mIsBusy;
+				var ietab  = this.getIETabOf(this.browser);
 				if (aSwitchTab) {
 					t = b.mCurrentTab;
 					isBusy = (t.getAttribute('busy') == 'true');
 					this.mTotalProgress = t.mSubbrowserTabTotalProgress || 0 ;
 				}
+
+if (ietab)
+dump('updateToolbarForCurrentTab(ietab) / '+ietab.title+' / '+ietab.url+'\n');
 
 				if (this.mTotalProgress &&
 					this.mTotalProgress < 1) {
@@ -1233,7 +1260,7 @@ sideBox.removeAttribute('style');
 						this.forwardButton.setAttribute('disabled', true);
 					}
 
-					var title = b.contentDocument.title || this.title.getAttribute('blank-label');
+					var title = (ietab ? ietab.title : b.contentDocument.title ) || this.title.getAttribute('blank-label');
 					this.title.setAttribute('value', title);
 					while (this.vTitle.hasChildNodes())
 						this.vTitle.removeChild(this.vTitle.firstChild);
@@ -1273,6 +1300,14 @@ sideBox.removeAttribute('style');
 					this.setAttribute('tooltiptext', title);
 					this.updateIcon();
 				}
+
+
+				if (ietab && ietab.url) {
+					this.urlbar.value = (/^file:\/\/.*/.test(ietab.url) ? encodeURI(gIeTab.convertToUTF8(ietab.url)) : ietab.url );
+					if (this.urlbar.value.indexOf(gIeTabChromeStr) == 0)
+						this.urlbar.value = this.urlbar.value.substring(gIeTabChromeStr.length);
+				}
+
 			]]></body>
 		</method>
 
@@ -1690,12 +1725,18 @@ sideBox.removeAttribute('style');
 			return {
 
 			mOwner         : this,
-            mTab           : aTab,
-            mBrowser       : aBrowser,
-            mTotalProgress : 0,
+			mTab           : aTab,
+			mBrowser       : aBrowser,
+			mTotalProgress : 0,
 
 			onProgressChange: function (aWebProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress)
 			{
+				if (this.mOwner.isIeTab) {
+					var ietab = this.mOwner.getIETabOf(this.mBrowser);
+					aCurTotalProgress = ietab.progress;
+					aMaxTotalProgress = (aCurTotalProgress == -1 ? -1 : 100);
+				}
+
 				this.mTotalProgress = aMaxTotalProgress ? aCurTotalProgress / aMaxTotalProgress : 0;
 				if (this.mTab)
 					this.mTab.mSubbrowserTabTotalProgress = this.mTotalProgress;

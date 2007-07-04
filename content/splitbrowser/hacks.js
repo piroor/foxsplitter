@@ -370,6 +370,98 @@ SplitBrowser.hackForOtherExtensions = function() {
 		);
 	}
 
+
+	// hack for IE Tab
+	if ('IeTab' in window && false) {
+		eval('IeTab.prototype.hookCodeAll = '+IeTab.prototype.hookCodeAll.toSource().replace(
+			/(gIeTab.hookURLBarSetter|gIeTab.hookCode\("(nsBrowserAccess|handleURLBarRevert|BrowserLoadURL|getShortcutOrURI|BrowserBack|BrowserForward|BrowserStop|BrowserReload|BrowserReloadSkipCache|saveDocument|BrowserViewSourceOfDocument|MailIntegration|PrintUtils.print"|PrintUtils.showPageSetup|PrintUtils.printPreview|goDoCommand|cmd_find|cmd_findAgain|cmd_findPrevious|displaySecurityInfo))/,
+			'if (this.gBrowser == gBrowser) $1'
+		));
+		eval('IeTab.prototype.addEventAll = '+IeTab.prototype.addEventAll.toSource().replace(
+			/window, "(DOMContentLoaded|pageshow)"/,
+			'this.gBrowser, "$1"'
+		).replace(
+			/"appcontent"/,
+			'gBrowser.mTabContainer'
+		).replace(
+			/(gIeTab.onTabSelected\);)/,
+			'$1 if (this.gBrowser != gBrowser) return;'
+		));
+		eval('IeTab.prototype.removeEventAll = '+IeTab.prototype.removeEventAll.toSource().replace(
+			/window, "(DOMContentLoaded|pageshow)"/,
+			'this.gBrowser, "$1"'
+		).replace(
+			/"appcontent"/,
+			'gBrowser.mTabContainer'
+		).replace(
+			/(gIeTab.onTabSelected\);)/,
+			'$1 if (this.gBrowser != gBrowser) return;'
+		));
+		for (var i in IeTab.prototype)
+		{
+			try {
+				eval(
+					'IeTab.prototype.'+i+' = '+
+					IeTab.prototype[i].toSource().replace(
+						/gIeTab/g,
+						'this'
+					).replace(
+						/thisChromeStr/g,
+						'gIeTabChromeStr'
+					)
+				);
+				dump(IeTab.prototype[i].toSource().replace(
+						/gIeTab/g,
+						'this'
+					).replace(
+						/thisChromeStr/g,
+						'gIeTabChromeStr'
+					)+'\n');
+			}
+			catch(e) {
+				dump('IeTab.prototype.'+i+' // '+e+'\n');
+			}
+		}
+		funcs = 'getIeTabElmt,getIeTabElmtURL,switchTabEngine,switchEngine,loadIeTab,addIeTab,getHandledURL,updateUrlBar,updateBackForwardButtons,updateStopReloadButtons,updateProgressStatus,onProgressChange,closeIeTab,getContextTab,viewPage,updateTabbarMenu,createTabbarMenu,hookCodeAll,addEventAll,removeEventAll'.split(',');
+		funcs.forEach(function(aFunc) {
+			try {
+				eval(
+					'IeTab.prototype.'+aFunc+' = '+
+					IeTab.prototype[aFunc].toSource().replace(
+						/gBrowser/g,
+						'this.gBrowser'
+					)
+				);
+			}
+			catch(e) {
+				dump('IeTab.prototype.'+i+' // '+e+'\n');
+			}
+		});
+
+
+		IeTab.prototype.__defineGetter__('gBrowser', function() {
+			return this._gBrowser || SplitBrowser.activeBrowser;
+		});
+		IeTab.prototype._gBrowser = gBrowser;
+		var initIETab = function(aEvent) {
+			var b = aEvent.originalTarget.browser;
+			b.IeTab = new IeTab();
+			b.IeTab._gBrowser = b;
+			b.IeTab.init();
+		};
+		var destroyIETab = function(aEvent) {
+			aEvent.originalTarget.browser.IeTab.destroy();
+		};
+		appcontent.addEventListener('SubBrowserAdded', initIETab, false);
+		appcontent.addEventListener('SubBrowserRemoveRequest', destroyIETab, false);
+		window.addEventListener('unload', function() {
+			appcontent.removeEventListener('SubBrowserAdded', initIETab, false);
+			appcontent.removeEventListener('SubBrowserRemoveRequest', destroyIETab, false);
+			window.removeEventListener('unload', arguments.callee, false);
+		}, false);
+		
+	}
+
 	window.setTimeout('SplitBrowser.hackForOtherExtensionsWithDelay()', 0);
 };
 
