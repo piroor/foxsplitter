@@ -29,8 +29,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Éléments additionnels du menu contextuel des onglets :">
 <!ENTITY splitbrowser.show.tab.context.split           "Partager l'onglet...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Arranger tous les onglets">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs in Crosswise">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs in Tandem">
 <!ENTITY splitbrowser.show.tab.context.gather          "Rassembler toutes les fenêtres partagées ici comme des onglets">
 
 
@@ -76,8 +76,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "Arranger tous les onglets">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs in Crosswise">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs in Tandem">
 <!ENTITY splitbrowser.tab.gather.label           "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 
 
@@ -98,18 +98,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "À gauche">
 <!ENTITY splitbrowser.menu.tile.label            "Arranger tous les onglets">
 <!ENTITY splitbrowser.menu.tile.accesskey        "A">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "H">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "V">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs in Crosswise">
+<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "C">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "T">
 <!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 <!ENTITY splitbrowser.menu.gather.accesskey           "O">
 
 
 
 <!ENTITY multipletab.tile.label                "Arranger">
-<!ENTITY multipletab.tile.horizontal.label     "Disposer horizontalement">
-<!ENTITY multipletab.tile.vertical.label       "Disposer verticalement">
+<!ENTITY multipletab.tile.horizontal.label     "Tile in Crosswise">
+<!ENTITY multipletab.tile.vertical.label       "Tile in Tandem">
 
 
 
