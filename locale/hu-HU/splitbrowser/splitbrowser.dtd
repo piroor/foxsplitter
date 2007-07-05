@@ -30,8 +30,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Lapok helyi menüjének bővítése a következőkkel:">
 <!ENTITY splitbrowser.show.tab.context.split           "Ablak felosztása...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Lapok mozaikszerű felosztása">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.show.tab.context.gather          "Felosztott ablakok összegyűjtése ide lapokként">
 
 
@@ -77,8 +77,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label         "Lapok mozaikszerű felosztása">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.tab.gather.label           "Felosztott ablakok összegyűjtése ide lapokként">
 
 
@@ -99,18 +99,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "Balra">
 <!ENTITY splitbrowser.menu.tile.label         "Lapok mozaikszerű felosztása">
 <!ENTITY splitbrowser.menu.tile.accesskey     "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "C">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs in Tandem">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "T">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label               "Felosztott ablakok összegyűjtése ide lapokként">
 <!ENTITY splitbrowser.menu.gather.accesskey           "G">
 
 
 
 <!ENTITY multipletab.tile.label                "Lapok mozaikszerű felosztása">
-<!ENTITY multipletab.tile.horizontal.label     "Tile in Crosswise">
-<!ENTITY multipletab.tile.vertical.label       "Tile in Tandem">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
+<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
 
 
 

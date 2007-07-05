@@ -29,8 +29,8 @@
 <!ENTITY splitbrowser.show.context.caption  "탭 상에 추가할 컨텍스트 메뉴 항목:">
 <!ENTITY splitbrowser.show.tab.context.split            "화면 분할...">
 <!ENTITY splitbrowser.show.tab.context.tile            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.show.tab.context.gather           "모든 분할 화면을 탭으로 보이기">
 
 
@@ -76,8 +76,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.tab.gather.label           "모든 분할 화면을 탭으로 보이기">
 
 
@@ -98,18 +98,18 @@
 <!ENTITY splitbrowser.menu.add.left.label   "왼쪽">
 <!ENTITY splitbrowser.menu.tile.label                "모든 탭을 바둑판식으로 보이기">
 <!ENTITY splitbrowser.menu.tile.accesskey            "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "C">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs in Tandem">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "T">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label               "모든 분할 화면을 탭으로 보이기">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
 
 
 
 <!ENTITY multipletab.tile.label                "바둑판식으로 보이기">
-<!ENTITY multipletab.tile.horizontal.label     "Tile in Crosswise">
-<!ENTITY multipletab.tile.vertical.label       "Tile in Tandem">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
+<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
 
 
 

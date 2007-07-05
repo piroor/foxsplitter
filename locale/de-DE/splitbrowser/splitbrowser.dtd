@@ -30,8 +30,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">
 <!ENTITY splitbrowser.show.tab.context.split            "Tab in geteilter Ansicht öffnen...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Tile all tabs">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.show.tab.context.gather           "Gather all split browsers here as tabs">
 
 
@@ -78,8 +78,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "Tile all tabs">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs in Tandem">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
 <!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
 
 
@@ -100,18 +100,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "Links">
 <!ENTITY splitbrowser.menu.tile.label            "Tile all tabs">
 <!ENTITY splitbrowser.menu.tile.accesskey        "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs in Crosswise">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "C">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs in Tandem">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "T">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label              "Gather all split browsers here as tabs">
 <!ENTITY splitbrowser.menu.gather.accesskey          "g">
 
 
 
 <!ENTITY multipletab.tile.label                "Tile">
-<!ENTITY multipletab.tile.horizontal.label     "Tile in Crosswise">
-<!ENTITY multipletab.tile.vertical.label       "Tile in Tandem">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
+<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
 
 
 
