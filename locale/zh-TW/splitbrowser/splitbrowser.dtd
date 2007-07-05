@@ -23,8 +23,8 @@
 <!ENTITY splitbrowser.show.context.caption  "分頁標籤上右鍵選單的項目:">
 <!ENTITY splitbrowser.show.tab.context.split            "分割這個分頁到...">
 <!ENTITY splitbrowser.show.tab.context.tile            "鋪排所有分頁">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right"><!-- old: "水平排列所有分頁"-->
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom"><!-- old: "垂直排列所有分頁"-->
 <!ENTITY splitbrowser.show.tab.context.gather
 "集結此處所有的分割瀏覽區到各分頁">
 
@@ -63,8 +63,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "鋪排所有分頁">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right"><!-- old: "水平排列所有分頁"-->
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom"><!-- old: "垂直排列所有分頁"-->
 <!ENTITY splitbrowser.tab.gather.label "集結此處所有的分割瀏覽區到各分頁">
 
 
@@ -83,9 +83,9 @@
 <!ENTITY splitbrowser.menu.add.left.label "左方">
 <!ENTITY splitbrowser.menu.tile.label                "鋪排所有分頁">
 <!ENTITY splitbrowser.menu.tile.accesskey            "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right"><!-- old: "水平排列所有分頁"-->
 <!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom"><!-- old: "垂直排列所有分頁"-->
 <!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label               "集結此處所有的分割瀏覽區到各分頁">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
@@ -93,8 +93,8 @@
 
 
 <!ENTITY multipletab.tile.label                "排列">
-<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
-<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right"><!-- old: "水平排列"-->
+<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom"><!-- old: "垂直排列"-->
 
 
 <!ENTITY splitbrowser.subbrowser.blank "(空)">

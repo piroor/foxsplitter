@@ -29,8 +29,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Éléments additionnels du menu contextuel des onglets :">
 <!ENTITY splitbrowser.show.tab.context.split           "Partager l'onglet...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Arranger tous les onglets">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right"><!-- old: "Disposer tous les onglets horizontalement"-->
+<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom"><!-- old: "Disposer tous les onglets verticalement"-->
 <!ENTITY splitbrowser.show.tab.context.gather          "Rassembler toutes les fenêtres partagées ici comme des onglets">
 
 
@@ -76,8 +76,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "Arranger tous les onglets">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right"><!-- old: "Disposer tous les onglets horizontalement"-->
+<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom"><!-- old: "Disposer tous les onglets verticalement"-->
 <!ENTITY splitbrowser.tab.gather.label           "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 
 
@@ -98,9 +98,9 @@
 <!ENTITY splitbrowser.menu.add.left.label        "À gauche">
 <!ENTITY splitbrowser.menu.tile.label            "Arranger tous les onglets">
 <!ENTITY splitbrowser.menu.tile.accesskey        "A">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
+<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right"><!-- old: "Disposer tous les onglets horizontalement"-->
 <!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom"><!-- old: "Disposer tous les onglets verticalement"-->
 <!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 <!ENTITY splitbrowser.menu.gather.accesskey           "O">
@@ -108,8 +108,8 @@
 
 
 <!ENTITY multipletab.tile.label                "Arranger">
-<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
-<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
+<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right"><!-- old: "Disposer horizontalement"-->
+<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom"><!-- old: "Disposer verticalement"-->
 
 
 
