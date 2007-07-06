@@ -39,21 +39,21 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_GRID);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-layout-x-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_X_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-layout-y-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_Y_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-gather-command"
@@ -390,7 +390,7 @@
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_GRID);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-layout-x-template"
 			class="menuitem-iconic splitbrowser-layout-x-item tab-context"
@@ -401,7 +401,7 @@
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_X_AXIS);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-layout-y-template"
 			class="menuitem-iconic splitbrowser-layout-y-item tab-context"
@@ -412,7 +412,7 @@
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_Y_AXIS);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-gather-template"
 			class="menuitem-iconic splitbrowser-gather-item tab-context"
@@ -444,7 +444,7 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_GRID);
 		"/>
 	<menuitem id="multipletab-selection-splitbrowser-layout-x"
 		class="menuitem-iconic splitbrowser-layout-x-item"
@@ -452,7 +452,7 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_X_AXIS);
 		"/>
 	<menuitem id="multipletab-selection-splitbrowser-layout-y"
 		class="menuitem-iconic splitbrowser-layout-y-item"
@@ -460,7 +460,7 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_Y_AXIS);
 		"/>
 </menupopup>
 
