@@ -29,8 +29,8 @@
 <!ENTITY splitbrowser.show.context.caption  "탭 상에 추가할 컨텍스트 메뉴 항목:">
 <!ENTITY splitbrowser.show.tab.context.split            "화면 분할...">
 <!ENTITY splitbrowser.show.tab.context.tile            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "Tile all tabs Vertically"><!-- Left-to-Right order, old: "모든 탭을 수평 바둑판식으로 보이기"-->
-<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis   "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "모든 탭을 수직 바둑판식으로 보이기"-->
+<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "모든 탭을 수직 바둑판식으로 보이기">
+<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis "모든 탭을 수평 바둑판식으로 보이기">
 <!ENTITY splitbrowser.show.tab.context.gather           "모든 분할 화면을 탭으로 보이기">
 
 
@@ -76,8 +76,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.tab.tile.on_x_axis.label "Tile all tabs Vertically"><!-- Left-to-Right order, old: "모든 탭을 수평 바둑판식으로 보이기"-->
-<!ENTITY splitbrowser.tab.tile.on_y_axis.label   "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "모든 탭을 수직 바둑판식으로 보이기"-->
+<!ENTITY splitbrowser.tab.tile.on_x_axis.label "모든 탭을 수직 바둑판식으로 보이기">
+<!ENTITY splitbrowser.tab.tile.on_y_axis.label "모든 탭을 수평 바둑판식으로 보이기">
 <!ENTITY splitbrowser.tab.gather.label           "모든 분할 화면을 탭으로 보이기">
 
 
@@ -98,18 +98,18 @@
 <!ENTITY splitbrowser.menu.add.left.label   "왼쪽">
 <!ENTITY splitbrowser.menu.tile.label                "모든 탭을 바둑판식으로 보이기">
 <!ENTITY splitbrowser.menu.tile.accesskey            "t">
-<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "Tile all tabs Vertically"><!-- Left-to-Right order, old: "모든 탭을 수평 바둑판식으로 보이기"-->
+<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "모든 탭을 수직 바둑판식으로 보이기">
 <!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "v">
-<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "모든 탭을 수직 바둑판식으로 보이기"-->
+<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "모든 탭을 수평 바둑판식으로 보이기">
 <!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "모든 분할 화면을 탭으로 보이기">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
 
 
 
-<!ENTITY multipletab.tile.label                "바둑판식으로 보이기">
-<!ENTITY multipletab.tile.on_x_axis.label     "Tile Vertically"><!-- Left-to-Right order, old: "수평 바둑판식으로 보이기"-->
-<!ENTITY multipletab.tile.on_y_axis.label       "Tile Horizontally"><!-- Top-to-Bottom order, old: "수직 바둑판식으로 보이기"-->
+<!ENTITY multipletab.tile.label               "바둑판식으로 보이기">
+<!ENTITY multipletab.tile.on_x_axis.label     "수직 바둑판식으로 보이기">
+<!ENTITY multipletab.tile.on_y_axis.label     "수평 바둑판식으로 보이기">
 
 
 
