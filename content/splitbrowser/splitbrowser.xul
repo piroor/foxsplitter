@@ -46,14 +46,14 @@
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-tile-vertical-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-gather-command"
@@ -121,12 +121,12 @@
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-tile-horizontal"
 				class="menuitem-iconic splitbrowser-tile-horizontal-item"
-				label="&splitbrowser.menu.tile.horizontal.label;"
+				label="&splitbrowser.menu.tile.on_x_axis.label;"
 				command="splitbrowser-tile-horizontal-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-tile-vertical"
 				class="menuitem-iconic splitbrowser-tile-vertical-item"
-				label="&splitbrowser.menu.tile.vertical.label;"
+				label="&splitbrowser.menu.tile.on_y_axis.label;"
 				command="splitbrowser-tile-vertical-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-gather"
@@ -228,12 +228,12 @@
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-tile-horizontal"
 				class="menuitem-iconic splitbrowser-tile-horizontal-item"
-				label="&splitbrowser.menu.tile.horizontal.label;"
+				label="&splitbrowser.menu.tile.on_x_axis.label;"
 				command="splitbrowser-tile-horizontal-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-tile-vertical"
 				class="menuitem-iconic splitbrowser-tile-vertical-item"
-				label="&splitbrowser.menu.tile.vertical.label;"
+				label="&splitbrowser.menu.tile.on_y_axis.label;"
 				command="splitbrowser-tile-vertical-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-gather"
@@ -394,25 +394,25 @@
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-tile-horizontal-template"
 			class="menuitem-iconic splitbrowser-tile-horizontal-item tab-context"
-			label="&splitbrowser.tab.tile.horizontal.label;"
+			label="&splitbrowser.tab.tile.on_x_axis.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
+				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-tile-vertical-template"
 			class="menuitem-iconic splitbrowser-tile-vertical-item tab-context"
-			label="&splitbrowser.tab.tile.vertical.label;"
+			label="&splitbrowser.tab.tile.on_y_axis.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
+				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-gather-template"
 			class="menuitem-iconic splitbrowser-gather-item tab-context"
@@ -448,19 +448,19 @@
 		"/>
 	<menuitem id="multipletab-selection-splitbrowser-tile-horizontal"
 		class="menuitem-iconic splitbrowser-tile-horizontal-item"
-		label="&multipletab.tile.horizontal.label;"
+		label="&multipletab.tile.on_x_axis.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_HORIZONTAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 		"/>
 	<menuitem id="multipletab-selection-splitbrowser-tile-vertical"
 		class="menuitem-iconic splitbrowser-tile-vertical-item"
-		label="&multipletab.tile.vertical.label;"
+		label="&multipletab.tile.on_y_axis.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_VERTICAL);
+			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 		"/>
 </menupopup>
 

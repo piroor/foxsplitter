@@ -30,8 +30,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Lapok helyi menüjének bővítése a következőkkel:">
 <!ENTITY splitbrowser.show.tab.context.split           "Ablak felosztása...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Lapok mozaikszerű felosztása">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right"><!-- old: "Lapok felosztása vízszintesen"-->
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom"><!-- old: "Lapok felosztása függőlegesen"-->
+<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "Tile all tabs Vertically"><!-- Left-to-Right order, old: "Lapok felosztása vízszintesen"-->
+<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis   "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "Lapok felosztása függőlegesen"-->
 <!ENTITY splitbrowser.show.tab.context.gather          "Felosztott ablakok összegyűjtése ide lapokként">
 
 
@@ -77,8 +77,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label         "Lapok mozaikszerű felosztása">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right"><!-- old: "Lapok felosztása vízszintesen"-->
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom"><!-- old: "Lapok felosztása függőlegesen"-->
+<!ENTITY splitbrowser.tab.tile.on_x_axis.label "Tile all tabs Vertically"><!-- Left-to-Right order, old: "Lapok felosztása vízszintesen"-->
+<!ENTITY splitbrowser.tab.tile.on_y_axis.label   "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "Lapok felosztása függőlegesen"-->
 <!ENTITY splitbrowser.tab.gather.label           "Felosztott ablakok összegyűjtése ide lapokként">
 
 
@@ -99,18 +99,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "Balra">
 <!ENTITY splitbrowser.menu.tile.label         "Lapok mozaikszerű felosztása">
 <!ENTITY splitbrowser.menu.tile.accesskey     "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right"><!-- old: "Lapok felosztása vízszintesen"-->
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom"><!-- old: "Lapok felosztása függőlegesen"-->
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
+<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "Tile all tabs Vertically"><!-- Left-to-Right order, old: "Lapok felosztása vízszintesen"-->
+<!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "v">
+<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "Tile all tabs Horizontally"><!-- Top-to-Bottom order, old: "Lapok felosztása függőlegesen"-->
+<!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "Felosztott ablakok összegyűjtése ide lapokként">
 <!ENTITY splitbrowser.menu.gather.accesskey           "G">
 
 
 
-<!ENTITY multipletab.tile.label                "Lapok mozaikszerű felosztása">
-<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right"><!-- old: "Lapok felosztása vízszintesen"-->
-<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom"><!-- old: "Lapok felosztása függőlegesen"-->
+<!ENTITY multipletab.tile.label               "Lapok mozaikszerű felosztása">
+<!ENTITY multipletab.tile.on_x_axis.label     "Tile Vertically"><!-- Left-to-Right order, old: "Lapok felosztása vízszintesen"-->
+<!ENTITY multipletab.tile.on_y_axis.label     "Tile Horizontally"><!-- Top-to-Bottom order, old: "Lapok felosztása függőlegesen"-->
 
 
 

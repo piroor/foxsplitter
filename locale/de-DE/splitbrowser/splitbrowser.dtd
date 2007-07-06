@@ -30,8 +30,8 @@
 <!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">
 <!ENTITY splitbrowser.show.tab.context.split            "Tab in geteilter Ansicht öffnen...">
 <!ENTITY splitbrowser.show.tab.context.tile            "Tile all tabs">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "Tile all tabs Vertically"><!-- Left-to-Right order -->
+<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis   "Tile all tabs Horizontally"><!-- Top-to-Bottom order -->
 <!ENTITY splitbrowser.show.tab.context.gather           "Gather all split browsers here as tabs">
 
 
@@ -78,8 +78,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "Tile all tabs">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "Tile all tabs Top-to-Bottom">
+<!ENTITY splitbrowser.tab.tile.on_x_axis.label "Tile all tabs Vertically"><!-- Left-to-Right order -->
+<!ENTITY splitbrowser.tab.tile.on_y_axis.label   "Tile all tabs Horizontally"><!-- Top-to-Bottom order -->
 <!ENTITY splitbrowser.tab.gather.label           "Gather all split browsers here as tabs">
 
 
@@ -100,18 +100,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "Links">
 <!ENTITY splitbrowser.menu.tile.label            "Tile all tabs">
 <!ENTITY splitbrowser.menu.tile.accesskey        "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "Tile all tabs Left-to-Right">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "l">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "Tile all tabs Top-to-Bottom">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "t">
+<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "Tile all tabs Vertically"><!-- Left-to-Right order -->
+<!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "l">
+<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "Tile all tabs Horizontally"><!-- Top-to-Bottom order -->
+<!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "t">
 <!ENTITY splitbrowser.menu.gather.label              "Gather all split browsers here as tabs">
 <!ENTITY splitbrowser.menu.gather.accesskey          "g">
 
 
 
-<!ENTITY multipletab.tile.label                "Tile">
-<!ENTITY multipletab.tile.horizontal.label     "Tile Left-to-Right">
-<!ENTITY multipletab.tile.vertical.label       "Tile Top-to-Bottom">
+<!ENTITY multipletab.tile.label               "Tile">
+<!ENTITY multipletab.tile.on_x_axis.label     "Tile Vertically"><!-- Left-to-Right order -->
+<!ENTITY multipletab.tile.on_y_axis.label     "Tile Horizontally"><!-- Top-to-Bottom order -->
 
 
 

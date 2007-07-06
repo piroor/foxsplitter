@@ -30,8 +30,8 @@
 <!ENTITY splitbrowser.show.context.caption  "タブのコンテキストメニューに以下の項目を追加する：">
 <!ENTITY splitbrowser.show.tab.context.split           "タブを分割">
 <!ENTITY splitbrowser.show.tab.context.tile            "すべてのタブを平面に並べる">
-<!ENTITY splitbrowser.show.tab.context.tile.horizontal "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.show.tab.context.tile.vertical   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis   "すべてのタブを縦に並べる">
 <!ENTITY splitbrowser.show.tab.context.gather          "すべての分割したブラウザをタブに集める">
 
 
@@ -78,8 +78,8 @@
 
 
 <!ENTITY splitbrowser.tab.tile.label            "すべてのタブを平面に並べる">
-<!ENTITY splitbrowser.tab.tile.horizontal.label "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.tab.tile.vertical.label   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.tab.tile.on_x_axis.label "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.tab.tile.on_y_axis.label   "すべてのタブを縦に並べる">
 <!ENTITY splitbrowser.tab.gather.label           "すべての分割したブラウザをタブに集める">
 
 
@@ -100,18 +100,18 @@
 <!ENTITY splitbrowser.menu.add.left.label        "左に分割">
 <!ENTITY splitbrowser.menu.tile.label            "すべてのタブを平面に並べる">
 <!ENTITY splitbrowser.menu.tile.accesskey        "t">
-<!ENTITY splitbrowser.menu.tile.horizontal.label     "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.menu.tile.horizontal.accesskey "h">
-<!ENTITY splitbrowser.menu.tile.vertical.label       "すべてのタブを縦に並べる">
-<!ENTITY splitbrowser.menu.tile.vertical.accesskey   "v">
+<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "v">
+<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label              "すべての分割したブラウザをタブに集める">
 <!ENTITY splitbrowser.menu.gather.accesskey          "g">
 
 
 
 <!ENTITY multipletab.tile.label             "平面に並べる">
-<!ENTITY multipletab.tile.horizontal.label     "横に並べる">
-<!ENTITY multipletab.tile.vertical.label       "縦に並べる">
+<!ENTITY multipletab.tile.on_x_axis.label   "横に並べる">
+<!ENTITY multipletab.tile.on_y_axis.label   "縦に並べる">
 
 
 

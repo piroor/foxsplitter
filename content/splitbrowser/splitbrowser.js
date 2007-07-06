@@ -691,7 +691,7 @@ var SplitBrowser = {
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
 
 		var isAfter      = false;
-		var isHorizontal = (aAlign == this.TILE_HORIZONTAL);
+		var isHorizontal = (aAlign == this.TILE_ON_X_AXIS);
 
 		var self = this;
 
@@ -779,9 +779,9 @@ var SplitBrowser = {
 			}
 		});
 	},
-	TILE_2D         : 0,
-	TILE_HORIZONTAL : 1,
-	TILE_VERTICAL   : 2,
+	TILE_2D        : 0,
+	TILE_ON_X_AXIS : 1,
+	TILE_ON_Y_AXIS : 2,
  
 	gatherSubBrowsers : function() 
 	{
@@ -2143,8 +2143,8 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.horizontal');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.vertical');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.on_x_axis');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.on_y_axis');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
@@ -2566,8 +2566,8 @@ catch(e) {
 
 			case 'splitbrowser.show.tab.context.split':
 			case 'splitbrowser.show.tab.context.tile':
-			case 'splitbrowser.show.tab.context.tile.horizontal':
-			case 'splitbrowser.show.tab.context.tile.vertical':
+			case 'splitbrowser.show.tab.context.tile.on_x_axis':
+			case 'splitbrowser.show.tab.context.tile.on_y_axis':
 			case 'splitbrowser.show.tab.context.gather':
 				var attrName = aPrefstring.replace(/\./g, '-');
 				if (nsPreferences.getBoolPref(aPrefstring))
