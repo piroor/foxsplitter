@@ -12,8 +12,8 @@ pref("splitbrowser.show.collapseexpand",      false);
 pref("splitbrowser.show.menu",                         true);
 pref("splitbrowser.show.tab.context.split",            true);
 pref("splitbrowser.show.tab.context.tile",             true);
-pref("splitbrowser.show.tab.context.tile.horizontal",  false);
-pref("splitbrowser.show.tab.context.tile.vertical",    false);
+pref("splitbrowser.show.tab.context.tile.on_x_axis",   false);
+pref("splitbrowser.show.tab.context.tile.on_y_axis",   false);
 pref("splitbrowser.show.tab.context.gather",           true);
 
 pref("splitbrowser.appearance.scrollbar.size",  16);
