@@ -116,7 +116,7 @@
 			<menuseparator id="splitbrowser-toolbarbutton-layout-grid-separator"/>
 			<menuitem id="splitbrowser-toolbarbutton-layout-grid"
 				class="menuitem-iconic splitbrowser-layout-grid-item"
-				label="&splitbrowser.menu.layout-grid.label;"
+				label="&splitbrowser.menu.layout.grid.label;"
 				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-layout-x"
@@ -138,8 +138,8 @@
 	</toolbarbutton>
 	<toolbarbutton id="splitbrowser-layout-grid-button"
 		class="splitbrowser-button toolbarbutton-1"
-		label="&splitbrowser.button.layout-grid.label;"
-		tooltiptext="&splitbrowser.button.layout-grid.tooltip;"
+		label="&splitbrowser.button.layout.grid.label;"
+		tooltiptext="&splitbrowser.button.layout.grid.tooltip;"
 		command="splitbrowser-layout-grid-command"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<toolbarbutton id="splitbrowser-gather-button"
@@ -223,7 +223,7 @@
 			<menuseparator id="splitbrowser-layout-grid-separator"/>
 			<menuitem id="splitbrowser-layout-grid"
 				class="menuitem-iconic splitbrowser-layout-grid-item"
-				label="&splitbrowser.menu.layout-grid.label;"
+				label="&splitbrowser.menu.layout.grid.label;"
 				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-layout-x"
@@ -383,7 +383,7 @@
 			class="splitbrowser-tab-context-separator"/>
 		<menuitem id="splitbrowser-tab-context-item-layout-grid-template"
 			class="menuitem-iconic splitbrowser-layout-grid-item tab-context"
-			label="&splitbrowser.tab.layout-grid.label;"
+			label="&splitbrowser.tab.layout.grid.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
@@ -440,7 +440,7 @@
 	<menuseparator id="multipletab-selection-splitbrowser-separator"/>
 	<menuitem id="multipletab-selection-splitbrowser-layout-grid"
 		class="menuitem-iconic splitbrowser-layout-grid-item"
-		label="&multipletab.layout-grid.label;"
+		label="&multipletab.layout.grid.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;

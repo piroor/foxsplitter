@@ -21,7 +21,7 @@
 <vbox id="prefpane-selection-menu-items">
 	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-layout-grid-check"
 		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-layout-grid"
-		label="&multipletab.layout-grid.label;"/>
+		label="&multipletab.layout.grid.label;"/>
 	<checkbox id="extensions.multipletab.show.multipletab-selection-splitbrowser-layout-x-check"
 		preference="extensions.multipletab.show.multipletab-selection-splitbrowser-layout-x"
 		label="&multipletab.layout.x.label;"/>
