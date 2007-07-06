@@ -129,10 +129,10 @@ subbrowser tabbrowser.subbrowser-browser .tabbrowser-strip {
 /* menu */
 
 :root:not([splitbrowser-show-tab-context-split="true"]) .splitbrowser-split-item.tab-context,
-:root:not([splitbrowser-show-tab-context-tile="true"]) .splitbrowser-tile-item.tab-context,
-:root:not([splitbrowser-show-tab-context-tile-horizontal="true"]) .splitbrowser-tile-horizontal-item.tab-context,
-:root:not([splitbrowser-show-tab-context-tile-vertical="true"]) .splitbrowser-tile-vertical-item.tab-context,
+:root:not([splitbrowser-show-tab-context-layout-grid="true"]) .splitbrowser-layout-grid-item.tab-context,
+:root:not([splitbrowser-show-tab-context-layout-x="true"]) .splitbrowser-layout-x-item.tab-context,
+:root:not([splitbrowser-show-tab-context-layout-y="true"]) .splitbrowser-layout-y-item.tab-context,
 :root:not([splitbrowser-show-tab-context-gather="true"]) .splitbrowser-gather-item.tab-context,
-:root:not([splitbrowser-show-tab-context-tile="true"]):not([splitbrowser-show-tab-context-tile-horizontal="true"]):not([splitbrowser-show-tab-context-tile-vertical="true"]):not([splitbrowser-show-tab-context-gather="true"]) .splitbrowser-tab-context-separator {
+:root:not([splitbrowser-show-tab-context-layout-grid="true"]):not([splitbrowser-show-tab-context-layout-x="true"]):not([splitbrowser-show-tab-context-layout-y="true"]):not([splitbrowser-show-tab-context-gather="true"]) .splitbrowser-tab-context-separator {
 	display: none;
 }

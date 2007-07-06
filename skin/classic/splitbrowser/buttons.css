@@ -45,16 +45,16 @@
 	-moz-image-region: rect(48px 72px 72px 48px);
 }
 
-#splitbrowser-tile-button {
+#splitbrowser-layout-grid-button {
 	-moz-image-region: rect(0px 144px 24px 120px);
 }
-#splitbrowser-tile-button[buttonover="true"],
-#splitbrowser-tile-button:hover {
+#splitbrowser-layout-grid-button[buttonover="true"],
+#splitbrowser-layout-grid-button:hover {
 	-moz-image-region: rect(24px 144px 48px 120px);
 }
-#splitbrowser-tile-button[disabled="true"],
-#splitbrowser-tile-button[disabled="true"][buttonover="true"],
-#splitbrowser-tile-button[disabled="true"]:hover {
+#splitbrowser-layout-grid-button[disabled="true"],
+#splitbrowser-layout-grid-button[disabled="true"][buttonover="true"],
+#splitbrowser-layout-grid-button[disabled="true"]:hover {
 	-moz-image-region: rect(48px 144px 72px 120px);
 }
 
@@ -146,16 +146,16 @@
 
 
 
-[iconsize="small"] #splitbrowser-tile-button {
+[iconsize="small"] #splitbrowser-layout-grid-button {
 	-moz-image-region: rect(0px 96px 16px 80px);
 }
-[iconsize="small"] #splitbrowser-tile-button[buttonover="true"],
-[iconsize="small"] #splitbrowser-tile-button:hover {
+[iconsize="small"] #splitbrowser-layout-grid-button[buttonover="true"],
+[iconsize="small"] #splitbrowser-layout-grid-button:hover {
 	-moz-image-region: rect(16px 96px 32px 80px);
 }
-[iconsize="small"] #splitbrowser-tile-button[disabled="true"],
-[iconsize="small"] #splitbrowser-tile-button[disabled="true"][buttonover="true"],
-[iconsize="small"] #splitbrowser-tile-button[disabled="true"]:hover {
+[iconsize="small"] #splitbrowser-layout-grid-button[disabled="true"],
+[iconsize="small"] #splitbrowser-layout-grid-button[disabled="true"][buttonover="true"],
+[iconsize="small"] #splitbrowser-layout-grid-button[disabled="true"]:hover {
 	-moz-image-region: rect(32px 96px 48px 80px);
 }
 

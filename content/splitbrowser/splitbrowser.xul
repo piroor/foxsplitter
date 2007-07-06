@@ -35,25 +35,25 @@
 	<command id="splitbrowser-removeAll-command"
 		oncommand="SplitBrowser.removeAllSubBrowsers();"
 		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
-	<command id="splitbrowser-tile-command"
+	<command id="splitbrowser-layout-grid-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-	<command id="splitbrowser-tile-horizontal-command"
+	<command id="splitbrowser-layout-x-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-	<command id="splitbrowser-tile-vertical-command"
+	<command id="splitbrowser-layout-y-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 		"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<command id="splitbrowser-gather-command"
@@ -113,21 +113,21 @@
 						splitbrowser-position="POSITION_BOTTOM"/>
 				</menupopup>
 			</menu>
-			<menuseparator id="splitbrowser-toolbarbutton-tile-separator"/>
-			<menuitem id="splitbrowser-toolbarbutton-tile"
-				class="menuitem-iconic splitbrowser-tile-item"
-				label="&splitbrowser.menu.tile.label;"
-				command="splitbrowser-tile-command"
+			<menuseparator id="splitbrowser-toolbarbutton-layout-grid-separator"/>
+			<menuitem id="splitbrowser-toolbarbutton-layout-grid"
+				class="menuitem-iconic splitbrowser-layout-grid-item"
+				label="&splitbrowser.menu.layout-grid.label;"
+				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-			<menuitem id="splitbrowser-toolbarbutton-tile-horizontal"
-				class="menuitem-iconic splitbrowser-tile-horizontal-item"
-				label="&splitbrowser.menu.tile.on_x_axis.label;"
-				command="splitbrowser-tile-horizontal-command"
+			<menuitem id="splitbrowser-toolbarbutton-layout-x"
+				class="menuitem-iconic splitbrowser-layout-x-item"
+				label="&splitbrowser.menu.layout.x.label;"
+				command="splitbrowser-layout-x-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-			<menuitem id="splitbrowser-toolbarbutton-tile-vertical"
-				class="menuitem-iconic splitbrowser-tile-vertical-item"
-				label="&splitbrowser.menu.tile.on_y_axis.label;"
-				command="splitbrowser-tile-vertical-command"
+			<menuitem id="splitbrowser-toolbarbutton-layout-y"
+				class="menuitem-iconic splitbrowser-layout-y-item"
+				label="&splitbrowser.menu.layout.y.label;"
+				command="splitbrowser-layout-y-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-gather"
 				class="menuitem-iconic splitbrowser-gather-item"
@@ -136,11 +136,11 @@
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
 		</menupopup>
 	</toolbarbutton>
-	<toolbarbutton id="splitbrowser-tile-button"
+	<toolbarbutton id="splitbrowser-layout-grid-button"
 		class="splitbrowser-button toolbarbutton-1"
-		label="&splitbrowser.button.tile.label;"
-		tooltiptext="&splitbrowser.button.tile.tooltip;"
-		command="splitbrowser-tile-command"
+		label="&splitbrowser.button.layout-grid.label;"
+		tooltiptext="&splitbrowser.button.layout-grid.tooltip;"
+		command="splitbrowser-layout-grid-command"
 		observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 	<toolbarbutton id="splitbrowser-gather-button"
 		class="splitbrowser-button toolbarbutton-1"
@@ -220,21 +220,21 @@
 						splitbrowser-position="POSITION_BOTTOM"/>
 				</menupopup>
 			</menu>
-			<menuseparator id="splitbrowser-tile-separator"/>
-			<menuitem id="splitbrowser-tile"
-				class="menuitem-iconic splitbrowser-tile-item"
-				label="&splitbrowser.menu.tile.label;"
-				command="splitbrowser-tile-command"
+			<menuseparator id="splitbrowser-layout-grid-separator"/>
+			<menuitem id="splitbrowser-layout-grid"
+				class="menuitem-iconic splitbrowser-layout-grid-item"
+				label="&splitbrowser.menu.layout-grid.label;"
+				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-			<menuitem id="splitbrowser-tile-horizontal"
-				class="menuitem-iconic splitbrowser-tile-horizontal-item"
-				label="&splitbrowser.menu.tile.on_x_axis.label;"
-				command="splitbrowser-tile-horizontal-command"
+			<menuitem id="splitbrowser-layout-x"
+				class="menuitem-iconic splitbrowser-layout-x-item"
+				label="&splitbrowser.menu.layout.x.label;"
+				command="splitbrowser-layout-x-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
-			<menuitem id="splitbrowser-tile-vertical"
-				class="menuitem-iconic splitbrowser-tile-vertical-item"
-				label="&splitbrowser.menu.tile.on_y_axis.label;"
-				command="splitbrowser-tile-vertical-command"
+			<menuitem id="splitbrowser-layout-y"
+				class="menuitem-iconic splitbrowser-layout-y-item"
+				label="&splitbrowser.menu.layout.y.label;"
+				command="splitbrowser-layout-y-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-gather"
 				class="menuitem-iconic splitbrowser-gather-item"
@@ -379,40 +379,40 @@
 					splitbrowser-position="POSITION_BOTTOM"/>
 			</menupopup>
 		</menu>
-		<menuseparator id="splitbrowser-tab-context-separator-tile-template"
+		<menuseparator id="splitbrowser-tab-context-separator-layout-grid-template"
 			class="splitbrowser-tab-context-separator"/>
-		<menuitem id="splitbrowser-tab-context-item-tile-template"
-			class="menuitem-iconic splitbrowser-tile-item tab-context"
-			label="&splitbrowser.tab.tile.label;"
+		<menuitem id="splitbrowser-tab-context-item-layout-grid-template"
+			class="menuitem-iconic splitbrowser-layout-grid-item tab-context"
+			label="&splitbrowser.tab.layout-grid.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
 			"/>
-		<menuitem id="splitbrowser-tab-context-item-tile-horizontal-template"
-			class="menuitem-iconic splitbrowser-tile-horizontal-item tab-context"
-			label="&splitbrowser.tab.tile.on_x_axis.label;"
+		<menuitem id="splitbrowser-tab-context-item-layout-x-template"
+			class="menuitem-iconic splitbrowser-layout-x-item tab-context"
+			label="&splitbrowser.tab.layout.x.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 			"/>
-		<menuitem id="splitbrowser-tab-context-item-tile-vertical-template"
-			class="menuitem-iconic splitbrowser-tile-vertical-item tab-context"
-			label="&splitbrowser.tab.tile.on_y_axis.label;"
+		<menuitem id="splitbrowser-tab-context-item-layout-y-template"
+			class="menuitem-iconic splitbrowser-layout-y-item tab-context"
+			label="&splitbrowser.tab.layout.y.label;"
 			tbattr="tabbrowser-multiple"
 			observes="splitbrowser-featuresForMultipleTabs-broadcaster"
 			oncommand="
 				var b = this;
 				while (b.localName != 'tabbrowser')
 					b = b.parentNode;
-				SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 			"/>
 		<menuitem id="splitbrowser-tab-context-item-gather-template"
 			class="menuitem-iconic splitbrowser-gather-item tab-context"
@@ -438,29 +438,29 @@
 
 <menupopup id="multipletab-selection-menu">
 	<menuseparator id="multipletab-selection-splitbrowser-separator"/>
-	<menuitem id="multipletab-selection-splitbrowser-tile"
-		class="menuitem-iconic splitbrowser-tile-item"
-		label="&multipletab.tile.label;"
+	<menuitem id="multipletab-selection-splitbrowser-layout-grid"
+		class="menuitem-iconic splitbrowser-layout-grid-item"
+		label="&multipletab.layout-grid.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_2D);
 		"/>
-	<menuitem id="multipletab-selection-splitbrowser-tile-horizontal"
-		class="menuitem-iconic splitbrowser-tile-horizontal-item"
-		label="&multipletab.tile.on_x_axis.label;"
+	<menuitem id="multipletab-selection-splitbrowser-layout-x"
+		class="menuitem-iconic splitbrowser-layout-x-item"
+		label="&multipletab.layout.x.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_X_AXIS);
 		"/>
-	<menuitem id="multipletab-selection-splitbrowser-tile-vertical"
-		class="menuitem-iconic splitbrowser-tile-vertical-item"
-		label="&multipletab.tile.on_y_axis.label;"
+	<menuitem id="multipletab-selection-splitbrowser-layout-y"
+		class="menuitem-iconic splitbrowser-layout-y-item"
+		label="&multipletab.layout.y.label;"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
 			if (b.localName != 'tabbrowser') b = gBrowser;
-			SplitBrowser.tileTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
+			SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.TILE_ON_Y_AXIS);
 		"/>
 </menupopup>
 

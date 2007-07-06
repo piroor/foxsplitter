@@ -685,13 +685,13 @@ var SplitBrowser = {
 		});
 	},
  
-	tileTabs : function(aSubBrowser, aAlign) 
+	layoutTabs : function(aSubBrowser, aStyle) 
 	{
 		var b    = aSubBrowser.browser;
 		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
 
 		var isAfter      = false;
-		var isHorizontal = (aAlign == this.TILE_ON_X_AXIS);
+		var isHorizontal = (aStyle == this.LAYOUT_ON_X_AXIS);
 
 		var self = this;
 
@@ -702,7 +702,7 @@ var SplitBrowser = {
 		if (TBETabGroup)
 			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
 
-		var horizontalMax   = (aAlign == this.TILE_2D) ? Math.ceil(Math.sqrt(tabs.length)) : -1 ;
+		var horizontalMax   = (aStyle == this.LAYOUT_GRID) ? Math.ceil(Math.sqrt(tabs.length)) : -1 ;
 		var horizontalCount = 0;
 
 		if (shouldDoFiltering && horizontalMax > 0) {
@@ -779,9 +779,9 @@ var SplitBrowser = {
 			}
 		});
 	},
-	TILE_2D        : 0,
-	TILE_ON_X_AXIS : 1,
-	TILE_ON_Y_AXIS : 2,
+	LAYOUT_GRID      : 0,
+	LAYOUT_ON_X_AXIS : 1,
+	LAYOUT_ON_Y_AXIS : 2,
  
 	gatherSubBrowsers : function() 
 	{
@@ -2142,9 +2142,9 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.on_x_axis');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.tile.on_y_axis');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.grid');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.x');
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.y');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
 
 		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
@@ -2161,10 +2161,10 @@ catch(e) {
 
 		var fragment = document.createDocumentFragment();
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-tile-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-horizontal-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-tile-vertical-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-layout-grid-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-grid-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-x-template').cloneNode(true));
+		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-y-template').cloneNode(true));
 		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather-template').cloneNode(true));
 
 		Array.prototype.slice.call(fragment.childNodes).forEach(function(aNode) {
@@ -2565,9 +2565,9 @@ catch(e) {
 				break;
 
 			case 'splitbrowser.show.tab.context.split':
-			case 'splitbrowser.show.tab.context.tile':
-			case 'splitbrowser.show.tab.context.tile.on_x_axis':
-			case 'splitbrowser.show.tab.context.tile.on_y_axis':
+			case 'splitbrowser.show.tab.context.layout.grid':
+			case 'splitbrowser.show.tab.context.layout.x':
+			case 'splitbrowser.show.tab.context.layout.y':
 			case 'splitbrowser.show.tab.context.gather':
 				var attrName = aPrefstring.replace(/\./g, '-');
 				if (nsPreferences.getBoolPref(aPrefstring))

@@ -115,14 +115,14 @@
 		<preference id="splitbrowser.show.tab.context.split"
 			name="splitbrowser.show.tab.context.split"
 			type="bool"/>
-		<preference id="splitbrowser.show.tab.context.tile"
-			name="splitbrowser.show.tab.context.tile"
+		<preference id="splitbrowser.show.tab.context.layout.grid"
+			name="splitbrowser.show.tab.context.layout.grid"
 			type="bool"/>
-		<preference id="splitbrowser.show.tab.context.tile.on_x_axis"
-			name="splitbrowser.show.tab.context.tile.on_x_axis"
+		<preference id="splitbrowser.show.tab.context.layout.x"
+			name="splitbrowser.show.tab.context.layout.x"
 			type="bool"/>
-		<preference id="splitbrowser.show.tab.context.tile.on_y_axis"
-			name="splitbrowser.show.tab.context.tile.on_y_axis"
+		<preference id="splitbrowser.show.tab.context.layout.y"
+			name="splitbrowser.show.tab.context.layout.y"
 			type="bool"/>
 		<preference id="splitbrowser.show.tab.context.gather"
 			name="splitbrowser.show.tab.context.gather"
@@ -138,15 +138,15 @@
 		<checkbox id="splitbrowser.show.tab.context.split-check" flex="1"
 			label="&splitbrowser.show.tab.context.split;"
 			preference="splitbrowser.show.tab.context.split"/>
-		<checkbox id="splitbrowser.show.tab.context.tile-check" flex="1"
-			label="&splitbrowser.show.tab.context.tile;"
-			preference="splitbrowser.show.tab.context.tile"/>
-		<checkbox id="splitbrowser.show.tab.context.tile.on_x_axis-check" flex="1"
-			label="&splitbrowser.show.tab.context.tile.on_x_axis;"
-			preference="splitbrowser.show.tab.context.tile.on_x_axis"/>
-		<checkbox id="splitbrowser.show.tab.context.tile.on_y_axis-check" flex="1"
-			label="&splitbrowser.show.tab.context.tile.on_y_axis;"
-			preference="splitbrowser.show.tab.context.tile.on_y_axis"/>
+		<checkbox id="splitbrowser.show.tab.context.layout.grid-check" flex="1"
+			label="&splitbrowser.show.tab.context.layout.grid;"
+			preference="splitbrowser.show.tab.context.layout.grid"/>
+		<checkbox id="splitbrowser.show.tab.context.layout.x-check" flex="1"
+			label="&splitbrowser.show.tab.context.layout.x;"
+			preference="splitbrowser.show.tab.context.layout.x"/>
+		<checkbox id="splitbrowser.show.tab.context.layout.y-check" flex="1"
+			label="&splitbrowser.show.tab.context.layout.y;"
+			preference="splitbrowser.show.tab.context.layout.y"/>
 		<checkbox id="splitbrowser.show.tab.context.gather-check" flex="1"
 			label="&splitbrowser.show.tab.context.gather;"
 			preference="splitbrowser.show.tab.context.gather"/>

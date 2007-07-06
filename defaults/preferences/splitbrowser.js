@@ -9,12 +9,12 @@ pref("splitbrowser.show.toolbar.always",      true);
 pref("splitbrowser.show.toolbar.navigation.always", false);
 pref("splitbrowser.show.collapseexpand",      false);
 
-pref("splitbrowser.show.menu",                         true);
-pref("splitbrowser.show.tab.context.split",            true);
-pref("splitbrowser.show.tab.context.tile",             true);
-pref("splitbrowser.show.tab.context.tile.on_x_axis",   false);
-pref("splitbrowser.show.tab.context.tile.on_y_axis",   false);
-pref("splitbrowser.show.tab.context.gather",           true);
+pref("splitbrowser.show.menu",                     true);
+pref("splitbrowser.show.tab.context.split",        true);
+pref("splitbrowser.show.tab.context.layout.grid",  true);
+pref("splitbrowser.show.tab.context.layout.x",     false);
+pref("splitbrowser.show.tab.context.layout.y",     false);
+pref("splitbrowser.show.tab.context.gather",       true);
 
 pref("splitbrowser.appearance.scrollbar.size",  16);
 pref("splitbrowser.appearance.addbuttons.size", 16);
@@ -32,9 +32,9 @@ pref("splitbrowser.tabs.enabled",             true);
 
 
 
-pref("extensions.multipletab.show.multipletab-selection-splitbrowser-tile",            true);
-pref("extensions.multipletab.show.multipletab-selection-splitbrowser-tile-horizontal", true);
-pref("extensions.multipletab.show.multipletab-selection-splitbrowser-tile-vertical",   true);
+pref("extensions.multipletab.show.multipletab-selection-splitbrowser-layout-grid",            true);
+pref("extensions.multipletab.show.multipletab-selection-splitbrowser-layout-x", true);
+pref("extensions.multipletab.show.multipletab-selection-splitbrowser-layout-y",   true);
 
 
 pref("extensions.{29c4afe1-db19-4298-8785-fcc94d1d6c1d}.name", "chrome://splitbrowser/locale/splitbrowser.properties");

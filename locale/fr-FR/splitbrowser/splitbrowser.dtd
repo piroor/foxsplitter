@@ -28,9 +28,9 @@
 <!ENTITY splitbrowser.show.menu             "Montrer le menu &quot;Partager&quot; dans la barre de menu">
 <!ENTITY splitbrowser.show.context.caption  "Éléments additionnels du menu contextuel des onglets :">
 <!ENTITY splitbrowser.show.tab.context.split           "Partager l'onglet...">
-<!ENTITY splitbrowser.show.tab.context.tile            "Arranger tous les onglets">
-<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis  "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis  "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.show.tab.context.layout.grid            "Arranger tous les onglets">
+<!ENTITY splitbrowser.show.tab.context.layout.x  "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.show.tab.context.layout.y  "Disposer tous les onglets horizontalement">
 <!ENTITY splitbrowser.show.tab.context.gather          "Rassembler toutes les fenêtres partagées ici comme des onglets">
 
 
@@ -75,9 +75,9 @@
 
 
 
-<!ENTITY splitbrowser.tab.tile.label           "Arranger tous les onglets">
-<!ENTITY splitbrowser.tab.tile.on_x_axis.label "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.tab.tile.on_y_axis.label "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.tab.layout.grid.label           "Arranger tous les onglets">
+<!ENTITY splitbrowser.tab.layout.x.label "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.tab.layout.y.label "Disposer tous les onglets horizontalement">
 <!ENTITY splitbrowser.tab.gather.label         "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 
 
@@ -96,20 +96,20 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "Au dessous">
 <!ENTITY splitbrowser.menu.add.right.label       "À droite">
 <!ENTITY splitbrowser.menu.add.left.label        "À gauche">
-<!ENTITY splitbrowser.menu.tile.label            "Arranger tous les onglets">
-<!ENTITY splitbrowser.menu.tile.accesskey        "A">
-<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "v">
-<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "h">
+<!ENTITY splitbrowser.menu.layout.grid.label            "Arranger tous les onglets">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey        "A">
+<!ENTITY splitbrowser.menu.layout.x.label     "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
+<!ENTITY splitbrowser.menu.layout.y.label       "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 <!ENTITY splitbrowser.menu.gather.accesskey           "O">
 
 
 
-<!ENTITY multipletab.tile.label               "Arranger">
-<!ENTITY multipletab.tile.on_x_axis.label     "Disposer verticalement">
-<!ENTITY multipletab.tile.on_y_axis.label     "Disposer horizontalement">
+<!ENTITY multipletab.layout.grid.label               "Arranger">
+<!ENTITY multipletab.layout.x.label     "Disposer verticalement">
+<!ENTITY multipletab.layout.y.label     "Disposer horizontalement">
 
 
 
@@ -133,8 +133,8 @@
 
 <!ENTITY splitbrowser.button.menu.label          "Partager">
 <!ENTITY splitbrowser.button.menu.tooltip        "Partager la zone de navigation">
-<!ENTITY splitbrowser.button.tile.label          "Arranger">
-<!ENTITY splitbrowser.button.tile.tooltip        "Arranger tous les onglets">
+<!ENTITY splitbrowser.button.layout.grid.label   "Arranger">
+<!ENTITY splitbrowser.button.layout.grid.tooltip "Arranger tous les onglets">
 <!ENTITY splitbrowser.button.gather.label        "Rassembler">
 <!ENTITY splitbrowser.button.gather.tooltip      "Rassembler les fenêtres partagés sous forme d'onglets">
 <!ENTITY splitbrowser.button.collapseAll.label   "Réduire">

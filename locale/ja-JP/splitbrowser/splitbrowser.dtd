@@ -29,9 +29,9 @@
 <!ENTITY splitbrowser.show.menu             "メニューバーに「分割」メニューを追加">
 <!ENTITY splitbrowser.show.context.caption  "タブのコンテキストメニューに以下の項目を追加する：">
 <!ENTITY splitbrowser.show.tab.context.split           "タブを分割">
-<!ENTITY splitbrowser.show.tab.context.tile            "すべてのタブを平面に並べる">
-<!ENTITY splitbrowser.show.tab.context.tile.on_x_axis "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.show.tab.context.tile.on_y_axis   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.show.tab.context.layout.grid            "すべてのタブを平面に並べる">
+<!ENTITY splitbrowser.show.tab.context.layout.x "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.show.tab.context.layout.y   "すべてのタブを縦に並べる">
 <!ENTITY splitbrowser.show.tab.context.gather          "すべての分割したブラウザをタブに集める">
 
 
@@ -77,9 +77,9 @@
 
 
 
-<!ENTITY splitbrowser.tab.tile.label            "すべてのタブを平面に並べる">
-<!ENTITY splitbrowser.tab.tile.on_x_axis.label "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.tab.tile.on_y_axis.label   "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.tab.layout.grid.label            "すべてのタブを平面に並べる">
+<!ENTITY splitbrowser.tab.layout.x.label "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.tab.layout.y.label   "すべてのタブを縦に並べる">
 <!ENTITY splitbrowser.tab.gather.label           "すべての分割したブラウザをタブに集める">
 
 
@@ -98,20 +98,20 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "下に分割">
 <!ENTITY splitbrowser.menu.add.right.label       "右に分割">
 <!ENTITY splitbrowser.menu.add.left.label        "左に分割">
-<!ENTITY splitbrowser.menu.tile.label            "すべてのタブを平面に並べる">
-<!ENTITY splitbrowser.menu.tile.accesskey        "t">
-<!ENTITY splitbrowser.menu.tile.on_x_axis.label     "すべてのタブを横に並べる">
-<!ENTITY splitbrowser.menu.tile.on_x_axis.accesskey "v">
-<!ENTITY splitbrowser.menu.tile.on_y_axis.label       "すべてのタブを縦に並べる">
-<!ENTITY splitbrowser.menu.tile.on_y_axis.accesskey   "h">
+<!ENTITY splitbrowser.menu.layout.grid.label            "すべてのタブを平面に並べる">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey        "t">
+<!ENTITY splitbrowser.menu.layout.x.label     "すべてのタブを横に並べる">
+<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
+<!ENTITY splitbrowser.menu.layout.y.label       "すべてのタブを縦に並べる">
+<!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label              "すべての分割したブラウザをタブに集める">
 <!ENTITY splitbrowser.menu.gather.accesskey          "g">
 
 
 
-<!ENTITY multipletab.tile.label             "平面に並べる">
-<!ENTITY multipletab.tile.on_x_axis.label   "横に並べる">
-<!ENTITY multipletab.tile.on_y_axis.label   "縦に並べる">
+<!ENTITY multipletab.layout.grid.label             "平面に並べる">
+<!ENTITY multipletab.layout.x.label   "横に並べる">
+<!ENTITY multipletab.layout.y.label   "縦に並べる">
 
 
 
@@ -136,8 +136,8 @@
 
 <!ENTITY splitbrowser.button.menu.label          "分割">
 <!ENTITY splitbrowser.button.menu.tooltip        "ブラウズ領域の分割">
-<!ENTITY splitbrowser.button.tile.label          "並べる">
-<!ENTITY splitbrowser.button.tile.tooltip        "タブを平面に並べる">
+<!ENTITY splitbrowser.button.layout.grid.label   "並べる">
+<!ENTITY splitbrowser.button.layout.grid.tooltip "タブを平面に並べる">
 <!ENTITY splitbrowser.button.gather.label        "集める">
 <!ENTITY splitbrowser.button.gather.tooltip      "分割したブラウザをタブに集める">
 <!ENTITY splitbrowser.button.collapseAll.label   "たたむ">

@@ -25,17 +25,17 @@
 }
 
 
-.splitbrowser-tile-horizontal-item {
+.splitbrowser-layout-x-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 64px 32px 48px);
 }
 
-.splitbrowser-tile-vertical-item {
+.splitbrowser-layout-y-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 80px 32px 64px);
 }
 
-.splitbrowser-tile-item {
+.splitbrowser-layout-grid-item {
 	list-style-image: url(./small/buttons.png);
 	-moz-image-region: rect(16px 96px 32px 80px);
 }
