@@ -1765,7 +1765,7 @@ alert(e+'\n\n'+state);
 	onAddButtonCommand : function(aEvent) 
 	{
 		var browser   = aEvent.target.targetSubBrowser;
-		this.fireSubBrowserAddRequestEvent(browser.src, browser, SplitBrowser['POSITION_'+aEvent.target.className.toUpperCase()], true, aEvent.target);
+		this.fireSubBrowserAddRequestEvent(browser.src, browser, this['POSITION_'+aEvent.target.className.toUpperCase()], true, aEvent.target);
 		window.setTimeout('SplitBrowser.hideAddButton()', 0);
 	},
  
@@ -2377,11 +2377,14 @@ catch(e) {
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				if (aEvent.shouldDuplicate) {
+					var orig = aEvent.targetSubBrowser.browser;
+					if (orig.localName == 'tabbrowser')
+						orig = orig.getBrowserForTab(orig.selectedTab);
 					var browser = this.addSubBrowser(null, aEvent.targetSubBrowser, aEvent.targetPosition);
 					window.setTimeout(
 						this.duplicateBrowser,
 						0,
-						aEvent.targetSubBrowser.browser,
+						orig,
 						browser.browser,
 						null
 					);

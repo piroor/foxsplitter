@@ -301,16 +301,16 @@
 		<menupopup>
 			<menuitem label="&splitbrowser.add.top.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-top"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_TOP, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_TOP, true, null);"/>
 			<menuitem label="&splitbrowser.add.right.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-right"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_RIGHT, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_RIGHT, true, null);"/>
 			<menuitem label="&splitbrowser.add.left.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-left"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_LEFT, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_LEFT, true, null);"/>
 			<menuitem label="&splitbrowser.add.bottom.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-bottom"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, null, SplitBrowser.POSITION_BOTTOM, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_BOTTOM, true, null);"/>
 		</menupopup>
 	</menu>
 </popup>
