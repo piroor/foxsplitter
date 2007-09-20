@@ -319,45 +319,9 @@ var SplitBrowser = {
 		newEvent.shouldDuplicate  = aShouldDuplicate;
 		(aEventTarget || appcontent).dispatchEvent(newEvent);
 	},
- 
-	showHideElement : function(aTarget, aShow, aJustNow) 
-	{
-		aTarget.parentNode.hidden = aTarget.hidden = !aShow;
-		return;
-
-		if (aTarget.showHideElementTimer) {
-			window.clearInterval(aTarget.showHideElementTimer);
-			aTarget.showHideElementTimer = null;
-		}
-		if (aJustNow) {
-			aTarget.parentNode.hidden = aTarget.hidden = !aShow;
-		}
-		else {
-			aTarget.parentNode.hidden = aTarget.hidden = aShow;
-			aTarget.showHideElementCurrent = aTarget.parentNode.style.opacity = aShow ? 0 : 1 ;
-			aTarget.showHideElementStart = new Date().getTime();
-			aTarget.parentNode.hidden = aTarget.hidden = false;
-			aTarget.showHideElementTimer = window.setInterval(this.showHideElementCallback, 10, this, aTarget, aShow);
-		}
-	},
-	showHideElementCallback : function(aSelf, aTarget, aShow)
-	{
-		var delta = new Date().getTime() - aTarget.showHideElementStart;
-		if (delta >= aSelf.showHideElementDelay) {
-			aTarget.parentNode.style.opacity = aShow ? 1 : 0 ;
-			aTarget.parentNode.hidden = aTarget.hidden = !aShow;
-			window.clearInterval(aTarget.showHideElementTimer);
-			aTarget.showHideElementTimer = null;
-		}
-		else {
-			aTarget.showHideElementCurrent = delta / aSelf.showHideElementDelay;
-			aTarget.parentNode.style.opacity = aShow ? 1-aTarget.showHideElementCurrent : aTarget.showHideElementCurrent ;
-		}
-	},
-	showHideElementDelay : 200,
   
 /* add sub-browser (split contents) */ 
-	 
+	
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
 		if (!aURI) aURI = 'about:blank';
@@ -1657,7 +1621,7 @@ alert(e+'\n\n'+state);
      
 /* popup-buttons */ 
 	addButtonIsShown : false,
-	 
+	
 	get addButton() { 
 		return document.getElementById('splitbrowser-add-button');
 	},
@@ -1675,29 +1639,12 @@ alert(e+'\n\n'+state);
 		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.hide');
 	},
  
-	showAddButton : function(aEvent) 
+	showAddButton : function(aEvent, aJustNow) 
 	{
-		if (this.showAddButtonTimer) {
-			this.showAddButtonTimer = null;
-			window.clearTimeout(this.showAddButtonTimer);
-		}
-
-		if (aEvent.firedBy.indexOf('drag') == 0 || aEvent.modifierKeyPressed) {
-			this.showAddButtonNow(this, aEvent, true);
-		}
-		else {
-			this.showAddButtonTimer = window.setTimeout(this.showAddButtonNow, this.addButtonShowDelay, this, aEvent);
-		}
-	},
-	 
-	showAddButtonNow : function(aThis, aEvent, aJustNow) 
-	{
-		if (!aThis) aThis = this;
-
-		if (aThis.addButtonIsShown) {
-			if (aThis.hideAddButtonTimer)
-				aThis.stopDelayedHideAddButtonTimer();
-			aThis.delayedHideAddButton();
+		if (this.addButtonIsShown) {
+			if (this.hideAddButtonTimer)
+				this.stopDelayedHideAddButtonTimer();
+			this.delayedHideAddButton();
 			return;
 		}
 
@@ -1712,62 +1659,106 @@ alert(e+'\n\n'+state);
 			return;
 		}
 
-		aThis.addButtonIsShown = true;
+		this.addButtonIsShown = true;
 
-		aThis.hideAddButton(null, aJustNow);
+		this.hideAddButton(null, true);
 
 		var box = node.contentAreaSizeObject;
 		if (!box) return;
 
-		var button = aThis.addButton;
-		aThis.showHideElement(button, true, aJustNow);
+		var button = this.addButton;
+		this.showHideAddButton(true, aJustNow);
 //		button.hidden = button.parentNode.hidden = false;
 
-		var size  = aThis.addButtonSize;
+		var size  = this.addButtonSize;
 
 		button.width = button.height = size;
+
+		var canvas = button.previousSibling;
+		var x, y;
 
 		var pos;
 		if (aEvent.isTop) {
 			pos = 'top';
-			button.width  = box.areaWidth;
-			button.parentNode.style.top = box.y+'px';
-			button.parentNode.style.left = box.areaX+'px';
+			canvas.width = button.width  = box.areaWidth;
+			canvas.height = button.boxObject.height;
+			x = box.areaX;
+			y = box.y;
 		}
 		else if (aEvent.isBottom) {
 			pos = 'bottom';
-			button.width = box.areaWidth;
-			button.parentNode.style.top = (box.y + box.height - size)+'px';
-			button.parentNode.style.left = box.areaX+'px';
+			canvas.width = button.width = box.areaWidth;
+			canvas.height = button.boxObject.height;
+			x = box.areaX;
+			y = box.y + box.height - size;
 		}
 		else if (aEvent.isLeft) {
 			pos = 'left';
-			button.height = box.areaHeight;
-			button.parentNode.style.top = box.areaY+'px';
-			button.parentNode.style.left = box.x+'px';
+			canvas.height = button.height = box.areaHeight;
+			canvas.width = button.boxObject.width;
+			x = box.x;
+			y = box.areaY;
 		}
 		else if (aEvent.isRight) {
 			pos = 'right';
-			button.height = box.areaHeight;
-			button.parentNode.style.top = box.areaY+'px';
-			button.parentNode.style.left = (box.x + box.width - size)+'px';
+			canvas.height = button.height = box.areaHeight;
+			canvas.width = button.boxObject.width;
+			x = box.x + box.width - size;
+			y = box.areaY;
+		}
+		button.parentNode.style.top = y+'px';
+		button.parentNode.style.left = x+'px';
+
+		try {
+			var context = canvas.getContext('2d');
+			var w = node.browser.contentWindow;
+			context.clearRect(0, 0, button.boxObject.width, button.boxObject.height);
+			context.save();
+			var bBox = (node.browser.mCurrentBrowser || node.browser).boxObject;
+			context.drawWindow(w, x - bBox.x, y - bBox.y, button.boxObject.width, button.boxObject.height, "rgb(255,255,255)");
+			context.restore();
+		}
+		catch(e) {
 		}
 
 		button.className = pos;
 		button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
 		button.targetSubBrowser = node;
 
-		if (aThis.hideAddButtonTimer)
-			aThis.stopDelayedHideAddButtonTimer();
-		aThis.delayedHideAddButton();
+		if (this.hideAddButtonTimer)
+			this.stopDelayedHideAddButtonTimer();
+		this.delayedHideAddButton();
 	},
-  	
+	 
+	delayedShowAddButton : function(aEvent) 
+	{
+		if (this.showAddButtonTimer) {
+			this.showAddButtonTimer = null;
+			window.clearTimeout(this.showAddButtonTimer);
+		}
+
+		if (aEvent.firedBy.indexOf('drag') == 0) {
+			this.showAddButton(aEvent, true);
+		}
+		else if (aEvent.modifierKeyPressed) {
+			this.showAddButton(aEvent);
+		}
+		else {
+			this.showAddButtonTimer = window.setTimeout(this.delayedShowAddButtonCallback, this.addButtonShowDelay, this, aEvent);
+		}
+	},
+	 
+	delayedShowAddButtonCallback : function(aThis, aEvent) 
+	{
+		aThis.showAddButton(aEvent);
+	},
+   
 	hideAddButton : function(aEvent, aJustNow) 
 	{
 		this.stopDelayedHideAddButtonTimer();
 
 		var button = this.addButton;
-		this.showHideElement(button, false, aJustNow);
+		this.showHideAddButton(false, aJustNow);
 //		button.hidden = button.parentNode.hidden = true;
 		button.targetSubBrowser = null;
 
@@ -1780,7 +1771,7 @@ alert(e+'\n\n'+state);
 
 		this.addButtonIsShown = false;
 	},
- 
+	
 	delayedHideAddButton : function() 
 	{
 		if (this.hideAddButtonTimer) return;
@@ -1799,7 +1790,43 @@ alert(e+'\n\n'+state);
 		window.clearTimeout(this.hideAddButtonTimer);
 		this.hideAddButtonTimer = null;
 	},
-  
+   
+	showHideAddButton : function(aShow, aJustNow) 
+	{
+		var button = this.addButton;
+		if (button.showHideAddButtonTimer) {
+			window.clearInterval(button.showHideAddButtonTimer);
+			button.showHideAddButtonTimer = null;
+		}
+		if (aJustNow) {
+			button.parentNode.hidden = button.hidden = !aShow;
+			button.style.opacity = 1;
+		}
+		else {
+			button.parentNode.hidden = button.hidden = aShow;
+			button.showHideAddButtonCurrent = button.style.opacity = aShow ? 0 : 1 ;
+			button.showHideAddButtonStart = new Date().getTime();
+			button.parentNode.hidden = button.hidden = false;
+			button.showHideAddButtonTimer = window.setInterval(this.showHideAddButtonCallback, 10, this, aShow);
+		}
+	},
+	showHideAddButtonCallback : function(aSelf, aShow)
+	{
+		var button = aSelf.addButton;
+		var delta = new Date().getTime() - button.showHideAddButtonStart;
+		if (delta >= aSelf.showHideAddButtonDelay) {
+			button.style.opacity = aShow ? 1 : 0 ;
+			button.parentNode.hidden = button.hidden = !aShow;
+			window.clearInterval(button.showHideAddButtonTimer);
+			button.showHideAddButtonTimer = null;
+		}
+		else {
+			button.showHideAddButtonCurrent = delta / aSelf.showHideAddButtonDelay;
+			button.style.opacity = Math.floor((aShow ? button.showHideAddButtonCurrent : 1-button.showHideAddButtonCurrent ) * 100) / 100;
+		}
+	},
+	showHideAddButtonDelay : 200,
+ 
 	onAddButtonCommand : function(aEvent) 
 	{
 		var browser   = aEvent.target.targetSubBrowser;
@@ -2223,6 +2250,7 @@ catch(e) {
 			tabContext.appendChild(fragment);
 
 		tabContext.addEventListener('popupshowing', this, false);
+		aBrowser.mTabContainer.addEventListener('select', this, false);
 	},
  
 	destroyTabBrowser : function(aBrowser) 
@@ -2231,6 +2259,7 @@ catch(e) {
 
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
+		aBrowser.mTabContainer.removeEventListener('select', this, false);
 	},
  
 	hackForOtherExtensions : function() 
@@ -2492,7 +2521,7 @@ catch(e) {
 				return;
 
 			case 'SubBrowserEnterContentAreaEdge':
-				this.showAddButton(aEvent);
+				this.delayedShowAddButton(aEvent);
 				return;
 
 			case 'SubBrowserExitContentAreaEdge':
@@ -2531,6 +2560,10 @@ catch(e) {
 				}
 				return;
 
+			case 'select': // ontabselect
+				this.hideAddButton(aEvent, true);
+				return;
+
 
 			case 'keydown':
 				if (aEvent.shiftKey)
@@ -2549,7 +2582,7 @@ catch(e) {
 		else
 			document.documentElement.removeAttribute('splitbrowser-fullscreen');
 	},
- 
+ 	
 	observe : function(aSubject, aTopic, aPrefstring) 
 	{
 		if (aTopic != 'nsPref:changed') return;

@@ -103,7 +103,8 @@ subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-vertical {
 	z-index: 32000;
 }
 
-#splitbrowser-add-button {
+#splitbrowser-add-button,
+html|canvas#splitbrowser-add-button-background-canvas {
 	position: fixed;
 	z-index: 65000;
 	cursor: pointer;

@@ -342,6 +342,7 @@
 
 <window id="main-window">
 	<vbox id="splitbrowser-add-button-container">
+		<html:canvas id="splitbrowser-add-button-background-canvas"/>
 		<toolbarbutton id="splitbrowser-add-button"
 			oncommand="SplitBrowser.onAddButtonCommand(event);"
 			ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
