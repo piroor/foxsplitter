@@ -1710,6 +1710,8 @@ alert(e+'\n\n'+state);
 
 		this.showHideAddButton(true, aJustNow);
 
+		this.addButtonIsShown = true;
+
 		if (this.hideAddButtonTimer)
 			this.stopDelayedHideAddButtonTimer();
 		this.delayedHideAddButton();
@@ -1720,6 +1722,20 @@ alert(e+'\n\n'+state);
 		if (this.showAddButtonTimer) {
 			this.showAddButtonTimer = null;
 			window.clearTimeout(this.showAddButtonTimer);
+		}
+
+		var button = this.addButton;
+		if (
+			this.addButtonIsShown &&
+			(
+				(button.className == 'top' && !aEvent.isTop) ||
+				(button.className == 'bottom' && !aEvent.isBottom) ||
+				(button.className == 'left' && !aEvent.isLeft) ||
+				(button.className == 'right' && !aEvent.isRight) ||
+				(button.targetSubBrowser != aEvent.targetSubBrowser)
+			)
+			) {
+			this.hideAddButton();
 		}
 
 		if (aEvent.firedBy.indexOf('drag') == 0) {
@@ -1741,6 +1757,7 @@ alert(e+'\n\n'+state);
 	hideAddButton : function(aEvent, aJustNow) 
 	{
 		this.stopDelayedHideAddButtonTimer();
+		if (!this.addButtonIsShown) return;
 
 		var button = this.addButton;
 		this.showHideAddButton(false, aJustNow);
@@ -1786,6 +1803,7 @@ alert(e+'\n\n'+state);
 			button.parentNode.hidden = button.hidden = !aShow;
 			button.style.opacity = 1;
 			this.addButtonIsActive = aShow;
+			this.addButtonIsShown = aShow;
 		}
 		else {
 			this.addButtonIsActive = false;
@@ -1807,6 +1825,7 @@ alert(e+'\n\n'+state);
 			window.clearInterval(button.showHideAddButtonTimer);
 			button.showHideAddButtonTimer = null;
 			aSelf.addButtonIsActive = aShow;
+			aSelf.addButtonIsShown = aShow;
 		}
 		else {
 			button.showHideAddButtonCurrent = delta / aSelf.addButtonFadeDelay;
@@ -1837,7 +1856,8 @@ alert(e+'\n\n'+state);
 	{
 		var browser   = aEvent.target.targetSubBrowser;
 		this.fireSubBrowserAddRequestEvent(browser.src, browser, this['POSITION_'+aEvent.target.className.toUpperCase()], true, aEvent.target);
-		window.setTimeout('SplitBrowser.hideAddButton()', 0);
+		SplitBrowser.hideAddButton(aEvent, true);
+		window.setTimeout('SplitBrowser.hideAddButton(null, true)', 0);
 	},
  
 	addButtonDNDObserver : { 

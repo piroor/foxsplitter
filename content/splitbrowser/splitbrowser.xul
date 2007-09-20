@@ -345,6 +345,17 @@
 		<html:canvas id="splitbrowser-add-button-background-canvas"
 			style="visibility: hidden;"/>
 		<toolbarbutton id="splitbrowser-add-button"
+			onclick="
+				if (event.button != 0) {
+					SplitBrowser.hideAddButton(event, true);
+/*
+					var req = this.targetSubBrowser.browser.contentWindow.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
+					var winUtils = req.getInterface(Components.interfaces.nsIDOMWindowUtils);
+					if ('sendMouseEvent' in winUtils)
+						winUtils.sendMouseEvent('click', event.screenX, event.screenY, event.button, 1, 0);
+*/
+				}
+			"
 			oncommand="if (SplitBrowser.addButtonIsActive) SplitBrowser.onAddButtonCommand(event);"
 			ondragover="if (SplitBrowser.addButtonIsActive) nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
 			ondragdrop="if (SplitBrowser.addButtonIsActive) nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);"
