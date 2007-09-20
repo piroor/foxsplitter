@@ -1,18 +1,18 @@
 var SplitBrowser = { 
 	 
 	get scrollbarSize() { 
-		return nsPreferences.getIntPref('splitbrowser.appearance.scrollbar.size');
+		return this.getPref('splitbrowser.appearance.scrollbar.size');
 	},
  
 	get subBrowserToolbarShowDelay() { 
-		return nsPreferences.getIntPref('splitbrowser.delay.subbrowser.toolbar.show');
+		return this.getPref('splitbrowser.delay.subbrowser.toolbar.show');
 	},
 	get subBrowserToolbarHideDelay() {
-		return nsPreferences.getIntPref('splitbrowser.delay.subbrowser.toolbar.hide');
+		return this.getPref('splitbrowser.delay.subbrowser.toolbar.hide');
 	},
  
 	get subBrowserAutoFocusDelay() { 
-		return nsPreferences.getBoolPref('splitbrowser.subbrowser.autoFocus') ? nsPreferences.getIntPref('splitbrowser.delay.subbrowser.autoFocus') : -1 ;
+		return this.getPref('splitbrowser.subbrowser.autoFocus') ? this.getPref('splitbrowser.delay.subbrowser.autoFocus') : -1 ;
 	},
  
 	get isLinux() 
@@ -392,7 +392,7 @@ var SplitBrowser = {
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			((aForceRemove || nsPreferences.getBoolPref('splitbrowser.tab.closetab')) ? function() { b.removeTab(aTab); } : null )
+			((aForceRemove || this.getPref('splitbrowser.tab.closetab')) ? function() { b.removeTab(aTab); } : null )
 		);
 
 		return browser;
@@ -520,7 +520,7 @@ var SplitBrowser = {
 		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
 
 		splitter.setAttribute('_collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
-		if (!nsPreferences.getBoolPref('splitbrowser.show.toolbar.always'))
+		if (!this.getPref('splitbrowser.show.toolbar.always'))
 			splitter.setAttribute('collapse', splitter.getAttribute('_collapse'));
 
 		var prop = (aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ;
@@ -913,7 +913,7 @@ var SplitBrowser = {
 	save : function() 
 	{
 		var state = this.getContainerState(document.getElementById('appcontent'));
-		nsPreferences.setUnicharPref('splitbrowser.state', state.toSource());
+		this.setPref('splitbrowser.state', state.toSource());
 	},
 	 
 	getContainerState : function(aContainer) 
@@ -1084,7 +1084,7 @@ var SplitBrowser = {
  
 	checkPrivacyLevel : function sss_checkPrivacyLevel(aIsHTTPS) 
 	{
-		return nsPreferences.getIntPref('sessionstore.privacy_level', this.PRIVACY_ENCRYPTED) < (aIsHTTPS ? this.PRIVACY_ENCRYPTED : this.PRIVACY_FULL );
+		return this.getPref('sessionstore.privacy_level', this.PRIVACY_ENCRYPTED) < (aIsHTTPS ? this.PRIVACY_ENCRYPTED : this.PRIVACY_FULL );
 	},
  
 	serializeBrowserSessionHistories : function(aBrowser) 
@@ -1178,7 +1178,7 @@ var SplitBrowser = {
 
 		// get post data
 		try {
-			var prefPostdata = nsPreferences.getIntPref('sessionstore.postdata', this.DEFAULT_POSTDATA);
+			var prefPostdata = this.getPref('sessionstore.postdata', this.DEFAULT_POSTDATA);
 			if (prefPostdata && aEntry.postData && this.checkPrivacyLevel(aEntry.URI.schemeIs('https'))) {
 				aEntry.postData
 						.QueryInterface(Components.interfaces.nsISeekableStream)
@@ -1297,7 +1297,7 @@ dump(e+'\n');
     
 	load : function() 
 	{
-		var state = nsPreferences.copyUnicharPref('splitbrowser.state');
+		var state = this.getPref('splitbrowser.state');
 		if (!state) return;
 		try {
 			eval('state = '+state);
@@ -1627,19 +1627,19 @@ alert(e+'\n\n'+state);
 	},
  
 	get addButtonSize() { 
-		return nsPreferences.getIntPref('splitbrowser.appearance.addbuttons.size');
+		return this.getPref('splitbrowser.appearance.addbuttons.size');
 	},
 	get addButtonAreaSize() {
-		return nsPreferences.getIntPref('splitbrowser.appearance.addbuttons.area');
+		return this.getPref('splitbrowser.appearance.addbuttons.area');
 	},
 	get addButtonShowDelay() {
-		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.show');
+		return this.getPref('splitbrowser.delay.addbuttons.show');
 	},
 	get addButtonHideDelay() {
-		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.hide');
+		return this.getPref('splitbrowser.delay.addbuttons.hide');
 	},
 	get addButtonFadeDelay() {
-		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.fade');
+		return this.getPref('splitbrowser.delay.addbuttons.fade');
 	},
  
 	showAddButton : function(aEvent, aJustNow) 
@@ -1673,29 +1673,31 @@ alert(e+'\n\n'+state);
 		var canvas = button.previousSibling;
 
 		var size = button.width = button.height = canvas.width = canvas.height = this.addButtonSize;
+		button.style.width = button.style.height = canvas.style.width = canvas.style.height = size+'px';
+
 		var x, y;
 		var pos;
 		if (aEvent.isTop) {
 			pos = 'top';
-			canvas.width = button.width  = box.areaWidth;
+			canvas.style.width = button.style.width = (canvas.width = button.width = box.areaWidth)+'px';
 			x = box.areaX;
 			y = box.y;
 		}
 		else if (aEvent.isBottom) {
 			pos = 'bottom';
-			canvas.width = button.width = box.areaWidth;
+			canvas.style.width = button.style.width = (canvas.width = button.width = box.areaWidth)+'px';
 			x = box.areaX;
 			y = box.y + box.height - size;
 		}
 		else if (aEvent.isLeft) {
 			pos = 'left';
-			canvas.height = button.height = box.areaHeight;
+			canvas.style.height = button.style.height = (canvas.height = button.height = box.areaHeight)+'px';
 			x = box.x;
 			y = box.areaY;
 		}
 		else if (aEvent.isRight) {
 			pos = 'right';
-			canvas.height = button.height = box.areaHeight;
+			canvas.style.height = button.style.height = (canvas.height = button.height = box.areaHeight)+'px';
 			x = box.x + box.width - size;
 			y = box.areaY;
 		}
@@ -1836,7 +1838,6 @@ alert(e+'\n\n'+state);
 	{
 		var button = this.addButton;
 		var canvas = button.previousSibling;
-		canvas.style.visibility = 'visible';
 
 		var node   = button.targetSubBrowser;
 		try {
@@ -2219,18 +2220,13 @@ catch(e) {
 			window.__splitbrowser__handleLinkClick = window.handleLinkClick;
 			window.handleLinkClick = this.contentAreaHandleLinkClick;
 		}
-		if (nsPreferences.getBoolPref('splitbrowser.tabs.enabled') != this.tabbedBrowsingEnabled)
-			nsPreferences.setBoolPref('splitbrowser.tabs.enabled', this.tabbedBrowsingEnabled);
+		if (this.getPref('splitbrowser.tabs.enabled') != this.tabbedBrowsingEnabled)
+			this.setPref('splitbrowser.tabs.enabled', this.tabbedBrowsingEnabled);
 
 		gBrowser.parentSubBrowser = this.mainBrowserBox;
 		this.activeSubBrowser = this.mainBrowserBox;
 
-		try {
-			var pbi = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranchInternal);
-			pbi.addObserver('splitbrowser', this, false);
-		}
-		catch(e) {
-		}
+		this.addPrefListener(this);
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
@@ -2240,7 +2236,18 @@ catch(e) {
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.y');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
 
-		if (nsPreferences.getBoolPref('splitbrowser.state.restore')) {
+
+		try {
+			if (this.Prefs.prefHasUserValue('splitbrowser.show.addbuttons.hover')) {
+				this.setPref('splitbrowser.show.addbuttons.hover.type', this.getPref('splitbrowser.show.addbuttons.hover') ? 0 : 1 );
+				this.clearPref('splitbrowser.show.addbuttons.hover');
+			}
+		}
+		catch(e) {
+		}
+
+
+		if (this.getPref('splitbrowser.state.restore')) {
 //			this.load();
 			window.setTimeout('SplitBrowser.load();', 0);
 		}
@@ -2381,11 +2388,11 @@ catch(e) {
 				) ||
 				(
 					aEvent.button == 1 &&
-					nsPreferences.getBoolPref('browser.tabs.opentabfor.middleclick')
+					SplitBrowser.getPref('browser.tabs.opentabfor.middleclick')
 				)
 			)
 			) {
-			var loadInBackground = nsPreferences.getBoolPref('browser.tabs.loadInBackground');
+			var loadInBackground = SplitBrowser.getPref('browser.tabs.loadInBackground');
 			if (aEvent && aEvent.shiftKey)
 				loadInBackground = !loadInBackground;
 
@@ -2415,7 +2422,7 @@ catch(e) {
   
 	destroy : function() 
 	{
-		if (nsPreferences.getBoolPref('splitbrowser.state.restore'))
+		if (this.getPref('splitbrowser.state.restore'))
 			this.save();
 
 		document.documentElement.removeEventListener('SubBrowserAddRequest', this, true);
@@ -2440,12 +2447,7 @@ catch(e) {
 
 		this.destroyTabBrowser(gBrowser);
 
-		try {
-			var pbi = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranchInternal);
-			pbi.removeObserver('splitbrowser', this);
-		}
-		catch(e) {
-		}
+		this.removePrefListener(this);
 
 		this._browsers.forEach(function(aBrowser) {
 			SplitBrowser.destroyTabBrowser(aBrowser.browser);
@@ -2609,7 +2611,11 @@ catch(e) {
 		else
 			document.documentElement.removeAttribute('splitbrowser-fullscreen');
 	},
- 	
+ 
+	domains : [ 
+		'splitbrowser'
+	],
+ 
 	observe : function(aSubject, aTopic, aPrefstring) 
 	{
 		if (aTopic != 'nsPref:changed') return;
@@ -2617,7 +2623,7 @@ catch(e) {
 		switch (aPrefstring)
 		{
 			case 'splitbrowser.show.collapseexpand':
-				if (nsPreferences.getBoolPref(aPrefstring))
+				if (this.getPref(aPrefstring))
 					document.documentElement.setAttribute('subbrowser-show-togglecollapsed-button', true);
 				else
 					document.documentElement.removeAttribute('subbrowser-show-togglecollapsed-button');
@@ -2625,7 +2631,7 @@ catch(e) {
 
 			case 'splitbrowser.show.toolbar.always':
 				this.splitters.forEach(
-					nsPreferences.getBoolPref(aPrefstring) ?
+					this.getPref(aPrefstring) ?
 						function(aSplitter) {
 							aSplitter.removeAttribute('collapse');
 						} :
@@ -2637,7 +2643,7 @@ catch(e) {
 
 			case 'splitbrowser.tabs.autoHide':
 				if (!this.tabbedBrowsingEnabled) return;
-				var visible = !nsPreferences.getBoolPref(aPrefstring);
+				var visible = !this.getPref(aPrefstring);
 				this.splitters.forEach(function(aBrowser) {
 					if (aBrowser.browser.mTabContainer.childNodes.length == 1)
 						aBrowser.browser.setStripVisibilityTo(visible);
@@ -2646,7 +2652,7 @@ catch(e) {
 
 			case 'splitbrowser.show.toolbar.navigation.always':
 				this._browsers.forEach(
-					nsPreferences.getBoolPref(aPrefstring) ?
+					this.getPref(aPrefstring) ?
 						function(aBrowser) {
 							aBrowser.setAttribute('toolbar-navigation', true);
 							if (!aBrowser.contentCollapsed)
@@ -2661,7 +2667,7 @@ catch(e) {
 
 			case 'splitbrowser.show.menu':
 				var ids = 'menu,file-remove-all,view-separator,view-collapse-all,view-expand-all'.split(',');
-				if (nsPreferences.getBoolPref(aPrefstring)) {
+				if (this.getPref(aPrefstring)) {
 					document.getElementById('splitbrowser-'+ids[0]).removeAttribute('hidden');
 					ids.splice(0, 1);
 					ids.forEach(function(aID) {
@@ -2683,14 +2689,108 @@ catch(e) {
 			case 'splitbrowser.show.tab.context.layout.y':
 			case 'splitbrowser.show.tab.context.gather':
 				var attrName = aPrefstring.replace(/\./g, '-');
-				if (nsPreferences.getBoolPref(aPrefstring))
+				if (this.getPref(aPrefstring))
 					document.documentElement.setAttribute(attrName, true);
 				else
 					document.documentElement.removeAttribute(attrName);
 				break;
 		}
-	}
+	},
  
+/* Save/Load Prefs */ 
+	
+	get Prefs() 
+	{
+		if (!this._Prefs) {
+			this._Prefs = Components.classes['@mozilla.org/preferences;1'].getService(Components.interfaces.nsIPrefBranch);
+		}
+		return this._Prefs;
+	},
+	_Prefs : null,
+ 
+	getPref : function(aPrefstring) 
+	{
+		try {
+			switch (this.Prefs.getPrefType(aPrefstring))
+			{
+				case this.Prefs.PREF_STRING:
+					return decodeURIComponent(escape(this.Prefs.getCharPref(aPrefstring)));
+					break;
+				case this.Prefs.PREF_INT:
+					return this.Prefs.getIntPref(aPrefstring);
+					break;
+				default:
+					return this.Prefs.getBoolPref(aPrefstring);
+					break;
+			}
+		}
+		catch(e) {
+		}
+
+		return null;
+	},
+ 
+	setPref : function(aPrefstring, aNewValue) 
+	{
+		var pref = this.Prefs ;
+		var type;
+		try {
+			type = typeof aNewValue;
+		}
+		catch(e) {
+			type = null;
+		}
+
+		switch (type)
+		{
+			case 'string':
+				pref.setCharPref(aPrefstring, unescape(encodeURIComponent(aNewValue)));
+				break;
+			case 'number':
+				pref.setIntPref(aPrefstring, parseInt(aNewValue));
+				break;
+			default:
+				pref.setBoolPref(aPrefstring, aNewValue);
+				break;
+		}
+		return true;
+	},
+ 
+	clearPref : function(aPrefstring) 
+	{
+		try {
+			this.Prefs.clearUserPref(aPrefstring);
+		}
+		catch(e) {
+		}
+
+		return;
+	},
+ 
+	addPrefListener : function(aObserver) 
+	{
+		var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain || aObserver.PREFROOT] ;
+		try {
+			var pbi = this.Prefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+			for (var i = 0; i < domains.length; i++)
+				pbi.addObserver(domains[i], aObserver, false);
+		}
+		catch(e) {
+		}
+	},
+ 
+	removePrefListener : function(aObserver) 
+	{
+		var domains = ('domains' in aObserver) ? aObserver.domains : [aObserver.domain || aObserver.PREFROOT] ;
+		try {
+			var pbi = this.Prefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+			for (var i = 0; i < domains.length; i++)
+				pbi.removeObserver(domains[i], aObserver, false);
+		}
+		catch(e) {
+		}
+	}
+  	
 }; 
   
 window.addEventListener('load', SplitBrowser, false); 

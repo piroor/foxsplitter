@@ -744,9 +744,9 @@ sideBox.removeAttribute('style');
 
 	<handlers>
 		<handler event="mousemove"
-			action="var type = nsPreferences.getIntPref('splitbrowser.show.addbuttons.hover.type'); var isModifier = type == 1 &amp;&amp; SplitBrowser.modifierKeyPressed; if (type == 0 || isModifier) this.handleMouseOverEvent(event, false, isModifier); return true;"/>
+			action="var type = SplitBrowser.getPref('splitbrowser.show.addbuttons.hover.type'); var isModifier = type == 1 &amp;&amp; SplitBrowser.modifierKeyPressed; if (type == 0 || isModifier) this.handleMouseOverEvent(event, false, isModifier); return true;"/>
 		<handler event="dragover" phase="capturing"
-			action="if (nsPreferences.getBoolPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
+			action="if (SplitBrowser.getPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
 
 		<handler event="focus" phase="capturing"
 			action="this.focus();"/>
@@ -1413,9 +1413,9 @@ sideBox.removeAttribute('style');
 		<method name="useDefaultIcon">
 			<body><![CDATA[
 				if (this.browser.contentDocument instanceof ImageDocument) {
-					if (nsPreferences.getBoolPref('browser.chrome.site_icons')) {
+					if (SplitBrowser.getPref('browser.chrome.site_icons')) {
 						try {
-							var sz = nsPreferences.getIntPref('browser.chrome.image_icons.max_size');
+							var sz = SplitBrowser.getPref('browser.chrome.image_icons.max_size');
 							if (!sz)
 								return;
 							var req = this.browser.contentDocument.imageRequest;
@@ -1440,8 +1440,8 @@ sideBox.removeAttribute('style');
 			<body><![CDATA[
 				return (
 					aURI &&
-					nsPreferences.getBoolPref('browser.chrome.site_icons') &&
-					nsPreferences.getBoolPref('browser.chrome.favicons') &&
+					SplitBrowser.getPref('browser.chrome.site_icons') &&
+					SplitBrowser.getPref('browser.chrome.favicons') &&
 					('schemeIs' in aURI) &&
 					(aURI.schemeIs('http') || aURI.schemeIs('https'))
 				);
@@ -1494,7 +1494,7 @@ sideBox.removeAttribute('style');
 		<method name="onLinkAdded">
 			<parameter name="aEvent"/>
 			<body><![CDATA[
-				if (!nsPreferences.getBoolPref('browser.chrome.site_icons')) return;
+				if (!SplitBrowser.getPref('browser.chrome.site_icons')) return;
 				if (!aEvent.originalTarget.rel.match((/(?:^|\s)icon(?:\s|$)/i))) return;
 
 				var href = aEvent.originalTarget.href;
@@ -1656,7 +1656,7 @@ sideBox.removeAttribute('style');
 				var result = this.__splitbrowser__removeTab.apply(this, arguments);
 
 				if (this.mTabContainer.childNodes.length == 1) {
-					this.setStripVisibilityTo(!nsPreferences.getBoolPref('splitbrowser.tabs.autoHide'));
+					this.setStripVisibilityTo(!SplitBrowser.getPref('splitbrowser.tabs.autoHide'));
 				}
 
 				return result;
@@ -1815,7 +1815,7 @@ sideBox.removeAttribute('style');
 
 			b.parentSubBrowser = this;
 
-			if (nsPreferences.getBoolPref('splitbrowser.show.toolbar.navigation.always')) {
+			if (SplitBrowser.getPref('splitbrowser.show.toolbar.navigation.always')) {
 				this.setAttribute('toolbar-navigation', true);
 				this.toggleNavigation(true);
 			}
@@ -1861,7 +1861,7 @@ sideBox.removeAttribute('style');
 			var b = aThis.browser;
 			aThis.addProgressListener(b.mCurrentTab);
 
-			var autoHide = nsPreferences.getBoolPref('splitbrowser.tabs.autoHide');
+			var autoHide = SplitBrowser.getPref('splitbrowser.tabs.autoHide');
 			if (b.mTabs.length == 1)
 				b.setStripVisibilityTo(!autoHide);
 
@@ -1959,7 +1959,7 @@ sideBox.removeAttribute('style');
 
 				var collapse;
 
-				var toolbarShown = nsPreferences.getBoolPref('splitbrowser.show.toolbar.always');
+				var toolbarShown = SplitBrowser.getPref('splitbrowser.show.toolbar.always');
 
 				if (this.boxObject.width <= this.minSize) {
 					if (this.boxObject.height <= this.minSize) {

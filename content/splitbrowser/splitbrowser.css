@@ -108,6 +108,8 @@ html|canvas#splitbrowser-add-button-background-canvas {
 	position: fixed;
 	z-index: 65000;
 	cursor: pointer;
+	width: 0;
+	height: 0;
 }
 
 

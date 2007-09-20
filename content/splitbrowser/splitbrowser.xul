@@ -12,7 +12,6 @@
 
 <script type="application/x-javascript" src="splitbrowser.js"/>
 <script type="application/x-javascript" src="hacks.js"/>
-<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="splitbrowser-collapseAll-broadcaster"
@@ -342,8 +341,7 @@
 
 <window id="main-window">
 	<vbox id="splitbrowser-add-button-container">
-		<html:canvas id="splitbrowser-add-button-background-canvas"
-			style="visibility: hidden;"/>
+		<html:canvas id="splitbrowser-add-button-background-canvas"/>
 		<toolbarbutton id="splitbrowser-add-button"
 			onclick="
 				if (event.button != 0) {
