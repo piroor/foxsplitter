@@ -1671,63 +1671,44 @@ alert(e+'\n\n'+state);
 
 		var button = this.addButton;
 		var canvas = button.previousSibling;
-		canvas.style.visibility = 'hidden';
-		this.showHideAddButton(true, aJustNow);
-//		button.hidden = button.parentNode.hidden = false;
 
-		var size  = this.addButtonSize;
-
-		button.width = button.height = size;
-
+		var size = button.width = button.height = canvas.width = canvas.height = this.addButtonSize;
 		var x, y;
 		var pos;
 		if (aEvent.isTop) {
 			pos = 'top';
 			canvas.width = button.width  = box.areaWidth;
-			canvas.height = button.boxObject.height;
 			x = box.areaX;
 			y = box.y;
 		}
 		else if (aEvent.isBottom) {
 			pos = 'bottom';
 			canvas.width = button.width = box.areaWidth;
-			canvas.height = button.boxObject.height;
 			x = box.areaX;
 			y = box.y + box.height - size;
 		}
 		else if (aEvent.isLeft) {
 			pos = 'left';
 			canvas.height = button.height = box.areaHeight;
-			canvas.width = button.boxObject.width;
 			x = box.x;
 			y = box.areaY;
 		}
 		else if (aEvent.isRight) {
 			pos = 'right';
 			canvas.height = button.height = box.areaHeight;
-			canvas.width = button.boxObject.width;
 			x = box.x + box.width - size;
 			y = box.areaY;
 		}
 		button.parentNode.style.top = y+'px';
 		button.parentNode.style.left = x+'px';
-
-		try {
-			var context = canvas.getContext('2d');
-			var w = node.browser.contentWindow;
-			context.clearRect(0, 0, button.boxObject.width, button.boxObject.height);
-			canvas.style.visibility = 'visible';
-			context.save();
-			var bBox = (node.browser.mCurrentBrowser || node.browser).boxObject;
-			context.drawWindow(w, x - bBox.x + w.scrollX, y - bBox.y + w.scrollY, button.boxObject.width, button.boxObject.height, "rgb(255,255,255)");
-			context.restore();
-		}
-		catch(e) {
-		}
+		button.canvasX = x;
+		button.canvasY = y;
 
 		button.className = pos;
 		button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
 		button.targetSubBrowser = node;
+
+		this.showHideAddButton(true, aJustNow);
 
 		if (this.hideAddButtonTimer)
 			this.stopDelayedHideAddButtonTimer();
@@ -1763,7 +1744,6 @@ alert(e+'\n\n'+state);
 
 		var button = this.addButton;
 		this.showHideAddButton(false, aJustNow);
-//		button.hidden = button.parentNode.hidden = true;
 		button.targetSubBrowser = null;
 
 		if (aEvent && aEvent.force) {
@@ -1812,6 +1792,7 @@ alert(e+'\n\n'+state);
 			button.parentNode.hidden = button.hidden = aShow;
 			button.showHideAddButtonCurrent = button.style.opacity = aShow ? 0 : 1 ;
 			button.showHideAddButtonStart = new Date().getTime();
+			this.updateAddButtonBackground();
 			button.parentNode.hidden = button.hidden = false;
 			button.showHideAddButtonTimer = window.setInterval(this.showHideAddButtonCallback, 10, this, aShow);
 		}
@@ -1830,6 +1811,25 @@ alert(e+'\n\n'+state);
 		else {
 			button.showHideAddButtonCurrent = delta / aSelf.addButtonFadeDelay;
 			button.style.opacity = Math.floor((aShow ? button.showHideAddButtonCurrent : 1-button.showHideAddButtonCurrent ) * 100) / 100;
+		}
+	},
+	updateAddButtonBackground : function()
+	{
+		var button = this.addButton;
+		var canvas = button.previousSibling;
+		canvas.style.visibility = 'visible';
+
+		var node   = button.targetSubBrowser;
+		try {
+			var context = canvas.getContext('2d');
+			var w = node.browser.contentWindow;
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.save();
+			var bBox = (node.browser.mCurrentBrowser || node.browser).boxObject;
+			context.drawWindow(w, button.canvasX - bBox.x + w.scrollX, button.canvasY - bBox.y + w.scrollY, canvas.width, canvas.height, "rgb(255,255,255)");
+			context.restore();
+		}
+		catch(e) {
 		}
 	},
  
@@ -2572,7 +2572,8 @@ catch(e) {
 
 
 			case 'keydown':
-				if (aEvent.shiftKey)
+				if (aEvent.shiftKey ||
+					aEvent.keyCode == aEvent.DOM_VK_SHIFT)
 					this.modifierKeyPressed = true;
 				return;
 
