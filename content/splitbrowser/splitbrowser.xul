@@ -344,9 +344,9 @@
 	<vbox id="splitbrowser-add-button-container">
 		<html:canvas id="splitbrowser-add-button-background-canvas"/>
 		<toolbarbutton id="splitbrowser-add-button"
-			oncommand="SplitBrowser.onAddButtonCommand(event);"
-			ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
-			ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);"
+			oncommand="if (SplitBrowser.addButtonIsActive) SplitBrowser.onAddButtonCommand(event);"
+			ondragover="if (SplitBrowser.addButtonIsActive) nsDragAndDrop.dragOver(event, SplitBrowser.addButtonDNDObserver);"
+			ondragdrop="if (SplitBrowser.addButtonIsActive) nsDragAndDrop.drop(event, SplitBrowser.addButtonDNDObserver);"
 			tooltiptext-top="&splitbrowser.add.button.top.tooltip;"
 			tooltiptext-bottom="&splitbrowser.add.button.bottom.tooltip;"
 			tooltiptext-left="&splitbrowser.add.button.left.tooltip;"

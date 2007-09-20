@@ -1638,6 +1638,9 @@ alert(e+'\n\n'+state);
 	get addButtonHideDelay() {
 		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.hide');
 	},
+	get addButtonFadeDelay() {
+		return nsPreferences.getIntPref('splitbrowser.delay.addbuttons.fade');
+	},
  
 	showAddButton : function(aEvent, aJustNow) 
 	{
@@ -1802,8 +1805,10 @@ alert(e+'\n\n'+state);
 		if (aJustNow) {
 			button.parentNode.hidden = button.hidden = !aShow;
 			button.style.opacity = 1;
+			this.addButtonIsActive = aShow;
 		}
 		else {
+			this.addButtonIsActive = false;
 			button.parentNode.hidden = button.hidden = aShow;
 			button.showHideAddButtonCurrent = button.style.opacity = aShow ? 0 : 1 ;
 			button.showHideAddButtonStart = new Date().getTime();
@@ -1815,18 +1820,18 @@ alert(e+'\n\n'+state);
 	{
 		var button = aSelf.addButton;
 		var delta = new Date().getTime() - button.showHideAddButtonStart;
-		if (delta >= aSelf.showHideAddButtonDelay) {
+		if (delta >= aSelf.addButtonFadeDelay) {
 			button.style.opacity = aShow ? 1 : 0 ;
 			button.parentNode.hidden = button.hidden = !aShow;
 			window.clearInterval(button.showHideAddButtonTimer);
 			button.showHideAddButtonTimer = null;
+			aSelf.addButtonIsActive = aShow;
 		}
 		else {
-			button.showHideAddButtonCurrent = delta / aSelf.showHideAddButtonDelay;
+			button.showHideAddButtonCurrent = delta / aSelf.addButtonFadeDelay;
 			button.style.opacity = Math.floor((aShow ? button.showHideAddButtonCurrent : 1-button.showHideAddButtonCurrent ) * 100) / 100;
 		}
 	},
-	showHideAddButtonDelay : 200,
  
 	onAddButtonCommand : function(aEvent) 
 	{
