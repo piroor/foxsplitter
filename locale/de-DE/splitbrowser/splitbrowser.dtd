@@ -9,9 +9,11 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Automatisch fokussieren nach ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
 
-<!ENTITY splitbrowser.show.addbuttons.caption "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
-<!ENTITY splitbrowser.show.addbuttons.hover    "Beim Berühren der Randmitte mit dem Mauszeiger">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
 
 <!ENTITY splitbrowser.tab.caption   "Tabs">
 <!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">

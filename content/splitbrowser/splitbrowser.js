@@ -74,7 +74,7 @@ var SplitBrowser = {
 	},
  
 /* utilities */ 
-	 
+	
 	makeURIFromSpec : function(aURI) 
 	{
 		try {
@@ -319,9 +319,45 @@ var SplitBrowser = {
 		newEvent.shouldDuplicate  = aShouldDuplicate;
 		(aEventTarget || appcontent).dispatchEvent(newEvent);
 	},
- 	 
+ 
+	showHideElement : function(aTarget, aShow, aJustNow) 
+	{
+		aTarget.parentNode.hidden = aTarget.hidden = !aShow;
+		return;
+
+		if (aTarget.showHideElementTimer) {
+			window.clearInterval(aTarget.showHideElementTimer);
+			aTarget.showHideElementTimer = null;
+		}
+		if (aJustNow) {
+			aTarget.parentNode.hidden = aTarget.hidden = !aShow;
+		}
+		else {
+			aTarget.parentNode.hidden = aTarget.hidden = aShow;
+			aTarget.showHideElementCurrent = aTarget.parentNode.style.opacity = aShow ? 0 : 1 ;
+			aTarget.showHideElementStart = new Date().getTime();
+			aTarget.parentNode.hidden = aTarget.hidden = false;
+			aTarget.showHideElementTimer = window.setInterval(this.showHideElementCallback, 10, this, aTarget, aShow);
+		}
+	},
+	showHideElementCallback : function(aSelf, aTarget, aShow)
+	{
+		var delta = new Date().getTime() - aTarget.showHideElementStart;
+		if (delta >= aSelf.showHideElementDelay) {
+			aTarget.parentNode.style.opacity = aShow ? 1 : 0 ;
+			aTarget.parentNode.hidden = aTarget.hidden = !aShow;
+			window.clearInterval(aTarget.showHideElementTimer);
+			aTarget.showHideElementTimer = null;
+		}
+		else {
+			aTarget.showHideElementCurrent = delta / aSelf.showHideElementDelay;
+			aTarget.parentNode.style.opacity = aShow ? 1-aTarget.showHideElementCurrent : aTarget.showHideElementCurrent ;
+		}
+	},
+	showHideElementDelay : 200,
+  
 /* add sub-browser (split contents) */ 
-	
+	 
 	addSubBrowser : function(aURI, aBrowser, aPosition) 
 	{
 		if (!aURI) aURI = 'about:blank';
@@ -371,7 +407,7 @@ var SplitBrowser = {
 
 		return browser;
 	},
-	 
+	
 	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aForceRemove) 
 	{
 		var b = aTab;
@@ -909,7 +945,7 @@ var SplitBrowser = {
 	},
   
 /* save / load */ 
-	 
+	
 	save : function() 
 	{
 		var state = this.getContainerState(document.getElementById('appcontent'));
@@ -1621,7 +1657,7 @@ alert(e+'\n\n'+state);
      
 /* popup-buttons */ 
 	addButtonIsShown : false,
-	
+	 
 	get addButton() { 
 		return document.getElementById('splitbrowser-add-button');
 	},
@@ -1646,15 +1682,15 @@ alert(e+'\n\n'+state);
 			window.clearTimeout(this.showAddButtonTimer);
 		}
 
-		if (aEvent.firedBy.indexOf('drag') == 0) {
-			this.showAddButtonNow(this, aEvent);
+		if (aEvent.firedBy.indexOf('drag') == 0 || aEvent.modifierKeyPressed) {
+			this.showAddButtonNow(this, aEvent, true);
 		}
 		else {
 			this.showAddButtonTimer = window.setTimeout(this.showAddButtonNow, this.addButtonShowDelay, this, aEvent);
 		}
 	},
-	
-	showAddButtonNow : function(aThis, aEvent) 
+	 
+	showAddButtonNow : function(aThis, aEvent, aJustNow) 
 	{
 		if (!aThis) aThis = this;
 
@@ -1678,13 +1714,14 @@ alert(e+'\n\n'+state);
 
 		aThis.addButtonIsShown = true;
 
-		aThis.hideAddButton();
+		aThis.hideAddButton(null, aJustNow);
 
 		var box = node.contentAreaSizeObject;
 		if (!box) return;
 
 		var button = aThis.addButton;
-		button.hidden = button.parentNode.hidden = false;
+		aThis.showHideElement(button, true, aJustNow);
+//		button.hidden = button.parentNode.hidden = false;
 
 		var size  = aThis.addButtonSize;
 
@@ -1724,13 +1761,14 @@ alert(e+'\n\n'+state);
 			aThis.stopDelayedHideAddButtonTimer();
 		aThis.delayedHideAddButton();
 	},
-  
-	hideAddButton : function(aEvent) 
+  	
+	hideAddButton : function(aEvent, aJustNow) 
 	{
 		this.stopDelayedHideAddButtonTimer();
 
 		var button = this.addButton;
-		button.hidden = button.parentNode.hidden = true;
+		this.showHideElement(button, false, aJustNow);
+//		button.hidden = button.parentNode.hidden = true;
 		button.targetSubBrowser = null;
 
 		if (aEvent && aEvent.force) {
@@ -1749,7 +1787,7 @@ alert(e+'\n\n'+state);
 		this.stopDelayedHideAddButtonTimer();
 		this.hideAddButtonTimer = window.setTimeout(this.delayedHideAddButtonCallback, this.addButtonHideDelay, this);
 	},
-	
+	 
 	delayedHideAddButtonCallback : function(aThis) 
 	{
 		aThis.stopDelayedHideAddButtonTimer();
@@ -2044,6 +2082,8 @@ catch(e) {
 		document.documentElement.addEventListener('SubBrowserFocusMoved', this, true);
 		document.documentElement.addEventListener('TabOpen', this, true);
 		document.documentElement.addEventListener('TabClose', this, true);
+		document.documentElement.addEventListener('keydown', this, true);
+		document.documentElement.addEventListener('keyup', this, true);
 
 		document.getElementById('contentAreaContextMenu').addEventListener('popupshowing', this, false);
 
@@ -2152,7 +2192,7 @@ catch(e) {
 			window.setTimeout('SplitBrowser.load();', 0);
 		}
 	},
-	
+	 
 	updateTabBrowser : function(aBrowser) 
 	{
 		if (aBrowser.localName != 'tabbrowser') return;
@@ -2489,6 +2529,16 @@ catch(e) {
 				else {
 					this.updateMenu(aEvent.target);
 				}
+				return;
+
+
+			case 'keydown':
+				if (aEvent.shiftKey)
+					this.modifierKeyPressed = true;
+				return;
+
+			case 'keyup':
+				this.modifierKeyPressed = false;
 				return;
 		}
 	},

@@ -8,9 +8,11 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Előtérbe helyezés késleltetése ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ezredmásodperc">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Felosztás&quot; gombok megjelenítése">
-<!ENTITY splitbrowser.show.addbuttons.hover    "Valós időben a lap szélén (kis késleltetéssel)">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "Linkek, fájlok,... áthúzásakor (azonnal)">
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
 
 <!ENTITY splitbrowser.tab.caption   "Lap">
 <!ENTITY splitbrowser.tab.closetab  "Lap bezárása, ha új ablakban jelenik meg">

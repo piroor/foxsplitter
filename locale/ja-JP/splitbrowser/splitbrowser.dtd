@@ -9,9 +9,11 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "ブラウザの上に">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ミリ秒以上ポインタがあるとき自動的にフォーカスする">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "ブラウズ領域の端で分割ボタンを表示する場合">
-<!ENTITY splitbrowser.show.addbuttons.hover    "通常時">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "リンクやファイルなどのドラッグ＆ドロップ時">
+<!ENTITY splitbrowser.show.addbuttons.caption  "ブラウズ領域の分割ボタン">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "ブラウズ領域の端をポイントした時">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "常に自動的に分割ボタンを表示する">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Shiftキーを押している時だけ分割ボタンを表示する">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "リンクやファイルなどのドラッグ＆ドロップ時に分割ボタンを表示する">
 
 <!ENTITY splitbrowser.tab.caption   "タブ">
 <!ENTITY splitbrowser.tab.closetab  "タブを分割した後はそのタブを閉じる">

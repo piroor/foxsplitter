@@ -25,9 +25,9 @@
 		<preference id="splitbrowser.tab.closetab"
 			name="splitbrowser.tab.closetab"
 			type="bool"/>
-		<preference id="splitbrowser.show.addbuttons.hover"
-			name="splitbrowser.show.addbuttons.hover"
-			type="bool"/>
+		<preference id="splitbrowser.show.addbuttons.hover.type"
+			name="splitbrowser.show.addbuttons.hover.type"
+			type="int"/>
 		<preference id="splitbrowser.show.addbuttons.dragdrop"
 			name="splitbrowser.show.addbuttons.dragdrop"
 			type="bool"/>
@@ -57,9 +57,17 @@
 
 	<groupbox>
 		<caption label="&splitbrowser.show.addbuttons.caption;"/>
-		<checkbox id="splitbrowser.show.addbuttons.hover-check" flex="1"
-			label="&splitbrowser.show.addbuttons.hover;"
-			preference="splitbrowser.show.addbuttons.hover"/>
+
+		<groupbox>
+			<caption label="&splitbrowser.show.addbuttons.hover.type;"/>
+			<radiogroup id="splitbrowser.show.addbuttons.hover.type"
+				preference="splitbrowser.show.addbuttons.hover.type"
+				orient="vertical">
+				<radio label="&splitbrowser.show.addbuttons.hover.type.0;" value="0"/>
+				<radio label="&splitbrowser.show.addbuttons.hover.type.1;" value="1"/>
+			</radiogroup>
+		</groupbox>
+
 		<checkbox id="splitbrowser.show.addbuttons.dragdrop-check" flex="1"
 			label="&splitbrowser.show.addbuttons.dragdrop;"
 			preference="splitbrowser.show.addbuttons.dragdrop"/>

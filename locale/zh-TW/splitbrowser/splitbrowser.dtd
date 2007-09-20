@@ -6,9 +6,12 @@
 <!ENTITY splitbrowser.subbrowser.autoFocus "滑鼠經過時自動切換焦點到瀏覽區">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "切換焦點到瀏覽區的延遲時間">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after "毫秒">
-<!ENTITY splitbrowser.show.addbuttons.caption "在內容區域邊緣顯示分割按鈕">
-<!ENTITY splitbrowser.show.addbuttons.hover "平常滑鼠經過的時候">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "拖放鏈結、檔案...等的時候">
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
+
 <!ENTITY splitbrowser.tab.caption "分頁">
 <!ENTITY splitbrowser.tab.closetab "當分頁被分割到新瀏覽區後，關閉該分頁。">
 <!ENTITY splitbrowser.tab.appearance "外觀">

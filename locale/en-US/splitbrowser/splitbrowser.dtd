@@ -12,6 +12,12 @@
 <!ENTITY splitbrowser.show.addbuttons.hover    "Normal time">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "While dragging links, files, etc.">
 
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
+
 <!ENTITY splitbrowser.tab.caption   "Tab">
 <!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in new browser">
 

@@ -8,9 +8,11 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "초점 맞추기 대기 시간: ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "밀리초">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "컨텐트 영역의 위쪽/아래쪽/왼쪽/오른쪽 가장자리에 &quot;분할&quot; 버튼 보이기">
-<!ENTITY splitbrowser.show.addbuttons.hover    "보통 시간">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "링크, 파일 등을 드래그 하는 동안">
+<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
 
 <!ENTITY splitbrowser.tab.caption   "탭">
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">

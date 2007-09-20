@@ -3,8 +3,9 @@ pref("splitbrowser.tab.closetab",             false);
 pref("splitbrowser.tabs.autoHide",            true);
 pref("splitbrowser.subbrowser.autoFocus",     false);
 
-pref("splitbrowser.show.addbuttons.hover",    true);
-pref("splitbrowser.show.addbuttons.dragdrop", true);
+// 0 = always, 1 = only with modifier key
+pref("splitbrowser.show.addbuttons.hover.type", 0);
+pref("splitbrowser.show.addbuttons.dragdrop",   true);
 pref("splitbrowser.show.toolbar.always",      true);
 pref("splitbrowser.show.toolbar.navigation.always", false);
 pref("splitbrowser.show.collapseexpand",      false);
