@@ -20,7 +20,49 @@
 	<em:translator>tito (es-ES locale)</em:translator>
 
 
-    <em:updateURL>http://piro.sakura.ne.jp/xul/xul.rdf.en</em:updateURL>
+    <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
+
+
+    <em:localized>
+      <RDF:Description em:locale="en-US"
+                       em:name="Split Browser"
+                       em:description="Splits browser window as you like."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="ja-JP"
+                       em:name="分割ブラウザ"
+                       em:description="ブラウザウィンドウ内を自由に分割できるようにします。"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="fr-FR"
+                       em:name="Split Browser"
+                       em:description="Partager la fenêtre du navigateur selon vos désirs."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="fr-FR"
+                       em:name="Split Browser"
+                       em:description="Erlaubt ein beliebiges Aufteilen des Browser-Fensters zur gleichzeitigen Anzeige mehrerer Seitenansichten."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="ko-KR"
+                       em:name="Split Browser"
+                       em:description="사용자 마음대로 브라우저 화면을 분할합니다."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="zh-TW"
+                       em:name="Split Browser"
+                       em:description="依您所喜歡的方式分割瀏覽視窗"/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="hu-HU"
+                       em:name="Split Browser"
+                       em:description="A böngésző megnyitott ablakainak felosztása..."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="es-ES"
+                       em:name="Split Browser"
+                       em:description="Divide la ventana del navegador como tú quieras."/>
+    </em:localized>
 
 
     <em:targetApplication>
