@@ -39,7 +39,7 @@
                        em:description="Partager la fenêtre du navigateur selon vos désirs."/>
     </em:localized>
     <em:localized>
-      <RDF:Description em:locale="fr-FR"
+      <RDF:Description em:locale="de-DE"
                        em:name="Split Browser"
                        em:description="Erlaubt ein beliebiges Aufteilen des Browser-Fensters zur gleichzeitigen Anzeige mehrerer Seitenansichten."/>
     </em:localized>
