@@ -8,11 +8,11 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Mettre en avant la fenêtre après ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "&quot;Split&quot; buttons of the content area">
-<!ENTITY splitbrowser.show.addbuttons.hover.type "When one of edges of the content area is pointed:">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Always show &quot;Split&quot; buttons automatically.">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Show &quot;Split&quot; buttons if the &quot;Shift&quot; key is pressed.">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "Show &quot;Split&quot; buttons while dragging links, files, etc.">
+<!ENTITY splitbrowser.show.addbuttons.caption  "Boutons &quot;Partager&quot; dans la fenêtre">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "Lorsqu'un des cotés de la fenêtre est pointé par la souris :">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Toujours afficher automatiquement les boutons &quot;Partager&quot;.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Montrer les boutons &quot;Partager&quot; si la touche &quot;Maj.&quot; est aussi maintenue appuyée.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Montrer les boutons &quot;Partager&quot; lorsque l'on fait glisser des liens, des fichiers, etc...">
 
 <!ENTITY splitbrowser.tab.caption   "Onglet">
 <!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
@@ -21,7 +21,7 @@
 <!ENTITY splitbrowser.tab.appearance     "Apparence">
 
 <!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d'outils dans les fenêtres partagées.">
-<!ENTITY splitbrowser.show.collapseexpand "Montrer la barre d'outils avec les boutons &quot;Réduire&quot;/&quot;Déployer&quot; dans les fenêtres partagées.">
+<!ENTITY splitbrowser.show.collapseexpand "Montrer la barre d'outils avec les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans les fenêtres partagées.">
 <!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
 

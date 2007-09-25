@@ -6,7 +6,7 @@
                    em:updateKey="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLI43lgUhWE0E7bfiuTrQMKIP53KM3w71VEPc9FxE7YS3Hpr85dC/GgEUDPd6xD7UP7ckzEusN49LCAKoipepxgyAWzQjZ3CzvkD7PWsZFTi7lpj9ytYDysoFwHs0L96i5oiVopNj1NQM2AC0Y5Lr0b6lz2L5ece0/z6monpZXPQIDAQAB"
                    em:id="{29c4afe1-db19-4298-8785-fcc94d1d6c1d}"
                    em:name="Split Browser"
-                   em:version="0.4.2007092101"
+                   em:version="0.4.2007092501"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
