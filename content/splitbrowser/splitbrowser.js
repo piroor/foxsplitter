@@ -668,7 +668,7 @@ var SplitBrowser = {
 	},
   
 /* features */ 
-	
+	 
 	collapseAllSubBrowsers : function() 
 	{
 		this._browsers.forEach(function(aBrowser) {
@@ -837,6 +837,88 @@ var SplitBrowser = {
 		else {
 			this.activeBrowser.parentSubBrowser.close();
 		}
+	},
+ 
+	activeBrowserBack : function(aEvent, aIgnoreAlt) 
+	{
+		var b = this.activeBrowser;
+		if (b == gBrowser) {
+			return window.BrowserBack.apply(window, arguments);
+		}
+
+		var where = whereToOpenLink(aEvent, false, aIgnoreAlt);
+		if (where == 'current') {
+			try {
+				b.webNavigation.goBack();
+			}
+			catch(e) {
+			}
+		}
+		else {
+			var sessionHistory = b.webNavigation.sessionHistory;
+			var currentIndex = sessionHistory.index;
+			var entry = sessionHistory.getEntryAtIndex(currentIndex - 1, false);
+			var url = entry.URI.spec;
+			switch (where)
+			{
+				case 'tab':
+				case 'tabshifted':
+					if (b.localName == 'tabbrowser') {
+						var loadInBackground = this.getPref('browser.tabs.loadBookmarksInBackground');
+						if (where == 'tabshifted') loadInBackground = !loadInBackground;
+						var t = b.addTab(url);
+						if (!loadInBackground) b.selectedTab = t;
+						return;
+					}
+
+				default:
+					openUILinkIn(url, where);
+					return;
+			}
+		}
+
+		return;
+	},
+ 
+	activeBrowserForward : function(aEvent, aIgnoreAlt) 
+	{
+		var b = this.activeBrowser;
+		if (b == gBrowser) {
+			return window.BrowserForward.apply(window, arguments);
+		}
+
+		var where = whereToOpenLink(aEvent, false, aIgnoreAlt);
+		if (where == 'current') {
+			try {
+				b.webNavigation.goForward();
+			}
+			catch(e) {
+			}
+		}
+		else {
+			var sessionHistory = b.webNavigation.sessionHistory;
+			var currentIndex = sessionHistory.index;
+			var entry = sessionHistory.getEntryAtIndex(currentIndex + 1, false);
+			var url = entry.URI.spec;
+			switch (where)
+			{
+				case 'tab':
+				case 'tabshifted':
+					if (b.localName == 'tabbrowser') {
+						var loadInBackground = this.getPref('browser.tabs.loadBookmarksInBackground');
+						if (where == 'tabshifted') loadInBackground = !loadInBackground;
+						var t = b.addTab(url);
+						if (!loadInBackground) b.selectedTab = t;
+						return;
+					}
+
+				default:
+					openUILinkIn(url, where);
+					return;
+			}
+		}
+
+		return;
 	},
  
 	activeBrowserStop : function() 
@@ -2159,6 +2241,23 @@ catch(e) {
 			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
+		if ('BrowserHandleBackspace' in window) {
+			eval('window.BrowserHandleBackspace = '+
+				window.BrowserHandleBackspace.toSource().replace(
+					/BrowserBack\(/g,
+					'SplitBrowser.activeBrowserBack('
+				)
+			);
+		}
+		if ('BrowserHandleShiftBackspace' in window) {
+			eval('window.BrowserHandleShiftBackspace = '+
+				window.BrowserHandleShiftBackspace.toSource().replace(
+					/BrowserForward\(/g,
+					'SplitBrowser.activeBrowserForward('
+				)
+			);
+		}
+
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
@@ -2419,7 +2518,7 @@ catch(e) {
 
 		return this.__splitbrowser__handleLinkClick.apply(this, arguments);
 	},
-  
+  	
 	destroy : function() 
 	{
 		if (this.getPref('splitbrowser.state.restore'))
@@ -2698,7 +2797,7 @@ catch(e) {
 	},
  
 /* Save/Load Prefs */ 
-	
+	 
 	get Prefs() 
 	{
 		if (!this._Prefs) {
@@ -2790,7 +2889,7 @@ catch(e) {
 		catch(e) {
 		}
 	}
-  	
+  
 }; 
   
 window.addEventListener('load', SplitBrowser, false); 

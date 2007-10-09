@@ -58,7 +58,25 @@
 	<command id="splitbrowser-gather-command"
 		oncommand="SplitBrowser.gatherSubBrowsers();"
 		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+
+	<command id="SplitBrowser:activeBrowserBack"
+		oncommand="SplitBrowser.activeBrowserBack();"/>
+	<command id="SplitBrowser:activeBrowserForward"
+		oncommand="SplitBrowser.activeBrowserForward();"/>
+	<command id="SplitBrowser:activeBrowserReload"
+		oncommand="SplitBrowser.activeBrowserReload();"/>
 </commandset>
+
+<keyset id="mainKeyset">
+	<key id="goBackKb"
+		command="SplitBrowser:activeBrowserBack"/>
+	<key id="goForwardKb"
+		command="SplitBrowser:activeBrowserForward"/>
+	<key id="key_reload"
+		command="SplitBrowser:activeBrowserReload"/>
+	<key id="key_stop"
+		oncommand="SplitBrowser.activeBrowserStop();"/>
+</keyset>
 
 <toolbarpalette id="BrowserToolbarPalette">
 	<toolbarbutton id="splitbrowser-menu-button"

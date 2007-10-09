@@ -361,6 +361,12 @@ SplitBrowser.hackForOtherExtensions = function() {
 				/BrowserStop\(\)/g,
 				'SplitBrowser.activeBrowserStop()'
 			).replace(
+				/BrowserBack\(([^\)]*)\)/g,
+				'SplitBrowser.activeBrowserBack($1)'
+			).replace(
+				/BrowserForward\(([^\)]*)\)/g,
+				'SplitBrowser.activeBrowserForward($1)'
+			).replace(
 				/BrowserPageInfo\(\)/g,
 				'SplitBrowser.activeBrowserPageInfo()'
 			).replace(
