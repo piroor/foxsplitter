@@ -18,6 +18,7 @@
 	<em:translator>Alan CHENG (zh-TW locale)</em:translator>
 	<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
 	<em:translator>tito (es-ES locale)</em:translator>
+	<em:translator>Godai71 (it-IT locale)</em:translator>
 
 
     <em:updateURL>http://piro.sakura.ne.jp/xul/update.rdf</em:updateURL>
@@ -62,6 +63,11 @@
       <RDF:Description em:locale="es-ES"
                        em:name="Split Browser"
                        em:description="Divide la ventana del navegador como tú quieras."/>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="it-IT"
+                       em:name="Split Browser"
+                       em:description="Permette di suddividere a piacimento la finestra del browser."/>
     </em:localized>
 
 
