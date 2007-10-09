@@ -1,0 +1,147 @@
+<!ENTITY splitbrowser.title           "Configurazione di Split Browser">
+
+<!ENTITY splitbrowser.tab.general     "Generale">
+
+<!ENTITY splitbrowser.general.caption     "Generale">
+<!ENTITY splitbrowser.state.restore       "Salva lo stato dei riquadri">
+<!ENTITY splitbrowser.subbrowser.autoFocus "Seleziona automaticamente i riquadri al passaggio del mouse">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "seleziona il riquadro dopo ">
+<!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
+
+<!ENTITY splitbrowser.show.addbuttons.caption  "Maniglia di suddivisione del riquadro">
+<!ENTITY splitbrowser.show.addbuttons.hover.type "Quando il mouse viene portato presso uno dei bordi dell&apos;area attiva:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "mostra la maniglia automaticamente">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "mostra la maniglia solo se viene premuto il tasto Maiusc">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop "Mostra la maniglia di suddivisione durante le operazioni di trascinamento">
+
+<!ENTITY splitbrowser.tab.caption   "Scheda">
+<!ENTITY splitbrowser.tab.closetab  "Chiudi la scheda dopo averla aperta in un nuovo riquadro">
+
+
+<!ENTITY splitbrowser.tab.appearance     "Aspetto">
+
+<!ENTITY splitbrowser.show.toolbar.always "Mostra sempre la barra degli strumenti nei riquadri">
+<!ENTITY splitbrowser.show.collapseexpand "Mostra i pulsanti &quot;Contrai&quot;/&quot;Espandi&quot; nei riquadri">
+<!ENTITY splitbrowser.tabs.autoHide "Mostra sempre la barra delle schede nei riquadri">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "Mostra sempre i pulsati di navigazione nei riquadri">
+
+
+<!ENTITY splitbrowser.tab.menu              "Menu">
+<!ENTITY splitbrowser.show.menu             "Mostra il menu &quot;Suddivisione&quot; nella barra dei menu">
+<!ENTITY splitbrowser.show.context.caption  "Voci aggiuntive nel menu contestuale delle schede">
+<!ENTITY splitbrowser.show.tab.context.split           "Suddividi la scheda verso..">
+<!ENTITY splitbrowser.show.tab.context.layout.grid            "Affianca tutte le schede">
+<!ENTITY splitbrowser.show.tab.context.layout.x "Affianca tutte le schede verticalmente">
+<!ENTITY splitbrowser.show.tab.context.layout.y   "Affianca tutte le schede orizzontalmente">
+<!ENTITY splitbrowser.show.tab.context.gather          "Raggruppa qui come schede tutti i riquadri">
+
+
+
+<!ENTITY splitbrowser.add.button.top.tooltip    "Suddividi verso l&apos;alto">
+<!ENTITY splitbrowser.add.button.bottom.tooltip "Suddividi verso il basso">
+<!ENTITY splitbrowser.add.button.right.tooltip  "Suddividi verso la destra">
+<!ENTITY splitbrowser.add.button.left.tooltip   "Suddividi verso la sinistra">
+
+
+<!ENTITY splitbrowser.file.removeAll.label "Chiudi tutti i riquadri">
+<!ENTITY splitbrowser.file.removeAll.accesskey   "C">
+<!ENTITY splitbrowser.view.collapseAll.label     "Contrai tutti i riquadri">
+<!ENTITY splitbrowser.view.collapseAll.accesskey "o">
+<!ENTITY splitbrowser.view.expandAll.label       "Espandi tutti i riquadri">
+<!ENTITY splitbrowser.view.expandAll.accesskey   "E">
+
+<!ENTITY splitbrowser.add.label        "Suddividi la finestra verso">
+<!ENTITY splitbrowser.add.top.label    "l&apos;alto">
+<!ENTITY splitbrowser.add.bottom.label "il basso">
+<!ENTITY splitbrowser.add.right.label  "la destra">
+<!ENTITY splitbrowser.add.left.label   "la sinistra">
+
+<!ENTITY splitbrowser.frame.add.label        "Suddividi la finestra da questo riquadro verso">
+<!ENTITY splitbrowser.frame.add.top.label    "l&apos;alto">
+<!ENTITY splitbrowser.frame.add.bottom.label "il basso">
+<!ENTITY splitbrowser.frame.add.right.label  "la destra">
+<!ENTITY splitbrowser.frame.add.left.label   "la sinistra">
+
+<!ENTITY splitbrowser.link.add.label        "Apri in un riquadro verso">
+<!ENTITY splitbrowser.link.add.top.label    "l&apos;alto">
+<!ENTITY splitbrowser.link.add.bottom.label "il basso">
+<!ENTITY splitbrowser.link.add.right.label  "la destra">
+<!ENTITY splitbrowser.link.add.left.label   "la sinistra">
+
+<!ENTITY splitbrowser.tab.add.label        "Suddividi la scheda verso">
+<!ENTITY splitbrowser.tab.add.top.label    "l&apos;alto">
+<!ENTITY splitbrowser.tab.add.bottom.label "il basso">
+<!ENTITY splitbrowser.tab.add.right.label  "la destra">
+<!ENTITY splitbrowser.tab.add.left.label   "la sinistra">
+
+
+
+
+<!ENTITY splitbrowser.tab.layout.grid.label         "Affianca tutte le schede">
+<!ENTITY splitbrowser.tab.layout.x.label "Affianca tutte le schede verticalmente">
+<!ENTITY splitbrowser.tab.layout.y.label   "Affianca tutte le schede orizzontalmente">
+<!ENTITY splitbrowser.tab.gather.label           "Raggruppa qui come schede tutti i riquadri">
+
+
+
+
+<!ENTITY splitbrowser.menu.label     "Suddivisione">
+<!ENTITY splitbrowser.menu.accesskey "d">
+<!ENTITY splitbrowser.menu.removeAll.label "Chiudi tutti i riquadri">
+<!ENTITY splitbrowser.menu.removeAll.accesskey   "C">
+<!ENTITY splitbrowser.menu.collapseAll.label     "Contrai tutti i riquadri">
+<!ENTITY splitbrowser.menu.collapseAll.accesskey "t">
+<!ENTITY splitbrowser.menu.expandAll.label       "Espandi tutti i riquadri">
+<!ENTITY splitbrowser.menu.expandAll.accesskey   "E">
+<!ENTITY splitbrowser.menu.add.label             "Suddividi la scheda attuale verso">
+<!ENTITY splitbrowser.menu.add.top.label         "l&apos;alto">
+<!ENTITY splitbrowser.menu.add.bottom.label      "il basso">
+<!ENTITY splitbrowser.menu.add.right.label       "la destra">
+<!ENTITY splitbrowser.menu.add.left.label        "la sinistra">
+<!ENTITY splitbrowser.menu.layout.grid.label         "Affianca tutte le schede">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey     "A">
+<!ENTITY splitbrowser.menu.layout.x.label     "Affianca tutte le schede verticalmente">
+<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
+<!ENTITY splitbrowser.menu.layout.y.label       "Affianca tutte le schede orizzontalmente">
+<!ENTITY splitbrowser.menu.layout.y.accesskey   "o">
+<!ENTITY splitbrowser.menu.gather.label               "Raggruppa come schede tutti i riquadri">
+<!ENTITY splitbrowser.menu.gather.accesskey           "R">
+
+
+
+<!ENTITY multipletab.layout.grid.label                "Affianca">
+<!ENTITY multipletab.layout.x.label     "Affianca verticalmente">
+<!ENTITY multipletab.layout.y.label       "Affianca orizzontalmente">
+
+
+
+<!ENTITY splitbrowser.subbrowser.blank             "(Vuoto)">
+<!ENTITY splitbrowser.subbrowser.loading           "Caricamento in corso...">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Indietro">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avanti">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Ricarica">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Interrompi">
+<!ENTITY splitbrowser.subbrowser.go.label          "Vai">
+<!ENTITY splitbrowser.subbrowser.go.tooltip        "Carica questo indirizzo">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Contrai">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Espandi">
+<!ENTITY splitbrowser.subbrowser.close.tooltip     "Chiudi">
+
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nuova scheda">
+<!ENTITY splitbrowser.subbrowser.menu.collapse     "Contrai">
+<!ENTITY splitbrowser.subbrowser.menu.expand       "Espandi">
+<!ENTITY splitbrowser.subbrowser.menu.close        "Chiudi">
+
+
+<!ENTITY splitbrowser.button.menu.label          "Suddividi">
+<!ENTITY splitbrowser.button.menu.tooltip        "Suddivide l&apos;area di navigazione">
+<!ENTITY splitbrowser.button.layout.grid.label   "Affianca">
+<!ENTITY splitbrowser.button.layout.grid.tooltip "Affianca tutte le schede">
+<!ENTITY splitbrowser.button.gather.label        "Raggruppa">
+<!ENTITY splitbrowser.button.gather.tooltip      "Raggruppa come schede tutti i riquadri">
+<!ENTITY splitbrowser.button.collapseAll.label   "Contrai">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Contrai tutti i riquadri">
+<!ENTITY splitbrowser.button.expandAll.label     "Espandi">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Espandi tutti i riquadri">
+<!ENTITY splitbrowser.button.removeAll.label      "Chiudi tutti">
+<!ENTITY splitbrowser.button.removeAll.tooltip    "Chiudi tutti i riquadri">
