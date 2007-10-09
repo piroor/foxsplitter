@@ -2227,6 +2227,7 @@ catch(e) {
 	
 	overrideZoomManager : function() 
 	{
+/*
 		ZoomManager.prototype.__defineGetter__('textZoom', function() {
 			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
 			var currentZoom;
@@ -2248,8 +2249,14 @@ catch(e) {
 				throw Components.results.NS_ERROR_INVALID_ARG;
 
 			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
+			alert(SplitBrowser.activeBrowser == gBrowser);
 			markupDocumentViewer.textZoom = aZoom / 100;
 		});
+*/
+
+		window.getMarkupDocumentViewer = function() {
+			return SplitBrowser.activeBrowser.markupDocumentViewer;
+		};
 	},
   
 	init : function() 
