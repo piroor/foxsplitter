@@ -2452,6 +2452,7 @@ catch(e) {
 	{
 		if (!aEvent) return false;
 		if (aEvent.type == 'command') aEvent = aEvent.sourceEvent;
+		if (!aEvent) return false;
 		return (aEvent.type.indexOf('key') == 0 || aEvent.originalTarget.localName == 'key');
 	},
  
