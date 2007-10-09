@@ -824,7 +824,7 @@ var SplitBrowser = {
 		if (b == gBrowser)
 			BrowserOpenTab();
 		else
-			b.openNewTab();
+			b.parentSubBrowser.openNewTab();
 	},
  
 	activeBrowserCloseWindow : function() 
@@ -984,11 +984,6 @@ var SplitBrowser = {
 		}
 	},
  
-	activeBrowserPageInfo : function() 
-	{
-		BrowserPageInfo(this.activeBrowser.contentDocument);
-	},
- 
 	activeBrowserFocusURLBar : function() 
 	{
 		if (this.activeBrowser &&
@@ -1015,6 +1010,33 @@ var SplitBrowser = {
 		else if (gURLBar) {
 			gURLBar.select();
 		}
+	},
+ 
+	activeBrowserSavePage : function() 
+	{
+		saveDocument(this.activeBrowser.contentDocument);
+	},
+ 
+	activeBrowserViewPageSource : function() 
+	{
+		BrowserViewSourceOfDocument(this.activeBrowser.contentDocument);
+	},
+ 
+	activeBrowserViewPageInfo : function() 
+	{
+		BrowserPageInfo(this.activeBrowser.contentDocument);
+	},
+ 
+	activeBrowserAddBookmarkAs : function() 
+	{
+		addBookmarkAs(this.activeBrowser, false);
+	},
+ 
+	activeBrowserBookmarkAllTabs : function() 
+	{
+		var b = this.activeBrowser;
+		if (b.localName != 'tabbrowser') b = gBrowser;
+		addBookmarkAs(b, true);
 	},
   
 /* save / load */ 
@@ -2382,47 +2404,43 @@ catch(e) {
 			);
 		}
 
-		var closeCommand = document.getElementById('cmd_close');
-		if (closeCommand) {
-			closeCommand.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserCloseTabOrWindow(); } else { '+closeCommand.getAttribute('oncommand')+'; }');
-		}
-		var closeCommand2 = document.getElementById('cmd_closeWindow');
-		if (closeCommand2) {
-			closeCommand2.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserTryToCloseWindow(); } else { '+closeCommand2.getAttribute('oncommand')+'; }');
-		}
-
-		var backCommand = document.getElementById('Browser:Back');
-		if (backCommand) {
-			backCommand.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserBack(); } else { '+backCommand.getAttribute('oncommand')+'; }');
-		}
-
-		var forwardCommand = document.getElementById('Browser:Forward');
-		if (forwardCommand) {
-			forwardCommand.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserForward(); } else { '+forwardCommand.getAttribute('oncommand')+'; }');
-		}
-
-		var reloadCommand = document.getElementById('Browser:Reload');
-		if (reloadCommand) {
-			reloadCommand.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { if (event.shiftKey) SplitBrowser.activeBrowserReloadSkipCache(); else SplitBrowser.activeBrowserReload(); } else { '+reloadCommand.getAttribute('oncommand')+'; }');
-		}
-		var reloadCommand2 = document.getElementById('Browser:ReloadSkipCache');
-		if (reloadCommand2) {
-			reloadCommand2.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserReloadSkipCache(); } else { '+reloadCommand2.getAttribute('oncommand')+'; }');
-		}
-
-		var stopCommand = document.getElementById('Browser:Stop');
-		if (stopCommand) {
-			stopCommand.setAttribute('oncommand',
-				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { SplitBrowser.activeBrowserStop(); } else { '+stopCommand.getAttribute('oncommand')+'; }');
+		this.updateCommandElement('cmd_newNavigatorTab',
+			'SplitBrowser.activeBrowserOpenTab();');
+		this.updateCommandElement('cmd_close',
+			'SplitBrowser.activeBrowserCloseTabOrWindow();');
+		this.updateCommandElement('cmd_closeWindow',
+			'SplitBrowser.activeBrowserTryToCloseWindow();');
+		this.updateCommandElement('Browser:Back',
+			'SplitBrowser.activeBrowserBack();');
+		this.updateCommandElement('Browser:Forward',
+			'SplitBrowser.activeBrowserForward();');
+		this.updateCommandElement('Browser:Reload',
+			'if (event.shiftKey) SplitBrowser.activeBrowserReloadSkipCache(); else SplitBrowser.activeBrowserReload();');
+		this.updateCommandElement('Browser:ReloadSkipCache',
+			'SplitBrowser.activeBrowserReloadSkipCache();');
+		this.updateCommandElement('Browser:Stop',
+			'SplitBrowser.activeBrowserStop();');
+		this.updateCommandElement('Browser:SavePage',
+			'SplitBrowser.activeBrowserSavePage();');
+		this.updateCommandElement('View:PageSource',
+			'SplitBrowser.activeBrowserViewPageSource();');
+		this.updateCommandElement('View:PageInfo',
+			'SplitBrowser.activeBrowserViewPageInfo();');
+		this.updateCommandElement('Browser:AddBookmarkAs',
+			'SplitBrowser.activeBrowserAddBookmarkAs();');
+		this.updateCommandElement('Browser:Browser:BookmarkAllTabs',
+			'SplitBrowser.activeBrowserBrowser:BookmarkAllTabs();');
+	},
+	 
+	updateCommandElement : function(aId, aNewFeature) 
+	{
+		var node = document.getElementById(aId);
+		if (node) {
+			node.setAttribute('oncommand',
+				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { '+aNewFeature+'; } else { '+node.getAttribute('oncommand')+'; }');
 		}
 	},
- 	
+  	
 	isEventFromKeyboardShortcut : function(aEvent) 
 	{
 		if (!aEvent) return false;
@@ -2875,7 +2893,7 @@ catch(e) {
 	},
  
 /* Save/Load Prefs */ 
-	 
+	
 	get Prefs() 
 	{
 		if (!this._Prefs) {

@@ -368,7 +368,7 @@ SplitBrowser.hackForOtherExtensions = function() {
 				'SplitBrowser.activeBrowserForward($1)'
 			).replace(
 				/BrowserPageInfo\(\)/g,
-				'SplitBrowser.activeBrowserPageInfo()'
+				'SplitBrowser.activeBrowserViewPageInfo()'
 			).replace(
 				/aioSrcEvent.target/g,
 				'aioSrcEvent.originalTarget'
