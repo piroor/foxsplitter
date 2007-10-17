@@ -2340,6 +2340,15 @@ catch(e) {
 				]]></>
 			)
 		);
+		eval('window.nsBrowserAccess.prototype.isTabContentWindow = '+
+			window.nsBrowserAccess.prototype.isTabContentWindow.toSource().replace(
+				/\{/,
+				<><![CDATA[
+				{
+					return SplitBrowser.getSubBrowserAndBrowserFromFrame(aWindow).browser ? true : false ;
+				]]></>
+			)
+		);
 
 		if (this.tabbedBrowsingEnabled) {
 			eval('window.nsBrowserAccess.prototype.openURI = '+
