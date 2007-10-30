@@ -2297,6 +2297,7 @@ catch(e) {
 			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
 		}
 
+
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
 				/switch\s*\(aWhere\)/,
@@ -2358,6 +2359,10 @@ catch(e) {
 				)
 			);
 		}
+
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
+		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
+
 
 		this.overrideFindBar();
 		this.overrideZoomManager();
