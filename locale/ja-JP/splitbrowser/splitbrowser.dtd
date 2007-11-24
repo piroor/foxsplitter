@@ -108,6 +108,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label              "すべての分割したブラウザをタブに集める">
 <!ENTITY splitbrowser.menu.gather.accesskey          "g">
+<!ENTITY splitbrowser.menu.syncScroll.label      "分割したブラウザのスクロールをメイン領域と同期させる">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

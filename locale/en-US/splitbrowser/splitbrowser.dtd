@@ -106,6 +106,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "Gather all split browsers here as tabs">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

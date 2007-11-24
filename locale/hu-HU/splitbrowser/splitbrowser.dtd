@@ -107,6 +107,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey "v">
 <!ENTITY splitbrowser.menu.gather.label               "Felosztott ablakok összegyűjtése ide lapokként">
 <!ENTITY splitbrowser.menu.gather.accesskey           "G">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

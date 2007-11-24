@@ -92,6 +92,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "集結此處所有的分割瀏覽區到各分頁">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

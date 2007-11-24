@@ -106,6 +106,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 <!ENTITY splitbrowser.menu.gather.accesskey           "O">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

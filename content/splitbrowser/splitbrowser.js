@@ -289,6 +289,12 @@ var SplitBrowser = {
 	updateMenu : function(aPopup) 
 	{
 		this.updateMultipleTabsState();
+
+		var syncScroll = document.getElementById('splitbrowser-syncScroll-broadcaster');
+		if (this.mainBrowserBox.syncScroll)
+			syncScroll.setAttribute('checked', true);
+		else
+			syncScroll.removeAttribute('checked');
 	},
  
 	updateMultipleTabsState : function() 
@@ -1069,12 +1075,14 @@ var SplitBrowser = {
 				state.content.type       = 'subbrowser';
 				state.content.lastWidth  = aContainer.lastwidth;
 				state.content.lastHeight = aContainer.lastheight;
+				state.content.syncScroll = originalContent.syncScroll;
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
 				state.content = {
-					type   : 'root',
-					width  : gBrowser.boxObject.width,
-					height : gBrowser.boxObject.height
+					type       : 'root',
+					width      : gBrowser.boxObject.width,
+					height     : gBrowser.boxObject.height,
+					syncScroll : wrapper.syncScroll
 				};
 			}
 			else {
@@ -1179,7 +1187,6 @@ var SplitBrowser = {
 		state.height      = aBrowser.boxObject.height;
 		state.collapsed   = aBrowser.contentCollapsed;
 		state.toolbarMode = (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' );
-		state.syncScroll  = aBrowser.syncScroll;
 
 		return state;
 	},
@@ -1452,6 +1459,10 @@ alert(e+'\n\n'+state);
 					aContainer.contentWrapper.width  = aState.content.width;
 					aContainer.contentWrapper.height = aState.content.height;
 					content = aContainer.contentWrapper;
+					if (aState.content.syncScroll)
+						content.setAttribute('sync-scroll', aState.content.syncScroll);
+					else
+						content.removeAttribute('sync-scroll');
 					break;
 
 				case 'subbrowser':
@@ -1481,8 +1492,11 @@ alert(e+'\n\n'+state);
 
 					if (aState.content.toolbarMode)
 						b.setAttribute('toolbar-mode', aState.content.toolbarMode);
+
 					if (aState.content.syncScroll)
 						b.setAttribute('sync-scroll', aState.content.syncScroll);
+					else
+						b.removeAttribute('sync-scroll');
 
 					content = b;
 					break;

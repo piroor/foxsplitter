@@ -106,6 +106,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "o">
 <!ENTITY splitbrowser.menu.gather.label               "Raggruppa come schede tutti i riquadri">
 <!ENTITY splitbrowser.menu.gather.accesskey           "R">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 

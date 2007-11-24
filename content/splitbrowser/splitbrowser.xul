@@ -22,6 +22,8 @@
 		disabled="true"/>
 	<broadcaster id="splitbrowser-featuresForMultipleTabs-broadcaster"
 		disabled="true"/>
+	<broadcaster id="splitbrowser-syncScroll-broadcaster"
+		checked="true"/>
 </broadcasterset>
 
 <commandset id="mainCommandSet">
@@ -58,6 +60,8 @@
 	<command id="splitbrowser-gather-command"
 		oncommand="SplitBrowser.gatherSubBrowsers();"
 		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+	<command id="splitbrowser-syncScroll-command"
+		oncommand="SplitBrowser.mainBrowserBox.toggleSyncScroll();"/>
 </commandset>
 
 <keyset id="mainKeyset">
@@ -121,23 +125,35 @@
 			<menuitem id="splitbrowser-toolbarbutton-layout-grid"
 				class="menuitem-iconic splitbrowser-layout-grid-item"
 				label="&splitbrowser.menu.layout.grid.label;"
+				accesskey="&splitbrowser.menu.layout.grid.accesskey;"
 				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-layout-x"
 				class="menuitem-iconic splitbrowser-layout-x-item"
 				label="&splitbrowser.menu.layout.x.label;"
+				accesskey="&splitbrowser.menu.layout.x.accesskey;"
 				command="splitbrowser-layout-x-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-layout-y"
 				class="menuitem-iconic splitbrowser-layout-y-item"
 				label="&splitbrowser.menu.layout.y.label;"
+				accesskey="&splitbrowser.menu.layout.y.accesskey;"
 				command="splitbrowser-layout-y-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-toolbarbutton-gather"
 				class="menuitem-iconic splitbrowser-gather-item"
+				accesskey="&splitbrowser.menu.gather.accesskey;"
 				label="&splitbrowser.menu.gather.label;"
 				command="splitbrowser-gather-command"
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+			<menuseparator id="splitbrowser-toolbarbutton-syncScroll-separator"/>
+			<menuitem id="splitbrowser-toolbarbutton-syncScroll"
+				label="&splitbrowser.menu.syncScroll.label;"
+				accesskey="&splitbrowser.menu.syncScroll.accesskey;"
+				type="checkbox"
+				autocheck="false"
+				command="splitbrowser-syncScroll-command"
+				observes="splitbrowser-syncScroll-broadcaster"/>
 		</menupopup>
 	</toolbarbutton>
 	<toolbarbutton id="splitbrowser-layout-grid-button"
@@ -228,23 +244,35 @@
 			<menuitem id="splitbrowser-layout-grid"
 				class="menuitem-iconic splitbrowser-layout-grid-item"
 				label="&splitbrowser.menu.layout.grid.label;"
+				accesskey="&splitbrowser.menu.layout.grid.accesskey;"
 				command="splitbrowser-layout-grid-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-layout-x"
 				class="menuitem-iconic splitbrowser-layout-x-item"
 				label="&splitbrowser.menu.layout.x.label;"
+				accesskey="&splitbrowser.menu.layout.x.accesskey;"
 				command="splitbrowser-layout-x-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-layout-y"
 				class="menuitem-iconic splitbrowser-layout-y-item"
 				label="&splitbrowser.menu.layout.y.label;"
+				accesskey="&splitbrowser.menu.layout.y.accesskey;"
 				command="splitbrowser-layout-y-command"
 				observes="splitbrowser-featuresForMultipleTabs-broadcaster"/>
 			<menuitem id="splitbrowser-gather"
 				class="menuitem-iconic splitbrowser-gather-item"
 				label="&splitbrowser.menu.gather.label;"
+				accesskey="&splitbrowser.menu.gather.accesskey;"
 				command="splitbrowser-gather-command"
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+			<menuseparator id="splitbrowser-syncScroll-separator"/>
+			<menuitem id="splitbrowser-syncScroll"
+				label="&splitbrowser.menu.syncScroll.label;"
+				accesskey="&splitbrowser.menu.syncScroll.accesskey;"
+				type="checkbox"
+				autocheck="false"
+				command="splitbrowser-syncScroll-command"
+				observes="splitbrowser-syncScroll-broadcaster"/>
 		</menupopup>
 	</menu>
 </menubar>

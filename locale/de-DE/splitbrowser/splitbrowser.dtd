@@ -108,6 +108,8 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey           "w">
 <!ENTITY splitbrowser.menu.gather.label                 "Alle geteilten Ansichten in Tabs öffnen">
 <!ENTITY splitbrowser.menu.gather.accesskey             "t">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 
