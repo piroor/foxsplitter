@@ -1179,6 +1179,7 @@ var SplitBrowser = {
 		state.height      = aBrowser.boxObject.height;
 		state.collapsed   = aBrowser.contentCollapsed;
 		state.toolbarMode = (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' );
+		state.syncScroll  = aBrowser.syncScroll;
 
 		return state;
 	},
@@ -1478,6 +1479,11 @@ alert(e+'\n\n'+state);
 					}
 	*/
 
+					if (aState.content.toolbarMode)
+						b.setAttribute('toolbar-mode', aState.content.toolbarMode);
+					if (aState.content.syncScroll)
+						b.setAttribute('sync-scroll', aState.content.syncScroll);
+
 					content = b;
 					break;
 
@@ -1548,8 +1554,6 @@ alert(e+'\n\n'+state);
 
 				if (aBrowserState.textZoom[aIndex])
 					browser.markupDocumentViewer.textZoom = aBrowserState.textZoom[aIndex];
-				if (aBrowserState.toolbarMode)
-					browser.setAttribute('toolbar-mode', aBrowserState.toolbarMode);
 
 				if (aBrowser.localName == 'tabbrowser' &&
 					aBrowserState.selectedTab == aIndex)

@@ -131,6 +131,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Colapsar">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Expandir">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Cerrar">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Split">

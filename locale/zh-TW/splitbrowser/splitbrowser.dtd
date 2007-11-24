@@ -115,6 +115,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse "收摺">
 <!ENTITY splitbrowser.subbrowser.menu.expand "展開">
 <!ENTITY splitbrowser.subbrowser.menu.close "關閉">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
 <!ENTITY splitbrowser.button.menu.label          "分割">
 <!ENTITY splitbrowser.button.menu.tooltip        "分割瀏覽區">
 <!ENTITY splitbrowser.button.layout.grid.label   "鋪排">

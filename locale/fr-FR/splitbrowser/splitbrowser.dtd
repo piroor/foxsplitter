@@ -131,6 +131,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Réduire">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Déployer">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Fermer">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Partager">

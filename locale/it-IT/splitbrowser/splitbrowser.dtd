@@ -131,6 +131,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Contrai">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Espandi">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Chiudi">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Suddividi">

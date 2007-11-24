@@ -134,6 +134,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "たたむ">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "ひろげる">
 <!ENTITY splitbrowser.subbrowser.menu.close        "閉じる">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "スクロールを同期させる">
 
 
 <!ENTITY splitbrowser.button.menu.label          "分割">

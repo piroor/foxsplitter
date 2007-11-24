@@ -132,6 +132,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Összecsukás">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Kinyitás">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Bezár">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Felosztás">

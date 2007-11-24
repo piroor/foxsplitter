@@ -234,7 +234,8 @@
 				<xul:hbox anonid="horizontal-container" flex="1"
 					class="horizontal-container">
 					<xul:vbox anonid="primary-browser-wrapper" flex="1"
-						class="primary-browser-wrapper">
+						class="primary-browser-wrapper"
+						sync-scroll="true">
 						<children/>
 					</xul:vbox>
 				</xul:hbox>
@@ -523,6 +524,70 @@ sideBox.removeAttribute('style');
 			]]></body>
 		</method>
 
+
+		<method name="toggleSyncScroll">
+			<body><![CDATA[
+				this.syncScroll = !this.syncScroll;
+				if (this.syncScroll) {
+					var subbrowser = this;
+					if (SplitBrowser.mainBrowserBox.syncScroll)
+						subbrowser = SplitBrowser.mainBrowserBox;
+					subbrowser.notifyScroll(subbrowser.browser.contentWindow);
+				}
+			]]></body>
+		</method>
+		<property name="syncScroll"
+			onget="return this.getAttribute('sync-scroll') == 'true';"
+			onset="if (val) this.setAttribute('sync-scroll', true); else this.removeAttribute('sync-scroll'); return val ? true : false ;"/>
+		<method name="onContentScroll">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				if (!this.syncScroll ||
+					this.scrollSynchronizing ||
+					!(aEvent.originalTarget instanceof Document)) return;
+				this.notifyScroll(aEvent.originalTarget.defaultView);
+			]]></body>
+		</method>
+		<method name="notifyScroll">
+			<parameter name="aFrame"/>
+			<body><![CDATA[
+				var info = {
+						x    : aFrame.scrollX,
+						maxX : aFrame.scrollMaxX,
+						y    : aFrame.scrollY,
+						maxY : aFrame.scrollMaxY
+					};
+				var os = Components.classes['@mozilla.org/observer-service;1']
+							.getService(Components.interfaces.nsIObserverService);
+				os.notifyObservers(aFrame, 'subbrowser:syncScroll', info.toSource());
+			]]></body>
+		</method>
+		<field name="syncScrollObserver"><![CDATA[
+		({
+			mOwner : this,
+			observe: function(aSubject, aTopic, aData)
+			{
+				if (!this.mOwner.syncScroll) return;
+
+				var w = this.mOwner.browser.contentWindow;
+				if (aSubject.top == w) return;
+
+				var info;
+				eval('info = '+aData);
+				this.mOwner.scrollSynchronizing = true;
+				w.scrollTo(
+					(info.x / info.maxX * w.scrollMaxX),
+					(info.y / info.maxY * w.scrollMaxY)
+				);
+				window.setTimeout(function(aOwner) {
+					aOwner.scrollSynchronizing = false;
+				}, 0, this.mOwner);
+			}
+		})
+		]]></field>
+
+
+
 		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
 			<parameter name="aForceFire"/>
@@ -751,6 +816,9 @@ sideBox.removeAttribute('style');
 		<handler event="focus" phase="capturing"
 			action="this.focus();"/>
 
+		<handler event="scroll" phase="capturing"
+			action="this.onContentScroll(event);"/>
+
 		<handler event="mouseover"
 			action="window.setTimeout(function(aThis) { aThis.autoFocus(); }, 0, this);"/>
 		<handler event="mouseout"
@@ -770,6 +838,17 @@ sideBox.removeAttribute('style');
 			onget="return this.hContentCollapsed"/>
 		<property name="browser" readonly="true"
 			onget="return gBrowser;"/>
+
+		<constructor><![CDATA[
+			var os = Components.classes['@mozilla.org/observer-service;1']
+						.getService(Components.interfaces.nsIObserverService);
+			os.addObserver(this.syncScrollObserver, 'subbrowser:syncScroll', false);
+		]]></constructor>
+		<destructor><![CDATA[
+			var os = Components.classes['@mozilla.org/observer-service;1']
+						.getService(Components.interfaces.nsIObserverService);
+			os.removeObserver(this.syncScrollObserver, 'subbrowser:syncScroll');
+		]]></destructor>
 	</implementation>
 </binding>
 
@@ -796,6 +875,12 @@ sideBox.removeAttribute('style');
 			<xul:menuitem class="subbrowser-context-openNewTab"
 				label="&splitbrowser.subbrowser.menu.openNewTab;"
 				oncommand="this.parentNode.parentNode.openNewTab();"/>
+			<xul:menuseparator/>
+			<xul:menuitem class="subbrowser-context-syncScroll"
+				label="&splitbrowser.subbrowser.menu.syncScroll;"
+				type="checkbox"
+				autocheck="false"
+				oncommand="this.parentNode.parentNode.toggleSyncScroll();"/>
 		</xul:menupopup>
 		<xul:hbox flex="1" class="subbrowser-content">
 			<xul:toolbox anonid="subbrowser-toolbox-vertical"
@@ -1196,6 +1281,12 @@ sideBox.removeAttribute('style');
 
 				var tabItem = popup.getElementsByAttribute('class', 'subbrowser-context-openNewTab')[0];
 				tabItem.hidden = tabItem.previousSibling.hidden = (this.browser.localName != 'tabbrowser');
+
+				var syncItem = popup.getElementsByAttribute('class', 'subbrowser-context-syncScroll')[0];
+				if (this.syncScroll)
+					syncItem.setAttribute('checked', true);
+				else
+					syncItem.removeAttribute('checked');
 			]]></body>
 		</method>
 
@@ -1840,7 +1931,16 @@ sideBox.removeAttribute('style');
 				if (this.getAttribute('src'))
 					this.load(this.getAttribute('src'));
 			}
+
+			var os = Components.classes['@mozilla.org/observer-service;1']
+						.getService(Components.interfaces.nsIObserverService);
+			os.addObserver(this.syncScrollObserver, 'subbrowser:syncScroll', false);
 		]]></constructor>
+		<destructor><![CDATA[
+			var os = Components.classes['@mozilla.org/observer-service;1']
+						.getService(Components.interfaces.nsIObserverService);
+			os.removeObserver(this.syncScrollObserver, 'subbrowser:syncScroll');
+		]]></destructor>
 
 		<method name="mDelayedBrowserStartup">
 			<parameter name="aThis"/>
