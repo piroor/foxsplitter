@@ -23,6 +23,7 @@
 <!ENTITY splitbrowser.tab.appearance     "Apparence">
 
 <!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d'outils dans les fenêtres partagées.">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "Montrer la barre d'outils avec les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans les fenêtres partagées.">
 <!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
@@ -121,6 +122,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
 <!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avancer d'une page">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Actualiser la page courante">

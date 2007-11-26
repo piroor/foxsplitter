@@ -24,6 +24,7 @@
 <!ENTITY splitbrowser.tab.appearance     "Aussehen">
 
 <!ENTITY splitbrowser.show.toolbar.always            "Symbolleiste in geteilten Browser-Ansichten immer anzeigen">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand            "Schaltfläche zum Ein-/Ausklappen in geteilten Browser-Ansichten anzeigen">
 <!ENTITY splitbrowser.tabs.autoHide                  "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Navigationssymbole in geteilten Ansichten immer anzeigen">
@@ -123,6 +124,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
 <!ENTITY splitbrowser.subbrowser.loading           "Laden...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Vor">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Neu laden">

@@ -23,6 +23,7 @@
 <!ENTITY splitbrowser.tab.appearance     "Aspetto">
 
 <!ENTITY splitbrowser.show.toolbar.always "Mostra sempre la barra degli strumenti nei riquadri">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "Mostra i pulsanti &quot;Contrai&quot;/&quot;Espandi&quot; nei riquadri">
 <!ENTITY splitbrowser.tabs.autoHide "Mostra sempre la barra delle schede nei riquadri">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Mostra sempre i pulsati di navigazione nei riquadri">
@@ -121,6 +122,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Vuoto)">
 <!ENTITY splitbrowser.subbrowser.loading           "Caricamento in corso...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Indietro">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avanti">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Ricarica">

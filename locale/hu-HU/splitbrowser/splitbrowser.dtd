@@ -24,6 +24,7 @@
 
 
 <!ENTITY splitbrowser.show.toolbar.always "A felosztott lapok eszköztára mindig látható">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "Az &quot;Összecsukás&quot;/&quot;Kinyitás&quot; gomb megjelenítése a felosztott lapokon">
 <!ENTITY splitbrowser.tabs.autoHide "A fülek mindig láthatóak a felosztott lapokon">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "A navigációgombok mindig láthatóak a felosztott lapok eszköztárán">
@@ -122,6 +123,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Üres)">
 <!ENTITY splitbrowser.subbrowser.loading           "Betöltés...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Vissza">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Előre">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Újratöltés">

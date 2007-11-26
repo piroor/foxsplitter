@@ -51,11 +51,13 @@ subbrowser[browsertype="simple"] > .subbrowser-browser-box > tabbrowser {
 
 .subbrowser-toolbar-item.button.reload[disabled="true"],
 .subbrowser-toolbar-item.button.stop[disabled="true"],
+.subbrowser-toolbar-item.button.syncScroll,
 .subbrowser-toolbar-item.button.collapse,
 .subbrowser-toolbar-item.button.expand {
 	visibility: collapse;
 }
 
+:root[subbrowser-show-syncScroll-button="true"] subbrowser:not([content-collapsed="true"]) .subbrowser-toolbar-item.button.syncScroll,
 :root[subbrowser-show-togglecollapsed-button="true"] subbrowser:not([content-collapsed="true"]) .subbrowser-toolbar-item.button.collapse,
 :root[subbrowser-show-togglecollapsed-button="true"] subbrowser[content-collapsed="true"] .subbrowser-toolbar-item.button.expand {
 	visibility: visible;

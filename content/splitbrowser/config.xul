@@ -97,6 +97,9 @@
 		<preference id="splitbrowser.show.toolbar.navigation.always"
 			name="splitbrowser.show.toolbar.navigation.always"
 			type="bool"/>
+		<preference id="splitbrowser.show.syncScroll"
+			name="splitbrowser.show.syncScroll"
+			type="bool"/>
 		<preference id="splitbrowser.show.collapseexpand"
 			name="splitbrowser.show.collapseexpand"
 			type="bool"/>
@@ -113,6 +116,9 @@
 	<checkbox id="splitbrowser.show.toolbar.navigation.always-check" flex="1"
 		label="&splitbrowser.show.toolbar.navigation.always;"
 		preference="splitbrowser.show.toolbar.navigation.always"/>
+	<checkbox id="splitbrowser.show.syncScroll-check" flex="1"
+		label="&splitbrowser.show.syncScroll;"
+		preference="splitbrowser.show.syncScroll"/>
 	<checkbox id="splitbrowser.show.collapseexpand-check" flex="1"
 		label="&splitbrowser.show.collapseexpand;"
 		preference="splitbrowser.show.collapseexpand"/>

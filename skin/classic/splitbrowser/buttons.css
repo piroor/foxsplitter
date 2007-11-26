@@ -89,7 +89,8 @@
 
 [iconsize="small"] .toolbarbutton-1.splitbrowser-button,
 .subbrowser-toolbar-item.button.collapse,
-.subbrowser-toolbar-item.button.expand {
+.subbrowser-toolbar-item.button.expand,
+.subbrowser-toolbar-item.button.syncScroll {
 	list-style-image: url("./small/buttons.png");
 }
 
@@ -129,6 +130,14 @@
 .subbrowser-toolbar-item.button.collapse[disabled="true"][buttonover="true"],
 .subbrowser-toolbar-item.button.collapse[disabled="true"]:hover {
 	-moz-image-region: rect(32px 32px 48px 16px);
+}
+
+.subbrowser-toolbar-item.button.syncScroll {
+	-moz-image-region: rect(0px 144px 16px 128px);
+}
+.subbrowser-toolbar-item.button.syncScroll[buttonover="true"],
+.subbrowser-toolbar-item.button.syncScroll:hover {
+	-moz-image-region: rect(16px 144px 32px 128px);
 }
 
 [iconsize="small"] #splitbrowser-removeAll-button {

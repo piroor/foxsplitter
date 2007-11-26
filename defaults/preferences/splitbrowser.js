@@ -10,6 +10,7 @@ pref("splitbrowser.show.addbuttons.hover.type", 0);
 pref("splitbrowser.show.addbuttons.dragdrop",   true);
 pref("splitbrowser.show.toolbar.always",      true);
 pref("splitbrowser.show.toolbar.navigation.always", false);
+pref("splitbrowser.show.syncScroll",          true);
 pref("splitbrowser.show.collapseexpand",      false);
 
 pref("splitbrowser.show.menu",                     true);

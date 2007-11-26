@@ -17,6 +17,7 @@
 <!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
 <!ENTITY splitbrowser.tab.appearance "外觀">
 <!ENTITY splitbrowser.show.toolbar.always "總是在分割瀏覽區顯示工具列">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "在分割瀏覽區顯示「收摺」與「展開」的工具列按鈕">
 <!ENTITY splitbrowser.tabs.autoHide "總是在分割瀏覽區顯示分頁列">
 <!ENTITY splitbrowser.show.toolbar.navigation.always
@@ -105,6 +106,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank "(空)">
 <!ENTITY splitbrowser.subbrowser.loading "載入中…">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip "上一頁">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "下一頁">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip "重新整理">

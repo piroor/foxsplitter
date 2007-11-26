@@ -24,6 +24,7 @@
 <!ENTITY splitbrowser.tab.appearance      "外観">
 
 <!ENTITY splitbrowser.show.toolbar.always "分割ブラウザのツールバーを常に表示する">
+<!ENTITY splitbrowser.show.syncScroll "分割ブラウザのツールバーに「スクロールを同期」ボタンを表示する">
 <!ENTITY splitbrowser.show.collapseexpand "分割ブラウザのツールバーに「たたむ」「ひろげる」ボタンを表示する">
 <!ENTITY splitbrowser.tabs.autoHide       "分割ブラウザで常にタブを表示する">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "分割ブラウザのツールバーでナビゲーションを常に表示する">
@@ -124,6 +125,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "（タイトルなし）">
 <!ENTITY splitbrowser.subbrowser.loading           "読み込み中...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "スクロールを同期させる">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "戻る">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "進む">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "更新">

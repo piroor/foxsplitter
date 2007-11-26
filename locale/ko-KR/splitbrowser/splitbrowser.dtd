@@ -23,6 +23,7 @@
 <!ENTITY splitbrowser.tab.appearance     "모양">
 
 <!ENTITY splitbrowser.show.toolbar.always "항상 분할된 화면에 도구 모음 보이기">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "분할된 화면에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
 <!ENTITY splitbrowser.tabs.autoHide "항상 분할된 화면에 탭 도구 모음 보이기">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "항상 분할된 화면에 도구 모음 네비게이션 보이기">
@@ -122,6 +123,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
 <!ENTITY splitbrowser.subbrowser.loading           "로드 중...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "뒤로">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "앞으로">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "새로 고침">

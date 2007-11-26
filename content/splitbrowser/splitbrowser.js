@@ -2392,6 +2392,7 @@ catch(e) {
 		this.activeSubBrowser = this.mainBrowserBox;
 
 		this.addPrefListener(this);
+		this.observe(window, 'nsPref:changed', 'splitbrowser.show.syncScroll');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
@@ -2852,6 +2853,13 @@ catch(e) {
 
 		switch (aPrefstring)
 		{
+			case 'splitbrowser.show.syncScroll':
+				if (this.getPref(aPrefstring))
+					document.documentElement.setAttribute('subbrowser-show-syncScroll-button', true);
+				else
+					document.documentElement.removeAttribute('subbrowser-show-syncScroll-button');
+				break;
+
 			case 'splitbrowser.show.collapseexpand':
 				if (this.getPref(aPrefstring))
 					document.documentElement.setAttribute('subbrowser-show-togglecollapsed-button', true);

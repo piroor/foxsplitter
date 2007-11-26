@@ -23,6 +23,7 @@
 <!ENTITY splitbrowser.tab.appearance     "Apariencia">
 
 <!ENTITY splitbrowser.show.toolbar.always "Siempre mostrar la barra de herramientas en las ventanas divididas.">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.show.collapseexpand "Mostrar el botón &quot;Colapsar&quot;/&quot;Expandir&quot; en las ventanas divididas.">
 <!ENTITY splitbrowser.tabs.autoHide "Siempre mostrar la barra de pestañas en las ventanas divididas.">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Siempre mostrar la barra de navegación en las ventanas divididas.">
@@ -121,6 +122,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Blank)">
 <!ENTITY splitbrowser.subbrowser.loading           "Cargando...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Anterior">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Siguiente">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Recargar">

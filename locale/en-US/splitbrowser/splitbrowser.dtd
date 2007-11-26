@@ -22,10 +22,11 @@
 
 <!ENTITY splitbrowser.tab.appearance     "Appearance">
 
-<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers.">
-<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.always "Always show toolbar in split browsers">
+<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
+<!ENTITY splitbrowser.show.collapseexpand "Show &quot;Collapse&quot;/&quot;Expand&quot; toolbar button in split browsers">
 <!ENTITY splitbrowser.tabs.autoHide "Always show tab bar in split browsers">
-<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers.">
+<!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers">
 
 
 <!ENTITY splitbrowser.tab.menu              "Menu">
@@ -121,6 +122,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Blank)">
 <!ENTITY splitbrowser.subbrowser.loading           "Loading...">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Back">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Forward">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Reload">

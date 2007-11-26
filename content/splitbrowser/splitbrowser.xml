@@ -919,6 +919,15 @@ sideBox.removeAttribute('style');
 					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.expand();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button expand"/>
+				<xul:toolbarbutton
+					anonid="syncScroll-button-vertical"
+					tooltiptext="&splitbrowser.subbrowser.syncScroll.tooltip;"
+					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleSyncScroll();"
+					ondblclick="event.stopPropagation();"
+					class="subbrowser-toolbar-item button syncScroll"
+					type="checkbox"
+					autoCheck="false"
+					xbl:inherits="checked=sync-scroll"/>
 				<xul:box class="subbrowser-toolbar-item favicon-box">
 					<xul:image class="subbrowser-toolbar-item favicon"
 						anonid="vertical-favicon"
@@ -954,6 +963,15 @@ sideBox.removeAttribute('style');
 				 			s.toggleCollapsed();
 				 	"
 					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
+					<xul:toolbarbutton
+						anonid="syncScroll-button-horizontal"
+						tooltiptext="&splitbrowser.subbrowser.syncScroll.tooltip;"
+						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleSyncScroll();"
+						ondblclick="event.stopPropagation();"
+						class="subbrowser-toolbar-item button syncScroll"
+						type="checkbox"
+						autoCheck="false"
+						xbl:inherits="checked=sync-scroll"/>
 					<xul:stack anonid="toolbar-deck"
 						flex="1"
 						onmouseover="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleNavigationOnHover(true);"
