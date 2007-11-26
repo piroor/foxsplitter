@@ -234,8 +234,7 @@
 				<xul:hbox anonid="horizontal-container" flex="1"
 					class="horizontal-container">
 					<xul:vbox anonid="primary-browser-wrapper" flex="1"
-						class="primary-browser-wrapper"
-						sync-scroll="true">
+						class="primary-browser-wrapper">
 						<children/>
 					</xul:vbox>
 				</xul:hbox>
@@ -838,6 +837,10 @@ sideBox.removeAttribute('style');
 			onget="return this.hContentCollapsed"/>
 		<property name="browser" readonly="true"
 			onget="return gBrowser;"/>
+
+		<property name="syncScroll"
+			onget="return SplitBrowser.getPref('splitbrowser.syncScroll.mainArea');"
+			onset="SplitBrowser.setPref('splitbrowser.syncScroll.mainArea', val ? true : false ); return val ? true : false ;"/>
 
 		<constructor><![CDATA[
 			var os = Components.classes['@mozilla.org/observer-service;1']

@@ -17,6 +17,8 @@
 <!ENTITY splitbrowser.tab.caption   "Onglet">
 <!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
 
+<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+
 
 <!ENTITY splitbrowser.tab.appearance     "Apparence">
 

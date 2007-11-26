@@ -25,6 +25,9 @@
 		<preference id="splitbrowser.tab.closetab"
 			name="splitbrowser.tab.closetab"
 			type="bool"/>
+		<preference id="splitbrowser.syncScroll.mainArea"
+			name="splitbrowser.syncScroll.mainArea"
+			type="bool"/>
 		<preference id="splitbrowser.show.addbuttons.hover.type"
 			name="splitbrowser.show.addbuttons.hover.type"
 			type="int"/>
@@ -53,6 +56,10 @@
 	<checkbox id="splitbrowser.tab.closetab-check" flex="1"
 		label="&splitbrowser.tab.closetab;"
 		preference="splitbrowser.tab.closetab"/>
+
+	<checkbox id="splitbrowser.syncScroll.mainArea-check" flex="1"
+		label="&splitbrowser.syncScroll.mainArea;"
+		preference="splitbrowser.syncScroll.mainArea"/>
 
 
 	<groupbox>

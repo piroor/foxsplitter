@@ -17,6 +17,8 @@
 <!ENTITY splitbrowser.tab.caption   "Lap">
 <!ENTITY splitbrowser.tab.closetab  "Lap bezárása, ha új ablakban jelenik meg">
 
+<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+
 
 <!ENTITY splitbrowser.tab.appearance     "Megjelenés">
 

@@ -17,6 +17,8 @@
 <!ENTITY splitbrowser.tab.caption   "Tab">
 <!ENTITY splitbrowser.tab.closetab  "Close the tab after it is split in new browser">
 
+<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+
 
 <!ENTITY splitbrowser.tab.appearance     "Appearance">
 

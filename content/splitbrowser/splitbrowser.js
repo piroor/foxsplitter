@@ -1081,8 +1081,7 @@ var SplitBrowser = {
 				state.content = {
 					type       : 'root',
 					width      : gBrowser.boxObject.width,
-					height     : gBrowser.boxObject.height,
-					syncScroll : wrapper.syncScroll
+					height     : gBrowser.boxObject.height
 				};
 			}
 			else {
@@ -1459,10 +1458,6 @@ alert(e+'\n\n'+state);
 					aContainer.contentWrapper.width  = aState.content.width;
 					aContainer.contentWrapper.height = aState.content.height;
 					content = aContainer.contentWrapper;
-					if (aState.content.syncScroll)
-						content.setAttribute('sync-scroll', aState.content.syncScroll);
-					else
-						content.removeAttribute('sync-scroll');
 					break;
 
 				case 'subbrowser':

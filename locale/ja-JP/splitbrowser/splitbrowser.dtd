@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.caption   "タブ">
 <!ENTITY splitbrowser.tab.closetab  "タブを分割した後はそのタブを閉じる">
 
+<!ENTITY splitbrowser.syncScroll.mainArea "同期スクロールするように設定した分割ブラウザを、メイン領域と同期スクロールする">
+
 
 <!ENTITY splitbrowser.tab.appearance      "外観">
 

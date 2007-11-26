@@ -14,6 +14,7 @@
 
 <!ENTITY splitbrowser.tab.caption "分頁">
 <!ENTITY splitbrowser.tab.closetab "當分頁被分割到新瀏覽區後，關閉該分頁。">
+<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
 <!ENTITY splitbrowser.tab.appearance "外觀">
 <!ENTITY splitbrowser.show.toolbar.always "總是在分割瀏覽區顯示工具列">
 <!ENTITY splitbrowser.show.collapseexpand "在分割瀏覽區顯示「收摺」與「展開」的工具列按鈕">
