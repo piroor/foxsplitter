@@ -140,6 +140,14 @@
 	-moz-image-region: rect(16px 144px 32px 128px);
 }
 
+.subbrowser-toolbar-item.button.syncScroll[checked="true"] {
+	-moz-image-region: rect(0px 160px 16px 144px);
+}
+.subbrowser-toolbar-item.button.syncScroll[checked="true"][buttonover="true"],
+.subbrowser-toolbar-item.button.syncScroll[checked="true"]:hover {
+	-moz-image-region: rect(16px 160px 32px 144px);
+}
+
 [iconsize="small"] #splitbrowser-removeAll-button {
 	-moz-image-region: rect(0px 48px 16px 32px);
 }
