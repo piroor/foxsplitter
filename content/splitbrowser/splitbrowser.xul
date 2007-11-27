@@ -4,7 +4,7 @@
 <?xml-stylesheet href="chrome://splitbrowser/skin/splitbrowser.css" type="text/css"?>
 <?xml-stylesheet href="chrome://splitbrowser/skin/buttons.css" type="text/css"?>
 <?xml-stylesheet href="chrome://splitbrowser/skin/toolbar.css" type="text/css"?>
-<?xml-stylesheet href="chrome://splitbrowser-platform/skin/splitbrowsertoolbar.css" type="text/css"?>
+<?xml-stylesheet href="chrome://splitbrowser-platform/skin/toolbar.css" type="text/css"?>
 
 <!DOCTYPE bindings SYSTEM "chrome://splitbrowser/locale/">
 

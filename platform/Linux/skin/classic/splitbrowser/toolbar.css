@@ -22,11 +22,11 @@
 .subbrowser-toolbar-item.button.goForward:not([disabled="true"]):hover,
 .subbrowser-toolbar-item.button.goForward[buttonover="true"],
 .subbrowser-toolbar-item.button.goForward:not([disabled="true"]):hover:active {
-	list-style-image: url("moz-icon://stock/gtk-go-back?size=menu") !important;
+	list-style-image: url("moz-icon://stock/gtk-go-forward?size=menu") !important;
 	-moz-image-region: auto !important;
 }
 .subbrowser-toolbar-item.button.goForward[disabled="true"] {
-	list-style-image: url("moz-icon://stock/gtk-go-back?size=menu&state=disabled") !important;
+	list-style-image: url("moz-icon://stock/gtk-go-forward?size=menu&state=disabled") !important;
 	-moz-image-region: auto !important;
 }
 
