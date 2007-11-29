@@ -1047,10 +1047,20 @@ var SplitBrowser = {
   
 /* save / load */ 
 	
+	get SessionStore() {
+		if (!this._SessionStore) {
+			this._SessionStore = Components.classes['@mozilla.org/browser/sessionstore;1'].getService(Components.interfaces.nsISessionStore);
+		}
+		return this._SessionStore;
+	},
+	_SessionStore : null,
+ 
 	save : function() 
 	{
 		var state = this.getContainerState(document.getElementById('appcontent'));
-		this.setPref('splitbrowser.state', state.toSource());
+		state = state.toSource();
+//		this.SessionStore.setWindowValue(window, 'splitbrowser.state', state);
+		this.setPref('splitbrowser.state', state);
 	},
 	 
 	getContainerState : function(aContainer) 
@@ -1435,7 +1445,7 @@ dump(e+'\n');
     
 	load : function() 
 	{
-		var state = this.getPref('splitbrowser.state');
+		var state = /*this.SessionStore.getWindowValue(window, 'splitbrowser.state') ||*/ this.getPref('splitbrowser.state');
 		if (!state) return;
 		try {
 			eval('state = '+state);
