@@ -568,6 +568,17 @@ sideBox.removeAttribute('style');
 			{
 				if (!this.mOwner.syncScroll) return;
 
+				// in other windows
+				if (aSubject.top
+					.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+					.getInterface(Components.interfaces.nsIWebNavigation)
+					.QueryInterface(Components.interfaces.nsIDocShell)
+					.QueryInterface(Components.interfaces.nsIDocShellTreeItem)
+					.parent
+					.QueryInterface(Components.interfaces.nsIDocShell)
+					.QueryInterface(Components.interfaces.nsIWebNavigation)
+					.document.defaultView != window) return;
+
 				var w = this.mOwner.browser.contentWindow;
 				if (aSubject.top == w) return;
 
