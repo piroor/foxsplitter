@@ -550,6 +550,8 @@ sideBox.removeAttribute('style');
 		<method name="notifyScroll">
 			<parameter name="aFrame"/>
 			<body><![CDATA[
+				// ignore background tabs
+				if (aFrame.top != this.browser.contentWindow) return;
 				var info = {
 						x    : aFrame.scrollX,
 						maxX : aFrame.scrollMaxX,
