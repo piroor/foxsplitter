@@ -194,7 +194,7 @@
 	<menu id="splitbrowser-menu"
 		label="&splitbrowser.menu.label;"
 		accesskey="&splitbrowser.menu.accesskey;"
-		insertafter="bookmarks-menu">
+		insertbefore="tools-menu">
 		<menupopup id="splitbrowser-menu-popup"
 			onpopupshowing="SplitBrowser.updateMenu(this);">
 			<menuitem id="splitbrowser-remove-all"
