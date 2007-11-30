@@ -17,14 +17,14 @@
 <!ENTITY splitbrowser.tab.caption   "Onglet">
 <!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
 
-<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+<!ENTITY splitbrowser.syncScroll.mainArea "Synchroniser l'état de défilement dans l'espace principal des fenêtres partagées qui sont choisies avec l'option de synchroniser le défilement">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apparence">
 
 <!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d'outils dans les fenêtres partagées.">
-<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
-<!ENTITY splitbrowser.show.collapseexpand "Montrer la barre d'outils avec les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans les fenêtres partagées.">
+<!ENTITY splitbrowser.show.syncScroll "Montrer le bouton &quot;Synchroniser le défilement&quot; dans la barre d'outils des fenêtres partagées">
+<!ENTITY splitbrowser.show.collapseexpand "Montrer les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans la barre d'outils des fenêtres partagées.">
 <!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
 
@@ -109,7 +109,7 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 <!ENTITY splitbrowser.menu.gather.accesskey           "O">
-<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Synchroniser le défillement des fenêtres partagées avec l'espace principal">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
@@ -122,7 +122,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
 <!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
-<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchroniser le défilement">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avancer d'une page">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Actualiser la page courante">
@@ -137,7 +137,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Réduire">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Déployer">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Fermer">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchroniser le défilement">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Partager">
