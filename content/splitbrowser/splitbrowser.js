@@ -674,7 +674,7 @@ var SplitBrowser = {
 	},
   
 /* features */ 
-	 
+	
 	collapseAllSubBrowsers : function() 
 	{
 		this._browsers.forEach(function(aBrowser) {
@@ -1047,7 +1047,7 @@ var SplitBrowser = {
   
 /* save / load */ 
 	
-	get SessionStore() {
+	get SessionStore() { 
 		if (!this._SessionStore) {
 			this._SessionStore = Components.classes['@mozilla.org/browser/sessionstore;1'].getService(Components.interfaces.nsISessionStore);
 		}
@@ -2387,6 +2387,23 @@ catch(e) {
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = new nsBrowserAccess();
 
 
+		this.initSearchBar();
+		var toolbox = document.getElementById('navigator-toolbox');
+		if (toolbox.customizeDone) {
+			toolbox.__splitbrowser__customizeDone = toolbox.customizeDone;
+			toolbox.customizeDone = function(aChanged) {
+				this.__splitbrowser__customizeDone(aChanged);
+				SplitBrowser.initSearchBar();
+			};
+		}
+		if ('BrowserToolboxCustomizeDone' in window) {
+			window.__splitbrowser__BrowserToolboxCustomizeDone = window.BrowserToolboxCustomizeDone;
+			window.BrowserToolboxCustomizeDone = function(aChanged) {
+				window.__splitbrowser__BrowserToolboxCustomizeDone.apply(window, arguments);
+				SplitBrowser.initSearchBar();
+			};
+		}
+
 		this.overrideFindBar();
 		this.overrideZoomManager();
 		this.hackForOtherExtensions();
@@ -2476,7 +2493,7 @@ catch(e) {
 		this.updateCommandElement('Browser:Browser:BookmarkAllTabs',
 			'SplitBrowser.activeBrowserBrowser:BookmarkAllTabs();');
 	},
-	 
+	
 	updateCommandElement : function(aId, aNewFeature) 
 	{
 		var node = document.getElementById(aId);
@@ -2484,6 +2501,70 @@ catch(e) {
 			node.setAttribute('oncommand',
 				'if (SplitBrowser.isEventFromKeyboardShortcut(event)) { '+aNewFeature+'; } else { '+node.getAttribute('oncommand')+'; }');
 		}
+	},
+  
+	initSearchBar : function() 
+	{
+		var search = this.searchbar;
+		if (!search || search.splitbrowserInitialized) return;
+
+		var textbox = this.textbox;
+
+		if ('handleSearchCommand' in search) { // Firefox 2
+			var funcs = 'doSearch __secondsearch__doSearch'.split(' ');
+			for (var i in funcs)
+			{
+				if (search[funcs[i]].toSource().indexOf('function doSearch') == 0) {
+					eval(
+						'search.'+funcs[i]+' = '+
+							search[funcs[i]].toSource()
+								.replace(
+									/(getBrowser\(\)|gBrowser)/g,
+									'SplitBrowser.browserForSearch'
+								).replace(
+									'content.focus()',
+									'SplitBrowser.browserForSearch.contentWindow.focus()'
+								).replace(
+									/(\s)loadURI\(([^,]+), ([^,]+), ([^,]+), ([^,]+)\)/,
+									'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation[$5 ? "LOAD_FLAGS_NONE" : "LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP" ], $3, $4)'
+								)
+					);
+					break;
+				}
+			}
+		}
+		else if ('onEnginePopupCommand' in textbox && textbox.onEnginePopupCommand.toSource().indexOf('SecondSearch') < 0) { // Firefox 1.5
+//			eval(
+//				'textbox.onEnginePopupCommand = '+
+//					textbox.onEnginePopupCommand.toSource()
+//						.replace('this.currentEngine = target.id',
+//							'SecondSearch.addEngineToRecentList(SecondSearch.getCurrentEngine());'+
+//							'this.currentEngine = target.id'
+//						)
+//			);
+		}
+
+		search.splitbrowserInitialized = true;
+	},
+	 
+	get browserForSearch() 
+	{
+		return this.getPref('splitbrowser.search.loadResultsIn') == 0 ? this.activeBrowser : gBrowser ; // document.getElementById('content') ;
+	},
+ 
+	get searchbar() 
+	{
+		var bar = document.getElementsByTagName('searchbar');
+		return bar && bar.length ? bar[0] : null ;
+	},
+ 
+	get textbox() 
+	{
+		var bar = this.searchbar;
+		return bar ? (
+				bar._textbox || /* Firefox 2 */
+				bar.mTextbox /* Firefox 1.5 */
+			) : null ;
 	},
   	
 	isEventFromKeyboardShortcut : function(aEvent) 
@@ -2946,7 +3027,7 @@ catch(e) {
 	},
  
 /* Save/Load Prefs */ 
-	
+	 
 	get Prefs() 
 	{
 		if (!this._Prefs) {

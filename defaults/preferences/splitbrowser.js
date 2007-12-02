@@ -32,6 +32,9 @@ pref("splitbrowser.delay.subbrowser.toolbar.hide", 4000);
 pref("splitbrowser.delay.subbrowser.autoFocus",    1000);
 
 
+// 0 = active browser, 1 = main browser
+pref("splitbrowser.search.loadResultsIn", 0);
+
 
 pref("splitbrowser.tabs.enabled",             true);
 
