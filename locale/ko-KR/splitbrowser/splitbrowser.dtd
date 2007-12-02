@@ -17,13 +17,13 @@
 <!ENTITY splitbrowser.tab.caption   "탭">
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
 
-<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+<!ENTITY splitbrowser.syncScroll.mainArea "스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화">
 
 
 <!ENTITY splitbrowser.tab.appearance     "모양">
 
 <!ENTITY splitbrowser.show.toolbar.always "항상 분할된 화면에 도구 모음 보이기">
-<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
+<!ENTITY splitbrowser.show.syncScroll "분할된 화면에 &quot;스크롤 동기화&quot; 도구 모음 버튼 보이기">
 <!ENTITY splitbrowser.show.collapseexpand "분할된 화면에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
 <!ENTITY splitbrowser.tabs.autoHide "항상 분할된 화면에 탭 도구 모음 보이기">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "항상 분할된 화면에 도구 모음 네비게이션 보이기">
@@ -109,7 +109,7 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
 <!ENTITY splitbrowser.menu.gather.label               "모든 분할 화면을 탭으로 보이기">
 <!ENTITY splitbrowser.menu.gather.accesskey           "g">
-<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.label      "주 영역으로 분할 화면 스크롤 동기화">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
@@ -123,7 +123,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
 <!ENTITY splitbrowser.subbrowser.loading           "로드 중...">
-<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "스크롤 동기화">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "뒤로">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "앞으로">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "새로 고침">
@@ -138,7 +138,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "감추기">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "보이기">
 <!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "스크롤 동기화">
 
 <!ENTITY splitbrowser.button.menu.label          "화면 분할">
 <!ENTITY splitbrowser.button.menu.tooltip        "브라우저 화면을 분할합니다.">
