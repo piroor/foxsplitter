@@ -96,6 +96,22 @@ var SplitBrowser = {
 	},
 	mIOService : Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
  
+	getSubBrowserByName : function(aName) 
+	{
+		if (aName == '_top')
+			return this.mainBrowserBox;
+		else if (!aName)
+			return null;
+
+		for (var i in this._browsers)
+		{
+			if (this._browsers[i].name == aName)
+				return this._browsers[i];
+		}
+
+		return null;
+	},
+ 
 	getSubBrowserById : function(aID) 
 	{
 		var windows = this.browserWindows;
@@ -328,7 +344,7 @@ var SplitBrowser = {
   
 /* add sub-browser (split contents) */ 
 	
-	addSubBrowser : function(aURI, aBrowser, aPosition) 
+	addSubBrowser : function(aURI, aBrowser, aPosition, aName) 
 	{
 		if (!aURI) aURI = 'about:blank';
 		if (!aPosition) aPosition = this.POSITION_BOTTOM;
@@ -360,10 +376,14 @@ var SplitBrowser = {
 			}
 		}
 
-		var browser   = this.createSubBrowser(aURI);
+		var browser = this.createSubBrowser(aURI);
+		if (aName) browser.setAttribute('name', aName);
+
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
 
 		if (source) {
+			browser.syncScroll = source.syncScroll;
+			browser.name = source.name;
 			window.setTimeout(
 				this.duplicateBrowser,
 				0,
@@ -1085,7 +1105,6 @@ var SplitBrowser = {
 				state.content.type       = 'subbrowser';
 				state.content.lastWidth  = aContainer.lastwidth;
 				state.content.lastHeight = aContainer.lastheight;
-				state.content.syncScroll = originalContent.syncScroll;
 			}
 			else if (wrapper && hContainer.childNodes[i] == wrapper) {
 				state.content = {
@@ -1196,6 +1215,8 @@ var SplitBrowser = {
 		state.height      = aBrowser.boxObject.height;
 		state.collapsed   = aBrowser.contentCollapsed;
 		state.toolbarMode = (aBrowser.getAttribute('toolbar-mode') == 'vertical' ? 'vertical' : 'horizontal' );
+		state.syncScroll  = aBrowser.syncScroll;
+		state.name        = aBrowser.name;
 
 		return state;
 	},
@@ -1503,6 +1524,11 @@ alert(e+'\n\n'+state);
 					else
 						b.removeAttribute('sync-scroll');
 
+					if (aState.content.name)
+						b.setAttribute('name', aState.content.name);
+					else
+						b.removeAttribute('name');
+
 					content = b;
 					break;
 
@@ -1614,10 +1640,10 @@ alert(e+'\n\n'+state);
 		aFrame.scrollTo(aEntry.x, aEntry.y);
 
 		var frames = aFrame.frames;
-		if (frames.length && aData.children && aData.children.length) {
+		if (frames.length && aEntry.children && aEntry.children.length) {
 			for (var i = 0, maxi = frames.length; i < maxi; i++)
 			{
-				if (i in aData.children)
+				if (i in aEntry.children)
 					this.restorePosition(frames[i], aEntry.children[i]);
 			}
 		}
@@ -2201,11 +2227,11 @@ catch(e) {
 									/(getBrowser\(\)|gBrowser)/g,
 									'SplitBrowser.browserForSearch'
 								).replace(
-									'content.focus()',
+									/content.focus\(\)/g,
 									'SplitBrowser.browserForSearch.contentWindow.focus()'
 								).replace(
-									/(\s)loadURI\(([^,]+), ([^,]+), ([^,]+), ([^,]+)\)/,
-									'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation[$5 ? "LOAD_FLAGS_NONE" : "LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP" ], $3, $4)'
+									/([^.])loadURI\(([^\),]+), ([^\),]+), ([^\),]+), ([^\),]+)\)/,
+									'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE, $3, $4, null)'
 								)
 					);
 					break;
@@ -2228,7 +2254,27 @@ catch(e) {
  
 	get browserForSearch() 
 	{
-		return this.getPref('splitbrowser.search.loadResultsIn') == 0 ? this.activeBrowser : gBrowser ; // document.getElementById('content') ;
+		if (!this.tabbedBrowsingEnabled) return gBrowser;
+
+		var b;
+		switch (this.getPref('splitbrowser.search.loadResultsIn'))
+		{
+			default:
+			case 0:
+				b = gBrowser ; // document.getElementById('content') ;
+				break;
+			case 1:
+				b = this.activeBrowser;
+				break;
+			case 2:
+				b = this.getSubBrowserByName('search');
+				if (!b) {
+					b = this.addSubBrowser('about:blank', null, this.POSITION_RIGHT, 'search');
+				}
+				b = b.browser;
+				break;
+		}
+		return b;
 	},
  
 	get searchbar() 
@@ -2469,6 +2515,19 @@ catch(e) {
 				SplitBrowser.initSearchBar();
 			};
 		}
+
+/*
+		if ('SearchLoadURL' in window) {
+			eval('window.SearchLoadURL = '+
+				window.SearchLoadURL.toSource().replace(
+					/switch\s*\(aWhere\)/,
+					<><![CDATA[
+					]]></>
+				)
+			);
+		}
+*/
+
 
 		this.overrideFindBar();
 		this.overrideZoomManager();

@@ -32,8 +32,8 @@ pref("splitbrowser.delay.subbrowser.toolbar.hide", 4000);
 pref("splitbrowser.delay.subbrowser.autoFocus",    1000);
 
 
-// 0 = active browser, 1 = main browser
-pref("splitbrowser.search.loadResultsIn", 0);
+// 0 = main browser (Firefox default), 1 = active browser, 2 = "search" named browser
+pref("splitbrowser.search.loadResultsIn", 1);
 
 
 pref("splitbrowser.tabs.enabled",             true);
