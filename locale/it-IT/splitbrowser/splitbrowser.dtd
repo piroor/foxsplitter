@@ -29,6 +29,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Mostra sempre i pulsati di navigazione nei riquadri">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "Menu">
 <!ENTITY splitbrowser.show.menu             "Mostra il menu &quot;Suddivisione&quot; nella barra dei menu">
 <!ENTITY splitbrowser.show.context.caption  "Voci aggiuntive nel menu contestuale delle schede">

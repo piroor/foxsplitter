@@ -29,6 +29,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "Menu">
 <!ENTITY splitbrowser.show.menu             "Montrer le menu &quot;Partager&quot; dans la barre de menu">
 <!ENTITY splitbrowser.show.context.caption  "Éléments additionnels du menu contextuel des onglets :">

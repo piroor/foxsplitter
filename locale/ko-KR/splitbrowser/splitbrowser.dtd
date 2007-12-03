@@ -29,6 +29,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "항상 분할된 화면에 도구 모음 네비게이션 보이기">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "메뉴">
 <!ENTITY splitbrowser.show.menu             "메뉴 도구 모음에 &quot;Split&quot; 메뉴 보이기">
 <!ENTITY splitbrowser.show.context.caption  "탭 상에 추가할 컨텍스트 메뉴 항목:">

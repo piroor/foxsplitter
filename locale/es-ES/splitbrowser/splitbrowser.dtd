@@ -29,6 +29,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Siempre mostrar la barra de navegación en las ventanas divididas.">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "Menú">
 <!ENTITY splitbrowser.show.menu             "Mostrar &quot;Split&quot; en la barra de menus">
 <!ENTITY splitbrowser.show.context.caption  "Elementos adicionales del menú contextual en las pestañas:">

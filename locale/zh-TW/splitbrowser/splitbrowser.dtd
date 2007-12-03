@@ -23,6 +23,13 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always
 "總是在分割瀏覽區顯示瀏覽工具列">
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
 <!ENTITY splitbrowser.tab.menu              "選單">
 <!ENTITY splitbrowser.show.menu             "在選單列顯示「Split」選單">
 <!ENTITY splitbrowser.show.context.caption  "分頁標籤上右鍵選單的項目:">

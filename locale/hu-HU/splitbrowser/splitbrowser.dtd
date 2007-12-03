@@ -30,6 +30,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "A navigációgombok mindig láthatóak a felosztott lapok eszköztárán">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "Menü">
 <!ENTITY splitbrowser.show.menu             "&quot;Felosztás&quot; menü megjelenítése a menüsorban">
 <!ENTITY splitbrowser.show.context.caption  "Lapok helyi menüjének bővítése a következőkkel:">

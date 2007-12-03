@@ -74,7 +74,7 @@ var SplitBrowser = {
 	},
  
 /* utilities */ 
-	
+	 
 	makeURIFromSpec : function(aURI) 
 	{
 		try {
@@ -341,7 +341,12 @@ var SplitBrowser = {
 		newEvent.shouldDuplicate  = aShouldDuplicate;
 		(aEventTarget || appcontent).dispatchEvent(newEvent);
 	},
-  
+ 
+	fieldNormalClicks : function(aName) 
+	{
+		return /^(search)$/.test(aName);
+	},
+ 	 
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition, aName) 
@@ -2207,7 +2212,7 @@ catch(e) {
 	},
   
 	/* Web Search in split browser */ 
-	 
+	
 	initSearchBar : function() 
 	{
 		var search = this.searchbar;
@@ -2291,7 +2296,7 @@ catch(e) {
 				bar.mTextbox /* Firefox 1.5 */
 			) : null ;
 	},
-  	
+  
 /* Find Bar */ 
 	
 	overrideFindBar : function() 
@@ -3088,7 +3093,7 @@ catch(e) {
 	},
  
 /* Save/Load Prefs */ 
-	 
+	
 	get Prefs() 
 	{
 		if (!this._Prefs) {

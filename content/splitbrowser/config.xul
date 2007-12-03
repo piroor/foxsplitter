@@ -128,6 +128,26 @@
 
 </prefpane>
 
+<prefpane id="prefpane-target" label="&splitbrowser.tab.target;">
+	<preferences>
+		<preference id="splitbrowser.search.loadResultsIn"
+			name="splitbrowser.search.loadResultsIn"
+			type="int"/>
+	</preferences>
+
+	<groupbox>
+		<caption label="&splitbrowser.search.loadResultsIn;"/>
+		<radiogroup id="splitbrowser.search.loadResultsIn-radio"
+			preference="splitbrowser.search.loadResultsIn"
+			orient="vertical">
+			<radio label="&splitbrowser.search.loadResultsIn.0;" value="0"/>
+			<radio label="&splitbrowser.search.loadResultsIn.1;" value="1"/>
+			<radio label="&splitbrowser.search.loadResultsIn.2;" value="2"/>
+		</radiogroup>
+	</groupbox>
+
+</prefpane>
+
 <prefpane id="prefpane-menu" label="&splitbrowser.tab.menu;">
 	<preferences>
 		<preference id="splitbrowser.show.menu"

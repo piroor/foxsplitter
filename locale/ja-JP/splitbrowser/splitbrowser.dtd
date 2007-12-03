@@ -30,6 +30,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "分割ブラウザのツールバーでナビゲーションを常に表示する">
 
 
+<!ENTITY splitbrowser.tab.target              "他の機能との連携">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "検索バーからの検索結果">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "メインの領域に読み込む（Firefox初期状態）">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "その時アクティブなペインに読み込む">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "検索結果用のペインに読み込む">
+
+
 <!ENTITY splitbrowser.tab.menu              "メニュー">
 <!ENTITY splitbrowser.show.menu             "メニューバーに「分割」メニューを追加">
 <!ENTITY splitbrowser.show.context.caption  "タブのコンテキストメニューに以下の項目を追加する：">

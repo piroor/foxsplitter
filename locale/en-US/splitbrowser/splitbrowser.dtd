@@ -29,6 +29,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Always show navigations of the toolbar in split browsers">
 
 
+<!ENTITY splitbrowser.tab.target              "Combination">
+
+<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+
+
 <!ENTITY splitbrowser.tab.menu              "Menu">
 <!ENTITY splitbrowser.show.menu             "Show &quot;Split&quot; menu in the menu bar">
 <!ENTITY splitbrowser.show.context.caption  "Additional items of the context menu on tabs:">

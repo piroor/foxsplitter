@@ -1126,7 +1126,7 @@ sideBox.removeAttribute('style');
 							}
 							node.parentNode.openNewTab();
 						"
-						onclick="return contentAreaClick(event, false);"
+						onclick="return contentAreaClick(event, SplitBrowser.fieldNormalClicks(this.parentNode.parentNode.parentNode.parentNode.name));"
 						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
 						content="about:blank"
 						contenttooltip="aHTMLTooltip"
