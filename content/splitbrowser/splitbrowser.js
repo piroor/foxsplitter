@@ -2243,15 +2243,15 @@ catch(e) {
 				}
 			}
 		}
-		else if ('onEnginePopupCommand' in textbox && textbox.onEnginePopupCommand.toSource().indexOf('SecondSearch') < 0) { // Firefox 1.5
-//			eval(
-//				'textbox.onEnginePopupCommand = '+
-//					textbox.onEnginePopupCommand.toSource()
-//						.replace('this.currentEngine = target.id',
-//							'SecondSearch.addEngineToRecentList(SecondSearch.getCurrentEngine());'+
-//							'this.currentEngine = target.id'
-//						)
-//			);
+		else if ('onEnginePopupCommand' in textbox && textbox.onEnginePopupCommand.toSource().indexOf('SplitBrowser') < 0) { // Firefox 1.5
+			eval(
+				'textbox.onEnginePopupCommand = '+
+					textbox.onEnginePopupCommand.toSource()
+						.replace(
+							/([^.])loadURI\(/,
+							'$1SplitBrowser.browserForSearch.loadURI('
+						)
+			);
 		}
 
 		search.splitbrowserInitialized = true;
@@ -2521,17 +2521,20 @@ catch(e) {
 			};
 		}
 
-/*
 		if ('SearchLoadURL' in window) {
 			eval('window.SearchLoadURL = '+
 				window.SearchLoadURL.toSource().replace(
-					/switch\s*\(aWhere\)/,
-					<><![CDATA[
-					]]></>
+					/(getBrowser\(\)|gBrowser)/g,
+					'SplitBrowser.browserForSearch'
+				).replace(
+					/content.focus\(\)/g,
+					'SplitBrowser.browserForSearch.contentWindow.focus()'
+				).replace(
+					/([^.])loadURI\(/,
+					'$1SplitBrowser.browserForSearch.loadURI('
 				)
 			);
 		}
-*/
 
 
 		this.overrideFindBar();
