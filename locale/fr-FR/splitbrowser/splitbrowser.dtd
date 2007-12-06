@@ -29,12 +29,12 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
 
 
-<!ENTITY splitbrowser.tab.target              "Combination">
+<!ENTITY splitbrowser.tab.target              "Combinaison">
 
-<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+<!ENTITY splitbrowser.search.loadResultsIn    "Charger les résultats de recherche dans">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "l&quot;aire principale (le défaut avec Firefox)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "le panneau actif">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "le panneau de résultats de recherche">
 
 
 <!ENTITY splitbrowser.tab.menu              "Menu">
