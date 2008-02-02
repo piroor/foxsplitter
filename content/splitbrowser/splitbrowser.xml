@@ -2158,7 +2158,7 @@ sideBox.removeAttribute('style');
 			action="this.mUpdateToolbarMode();"/>
 
 		<handler event="click"
-			action="if (!this.contentCollapsed) this.browser.contentWindow.focus();"/>
+			action="if (!this.contentCollapsed &amp;&amp; !this.focused) this.browser.contentWindow.focus();"/>
 
 		<handler event="DOMWindowClose" phase="capturing"><![CDATA[
 			if (
