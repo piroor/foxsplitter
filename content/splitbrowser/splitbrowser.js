@@ -2788,7 +2788,7 @@ catch(e) {
 				loadInBackground = !loadInBackground;
 
 			if (docURL)
-				urlSecurityCheck(aURI, docURL);
+				urlSecurityCheck(aURI, 'nodePrincipal' in d ? d.nodePrincipal : docURL );
 
 			var originCharset = d.characterSet;
 			var referrerURI = docURL ? SplitBrowser.makeURIFromSpec(docURL) : null;
@@ -2898,7 +2898,7 @@ catch(e) {
 
 				var type = cmdEvent.type;
 				var uri = type.match(/ur[li]\s*=\s*([^\&\;]*)/i) ? decodeURIComponent(RegExp.$1) : 'about:blank' ;
-				urlSecurityCheck(uri, win.location.href);
+				urlSecurityCheck(uri, 'contentPrincipal' in b.browser ? b.browser.contentPrincipal : win.location.href );
 
 				if (!type.match(/pos(ition)?\s*=\s*(top|right|bottom|left|tab)/i)) return;
 				var pos = this['POSITION_'+RegExp.$2.toUpperCase()];
