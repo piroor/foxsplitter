@@ -62,7 +62,7 @@
 }
 
 
-#splitbrowser-add-button {
+.splitbrowser-add-button {
 	-moz-appearance: none;
 	border: solid 1px ThreeDShadow;
 	outline: none;
@@ -76,17 +76,24 @@
 	background-color: ThreeDFace !important;
 }
 
-#splitbrowser-add-button.top {
+.splitbrowser-add-button.top {
 	background-image: url(./small/up-gray.png);
 }
-#splitbrowser-add-button.bottom {
+.splitbrowser-add-button.bottom {
 	background-image: url(./small/down-gray.png);
 }
-#splitbrowser-add-button.right {
+.splitbrowser-add-button.right {
 	background-image: url(./small/right-gray.png);
 }
-#splitbrowser-add-button.left {
+.splitbrowser-add-button.left {
 	background-image: url(./small/left-gray.png);
+}
+
+#splitbrowser-add-button-panel {
+	margin: 0;
+	padding: 0;
+	border: none 0;
+	background: transparent !important;
 }
 
 
