@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "Chiudi la scheda dopo averla aperta in un nuovo riquadro">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Aspetto">

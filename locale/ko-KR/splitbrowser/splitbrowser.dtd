@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 
 
 <!ENTITY splitbrowser.tab.appearance     "모양">

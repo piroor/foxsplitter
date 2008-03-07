@@ -589,8 +589,14 @@ sideBox.removeAttribute('style');
 				eval('info = '+aData);
 				this.mOwner.scrollSynchronizing = true;
 				w.scrollTo(
-					(info.x / info.maxX * w.scrollMaxX),
-					(info.y / info.maxY * w.scrollMaxY)
+					(
+						SplitBrowser.getPref('splitbrowser.syncScroll.horizontal') ?
+							(info.x / info.maxX * w.scrollMaxX) : w.scrollX
+					),
+					(
+						SplitBrowser.getPref('splitbrowser.syncScroll.vertical') ?
+							(info.y / info.maxY * w.scrollMaxY) : w.scrollY
+					)
 				);
 				window.setTimeout(function(aOwner) {
 					aOwner.scrollSynchronizing = false;

@@ -28,6 +28,9 @@
 		<preference id="splitbrowser.syncScroll.mainArea"
 			name="splitbrowser.syncScroll.mainArea"
 			type="bool"/>
+		<preference id="splitbrowser.syncScroll.horizontal"
+			name="splitbrowser.syncScroll.horizontal"
+			type="bool"/>
 		<preference id="splitbrowser.show.addbuttons.hover.type"
 			name="splitbrowser.show.addbuttons.hover.type"
 			type="int"/>
@@ -35,6 +38,8 @@
 			name="splitbrowser.show.addbuttons.dragdrop"
 			type="bool"/>
 	</preferences>
+
+	<vbox>
 
 	<checkbox id="splitbrowser.state.restore-check" flex="1"
 		label="&splitbrowser.state.restore;"
@@ -60,6 +65,13 @@
 	<checkbox id="splitbrowser.syncScroll.mainArea-check" flex="1"
 		label="&splitbrowser.syncScroll.mainArea;"
 		preference="splitbrowser.syncScroll.mainArea"/>
+	<radiogroup orient="horizontal" align="center"
+		id="splitbrowser.syncScroll.horizontal-radio"
+		preference="splitbrowser.syncScroll.horizontal">
+		<spacer style="width:1em;"/>
+		<radio label="&splitbrowser.syncScroll.horizontal.true;" value="true"/>
+		<radio label="&splitbrowser.syncScroll.horizontal.false;" value="false"/>
+	</radiogroup>
 
 
 	<groupbox>
@@ -79,6 +91,8 @@
 			label="&splitbrowser.show.addbuttons.dragdrop;"
 			preference="splitbrowser.show.addbuttons.dragdrop"/>
 	</groupbox>
+
+	</vbox>
 
 </prefpane>
 
@@ -109,6 +123,7 @@
 			inverted="true"/>
 	</preferences>
 
+	<vbox>
 
 	<checkbox id="splitbrowser.show.toolbar.always-check" flex="1"
 		label="&splitbrowser.show.toolbar.always;"
@@ -125,6 +140,8 @@
 	<checkbox id="splitbrowser.tabs.autoHide-check" flex="1"
 		label="&splitbrowser.tabs.autoHide;"
 		preference="splitbrowser.tabs.autoHide"/>
+
+	</vbox>
 
 </prefpane>
 
@@ -170,6 +187,8 @@
 			type="bool"/>
 	</preferences>
 
+	<vbox>
+
 	<checkbox id="splitbrowser.show.menu-check" flex="1"
 		label="&splitbrowser.show.menu;"
 		preference="splitbrowser.show.menu"/>
@@ -192,6 +211,8 @@
 			label="&splitbrowser.show.tab.context.gather;"
 			preference="splitbrowser.show.tab.context.gather"/>
 	</groupbox>
+
+	</vbox>
 
 </prefpane>
 

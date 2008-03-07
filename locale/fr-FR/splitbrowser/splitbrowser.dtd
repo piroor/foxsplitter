@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "Synchroniser l'état de défilement dans l'espace principal des fenêtres partagées qui sont choisies avec l'option de synchroniser le défilement">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apparence">

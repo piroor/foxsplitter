@@ -4,6 +4,8 @@ pref("splitbrowser.tabs.autoHide",            true);
 pref("splitbrowser.subbrowser.autoFocus",     false);
 
 pref("splitbrowser.syncScroll.mainArea", true);
+pref("splitbrowser.syncScroll.vertical", true);
+pref("splitbrowser.syncScroll.horizontal", true);
 
 // 0 = always, 1 = only with modifier key
 pref("splitbrowser.show.addbuttons.hover.type", 0);

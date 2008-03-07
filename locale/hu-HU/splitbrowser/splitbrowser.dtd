@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "Lap bezárása, ha új ablakban jelenik meg">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "Főlap csúszkájának szinkronizációja a felosztott lapok csúszkáival">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 
 
 <!ENTITY splitbrowser.tab.appearance      "Megjelenés">

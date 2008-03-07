@@ -15,6 +15,8 @@
 <!ENTITY splitbrowser.tab.caption "分頁">
 <!ENTITY splitbrowser.tab.closetab "當分頁被分割到新瀏覽區後，關閉該分頁。">
 <!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 <!ENTITY splitbrowser.tab.appearance "外觀">
 <!ENTITY splitbrowser.show.toolbar.always "總是在分割瀏覽區顯示工具列">
 <!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">

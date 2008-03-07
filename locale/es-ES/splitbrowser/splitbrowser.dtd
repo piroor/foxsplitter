@@ -18,6 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "Cerrar la pestaña despúes que es dividida">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apariencia">
