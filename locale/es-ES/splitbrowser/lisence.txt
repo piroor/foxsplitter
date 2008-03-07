@@ -14,10 +14,10 @@ License.
 The Original Code is the Split Browser.
 
 The Initial Developer of the Original Code is SHIMODA Hiroshi.
-Portions created by the Initial Developer are Copyright (C) 2007
+Portions created by the Initial Developer are Copyright (C) 2007-2008
 the Initial Developer. All Rights Reserved.
 
-Contributor(s): tito <robertobouzout@hotmail.com>
+Contributor(s): tito <titodp@gmail.com>
 
 Alternatively, the contents of this file may be used under the terms of
 either the GNU General Public License Version 2 or later (the "GPL"), or

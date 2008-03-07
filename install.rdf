@@ -68,8 +68,8 @@
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="es-ES"
-                       em:name="Split Browser"
-                       em:description="Divide la ventana del navegador como tú quieras."
+                       em:name="Split Browser (Dividir navegador)"
+                       em:description="Divide la ventana del navegador como tú quieras"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
     </em:localized>
     <em:localized>
