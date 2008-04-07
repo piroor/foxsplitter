@@ -17,26 +17,26 @@
 <!ENTITY splitbrowser.tab.caption   "Scheda">
 <!ENTITY splitbrowser.tab.closetab  "Chiudi la scheda dopo averla aperta in un nuovo riquadro">
 
-<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
-<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
+<!ENTITY splitbrowser.syncScroll.mainArea "Scorri simultaneamente i riquadri impostati per sincronizzare il movimento">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "verticalmente e orizzontalmente"> <!-- NUOVA -->
+<!ENTITY splitbrowser.syncScroll.horizontal.false "solo verticalmente"> <!-- NUOVA -->
 
 
 <!ENTITY splitbrowser.tab.appearance     "Aspetto">
 
 <!ENTITY splitbrowser.show.toolbar.always "Mostra sempre la barra degli strumenti nei riquadri">
-<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
+<!ENTITY splitbrowser.show.syncScroll "Mostra il pulsante &quot;Sincronizza scorrimento&quot; nei riquadri">
 <!ENTITY splitbrowser.show.collapseexpand "Mostra i pulsanti &quot;Contrai&quot;/&quot;Espandi&quot; nei riquadri">
 <!ENTITY splitbrowser.tabs.autoHide "Mostra sempre la barra delle schede nei riquadri">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Mostra sempre i pulsati di navigazione nei riquadri">
 
 
-<!ENTITY splitbrowser.tab.target              "Combination">
+<!ENTITY splitbrowser.tab.target              "Impostazioni speciali">
 
-<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+<!ENTITY splitbrowser.search.loadResultsIn    "Carica i risultati delle ricerche">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "nell&apos;area principale (comportamento predefinito di Firefox)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "nel riquadro attivo">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "nel riquadro apposito">
 
 
 <!ENTITY splitbrowser.tab.menu              "Menu">
@@ -119,7 +119,7 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey   "o">
 <!ENTITY splitbrowser.menu.gather.label               "Raggruppa come schede tutti i riquadri">
 <!ENTITY splitbrowser.menu.gather.accesskey           "R">
-<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Sincronizza lo scorrimento dei riquadri con quello della finestra principale">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
@@ -132,7 +132,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Vuoto)">
 <!ENTITY splitbrowser.subbrowser.loading           "Caricamento in corso...">
-<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Sincronizza scorrimento">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Indietro">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avanti">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Ricarica">
@@ -147,7 +147,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Contrai">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Espandi">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Chiudi">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Sincronizza scorrimento">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Suddividi">
