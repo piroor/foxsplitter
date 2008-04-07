@@ -13,6 +13,7 @@
                    em:optionsURL="chrome://splitbrowser/content/config.xul">
 	<em:translator>Menet (fr-FR locale)</em:translator>
 	<em:translator>ReinekeFux (de-DE locale)</em:translator>
+	<em:translator>Hagen Halbach (de-DE locale)</em:translator>
 	<em:translator>sushizang (ko-KR locale)</em:translator>
 	<em:translator>Alan CHENG (zh-TW locale)</em:translator>
 	<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>

@@ -4,7 +4,6 @@
 
 <!ENTITY splitbrowser.general.caption                   "Allgemein">
 <!ENTITY splitbrowser.state.restore                     "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
-<!--ENTITY splitbrowser.subbrowser.autoFocus              "Auto-focus to browsers on mouseover"-->
 <!ENTITY splitbrowser.subbrowser.autoFocus              "Geteilte Browser-Ansichten beim Überfahren mit der Maus fokussieren">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Automatisch fokussieren nach ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
@@ -18,26 +17,26 @@
 <!ENTITY splitbrowser.tab.caption   "Tabs">
 <!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">
 
-<!ENTITY splitbrowser.syncScroll.mainArea "Synchronize scroll state of the main area to split browsers which are checked to sync-scroll">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
-<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
+<!ENTITY splitbrowser.syncScroll.mainArea "Bildlauf der Hauptansicht mit dem der ausgewählten geteilten Browser-Ansichten synchronisieren">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Senkrecht und waagrecht">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Nur senkrecht">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Aussehen">
 
 <!ENTITY splitbrowser.show.toolbar.always            "Symbolleiste in geteilten Browser-Ansichten immer anzeigen">
-<!ENTITY splitbrowser.show.syncScroll "Show &quot;Synchronize Scroll&quot; toolbar button in split browsers">
+<!ENTITY splitbrowser.show.syncScroll "Schaltfläche für synchronisierten Bildlauf in geteilten Browser-Ansichten anzeigen">
 <!ENTITY splitbrowser.show.collapseexpand            "Schaltfläche zum Ein-/Ausklappen in geteilten Browser-Ansichten anzeigen">
 <!ENTITY splitbrowser.tabs.autoHide                  "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Navigationssymbole in geteilten Ansichten immer anzeigen">
 
 
-<!ENTITY splitbrowser.tab.target              "Combination">
+<!ENTITY splitbrowser.tab.target              "Verknüpfung">
 
-<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+<!ENTITY splitbrowser.search.loadResultsIn    "Suchergebnisse anzeigen in">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "der Hauptansicht (Firefox-Standard)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "der aktiven Ansicht">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "der Ansicht für Suchergebnisse">
 
 
 <!ENTITY splitbrowser.tab.menu                       "Menü">
@@ -48,7 +47,6 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x      "Alle Tabs in geteilten Ansichten senkrecht anordnen">
 <!ENTITY splitbrowser.show.tab.context.layout.y      "Alle Tabs in geteilten Ansichten waagrecht anordnen">
 <!ENTITY splitbrowser.show.tab.context.gather        "Alle geteilten Ansichten in Tabs öffnen">
-
 
 
 
@@ -99,9 +97,9 @@
 
 
 
+
 <!ENTITY splitbrowser.menu.label     "Teilen">
 <!ENTITY splitbrowser.menu.accesskey "t">
-
 <!ENTITY splitbrowser.menu.removeAll.label       "Alle geteilten Ansichten schließen">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "g">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Alle geteilten Ansichten einklappen">
@@ -121,7 +119,7 @@
 <!ENTITY splitbrowser.menu.layout.y.accesskey           "w">
 <!ENTITY splitbrowser.menu.gather.label                 "Alle geteilten Ansichten in Tabs öffnen">
 <!ENTITY splitbrowser.menu.gather.accesskey             "t">
-<!ENTITY splitbrowser.menu.syncScroll.label      "Synchronize Scroll of Split Browsers to the main area">
+<!ENTITY splitbrowser.menu.syncScroll.label      "Bildlauf der geteilten Ansichten mit der Hauptansicht synchronisieren">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
@@ -134,7 +132,7 @@
 
 <!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
 <!ENTITY splitbrowser.subbrowser.loading           "Laden...">
-<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Bildlauf synchronisieren">
 <!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">
 <!ENTITY splitbrowser.subbrowser.goForward.tooltip "Vor">
 <!ENTITY splitbrowser.subbrowser.reload.tooltip    "Neu laden">
@@ -149,7 +147,7 @@
 <!ENTITY splitbrowser.subbrowser.menu.collapse     "Einklappen">
 <!ENTITY splitbrowser.subbrowser.menu.expand       "Ausklappen">
 <!ENTITY splitbrowser.subbrowser.menu.close        "Schließen">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchronize Scroll">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Bildlauf synchronisieren">
 
 
 <!ENTITY splitbrowser.button.menu.label          " Teilen">
