@@ -576,6 +576,9 @@ SplitBrowser.hackForOtherExtensionsWithDelay = function() {
 			{
 				return SplitBrowser.activeBrowser.selectedTab = val;
 			},
+			get mCurrentTab() {
+				return SplitBrowser.activeBrowser.mCurrentTab;
+			},
 			get aioNativeRemoveTab()
 			{
 				return this.wrappedNativeRemoveTab ;
