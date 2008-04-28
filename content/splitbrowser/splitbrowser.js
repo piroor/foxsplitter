@@ -1806,7 +1806,7 @@ alert(e+'\n\n'+state);
      
 /* popup-buttons */ 
 	addButtonIsShown : false,
-	 
+	
 	get addButton() { 
 		return document.getElementById(
 				this.addButtonUsePanel ?
@@ -2045,7 +2045,7 @@ alert(e+'\n\n'+state);
 			button.parentNode.hidePopup();
 		}
 	},
- 	
+ 
 	setButtonSizeAndPosition : function(aEvent) 
 	{
 		var node   = aEvent.targetSubBrowser;
@@ -2136,7 +2136,7 @@ alert(e+'\n\n'+state);
 	},
     
 /* drag-and-drop */ 
-	 
+	
 	getDropPositionOnContentArea : function(aEvent, aBox) 
 	{
 		var W = aBox.boxObject.width;
@@ -2281,14 +2281,30 @@ catch(e) {
 
 		var textbox = this.textbox;
 
-		if ('handleSearchCommand' in search) { // Firefox 2
+		if ('handleSearchCommand' in search) { // Firefox 2 or later
 			var funcs = 'doSearch __secondsearch__doSearch'.split(' ');
+			var source;
 			for (var i in funcs)
 			{
-				if (search[funcs[i]].toSource().indexOf('function doSearch') == 0) {
+				source = search[funcs[i]].toSource();
+				if (source.indexOf('function doSearch(') == 0) {
+					if (source.indexOf('openUILinkIn') > -1) { // Firefox 3
 					eval(
 						'search.'+funcs[i]+' = '+
-							search[funcs[i]].toSource()
+							source
+								.replace(
+									'{',
+									'$& SplitBrowser.readyToOpenSpecialPane("search");'
+								).replace(
+									/(\}\)?)$/,
+									'SplitBrowser.specialPaneOpened("search"); $1'
+								)
+					);
+					}
+					else { // Firefox 2
+					eval(
+						'search.'+funcs[i]+' = '+
+							source
 								.replace(
 									/(getBrowser\(\)|gBrowser)/g,
 									'SplitBrowser.browserForSearch'
@@ -2300,6 +2316,7 @@ catch(e) {
 									'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE, $3, $4, null)'
 								)
 					);
+					}
 					break;
 				}
 			}
@@ -2358,6 +2375,64 @@ catch(e) {
 			) : null ;
 	},
   
+	/* special panes */ 
+	specialPane : null,
+	 
+	readyToOpenSpecialPane : function(aType) 
+	{
+		this.specialPane = aType;
+	},
+ 
+	specialPaneOpened : function(aType) 
+	{
+		this.specialPane = null;
+	},
+ 
+	checkToOpenSpecialPane : function(aURI, aWhere, aAllowThirdPartyFixup, aPostData, aReferrerURI) 
+	{
+		switch (this.specialPane)
+		{
+			case 'search':
+				var b = this.browserForSearch;
+				if (b == gBrowser) return false;
+
+				var loadInBackground = this.getPref('browser.tabs.loadInBackground');
+				switch (aWhere)
+				{
+					default:
+						b.webNavigation.loadURI(
+							aURI,
+							(aAllowThirdPartyFixup ?
+								Components.interfaces.nsIWebNavigation.LOAD_FLAGS_ALLOW_THIRD_PARTY_FIXUP :
+								Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE
+							),
+							aReferrerURI,
+							aPostData,
+							null
+						);
+						break;
+
+					case 'tabshifted':
+						loadInBackground = !loadInBackground;
+					case 'tab':
+						b.loadOneTab(
+							aURI,
+							aReferrerURI,
+							null,
+							aPostData,
+							loadInBackground,
+							aAllowThirdPartyFixup || false
+						);
+						break;
+				}
+				b.contentWindow.focus();
+				return true;
+
+			default:
+				return false;
+		}
+	},
+ 	 
 /* Find Bar */ 
 	
 	overrideFindBar : function() 
@@ -2544,9 +2619,8 @@ catch(e) {
 		);
 		eval('window.nsBrowserAccess.prototype.isTabContentWindow = '+
 			window.nsBrowserAccess.prototype.isTabContentWindow.toSource().replace(
-				/\{/,
-				<><![CDATA[
-				{
+				'{',
+				<><![CDATA[$&
 					return SplitBrowser.getSubBrowserAndBrowserFromFrame(aWindow).browser ? true : false ;
 				]]></>
 			)
@@ -2597,6 +2671,15 @@ catch(e) {
 			);
 		}
 
+		eval('window.openUILinkIn = '+
+			window.openUILinkIn.toSource().replace(
+				'{',
+				<><![CDATA[$&
+					if (SplitBrowser.checkToOpenSpecialPane.apply(SplitBrowser, arguments))
+						return;
+				]]></>
+			)
+		);
 
 		this.overrideFindBar();
 		this.overrideZoomManager();
