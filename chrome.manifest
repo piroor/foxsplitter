@@ -1,4 +1,6 @@
 content	splitbrowser	jar:chrome/splitbrowser.jar!/content/splitbrowser/
+content	splitbrowser-fx3	jar:chrome/splitbrowser.jar!/content/splitbrowser-fx3/	appversion>=3.0b5pre
+
 overlay	chrome://browser/content/browser.xul	chrome://splitbrowser/content/splitbrowser.xul
 overlay	chrome://multipletab/content/config.xul	chrome://splitbrowser/content/multipletabConfigOverlay.xul
 
