@@ -1959,6 +1959,12 @@ sideBox.removeAttribute('style');
 
 			if (b.localName == 'tabbrowser') {
 				b.__splitbrowser__addTab = b.addTab;
+				eval('b.__splitbrowser__addTab = '+
+					b.__splitbrowser__addTab.toSource().replace(
+						'if (!this.mTabChangedListenerAdded) {',
+						'$& this.attrChangedListener = attrChanged;'
+					)
+				);
 				b.addTab = this.newAddTab;
 				b.__splitbrowser__removeTab = b.removeTab;
 				b.removeTab = this.newRemoveTab;
@@ -2045,11 +2051,20 @@ sideBox.removeAttribute('style');
 						this.removeProgressListener(b.mTabContainer.childNodes[i]);
 						try {
 							b.browsers[i].destroy();
+							b.browsers[i].removeEventListener('DOMTitleChanged', b.onTitleChanged, true);
 						}
 						catch(e) {
 						}
 					}
 					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
+					try {
+						document.removeEventListener('keypress', b._keyEventHandler, false);
+						if (b.attrChangedListener)
+							b.mTabBox.addEventListener('DOMAttrModified', b.attrChangedListener, false);
+						window.removeEventListener('resize', b, false);
+					}
+					catch(e) {
+					}
 				}
 				else {
 					if (b.getAttribute('type') == 'content-primary')
