@@ -2287,7 +2287,7 @@ catch(e) {
 			for (var i in funcs)
 			{
 				source = search[funcs[i]].toSource();
-				if (source.indexOf('function doSearch(') == 0) {
+				if (/^\(?function doSearch\(/.test(source)) {
 					if (source.indexOf('openUILinkIn') > -1) { // Firefox 3
 					eval(
 						'search.'+funcs[i]+' = '+
@@ -2671,6 +2671,7 @@ catch(e) {
 			);
 		}
 
+		// for Firefox 3
 		eval('window.openUILinkIn = '+
 			window.openUILinkIn.toSource().replace(
 				'{',
