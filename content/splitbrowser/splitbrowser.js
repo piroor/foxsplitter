@@ -1060,14 +1060,39 @@ var SplitBrowser = {
  
 	activeBrowserAddBookmarkAs : function() 
 	{
-		addBookmarkAs(this.activeBrowser, false);
+		if ('PlacesCommandHook' in window) // Firefox 3
+			PlacesCommandHook.bookmarkPage(this.activeBrowser.selectedBrowser, PlacesUtils.bookmarksMenuFolderId, true);
+		else // Firefox 2
+			addBookmarkAs(this.activeBrowser, false);
 	},
  
 	activeBrowserBookmarkAllTabs : function() 
 	{
 		var b = this.activeBrowser;
 		if (b.localName != 'tabbrowser') b = gBrowser;
-		addBookmarkAs(b, true);
+		if ('PlacesUIUtils' in window) { // Firefox 3
+			if (b == gBrowser) {
+				gBookmarkAllTabsHandler.doCommand();
+				return;
+			}
+			else {
+				var done = {};
+				PlacesUIUtils.showMinimalAddMultiBookmarkUI(
+					Array.prototype.slice.call(b.mTabContainer.childNodes)
+						.map(function(aTab) {
+							return aTab.linkedBrowser.currentURI;
+						})
+						.filter(function(aURI) {
+							if (aURI.spec in done) return false;
+							done[aURI.spec] = true;
+							return true;
+						})
+				);
+			}
+		}
+		else {
+			addBookmarkAs(b, true);
+		}
 	},
   
 /* save / load */ 
@@ -2768,8 +2793,8 @@ catch(e) {
 			'SplitBrowser.activeBrowserViewPageInfo();');
 		this.updateCommandElement('Browser:AddBookmarkAs',
 			'SplitBrowser.activeBrowserAddBookmarkAs();');
-		this.updateCommandElement('Browser:Browser:BookmarkAllTabs',
-			'SplitBrowser.activeBrowserBrowser:BookmarkAllTabs();');
+		this.updateCommandElement('Browser:BookmarkAllTabs',
+			'SplitBrowser.activeBrowserBookmarkAllTabs();');
 	},
 	
 	updateCommandElement : function(aId, aNewFeature) 
