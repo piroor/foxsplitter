@@ -18,8 +18,8 @@
 <!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
-<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "수직 및 수평 모두">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "수직만">
 
 
 <!ENTITY splitbrowser.tab.appearance     "모양">
@@ -31,12 +31,12 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "항상 분할된 화면에 도구 모음 네비게이션 보이기">
 
 
-<!ENTITY splitbrowser.tab.target              "Combination">
+<!ENTITY splitbrowser.tab.target              "조합">
 
-<!ENTITY splitbrowser.search.loadResultsIn    "Load search result into">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "the Main Area (Firefox Default)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "the Active Pane">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "the Pane for Search Results">
+<!ENTITY splitbrowser.search.loadResultsIn    "검색 결과 열기">
+<!ENTITY splitbrowser.search.loadResultsIn.0  "주 영역 (Firefox 기본값)">
+<!ENTITY splitbrowser.search.loadResultsIn.1  "활성 창">
+<!ENTITY splitbrowser.search.loadResultsIn.2  "검색 결과 창">
 
 
 <!ENTITY splitbrowser.tab.menu              "메뉴">
