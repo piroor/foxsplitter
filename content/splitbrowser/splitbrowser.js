@@ -2509,6 +2509,9 @@ catch(e) {
 		if (field)
 			field.value = b.findString;
 
+		var bar = document.getElementById('FindToolbar');
+		if (bar) bar.setAttribute('targetbrowser', b.getAttribute('id'));
+
 /*
 		var check = document.getElementById('highlight');
 		if (check && check.checked) {
@@ -2795,6 +2798,13 @@ catch(e) {
 			'SplitBrowser.activeBrowserAddBookmarkAs();');
 		this.updateCommandElement('Browser:BookmarkAllTabs',
 			'SplitBrowser.activeBrowserBookmarkAllTabs();');
+
+		var bar = document.getElementById('FindToolbar');
+		if (bar && bar.localName == 'findbar') {
+			bar.__defineGetter__('browser', function() {
+				return SplitBrowser.activeBrowser;
+			});
+		}
 	},
 	
 	updateCommandElement : function(aId, aNewFeature) 
