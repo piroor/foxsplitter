@@ -1705,6 +1705,7 @@ sideBox.removeAttribute('style');
 
 				aXferData.data.addDataForFlavour('text/x-moz-url', urlString);
 				aXferData.data.addDataForFlavour('text/unicode', value);
+				aXferData.data.addDataForFlavour('text/plain', value);
 				aXferData.data.addDataForFlavour('text/html', htmlString);
 
 				aDragAction.action =
@@ -1753,6 +1754,7 @@ sideBox.removeAttribute('style');
 				flavourSet.appendFlavour('application/x-moz-splitbrowser');
 				flavourSet.appendFlavour('text/x-moz-url');
 				flavourSet.appendFlavour('text/unicode');
+				flavourSet.appendFlavour('text/plain');
 				flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
 				return flavourSet;
 			}
