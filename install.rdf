@@ -79,6 +79,12 @@
                        em:description="Permette di suddividere a piacimento la finestra del browser."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
     </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="zh-CN"
+                       em:name="Split Browser"
+                       em:description="按你希望的方式拆分浏览器窗口。"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+    </em:localized>
 
 
     <em:targetApplication>
