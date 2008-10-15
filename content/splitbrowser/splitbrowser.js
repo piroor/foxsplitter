@@ -151,7 +151,7 @@ var SplitBrowser = {
   
 	getSubBrowserFromFrame : function(aFrame) 
 	{
-		var docShell = aFrame
+		var docShell = (aFrame.top || aFrame)
 			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIWebNavigation)
 			.QueryInterface(Components.interfaces.nsIDocShell);
@@ -159,6 +159,40 @@ var SplitBrowser = {
 		{
 			if (this._browsers[i].browser.docShell == docShell)
 				return this._browsers[i];
+		}
+		return null;
+	},
+ 
+	getTabFromFrame : function(aFrame) 
+	{
+		var b = this.getSubBrowserFromFrame(aFrame);
+		if (b)
+			b = b.browser
+		if (!b || b.localName != 'tabbrowser')
+			b = gBrowser;
+
+		var tabs = b.mTabContainer.childNodes;
+
+		var docShell = (aFrame.top || aFrame)
+			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+			.getInterface(Components.interfaces.nsIWebNavigation)
+			.QueryInterface(Components.interfaces.nsIDocShell);
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			if (tabs[i].linkedBrowser.docShell == docShell)
+				return tabs[i];
+		}
+		return null;
+	},
+ 
+	getTabBrowserFromTab : function(aTab) 
+	{
+		if (!aTab) return null;
+		var b = aTab;
+		while (b = b.parentNode)
+		{
+			if (b.localName == 'tabbrowser')
+				return b;
 		}
 		return null;
 	},
@@ -324,7 +358,31 @@ var SplitBrowser = {
 			tabBroadcaster.setAttribute('disabled', true);
 	},
  
-	fireSubBrowserAddRequestEvent : function(aURI, aBrowser, aPosition, aShouldDuplicate, aEventTarget) 
+	fireSubBrowserAddRequestEventFromFrame : function(aFrame, aBrowser, aPosition, aEventTarget, aCopy) 
+	{
+		var tab = this.getTabFromFrame(aFrame);
+		var uri = aFrame.top.location.href;
+		var subBrowser = aBrowser || this.getSubBrowserFromFrame(aFrame) || this.mainBrowserBox;
+		var browser = subBrowser.browser;
+		if (browser.localName == 'tabbrowser')
+			browser = browser.getBrowserForTab(browser.selectedTab);
+
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
+
+		var appcontent = document.getElementById('appcontent');
+
+		newEvent.targetSubBrowser = subBrowser;
+		newEvent.targetContainer  = subBrowser.parentContainer || appcontent;
+		newEvent.targetPosition   = aPosition;
+		newEvent.targetURI        = null;
+		newEvent.sourceBrowser    = browser;
+		newEvent.sourceTab        = tab;
+		newEvent.isCopy           = aCopy;
+		(aEventTarget || appcontent).dispatchEvent(newEvent);
+	},
+ 
+	fireSubBrowserAddRequestEvent : function(aURI, aBrowser, aPosition, aEventTarget) 
 	{
 		var newEvent = document.createEvent('Events');
 		newEvent.initEvent('SubBrowserAddRequest', false, true);
@@ -338,7 +396,6 @@ var SplitBrowser = {
 		newEvent.targetContainer  = aBrowser.parentContainer || appcontent;
 		newEvent.targetPosition   = aPosition;
 		newEvent.targetURI        = aURI;
-		newEvent.shouldDuplicate  = aShouldDuplicate;
 		(aEventTarget || appcontent).dispatchEvent(newEvent);
 	},
  
@@ -390,7 +447,7 @@ var SplitBrowser = {
 			browser.syncScroll = source.syncScroll;
 			browser.name = source.name;
 			window.setTimeout(
-				this.duplicateBrowser,
+				this.cloneBrowser,
 				0,
 				source.browser,
 				browser.browser,
@@ -403,7 +460,7 @@ var SplitBrowser = {
 		return browser;
 	},
 	
-	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aForceRemove) 
+	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aRemoveOriginal) 
 	{
 		var b = aTab;
 		while (b.localName != 'tabbrowser')
@@ -419,17 +476,17 @@ var SplitBrowser = {
 		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
 		window.setTimeout(
-			this.duplicateBrowser,
+			this.cloneBrowser,
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			((aForceRemove || this.getPref('splitbrowser.tab.closetab')) ? function() { b.removeTab(aTab); } : null )
+			(aRemoveOriginal ? function() { b.removeTab(aTab); } : null )
 		);
 
 		return browser;
 	},
-	 
-	duplicateBrowser : function(aSource, aTarget, aCallback) 
+	
+	cloneBrowser : function(aSource, aTarget, aCallback) 
 	{
 		var state = SplitBrowser.serializeBrowserState(aSource);
 		SplitBrowser.deserializeBrowserState(aTarget, state, aCallback);
@@ -804,7 +861,7 @@ var SplitBrowser = {
 			if (TBETabGroup && children && children.length) {
 				children.forEach(function(aChildTab) {
 					var t = subbrowser.browser.addTab();
-					self.duplicateBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
+					self.cloneBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
 					b.removeTabInternal(aChildTab, { preventUndo : true });
 				});
 			}
@@ -826,12 +883,12 @@ var SplitBrowser = {
 				var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
 
 				var t = gBrowser.addTab();
-				self.duplicateBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
+				self.cloneBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
 
 				tabs.forEach(function(aTab) {
 					if (aTab == tabs[0]) return;
 					var childT = gBrowser.addTab();
-					self.duplicateBrowser(aTab.linkedBrowser, childT.linkedBrowser);
+					self.cloneBrowser(aTab.linkedBrowser, childT.linkedBrowser);
 					childT.parentTab = t;
 					gBrowser.moveTabToGroupEdge(childT, t);
 				});
@@ -840,7 +897,7 @@ var SplitBrowser = {
 				var browsers = b.localName == 'tabbrowser' ? b.browsers : [b] ;
 				browsers.forEach(function(aBrowser) {
 					var t = gBrowser.addTab();
-					self.duplicateBrowser(aBrowser, t.linkedBrowser);
+					self.cloneBrowser(aBrowser, t.linkedBrowser);
 				});
 			}
 			window.setTimeout(function() {
@@ -2012,8 +2069,8 @@ alert(e+'\n\n'+state);
   
 	onAddButtonCommand : function(aEvent) 
 	{
-		var browser   = aEvent.target.targetSubBrowser;
-		this.fireSubBrowserAddRequestEvent(browser.src, browser, this['POSITION_'+aEvent.target.buttonPos.toUpperCase()], true, aEvent.target);
+		var browser = aEvent.target.targetSubBrowser;
+		this.fireSubBrowserAddRequestEventFromFrame(browser.contentWindow, null, this['POSITION_'+aEvent.target.buttonPos.toUpperCase()], aEvent.target);
 		SplitBrowser.hideAddButton(aEvent, true);
 		window.setTimeout('SplitBrowser.hideAddButton(null, true)', 0);
 	},
@@ -2029,9 +2086,14 @@ alert(e+'\n\n'+state);
 			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 			if (!uri) return;
 
-			var isTabDrag = (aDragSession.sourceNode && aDragSession.sourceNode.parentNode == SplitBrowser.activeBrowser.mTabContainer);
+			var tab = aDragSession.sourceNode;
+			var tabbrowser = SplitBrowser.getTabBrowserFromTab(tab);
+			if (!tabbrowser) tab = null;
 
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri, isTabDrag);
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(
+				tab || uri,
+				aEvent.ctrlKey || aEvent.metaKey
+			);
 			window.setTimeout('SplitBrowser.hideAddButton();', 0);
 		},
 
@@ -2219,11 +2281,28 @@ catch(e) {
 		return uri;
 	},
  
-	fireSubBrowserAddRequestEventFromButton : function(aURI, aIsTabDrop) 
+	fireSubBrowserAddRequestEventFromButton : function(aTabOrURI, aDuplicate) 
 	{
 		var button = this.addButton;
 		var browser = button.targetSubBrowser || this.mainBrowserBox;
-		this.fireSubBrowserAddRequestEvent(aURI, browser, SplitBrowser['POSITION_'+button.buttonPos.toUpperCase()], aIsTabDrop, button);
+		var position = SplitBrowser['POSITION_'+button.buttonPos.toUpperCase()];
+		if (typeof aTabOrURI == 'string') {
+			this.fireSubBrowserAddRequestEvent(
+				aTabOrURI,
+				browser,
+				position,
+				button
+			);
+		}
+		else {
+			this.fireSubBrowserAddRequestEventFromFrame(
+				aTabOrURI.linkedBrowser.contentWindow,
+				browser,
+				position,
+				button,
+				aDuplicate
+			);
+		}
 	},
   
 	/* splitter context menu */ 
@@ -2457,7 +2536,7 @@ catch(e) {
 				return false;
 		}
 	},
- 	 
+  
 /* Find Bar */ 
 	
 	overrideFindBar : function() 
@@ -2918,7 +2997,7 @@ catch(e) {
 				check.isRight
 			)
 			) {
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri);
+			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri, aEvent.ctrlKey || aEvent.metaKey);
 			aEvent.preventDefault();
 			aEvent.preventBubble();
 			return;
@@ -3044,15 +3123,15 @@ catch(e) {
 
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
-				if (aEvent.shouldDuplicate) {
-					var orig = aEvent.targetSubBrowser.browser;
-					if (orig.localName == 'tabbrowser')
-						orig = orig.getBrowserForTab(orig.selectedTab);
+				if (aEvent.sourceTab) {
+					this.addSubBrowserFromTab(aEvent.sourceTab, aEvent.targetPosition, aEvent.targetSubBrowser, !aEvent.isCopy);
+				}
+				else if (aEvent.sourceBrowser) {
 					var browser = this.addSubBrowser(null, aEvent.targetSubBrowser, aEvent.targetPosition);
 					window.setTimeout(
-						this.duplicateBrowser,
+						this.cloneBrowser,
 						0,
-						orig,
+						aEvent.sourceBrowser,
 						browser.browser,
 						null
 					);

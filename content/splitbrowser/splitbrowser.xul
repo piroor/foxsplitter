@@ -106,7 +106,7 @@
 					oncommand="
 						var b = SplitBrowser.activeBrowser;
 						if (b.localName != 'tabbrowser') b = gBrowser;
-						SplitBrowser.addSubBrowserFromTab(b.selectedTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')]);
+						SplitBrowser.addSubBrowserFromTab(b.selectedTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')], SplitBrowser.getPref('splitbrowser.tab.closetab'));
 					">
 					<menuitem label="&splitbrowser.menu.add.top.label;"
 						class="menuitem-iconic splitbrowser-menuitem-add-top"
@@ -225,7 +225,7 @@
 					oncommand="
 						var b = SplitBrowser.activeBrowser;
 						if (b.localName != 'tabbrowser') b = gBrowser;
-						SplitBrowser.addSubBrowserFromTab(b.selectedTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')]);
+						SplitBrowser.addSubBrowserFromTab(b.selectedTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')], SplitBrowser.getPref('splitbrowser.tab.closetab'));
 					">
 					<menuitem label="&splitbrowser.menu.add.top.label;"
 						class="menuitem-iconic splitbrowser-menuitem-add-top"
@@ -334,16 +334,16 @@
 		<menupopup>
 			<menuitem label="&splitbrowser.add.top.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-top"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_TOP, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_TOP);"/>
 			<menuitem label="&splitbrowser.add.right.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-right"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_RIGHT, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_RIGHT);"/>
 			<menuitem label="&splitbrowser.add.left.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-left"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_LEFT, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_LEFT);"/>
 			<menuitem label="&splitbrowser.add.bottom.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-bottom"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEvent(document.popupNode.ownerDocument.defaultView.top.location.href, SplitBrowser.getSubBrowserFromFrame(document.popupNode.ownerDocument.defaultView.top), SplitBrowser.POSITION_BOTTOM, true, null);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_BOTTOM);"/>
 		</menupopup>
 	</menu>
 </popup>
@@ -433,7 +433,7 @@
 					var b = this;
 					while (b.localName != 'tabbrowser')
 						b = b.parentNode;
-					SplitBrowser.addSubBrowserFromTab(b.mContextTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')]);
+					SplitBrowser.addSubBrowserFromTab(b.mContextTab, SplitBrowser[event.target.getAttribute('splitbrowser-position')], SplitBrowser.getPref('splitbrowser.tab.closetab'));
 				">
 				<menuitem label="&splitbrowser.tab.add.top.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-top"
