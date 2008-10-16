@@ -619,7 +619,7 @@ var SplitBrowser = {
 		if (targetTab.selected &&
 			targetTabBrowser.parentSubBrowser &&
 			targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab)
-			targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab();
+			targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab(true);
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 

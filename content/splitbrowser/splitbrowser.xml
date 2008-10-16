@@ -1447,6 +1447,9 @@ sideBox.removeAttribute('style');
 					if (this.urlbar.value.indexOf(gIeTabChromeStr) == 0)
 						this.urlbar.value = this.urlbar.value.substring(gIeTabChromeStr.length);
 				}
+				else if (aSwitchTab) {
+					this.urlbar.value = b.currentURI.spec;
+				}
 
 			]]></body>
 		</method>
