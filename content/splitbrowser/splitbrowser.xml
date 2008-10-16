@@ -1814,6 +1814,7 @@ sideBox.removeAttribute('style');
 			<parameter name="aTab"/>
 			<body><![CDATA[
 				var browser = aTab ? this.browser.getBrowserForTab(aTab) : this.browser ;
+				if (browser.__splitbrowser__tabProgressListener) return;
 
 				var filter = Components.classes['@mozilla.org/appshell/component/browser-status-filter;1'].createInstance(Components.interfaces.nsIWebProgress);
 				var listener = this.createProgressListener(aTab, browser);
