@@ -2475,7 +2475,7 @@ catch(e) {
 		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
 		if (oldTab &&
 			oldTabBrowser != aTabBrowser) {
-			var oldTabs = this.getDraggedTabsFromTab(oldTab);
+			var oldTabs = this.getDraggedTabs(oldTab);
 			var isCloseAll = !isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
 			var newTabs = [];
 			oldTabs.forEach(function(aTab) {
@@ -2489,9 +2489,7 @@ catch(e) {
 			aTabBrowser.selectedTab = newTabs[0];
 			this.selectNewTabsAfterDrop(newTabs, oldTabBrowser);
 			if (!isCopy) {
-				window.setTimeout(function(aSelf) {
-					aSelf.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
-				}, 0, this);
+				this.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
 			}
 			return true;
 		}
@@ -2555,17 +2553,17 @@ catch(e) {
 		return false;
 	},
  
-	getDraggedTabsFromTab : function(aTab) 
+	getDraggedTabs : function(aNode)
 	{
-		var tabs = [aTab];
 		if (
 			!('MultipleTabService' in window) ||
-			!('getSelectedTabs' in MultipleTabService) ||
-			!('isSelected' in MultipleTabService) ||
-			!MultipleTabService.isSelected(aTab)
+			!('getSelectedTabs' in MultipleTabService)
 			)
-			return tabs;
-		return MultipleTabService.getSelectedTabs(this.getTabBrowserFromChild(aTab));
+			return [aNode];
+
+		var b = this.getTabBrowserFromChild(aNode);
+		var tabs = b ? MultipleTabService.getSelectedTabs(b) : [aNode] ;
+		return tabs;
 	},
  
 	selectNewTabsAfterDrop : function(aTabs, aAnotherTabBrowser) 
@@ -2576,6 +2574,7 @@ catch(e) {
 			!('setSelection' in MultipleTabService)
 			)
 			return;
+
 		if (aAnotherTabBrowser) MultipleTabService.clearSelection(aAnotherTabBrowser);
 		if (aTabs.length < 2) return;
 		MultipleTabService.clearSelection(this.getTabBrowserFromChild(aTabs[0]));
@@ -3419,7 +3418,7 @@ catch(e) {
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				if (aEvent.sourceTab) {
-					var oldTabs = this.tabbedBrowsingEnabled ? this.getDraggedTabsFromTab(aEvent.sourceTab) : [aEvent.sourceTab] ;
+					var oldTabs = this.tabbedBrowsingEnabled ? this.getDraggedTabs(aEvent.sourceTab) : [aEvent.sourceTab] ;
 					var oldTabBrowser = this.getTabBrowserFromChild(aEvent.sourceTab);
 					var isCloseAll = !aEvent.isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
 					var subbrowser = this.addSubBrowserFromTab(oldTabs[0], aEvent.targetPosition, aEvent.targetSubBrowser, aEvent.isCopy);
