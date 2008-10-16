@@ -2562,8 +2562,8 @@ catch(e) {
 			return [aNode];
 
 		var b = this.getTabBrowserFromChild(aNode);
-		var tabs = b ? MultipleTabService.getSelectedTabs(b) : [aNode] ;
-		return tabs;
+		var tabs = b ? MultipleTabService.getSelectedTabs(b) : [] ;
+		return tabs.length ? tabs : [aNode] ;
 	},
  
 	selectNewTabsAfterDrop : function(aTabs, aAnotherTabBrowser) 
