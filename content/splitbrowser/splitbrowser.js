@@ -2474,6 +2474,8 @@ catch(e) {
 		var tab = this.getTabBrowserTabFromChild(dragSession.sourceNode);
 		if (tab) {
 			var oldTabs = this.getDraggedTabsFromTab(tab);
+			var oldTabBrowser = this.getTabBrowserFromChild(tab);
+			var isCloseAll = !isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
 			var newTabs = [];
 			oldTabs.forEach(function(aTab) {
 				var t = aTabBrowser.addTab();
@@ -2484,10 +2486,10 @@ catch(e) {
 					this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
 			}, this);
 			aTabBrowser.selectedTab = newTabs[0];
-			this.selectNewTabsAfterDrop(newTabs, this.getTabBrowserFromChild(tab));
+			this.selectNewTabsAfterDrop(newTabs, oldTabBrowser);
 			if (!isCopy) {
 				window.setTimeout(function(aSelf) {
-					aSelf.closeOldTabsAfterDrop(oldTabs);
+					aSelf.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
 				}, 0, this);
 			}
 			return true;
@@ -2581,25 +2583,27 @@ catch(e) {
 		});
 	},
  
-	closeOldTabsAfterDrop : function(aTabs) 
+	closeOldTabsAfterDrop : function(aTabs, aTabBrowser, aIsCloseAll) 
 	{
 		// exclude already closed tabs
 		aTabs = aTabs.filter(function(aTab) {
 			return aTab.parentNode;
 		});
-		if (!aTabs.length) return;
-		var b = this.getTabBrowserFromChild(aTabs[0]);
-		var isCloseAll = (b.mTabContainer.childNodes.length == aTabs.length);
-		if ('MultipleTabService' in window &&
-			'closeTabs' in MultipleTabService) {
-			MultipleTabService.closeTabs(aTabs);
+		var b = aTabBrowser;
+		if (aTabs.length) {
+			b = b || this.getTabBrowserFromChild(aTabs[0]);
+			aIsCloseAll = aIsCloseAll || (b.mTabContainer.childNodes.length == aTabs.length);
+			if ('MultipleTabService' in window &&
+				'closeTabs' in MultipleTabService) {
+				MultipleTabService.closeTabs(aTabs);
+			}
+			else {
+				aTabs.reverse().forEach(function(aTab) {
+					b.removeTab(aTab);
+				}, this);
+			}
 		}
-		else {
-			aTabs.reverse().forEach(function(aTab) {
-				b.removeTab(aTab);
-			}, this);
-		}
-		if (isCloseAll) {
+		if (aIsCloseAll && b) {
 			b = this.getSubBrowserFromChild(b);
 			if (b) b.close();
 		}
@@ -3219,7 +3223,7 @@ catch(e) {
 		if ('swapBrowsersAndCloseOther' in aBrowser) {
 			eval('aBrowser.swapBrowsersAndCloseOther = '+aBrowser.swapBrowsersAndCloseOther.toSource().replace(
 				'{',
-				'{ if (this.parentSubBrowser && this.parentSubBrowser.removeProgressListener) this.parentSubBrowser.removeProgressListener(aOurTab);'
+				'{ if (this.parentSubBrowser && this.parentSubBrowser.removeProgressListener) { this.parentSubBrowser.removeProgressListener(aOurTab); }'
 			).replace(
 				'ourBrowser.webProgress.removeProgressListener(',
 				'var __splitbrowser__reRegister = false; if (this.mTabFilters.length) { __splitbrowser__reRegister = true; $&'
@@ -3231,7 +3235,7 @@ catch(e) {
 				'if (__splitbrowser__reRegister) { $&'
 			).replace(
 				'if (tabCount == 1)',
-				'} if (this.parentSubBrowser && this.parentSubBrowser.addProgressListener) this.parentSubBrowser.addProgressListener(aOurTab); $&'
+				'} if (this.parentSubBrowser && this.parentSubBrowser.addProgressListener) { this.parentSubBrowser.addProgressListener(aOurTab); } $&'
 			).replace(
 				'aOtherTab.ownerDocument.defaultView.getBrowser()',
 				'SplitBrowser.getTabBrowserFromChild(aOtherTab)'
@@ -3415,23 +3419,25 @@ catch(e) {
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				if (aEvent.sourceTab) {
 					var oldTabs = this.tabbedBrowsingEnabled ? this.getDraggedTabsFromTab(aEvent.sourceTab) : [aEvent.sourceTab] ;
+					var oldTabBrowser = this.getTabBrowserFromChild(aEvent.sourceTab);
+					var isCloseAll = !aEvent.isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
 					var subbrowser = this.addSubBrowserFromTab(oldTabs[0], aEvent.targetPosition, aEvent.targetSubBrowser, aEvent.isCopy);
-					if (oldTabs.length > 1) {
+					oldTabs.splice(0, 1);
+					if (oldTabs.length) {
 						var browser = subbrowser.browser;
-						oldTabs.forEach(function(aTab, aIndex) {
-							if (aIndex == 0) return;
+						oldTabs.forEach(function(aTab) {
 							var t = browser.addTab();
 							if (aEvent.isCopy)
 								this.cloneBrowser(aTab.linkedBrowser, t.linkedBrowser);
 							else
 								this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
 						}, this);
-						this.selectNewTabsAfterDrop([], this.getTabBrowserFromChild(aEvent.sourceTab));
-						if (!aEvent.isCopy) {
-							window.setTimeout(function(aSelf) {
-								aSelf.closeOldTabsAfterDrop(oldTabs);
-							}, 0, this);
-						}
+					}
+					this.selectNewTabsAfterDrop([], oldTabBrowser);
+					if (!aEvent.isCopy) {
+						window.setTimeout(function(aSelf) {
+							aSelf.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
+						}, 0, this);
 					}
 				}
 				else if (aEvent.sourceBrowser) {
@@ -3500,7 +3506,6 @@ catch(e) {
 
 
 			case 'SubBrowserAdded':
-				this.updateTabBrowser((aEvent.originalTarget || aEvent.target).browser);
 			case 'SubBrowserRemoved':
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':
