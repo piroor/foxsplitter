@@ -1706,6 +1706,7 @@ dump(e+'\n');
 	load : function() 
 	{
 		var state = /*this.SessionStore.getWindowValue(window, 'splitbrowser.state') ||*/ this.getPref('splitbrowser.state');
+//		this.SessionStore.setWindowValue(window, 'splitbrowser.state', '');
 		if (!state) return;
 		try {
 			eval('state = '+state);
