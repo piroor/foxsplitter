@@ -603,10 +603,10 @@ var SplitBrowser = {
 			sourceTabBrowser.mTabContainer.childNodes.length == 1 &&
 			(
 				(
-					targetTabBrowser.parentSubBrowser &&
-					targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab
+					sourceTabBrowser.parentSubBrowser &&
+					sourceTabBrowser.parentSubBrowser.updateToolbarForCurrentTab
 				) ||
-				targetTabBrowser.ownerDocument.defaultView.SplitBrowser.browsers.length
+				sourceTabBrowser.ownerDocument.defaultView.SplitBrowser.browsers.length
 			)
 			)
 			sourceTabBrowser.addTab();
