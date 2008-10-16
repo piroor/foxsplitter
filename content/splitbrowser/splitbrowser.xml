@@ -1698,13 +1698,13 @@ sideBox.removeAttribute('style');
 				aXferData.data = new TransferData();
 
 				aXferData.data.addDataForFlavour('application/x-moz-splitbrowser',
-					[
-						'subbrowser',
-						'id:'+this.mOwner.id,
-						'uri:'+value,
-						'width:'+this.mOwner.boxObject.width,
-						'height:'+this.mOwner.boxObject.height
-					].join('\n')
+					'subbrowser\n'+
+					{
+						id     : this.mOwner.id,
+						uri    : value,
+						width  : this.mOwner.boxObject.width,
+						height : this.mOwner.boxObject.height
+					}.toSource()
 				);
 
 				aXferData.data.addDataForFlavour('text/x-moz-url', urlString);

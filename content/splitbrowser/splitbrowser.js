@@ -495,19 +495,27 @@ var SplitBrowser = {
 
 		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
-		var source = (aURI && aURI.split('\n')[0] == 'subbrowser') ? aURI.split('\n')[1].replace(/^id:/, '') : null ;
-		if (source) {
-			source = SplitBrowser.getSubBrowserById(source);
-			var data = aURI.split('\n');
-			if (!source) {
-				aURI = data[2].replace(/^uri:/, '');
+		var data = null;
+		if (aURI && aURI.indexOf('subbrowser\n') == 0) {
+			try {
+				eval('data = '+aURI.replace('subbrowser\n', ''));
+			}
+			catch(e) {
+			}
+		}
+
+		var sourceSubBrowser = null;
+		if (data) {
+			sourceSubBrowser = SplitBrowser.getSubBrowserById(data.id);
+			if (!sourceSubBrowser) {
+				aURI = data.uri;
 			}
 			else {
 				aURI   = null;
-				if (aPosition & this.POSITION_HORIZONAL && source.parentOrient == 'horizontal')
-					width = parseInt(data[3].replace(/^width:/, ''));
-				if (aPosition & this.POSITION_VERTICAL && source.parentOrient == 'vertical')
-					height = parseInt(data[4].replace(/^height:/, ''));
+				if (aPosition & this.POSITION_HORIZONAL && sourceSubBrowser.parentOrient == 'horizontal')
+					width = data.width;
+				if (aPosition & this.POSITION_VERTICAL && sourceSubBrowser.parentOrient == 'vertical')
+					height = data.height;
 			}
 		}
 
@@ -516,15 +524,15 @@ var SplitBrowser = {
 
 		var container = this.addContainerTo(target, aPosition, refNode, width, height, browser);
 
-		if (source) {
-			browser.syncScroll = source.syncScroll;
-			browser.name = source.name;
+		if (sourceSubBrowser) {
+			browser.syncScroll = sourceSubBrowser.syncScroll;
+			browser.name = sourceSubBrowser.name + (data.clone ? '-clone'+parseInt(Math.random() * 65000) : '' );
 			window.setTimeout(
-				this.swapBrowser,
+				(data.clone ? this.cloneBrowser : this.swapBrowser ),
 				0,
-				source.browser,
+				sourceSubBrowser.browser,
 				browser.browser,
-				(function() { source.close(); })
+				(data.clone ? null : function() { sourceSubBrowser.close(); } )
 			);
 		}
 
@@ -2392,6 +2400,16 @@ alert(e+'\n\n'+state);
 try{
 		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
 			uri = aXferData.data;
+			if (this.isAccelKeyPressed(aEvent)) {
+				try {
+					var info;
+					eval('info = '+uri.replace('subbrowser\n', ''));
+					info.clone = true;
+					uri = 'subbrowser\n'+info.toSource();
+				}
+				catch(e) {
+				}
+			}
 		}
 		else {
 			// "window.retrieveURLFromData()" is old implementation
