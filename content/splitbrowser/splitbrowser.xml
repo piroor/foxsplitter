@@ -1820,8 +1820,8 @@ sideBox.removeAttribute('style');
 				filter.addProgressListener(listener, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
 				browser.webProgress.addProgressListener(filter, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
 
-				this.mTabListeners.push(listener);
-				this.mTabFilters.push(filter);
+				browser.__splitbrowser__tabProgressListener = listener;
+				browser.__splitbrowser__tabProgressFilter = filter;
 			]]></body>
 		</method>
 
@@ -1829,23 +1829,17 @@ sideBox.removeAttribute('style');
 			<parameter name="aTab"/>
 			<body><![CDATA[
 				var browser = aTab ? this.browser.getBrowserForTab(aTab) : this.browser ;
-				var count = 0;
+				if (!browser.__splitbrowser__tabProgressListener) return;
 
-				if (aTab) {
-					for (count = 0, maxc = this.mTabListeners.length; count < maxc; count++)
-					{
-						if (this.mTabListeners[count].mTab == aTab) break;
-					}
-				}
+				delete browser.__splitbrowser__tabProgressListener.mOwner;
+				delete browser.__splitbrowser__tabProgressListener.mTab;
+				delete browser.__splitbrowser__tabProgressListener.mBrowser;
 
-				delete this.mTabListeners[count].mOwner;
-				delete this.mTabListeners[count].mTab;
-				delete this.mTabListeners[count].mBrowser;
+				browser.webProgress.removeProgressListener(browser.__splitbrowser__tabProgressFilter);
+				browser.__splitbrowser__tabProgressFilter.removeProgressListener(browser.__splitbrowser__tabProgressListener);
 
-				browser.webProgress.removeProgressListener(this.mTabFilters[count]);
-				this.mTabFilters[count].removeProgressListener(this.mTabListeners[count]);
-				this.mTabFilters.splice(count, 1);
-				this.mTabListeners.splice(count, 1);
+				delete browser.__splitbrowser__tabProgressListener;
+				delete browser.__splitbrowser__tabProgressFilter;
 			]]></body>
 		</method>
 
@@ -1931,9 +1925,6 @@ sideBox.removeAttribute('style');
 			};
 			]]></body>
 		</method>
-
-		<field name="mTabListeners">[]</field>
-		<field name="mTabFilters">[]</field>
 
 		<constructor><![CDATA[
 			var b = this.browser;
@@ -2076,20 +2067,6 @@ sideBox.removeAttribute('style');
 			]]></body>
 		</method>
 
-		<!--method name="purgeBrowser">
-			<parameter name="aBrowser"/>
-			<body><![CDATA[
-				aBrowser.removeAttribute('type');
-				aBrowser.setAttribute('type', 'content');
-				var tabs = this.browser.mTabContainer.childNodes;
-				Array.slice(tabs).some(function(aTab) {
-					if (aTab.linkedBrowser != aBrowser) return false;
-					this.removeProgressListener(aTab);
-					return true;
-				}, this);
-			]]></body>
-		</method-->
-
 
 		<method name="onTabSelect">
 			<parameter name="aEvent"/>
@@ -2114,7 +2091,7 @@ sideBox.removeAttribute('style');
 			<parameter name="aEvent"/>
 			<body><![CDATA[
 				this.removeProgressListener(aEvent.originalTarget);
-				if (this.browser.mTabContainer.childNodes.length == 1) {
+				if (this.browser.mTabContainer.childNodes.length <= 2) {
 					this.browser.setStripVisibilityTo(!SplitBrowser.getPref('splitbrowser.tabs.autoHide'));
 				}
 			]]></body>

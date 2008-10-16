@@ -560,10 +560,13 @@ var SplitBrowser = {
  
 	swapBrowser : function(aSource, aTarget, aCallback) 
 	{
+		if (aTarget.localName == 'tabbrowser' && aSource.localName == 'browser')
+			aTarget = aTarget.selectedTab.linkedBrowser;
+
 		if (
-			!this.canSwapBrowser ||
 			aSource.localName != aTarget.localName ||
-			!('swapDocShells' in (aSource.localName == 'tabbrowser' ? aSource.selectedTab.likedBrowser : aSource))
+			!('swapDocShells' in (aSource.localName == 'tabbrowser' ? aSource.selectedTab.linkedBrowser : aSource)) ||
+			!SplitBrowser.getTabBrowserFromChild(aTarget)
 			) {
 			SplitBrowser.cloneBrowser(aSource, aTarget, aCallback);
 			return;
@@ -579,23 +582,35 @@ var SplitBrowser = {
 			{
 				aTarget.removeTab(targetTabs.lastChild);
 			}
-			targetTabs = Array.slice(targetTabs);
+			targetTabs = Array.slice(targetTabs.childNodes);
 			Array.slice(sourceTabs.childNodes).forEach(function(aSourceTab, aIndex) {
-				this.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs[aIndex].linkedBrowser);
-			}, this);
+				SplitBrowser.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs[aIndex].linkedBrowser);
+			});
 		}
 		else {
-			this.swapOneBrowser(aSource, aTarget);
+			SplitBrowser.swapOneBrowser(aSource, aTarget);
 		}
 		if (aCallback) aCallback();
 	},
-	canSwapBrowser : false,
 	swapOneBrowser : function(aSource, aTarget)
 	{
 		var sourceTab = this.getTabFromBrowser(aSource);
 		var targetTab = this.getTabFromBrowser(aTarget);
-		var b = this.getTabBrowserFromChild(targetTab);
-		b.swapBrowsersAndCloseOther(targetTab, sourceTab);
+		var sourceTabBrowser = this.getTabBrowserFromChild(sourceTab);
+		var targetTabBrowser = this.getTabBrowserFromChild(targetTab);
+
+		if (sourceTabBrowser.mTabContainer.childNodes.length == 1)
+			sourceTabBrowser.addTab();
+
+		targetTab.linkedBrowser.stop();
+		targetTab.linkedBrowser.docShell;
+		targetTabBrowser.swapBrowsersAndCloseOther(targetTab, sourceTab);
+		targetTabBrowser.setTabTitle(targetTab);
+
+		if (targetTab.selected &&
+			targetTabBrowser.parentSubBrowser &&
+			targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab)
+			targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab();
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
@@ -2563,6 +2578,7 @@ catch(e) {
 		aTabs = aTabs.filter(function(aTab) {
 			return aTab.parentNode;
 		});
+		if (!aTabs.length) return;
 		var b = this.getTabBrowserFromChild(aTabs[0]);
 		var isCloseAll = (b.mTabContainer.childNodes.length == aTabs.length);
 		if ('MultipleTabService' in window &&
@@ -3194,16 +3210,25 @@ catch(e) {
 		if ('swapBrowsersAndCloseOther' in aBrowser) {
 			eval('aBrowser.swapBrowsersAndCloseOther = '+aBrowser.swapBrowsersAndCloseOther.toSource().replace(
 				'{',
-				'{ if (this.parentSubBrowser) this.parentSubBrowser.removeProgressListener(aOurTab);'
+				'{ if (this.parentSubBrowser && this.parentSubBrowser.removeProgressListener) this.parentSubBrowser.removeProgressListener(aOurTab);'
+			).replace(
+				'ourBrowser.webProgress.removeProgressListener(',
+				'var __splitbrowser__reRegister = false; if (this.mTabFilters.length) { __splitbrowser__reRegister = true; $&'
+			).replace(
+				'ourBrowser.swapDocShells(',
+				'} $&'
+			).replace(
+				'tabListener = this.mTabProgressListener(',
+				'if (__splitbrowser__reRegister) { $&'
 			).replace(
 				'if (tabCount == 1)',
-				'if (this.parentSubBrowser) this.parentSubBrowser.addProgressListener(aOurTab);'
+				'} if (this.parentSubBrowser && this.parentSubBrowser.addProgressListener) this.parentSubBrowser.addProgressListener(aOurTab); $&'
 			).replace(
 				'aOtherTab.ownerDocument.defaultView.getBrowser()',
 				'SplitBrowser.getTabBrowserFromChild(aOtherTab)'
 			).replace(
 				'aOtherTab.ownerDocument.defaultView.close();',
-				'var subbrowser = SplitBrowser.getSubBrowserFromChild(aOtherTab); if (subbrowser) { subbrowser.close(); } else { $&; }'
+				'var subbrowser = SplitBrowser.getSubBrowserFromChild(aOtherTab); if (subbrowser) { subbrowser.close(); } else if (aOtherTab.ownerDocument.defaultView != window) { $&; }'
 			));
 		}
 
