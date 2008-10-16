@@ -599,7 +599,16 @@ var SplitBrowser = {
 		var sourceTabBrowser = this.getTabBrowserFromChild(sourceTab);
 		var targetTabBrowser = this.getTabBrowserFromChild(targetTab);
 
-		if (sourceTabBrowser.mTabContainer.childNodes.length == 1)
+		if (
+			sourceTabBrowser.mTabContainer.childNodes.length == 1 &&
+			(
+				(
+					targetTabBrowser.parentSubBrowser &&
+					targetTabBrowser.parentSubBrowser.updateToolbarForCurrentTab
+				) ||
+				targetTabBrowser.ownerDocument.defaultView.SplitBrowser.browsers.length
+			)
+			)
 			sourceTabBrowser.addTab();
 
 		targetTab.linkedBrowser.stop();
