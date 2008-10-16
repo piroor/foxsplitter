@@ -5,7 +5,7 @@
 	xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:xbl="http://www.mozilla.org/xbl">
 
-<binding id="contents-in-container" extends="xul:vbox">
+<binding id="contents-in-container" display="xul:vbox">
 	<implementation>
 		<property name="parentContainer" readonly="true">
 			<getter><![CDATA[
@@ -105,7 +105,7 @@
 	</handlers>
 </binding>
 
-<binding id="horizontal-container" extends="xul:hbox">
+<binding id="horizontal-container" display="xul:hbox">
 	<implementation>
 		<property name="contentCollapsed" readonly="true"
 			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
@@ -163,7 +163,7 @@
 	</implementation>
 </binding>
 
-<binding id="vertical-container" extends="xul:vbox">
+<binding id="vertical-container" display="xul:vbox">
 	<implementation>
 		<property name="contentCollapsed" readonly="true"
 			onget="return this.vContentCollapsed || this.hContentCollapsed;"/>
@@ -842,7 +842,7 @@ sideBox.removeAttribute('style');
 			action="this.onContentScroll(event);"/>
 
 		<handler event="mouseover"
-			action="window.setTimeout(function(aThis) { aThis.autoFocus(); }, 0, this);"/>
+			action="window.setTimeout(function(aThis) { if (aThis.autoFocus) aThis.autoFocus(); }, 0, this);"/>
 		<handler event="mouseout"
 			action="this.cancelAutoFocus();"/>
 	</handlers>
@@ -1732,6 +1732,11 @@ sideBox.removeAttribute('style');
 				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
 				if (!check) return;
 
+				if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
+					SplitBrowser.isEventFiredOnTabBar(aEvent)) {
+					return;
+				}
+
 				if (
 					(forceCheck || SplitBrowser.isLinux) &&
 					SplitBrowser.addButton.targetSubBrowser == this.mOwner &&
@@ -1742,13 +1747,16 @@ sideBox.removeAttribute('style');
 						check.isRight
 					)
 					) {
-					var tab = aDragSession.sourceNode;
-					var tabbrowser = SplitBrowser.getTabBrowserFromTab(tab);
+					var tab = SplitBrowser.getTabBrowserTabFromChild(aDragSession.sourceNode);
+					var tabbrowser = SplitBrowser.getTabBrowserFromChild(tab);
 					if (!tabbrowser) tab = null;
 					SplitBrowser.fireSubBrowserAddRequestEventFromButton(
 						tab || uri,
-						aEvent.ctrlKey || aEvent.metaKey
+						SplitBrowser.isAccelKeyPressed(aEvent)
 					);
+					return;
+				}
+				else if (SplitBrowser.performDropOnTabBrowser(arguments, this.mOwner.browser)) {
 					return;
 				}
 
@@ -2099,6 +2107,20 @@ sideBox.removeAttribute('style');
 				b.parentNode.removeChild(b);
 			]]></body>
 		</method>
+
+		<!--method name="purgeBrowser">
+			<parameter name="aBrowser"/>
+			<body><![CDATA[
+				aBrowser.removeAttribute('type');
+				aBrowser.setAttribute('type', 'content');
+				var tabs = this.browser.mTabContainer.childNodes;
+				Array.slice(tabs).some(function(aTab) {
+					if (aTab.linkedBrowser != aBrowser) return false;
+					this.removeProgressListener(aTab);
+					return true;
+				}, this);
+			]]></body>
+		</method-->
 
 
 		<field name="onTabSelectHandler"><![CDATA[

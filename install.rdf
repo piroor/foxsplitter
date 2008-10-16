@@ -30,61 +30,171 @@
       <RDF:Description em:locale="en-US"
                        em:name="Split Browser"
                        em:description="Splits browser window as you like."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
                        em:name="分割ブラウザ"
                        em:description="ブラウザウィンドウ内を自由に分割できるようにします。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="fr-FR"
                        em:name="Split Browser"
                        em:description="Partager la fenêtre du navigateur selon vos désirs."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="de-DE"
                        em:name="Split Browser"
                        em:description="Erlaubt ein beliebiges Aufteilen des Browser-Fensters zur gleichzeitigen Anzeige mehrerer Seitenansichten."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ko-KR"
                        em:name="Split Browser"
                        em:description="사용자 마음대로 브라우저 화면을 분할합니다."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="zh-TW"
                        em:name="Split Browser"
                        em:description="依您所喜歡的方式分割瀏覽視窗"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="hu-HU"
                        em:name="Split Browser"
                        em:description="A böngésző megnyitott ablakainak felosztása..."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="es-ES"
                        em:name="Split Browser (Dividir navegador)"
                        em:description="Divide la ventana del navegador como tú quieras"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="it-IT"
                        em:name="Split Browser"
                        em:description="Permette di suddividere a piacimento la finestra del browser."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="zh-CN"
                        em:name="Split Browser"
                        em:description="按你希望的方式拆分浏览器窗口。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"/>
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmn Istvn (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+      </RDF:Description>
     </em:localized>
 
 
@@ -92,7 +202,7 @@
       <!-- Firefox -->
       <RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                        em:minVersion="1.5"
-                       em:maxVersion="3.0.*" />
+                       em:maxVersion="3.1b2pre" />
     </em:targetApplication>
   </RDF:Description>
 </RDF:RDF>

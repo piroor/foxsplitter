@@ -15,11 +15,25 @@ var SplitBrowser = {
 		return this.getPref('splitbrowser.subbrowser.autoFocus') ? this.getPref('splitbrowser.delay.subbrowser.autoFocus') : -1 ;
 	},
  
+	get shouldMoveSplitTab() { 
+		return this.getPref('splitbrowser.tab.closetab');
+	},
+ 	
 	get isLinux() 
 	{
 		return (navigator.platform.indexOf('Linux') > -1);
 	},
  
+	get isMac() 
+	{
+		return (navigator.platform.toLowerCase().indexOf('mac') > -1);
+	},
+	
+	isAccelKeyPressed : function(aEvent) 
+	{
+		return this.isMac ? aEvent.metaKey : aEvent.ctrlKey ;
+	},
+  
 	get tabbedBrowsingEnabled() 
 	{
 		// tabbed browsing mode is not compatible with TBE or TMP
@@ -185,16 +199,40 @@ var SplitBrowser = {
 		return null;
 	},
  
-	getTabBrowserFromTab : function(aTab) 
+	getTabBrowserFromChild : function(aNode) 
 	{
-		if (!aTab) return null;
-		var b = aTab;
-		while (b = b.parentNode)
-		{
-			if (b.localName == 'tabbrowser')
-				return b;
-		}
-		return null;
+		if (!aNode) return null;
+		return aNode.ownerDocument.evaluate(
+				'ancestor-or-self::*[local-name()="tabbrowser"]',
+				aNode,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
+ 
+	getTabBrowserTabFromChild : function(aNode) 
+	{
+		if (!aNode) return null;
+		return aNode.ownerDocument.evaluate(
+				'ancestor-or-self::*[local-name()="tab" and ancestor::*[local-name()="tabbrowser"]]',
+				aNode,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
+ 
+	getSubBrowserFromChild : function(aNode) 
+	{
+		if (!aNode) return null;
+		return aNode.ownerDocument.evaluate(
+				'ancestor-or-self::*[local-name()="subbrowser"]',
+				aNode,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
 	},
  
 	getSubBrowserAndBrowserFromFrame : function(aFrame) 
@@ -403,6 +441,26 @@ var SplitBrowser = {
 	{
 		return /^(search)$/.test(aName);
 	},
+ 
+	isEventFromKeyboardShortcut : function(aEvent) 
+	{
+		if (!aEvent) return false;
+		if (aEvent.type == 'command') aEvent = aEvent.sourceEvent;
+		if (!aEvent) return false;
+		return (aEvent.type.indexOf('key') == 0 || aEvent.originalTarget.localName == 'key');
+	},
+ 
+	isEventFiredOnTabBar : function(aEvent, aTabBrowser) 
+	{
+		if (!aTabBrowser || aTabBrowser.localName != 'tabbrowser') return false;
+		var box = aTabBrowser.mTabContainer;
+		return (
+			box.screenX <= aEvent.screenX &&
+			box.screenX + box.width >= aEvent.screenX &&
+			box.screenY <= aEvent.screenY &&
+			box.screenY + box.height >= aEvent.screenY
+			);
+	},
   
 /* add sub-browser (split contents) */ 
 	
@@ -417,8 +475,11 @@ var SplitBrowser = {
 		var hContainer = target.hContainer;
 		var vContainer = target.vContainer;
 
-		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt((b || gBrowser).boxObject.width / 5 * 2) : -1 ;
-		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt((b || gBrowser).boxObject.height / 5 * 2) : -1 ;
+		var box = b ? b.boxObject : null ;
+		if (!box) box = gBrowser.boxObject;
+
+		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt(box.width / 5 * 2) : -1 ;
+		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt(box.height / 5 * 2) : -1 ;
 
 		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
@@ -447,40 +508,33 @@ var SplitBrowser = {
 			browser.syncScroll = source.syncScroll;
 			browser.name = source.name;
 			window.setTimeout(
-				this.cloneBrowser,
+				this.swapBrowser,
 				0,
 				source.browser,
 				browser.browser,
-				function() {
-					source.close();
-				}
+				(function() { source.close(); })
 			);
 		}
 
 		return browser;
 	},
 	
-	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aRemoveOriginal) 
+	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aCopy) 
 	{
-		var b = aTab;
-		while (b.localName != 'tabbrowser')
-		{
-			b = b.parentNode;
-		}
+		var b = this.getTabBrowserFromChild(aTab);
 		if (aTab.localName != 'tab')
-			aTab = b.mCurrentTab;
+			aTab = b.selectedTab;
 
 		var uri = this.tabbedBrowsingEnabled ? null : aTab.linkedBrowser.currentURI.spec ;
-
 
 		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
 		window.setTimeout(
-			this.cloneBrowser,
+			(aCopy ? this.cloneBrowser : this.swapBrowser ),
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			(aRemoveOriginal ? function() { b.removeTab(aTab); } : null )
+			(aCopy ? null : function() { b.removeTab(aTab); } )
 		);
 
 		return browser;
@@ -490,6 +544,46 @@ var SplitBrowser = {
 	{
 		var state = SplitBrowser.serializeBrowserState(aSource);
 		SplitBrowser.deserializeBrowserState(aTarget, state, aCallback);
+	},
+ 
+	swapBrowser : function(aSource, aTarget, aCallback) 
+	{
+		if (
+			!this.canSwapBrowser ||
+			aSource.localName != aTarget.localName ||
+			!('swapDocShells' in (aSource.localName == 'tabbrowser' ? aSource.selectedTab.likedBrowser : aSource))
+			) {
+			SplitBrowser.cloneBrowser(aSource, aTarget, aCallback);
+			return;
+		}
+		if (aSource.localName == 'tabbrowser') {
+			var sourceTabs = aSource.mTabContainer;
+			var targetTabs = aTarget.mTabContainer;
+			while (sourceTabs.childNodes.length > targetTabs.childNodes.length)
+			{
+				aTarget.addTab();
+			}
+			while (sourceTabs.childNodes.length < targetTabs.childNodes.length)
+			{
+				aTarget.removeTab(targetTabs.lastChild);
+			}
+			Array.slice(sourceTabs.childNodes).forEach(function(aSourceTab) {
+				this.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs.childNodes[aIndex].linkedBrowser);
+			}, this);
+		}
+		else {
+			this.swapOneBrowser(aSource, aTarget);
+		}
+		if (aCallback) aCallback();
+	},
+	canSwapBrowser : false,
+	swapOneBrowser : function(aSource, aTarget)
+	{
+//		var sourceSubbrowser = this.getSubBrowserFromChild(aSource);
+//		if (sourceSubbrowser) sourceSubbrowser.purgeBrowser(aSource);
+//		var targetSubbrowser = this.getSubBrowserFromChild(aTarget);
+//		if (targetSubbrowser) targetSubbrowser.purgeBrowser(aTarget);
+		aTarget.swapDocShells(aSource);
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
@@ -847,7 +941,7 @@ var SplitBrowser = {
 
 			var children = (TBETabGroup) ? aTab.allChildTabs : null ;
 
-			var subbrowser = self.addSubBrowserFromTab(aTab, pos, hPosTarget || vPosTarget, true);
+			var subbrowser = self.addSubBrowserFromTab(aTab, pos, (hPosTarget || vPosTarget), false);
 			lastSubBrowser = subbrowser;
 
 			if (horizontalMax > 0 && pos == self.POSITION_BOTTOM) {
@@ -861,7 +955,7 @@ var SplitBrowser = {
 			if (TBETabGroup && children && children.length) {
 				children.forEach(function(aChildTab) {
 					var t = subbrowser.browser.addTab();
-					self.cloneBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
+					self.swapBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
 					b.removeTabInternal(aChildTab, { preventUndo : true });
 				});
 			}
@@ -873,39 +967,53 @@ var SplitBrowser = {
  
 	gatherSubBrowsers : function() 
 	{
-		var self = this;
-
-		var TBETabGroup = (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && gBrowser.tabGroupsAvailable);
-
 		this._browsers.forEach(function(aSubBrowser) {
-			var b = aSubBrowser.browser;
-			if (TBETabGroup) {
-				var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
-
-				var t = gBrowser.addTab();
-				self.cloneBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
-
-				tabs.forEach(function(aTab) {
-					if (aTab == tabs[0]) return;
-					var childT = gBrowser.addTab();
-					self.cloneBrowser(aTab.linkedBrowser, childT.linkedBrowser);
-					childT.parentTab = t;
-					gBrowser.moveTabToGroupEdge(childT, t);
-				});
-			}
-			else {
-				var browsers = b.localName == 'tabbrowser' ? b.browsers : [b] ;
-				browsers.forEach(function(aBrowser) {
-					var t = gBrowser.addTab();
-					self.cloneBrowser(aBrowser, t.linkedBrowser);
-				});
-			}
+			this.addTabsFromSubBrowserInto(aSubBrowser, gBrowser, true);
 			window.setTimeout(function() {
 				aSubBrowser.close();
 			}, 0);
-		});
+		}, this);
 	},
- 
+	
+	addTabsFromSubBrowserInto : function(aSubBrowser, aTabBrowser, aMove) 
+	{
+		var newTabs = [];
+		var b = aSubBrowser.browser;
+		if (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && aTabBrowser.tabGroupsAvailable) {
+			var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
+
+			var t = aTabBrowser.addTab();
+			if (aMove)
+				this.swapBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
+			else
+				this.cloneBrowser(tabs[0].linkedBrowser, t.linkedBrowser);
+			newTabs.push(t);
+
+			tabs.forEach(function(aTab) {
+				if (aTab == tabs[0]) return;
+				var childT = aTabBrowser.addTab();
+				if (aMove)
+					this.swapBrowser(aTab.linkedBrowser, childT.linkedBrowser);
+				else
+					this.cloneBrowser(aTab.linkedBrowser, childT.linkedBrowser);
+				childT.parentTab = t;
+				aTabBrowser.moveTabToGroupEdge(childT, t);
+			}, this);
+		}
+		else {
+			var browsers = b.localName == 'tabbrowser' ? b.browsers : [b] ;
+			browsers.forEach(function(aBrowser) {
+				var t = aTabBrowser.addTab();
+				newTabs.push(t);
+				if (aMove)
+					this.swapBrowser(aBrowser, t.linkedBrowser);
+				else
+					this.cloneBrowser(aBrowser, t.linkedBrowser);
+			}, this);
+		}
+		return newTabs;
+	},
+  
 	activeBrowserOpenTab : function() 
 	{
 		var b = this.activeBrowser;
@@ -1169,7 +1277,7 @@ var SplitBrowser = {
 //		this.SessionStore.setWindowValue(window, 'splitbrowser.state', state);
 		this.setPref('splitbrowser.state', state);
 	},
-	 
+	
 	getContainerState : function(aContainer) 
 	{
 		var state = {};
@@ -1357,7 +1465,7 @@ var SplitBrowser = {
 		}
 		return histories
 	},
-	 
+	
 	serializeSessionHistory : function(aBrowser) 
 	{
 		var SH = null;
@@ -1565,7 +1673,7 @@ alert(e+'\n\n'+state);
 
 		this.buildContent(state, document.getElementById('appcontent'));
 	},
-	 
+	
 	buildContent : function(aState, aContainer) 
 	{
 		var content;
@@ -1696,7 +1804,7 @@ alert(e+'\n\n'+state);
 		if (aCallback && typeof aCallback == 'function')
 			aCallback();
 	},
-	 
+	
 	deserializeSessionHistory : function(aBrowser, aData) 
 	{
 		var SHInternal = aBrowser.sessionHistory.QueryInterface(Components.interfaces.nsISHistoryInternal);
@@ -1952,7 +2060,7 @@ alert(e+'\n\n'+state);
 			this.stopDelayedHideAddButtonTimer();
 		this.delayedHideAddButton();
 	},
-	 
+	
 	delayedShowAddButton : function(aEvent) 
 	{
 		if (this.showAddButtonTimer) {
@@ -2086,13 +2194,13 @@ alert(e+'\n\n'+state);
 			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 			if (!uri) return;
 
-			var tab = aDragSession.sourceNode;
-			var tabbrowser = SplitBrowser.getTabBrowserFromTab(tab);
+			var tab = SplitBrowser.getTabBrowserTabFromChild(aDragSession.sourceNode);
+			var tabbrowser = SplitBrowser.getTabBrowserFromChild(tab);
 			if (!tabbrowser) tab = null;
 
 			SplitBrowser.fireSubBrowserAddRequestEventFromButton(
 				tab || uri,
-				aEvent.ctrlKey || aEvent.metaKey
+				SplitBrowser.isAccelKeyPressed(aEvent)
 			);
 			window.setTimeout('SplitBrowser.hideAddButton();', 0);
 		},
@@ -2109,7 +2217,7 @@ alert(e+'\n\n'+state);
 	},
  
 /* for Firefox versions */ 
-	 
+	
 	get addButtonUsePanel() { 
 		return 'openPopupAtScreen' in document.getElementById('splitbrowser-add-button-panel');
 	},
@@ -2304,6 +2412,161 @@ catch(e) {
 			);
 		}
 	},
+ 
+	performDropOnTabBrowser : function(aArgs, aTabBrowser) 
+	{
+		if (!aTabBrowser || aTabBrowser.localName != 'tabbrowser') return false;
+
+		aArgs = Array.slice(aArgs);
+		if (!aArgs.length) return false;
+		var event = aArgs[0];
+
+		var dragSession;
+		if (aArgs.length == 1) { // Firefox 3.1 or later
+			dragSession = Components
+						.classes['@mozilla.org/widget/dragservice;1']
+						.getService(Components.interfaces.nsIDragService)
+						.getCurrentSession();
+		}
+		else { // Firefox 2.0.0.x or 3.0.x
+			dragSession = aArgs[2];
+		}
+		if (!dragSession) return false;
+
+		var isCopy = this.isAccelKeyPressed(event);
+
+		var tab = this.getTabBrowserTabFromChild(dragSession.sourceNode);
+		if (tab) {
+			var oldTabs = this.getDraggedTabsFromTab(tab);
+			var newTabs = [];
+			oldTabs.forEach(function(aTab) {
+				var t = aTabBrowser.addTab();
+				newTabs.push(t);
+				if (isCopy)
+					this.cloneBrowser(aTab.linkedBrowser, t.linkedBrowser);
+				else
+					this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
+			}, this);
+			aTabBrowser.selectedTab = newTabs[0];
+			this.selectNewTabsAfterDrop(newTabs, this.getTabBrowserFromChild(tab));
+			if (!isCopy) {
+				window.setTimeout(function(aSelf) {
+					aSelf.closeOldTabsAfterDrop(oldTabs);
+				}, 0, this);
+			}
+			return true;
+		}
+
+		var draggedSubBrowser = this.getSubBrowserFromChild(dragSession.sourceNode);
+		if (draggedSubBrowser) {
+			var tabs = this.addTabsFromSubBrowserInto(draggedSubBrowser, aTabBrowser, !isCopy);
+			if (tabs.length < 1) return false;
+			aTabBrowser.selectedTab = tabs[0];
+			this.selectNewTabsAfterDrop(tabs, draggedSubBrowser);
+			if (!isCopy) {
+				window.setTimeout(function() {
+					draggedSubBrowser.close();
+				}, 0);
+			}
+			return true;
+		}
+
+		return false;
+	},
+ 
+	performDropOnContentArea : function(aArgs) 
+	{
+		var event = aArgs[0];
+		var xferData = aArgs[1];
+		var dragSession = aArgs[2];
+
+		var uri = this.getURIFromDragData(xferData, dragSession, event);
+		if (!uri) return true;
+
+		// fallback for Linux
+		// in Linux, "dragdrop" event doesn't fire on the button.
+
+		var box = this.mainBrowserBox;
+
+		var forceCheck = event.ctrlKey || xferData.flavour.contentType == 'application/x-moz-splitbrowser';
+		var check = box.checkEventFiredOnEdge(event, forceCheck);
+		if (!check) return true;
+
+		if (xferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
+			this.isEventFiredOnTabBar(event)) {
+			return;
+		}
+
+		if (
+			(forceCheck || this.isLinux) &&
+			this.addButton.targetSubBrowser == box &&
+			(
+				check.isTop ||
+				check.isBottom ||
+				check.isLeft ||
+				check.isRight
+			)
+			) {
+			this.fireSubBrowserAddRequestEventFromButton(uri, this.isAccelKeyPressed(event));
+			event.preventDefault();
+			event.preventBubble();
+			return true;
+		}
+
+		return false;
+	},
+ 
+	getDraggedTabsFromTab : function(aTab) 
+	{
+		var tabs = [aTab];
+		if (
+			!('MultipleTabService' in window) ||
+			!('getSelectedTabs' in MultipleTabService) ||
+			!('isSelected' in MultipleTabService) ||
+			!MultipleTabService.isSelected(aTab)
+			)
+			return tabs;
+		return MultipleTabService.getSelectedTabs(this.getTabBrowserFromChild(aTab));
+	},
+ 
+	selectNewTabsAfterDrop : function(aTabs, aAnotherTabBrowser) 
+	{
+		if (
+			!('MultipleTabService' in window) ||
+			!('clearSelection' in MultipleTabService) ||
+			!('setSelection' in MultipleTabService)
+			)
+			return;
+		if (aAnotherTabBrowser) MultipleTabService.clearSelection(aAnotherTabBrowser);
+		if (aTabs.length < 2) return;
+		MultipleTabService.clearSelection(this.getTabBrowserFromChild(aTabs[0]));
+		aTabs.forEach(function(aTab) {
+			MultipleTabService.setSelection(aTab, true);
+		});
+	},
+ 
+	closeOldTabsAfterDrop : function(aTabs) 
+	{
+		// exclude already closed tabs
+		aTabs = aTabs.filter(function(aTab) {
+			return aTab.parentNode;
+		});
+		var b = this.getTabBrowserFromChild(aTabs[0]);
+		var isCloseAll = (b.mTabContainer.childNodes.length == aTabs.length);
+		if ('MultipleTabService' in window &&
+			'closeTabs' in MultipleTabService) {
+			MultipleTabService.closeTabs(aTabs);
+		}
+		else {
+			aTabs.reverse().forEach(function(aTab) {
+				b.removeTab(aTab);
+			}, this);
+		}
+		if (isCloseAll) {
+			b = this.getSubBrowserFromChild(b);
+			if (b) b.close();
+		}
+	},
   
 	/* splitter context menu */ 
 	
@@ -2481,7 +2744,7 @@ catch(e) {
   
 	/* special panes */ 
 	specialPane : null,
-	 
+	
 	readyToOpenSpecialPane : function(aType) 
 	{
 		this.specialPane = aType;
@@ -2674,10 +2937,14 @@ catch(e) {
 		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
 
 		if ('contentAreaDNDObserver' in window) {
-			contentAreaDNDObserver.__splitbrowser__onDrop = contentAreaDNDObserver.onDrop;
-			contentAreaDNDObserver.onDrop = this.contentAreaOnDrop;
-			contentAreaDNDObserver.__splitbrowser__getSupportedFlavours = contentAreaDNDObserver.getSupportedFlavours;
-			contentAreaDNDObserver.getSupportedFlavours = this.contentAreaGetSupportedFlavours;
+			eval('contentAreaDNDObserver.onDrop = '+contentAreaDNDObserver.onDrop.toSource().replace(
+				'{',
+				'{ if (SplitBrowser.performDropOnContentArea(arguments)) return;'
+			));
+			eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
+				'flavourSet.appendFlavour(',
+				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); $&'
+			));
 		}
 
 
@@ -2885,7 +3152,7 @@ catch(e) {
 			});
 		}
 	},
-	
+	 
 	updateCommandElement : function(aId, aNewFeature) 
 	{
 		var node = document.getElementById(aId);
@@ -2895,17 +3162,23 @@ catch(e) {
 		}
 	},
   
-	isEventFromKeyboardShortcut : function(aEvent) 
-	{
-		if (!aEvent) return false;
-		if (aEvent.type == 'command') aEvent = aEvent.sourceEvent;
-		if (!aEvent) return false;
-		return (aEvent.type.indexOf('key') == 0 || aEvent.originalTarget.localName == 'key');
-	},
- 
 	updateTabBrowser : function(aBrowser) 
 	{
 		if (aBrowser.localName != 'tabbrowser') return;
+
+		var onDropFunc = '_onDrop' in aBrowser ? '_onDrop' : 'onDrop' ;
+		if (onDropFunc in aBrowser) {
+			eval('aBrowser.'+onDropFunc+' = '+aBrowser[onDropFunc].toSource().replace(
+				'{',
+				'{ if (SplitBrowser.performDropOnTabBrowser(arguments, this)) return;'
+			));
+		}
+		if ('getSupportedFlavours' in aBrowser) {
+			eval('aBrowser.getSupportedFlavours = '+aBrowser.getSupportedFlavours.toSource().replace(
+				'flavourSet.appendFlavour(',
+				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); $&'
+			));
+		}
 
 		var id = aBrowser.id || parseInt(Math.random() * 65000) ;
 
@@ -2971,50 +3244,6 @@ catch(e) {
 			node.focused = node.focused;
 
 		return result;
-	},
- 
-	contentAreaOnDrop : function(aEvent, aXferData, aDragSession) 
-	{
-		var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
-		if (!uri) return;
-
-		// fallback for Linux
-		// in Linux, "dragdrop" event doesn't fire on the button.
-
-		var box = SplitBrowser.mainBrowserBox;
-
-		var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
-		var check = box.checkEventFiredOnEdge(aEvent, forceCheck);
-		if (!check) return;
-
-		if (
-			(forceCheck || SplitBrowser.isLinux) &&
-			SplitBrowser.addButton.targetSubBrowser == box &&
-			(
-				check.isTop ||
-				check.isBottom ||
-				check.isLeft ||
-				check.isRight
-			)
-			) {
-			SplitBrowser.fireSubBrowserAddRequestEventFromButton(uri, aEvent.ctrlKey || aEvent.metaKey);
-			aEvent.preventDefault();
-			aEvent.preventBubble();
-			return;
-		}
-
-		return this.__splitbrowser__onDrop(aEvent, aXferData, aDragSession);
-	},
- 
-	contentAreaGetSupportedFlavours : function() 
-	{
-		var flavourSet = this.__splitbrowser__getSupportedFlavours();
-
-		var flavour = new Flavour('application/x-moz-splitbrowser');
-		flavourSet.flavours.splice(0, 0, flavour);
-		flavourSet.flavourTable[flavour.contentType] = flavour;
-
-		return flavourSet;
 	},
  
 	contentAreaHandleLinkClick : function(aEvent, aURI, aLinkNode) 
@@ -3124,15 +3353,33 @@ catch(e) {
 			case 'SubBrowserAddRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				if (aEvent.sourceTab) {
-					this.addSubBrowserFromTab(aEvent.sourceTab, aEvent.targetPosition, aEvent.targetSubBrowser, !aEvent.isCopy);
+					var oldTabs = this.tabbedBrowsingEnabled ? this.getDraggedTabsFromTab(aEvent.sourceTab) : [aEvent.sourceTab] ;
+					var subbrowser = this.addSubBrowserFromTab(oldTabs[0], aEvent.targetPosition, aEvent.targetSubBrowser, aEvent.isCopy);
+					if (oldTabs.length > 1) {
+						var browser = subbrowser.browser;
+						oldTabs.forEach(function(aTab, aIndex) {
+							if (aIndex == 0) return;
+							var t = browser.addTab();
+							if (aEvent.isCopy)
+								this.cloneBrowser(aTab.linkedBrowser, t.linkedBrowser);
+							else
+								this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
+						}, this);
+						this.selectNewTabsAfterDrop([], this.getTabBrowserFromChild(aEvent.sourceTab));
+						if (!aEvent.isCopy) {
+							window.setTimeout(function(aSelf) {
+								aSelf.closeOldTabsAfterDrop(oldTabs);
+							}, 0, this);
+						}
+					}
 				}
 				else if (aEvent.sourceBrowser) {
-					var browser = this.addSubBrowser(null, aEvent.targetSubBrowser, aEvent.targetPosition);
+					var subbrowser = this.addSubBrowser(null, aEvent.targetSubBrowser, aEvent.targetPosition);
 					window.setTimeout(
 						this.cloneBrowser,
 						0,
 						aEvent.sourceBrowser,
-						browser.browser,
+						subbrowser.browser,
 						null
 					);
 				}
@@ -3175,7 +3422,9 @@ catch(e) {
 			case 'SubBrowserRemoveRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.destroyTabBrowser((aEvent.originalTarget || aEvent.target).browser);
-				this.removeSubBrowser(aEvent.originalTarget || aEvent.target);
+				window.setTimeout(function(aSelf, aSubBrowser) {
+					aSelf.removeSubBrowser(aSubBrowser);
+				}, 0, this, aEvent.originalTarget || aEvent.target);
 				return;
 
 			case 'SubBrowserRemoveRequestFromContent':
@@ -3185,8 +3434,7 @@ catch(e) {
 						(target.nodeType == document.DOCUMENT_NODE) ? target.defaultView :
 						target.ownerDocument.defaultView;
 				var b = this.getSubBrowserAndBrowserFromFrame(win);
-				if (b.subBrowser)
-					this.removeSubBrowser(b.subBrowser);
+				if (b.subBrowser) b.subBrowser.close();
 				return;
 
 
