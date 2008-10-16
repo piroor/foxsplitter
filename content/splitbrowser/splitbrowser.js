@@ -2471,10 +2471,11 @@ catch(e) {
 
 		var isCopy = this.isAccelKeyPressed(event);
 
-		var tab = this.getTabBrowserTabFromChild(dragSession.sourceNode);
-		if (tab) {
-			var oldTabs = this.getDraggedTabsFromTab(tab);
-			var oldTabBrowser = this.getTabBrowserFromChild(tab);
+		var oldTab = this.getTabBrowserTabFromChild(dragSession.sourceNode);
+		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
+		if (oldTab &&
+			oldTabBrowser != aTabBrowser) {
+			var oldTabs = this.getDraggedTabsFromTab(oldTab);
 			var isCloseAll = !isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
 			var newTabs = [];
 			oldTabs.forEach(function(aTab) {
