@@ -199,6 +199,18 @@ var SplitBrowser = {
 		return null;
 	},
  
+	getTabFromBrowser : function(aBrowser) 
+	{
+		var b = this.getTabBrowserFromChild(aBrowser);
+		var tabs = b.mTabContainer.childNodes;
+		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		{
+			if (tabs[i].linkedBrowser == aBrowser)
+				return tabs[i];
+		}
+		return null;
+	},
+ 
 	getTabBrowserFromChild : function(aNode) 
 	{
 		if (!aNode) return null;
@@ -534,7 +546,7 @@ var SplitBrowser = {
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			(aCopy ? null : function() { b.removeTab(aTab); } )
+			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); } )
 		);
 
 		return browser;
@@ -567,8 +579,9 @@ var SplitBrowser = {
 			{
 				aTarget.removeTab(targetTabs.lastChild);
 			}
-			Array.slice(sourceTabs.childNodes).forEach(function(aSourceTab) {
-				this.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs.childNodes[aIndex].linkedBrowser);
+			targetTabs = Array.slice(targetTabs);
+			Array.slice(sourceTabs.childNodes).forEach(function(aSourceTab, aIndex) {
+				this.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs[aIndex].linkedBrowser);
 			}, this);
 		}
 		else {
@@ -579,11 +592,10 @@ var SplitBrowser = {
 	canSwapBrowser : false,
 	swapOneBrowser : function(aSource, aTarget)
 	{
-//		var sourceSubbrowser = this.getSubBrowserFromChild(aSource);
-//		if (sourceSubbrowser) sourceSubbrowser.purgeBrowser(aSource);
-//		var targetSubbrowser = this.getSubBrowserFromChild(aTarget);
-//		if (targetSubbrowser) targetSubbrowser.purgeBrowser(aTarget);
-		aTarget.swapDocShells(aSource);
+		var sourceTab = this.getTabFromBrowser(aSource);
+		var targetTab = this.getTabFromBrowser(aTarget);
+		var b = this.getTabBrowserFromChild(targetTab);
+		b.swapBrowsersAndCloseOther(targetTab, sourceTab);
 	},
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
@@ -1001,7 +1013,7 @@ var SplitBrowser = {
 			}, this);
 		}
 		else {
-			var browsers = b.localName == 'tabbrowser' ? b.browsers : [b] ;
+			var browsers = b.localName == 'tabbrowser' ? Array.slice(b.browsers) : [b] ;
 			browsers.forEach(function(aBrowser) {
 				var t = aTabBrowser.addTab();
 				newTabs.push(t);
@@ -3177,6 +3189,21 @@ catch(e) {
 			eval('aBrowser.getSupportedFlavours = '+aBrowser.getSupportedFlavours.toSource().replace(
 				'flavourSet.appendFlavour(',
 				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); $&'
+			));
+		}
+		if ('swapBrowsersAndCloseOther' in aBrowser) {
+			eval('aBrowser.swapBrowsersAndCloseOther = '+aBrowser.swapBrowsersAndCloseOther.toSource().replace(
+				'{',
+				'{ if (this.parentSubBrowser) this.parentSubBrowser.removeProgressListener(aOurTab);'
+			).replace(
+				'if (tabCount == 1)',
+				'if (this.parentSubBrowser) this.parentSubBrowser.addProgressListener(aOurTab);'
+			).replace(
+				'aOtherTab.ownerDocument.defaultView.getBrowser()',
+				'SplitBrowser.getTabBrowserFromChild(aOtherTab)'
+			).replace(
+				'aOtherTab.ownerDocument.defaultView.close();',
+				'var subbrowser = SplitBrowser.getSubBrowserFromChild(aOtherTab); if (subbrowser) { subbrowser.close(); } else { $&; }'
 			));
 		}
 

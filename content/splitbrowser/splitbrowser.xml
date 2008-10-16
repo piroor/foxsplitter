@@ -1792,31 +1792,6 @@ sideBox.removeAttribute('style');
 			]]></body>
 		</method>
 
-		<method name="newAddTab">
-			<body><![CDATA[
-				var tab = this.__splitbrowser__addTab.apply(this, arguments);
-				if (this.parentSubBrowser)
-					this.parentSubBrowser.addProgressListener(tab);
-
-				return tab;
-			]]></body>
-		</method>
-
-		<method name="newRemoveTab">
-			<body><![CDATA[
-				if (this.parentSubBrowser)
-					this.parentSubBrowser.removeProgressListener(arguments[0]);
-
-				var result = this.__splitbrowser__removeTab.apply(this, arguments);
-
-				if (this.mTabContainer.childNodes.length == 1) {
-					this.setStripVisibilityTo(!SplitBrowser.getPref('splitbrowser.tabs.autoHide'));
-				}
-
-				return result;
-			]]></body>
-		</method>
-
 		<method name="newUpdateCurrentBrowser">
 			<body><![CDATA[
 				var result = this.__splitbrowser__updateCurrentBrowser.apply(this, arguments);
@@ -1975,20 +1950,14 @@ sideBox.removeAttribute('style');
 			}
 
 			if (b.localName == 'tabbrowser') {
-				b.__splitbrowser__addTab = b.addTab;
-				eval('b.__splitbrowser__addTab = '+
-					b.__splitbrowser__addTab.toSource().replace(
+				eval('b.addTab = '+
+					b.addTab.toSource().replace(
 						'if (!this.mTabChangedListenerAdded) {',
 						'$& this.attrChangedListener = attrChanged;'
 					)
 				);
-				b.addTab = this.newAddTab;
-				b.__splitbrowser__removeTab = b.removeTab;
-				b.removeTab = this.newRemoveTab;
 				b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
 				b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
-
-				b.mTabContainer.addEventListener('select', this.onTabSelectHandler, false);
 
 				window.setTimeout(this.mDelayedTabbrowserStartup, 0, this);
 			}
@@ -2073,7 +2042,6 @@ sideBox.removeAttribute('style');
 						catch(e) {
 						}
 					}
-					b.mTabContainer.removeEventListener('select', this.onTabSelectHandler, false);
 					try {
 						document.removeEventListener('keypress', b._keyEventHandler, false);
 						if (b.attrChangedListener)
@@ -2123,25 +2091,34 @@ sideBox.removeAttribute('style');
 		</method-->
 
 
-		<field name="onTabSelectHandler"><![CDATA[
-			({
-				mOwner      : this,
-				handleEvent : function(aEvent)
-				{
-					switch (aEvent.type)
-					{
-						case 'select':
-							this.mOwner.updateToolbarForCurrentTab(true);
+		<method name="onTabSelect">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				this.updateToolbarForCurrentTab(true);
 
-							var newEvent = document.createEvent('Events');
-							newEvent.initEvent('SubBrowserTabSelect', false, true);
-							newEvent.targetTab = this.mOwner.browser.selectedTab;
-							this.mOwner.dispatchEvent(newEvent);
-							break;
-					}
+				var newEvent = document.createEvent('Events');
+				newEvent.initEvent('SubBrowserTabSelect', false, true);
+				newEvent.targetTab = this.browser.selectedTab;
+				this.dispatchEvent(newEvent);
+			]]></body>
+		</method>
+
+		<method name="onTabOpen">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				this.addProgressListener(aEvent.originalTarget);
+			]]></body>
+		</method>
+
+		<method name="onTabClose">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				this.removeProgressListener(aEvent.originalTarget);
+				if (this.browser.mTabContainer.childNodes.length == 1) {
+					this.browser.setStripVisibilityTo(!SplitBrowser.getPref('splitbrowser.tabs.autoHide'));
 				}
-			})
-		]]></field>
+			]]></body>
+		</method>
 
 		<method name="mUpdateToolbarMode">
 			<body><![CDATA[
@@ -2232,6 +2209,10 @@ sideBox.removeAttribute('style');
 				this.toggleNavigationOnHover(false);
 			}
 		]]></handler>
+
+		<handler event="TabSelect" action="this.onTabSelect(event);"/>
+		<handler event="TabOpen" action="this.onTabOpen(event);"/>
+		<handler event="TabClose" action="this.onTabClose(event);"/>
 
 	</handlers>
 </binding>
