@@ -223,7 +223,7 @@ var SplitBrowser = {
 			).singleNodeValue;
 	},
  
-	getTabBrowserTabFromChild : function(aNode) 
+	getTabFromChild : function(aNode) 
 	{
 		if (!aNode) return null;
 		return aNode.ownerDocument.evaluate(
@@ -2239,7 +2239,7 @@ alert(e+'\n\n'+state);
 			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
 			if (!uri) return;
 
-			var tab = SplitBrowser.getTabBrowserTabFromChild(aDragSession.sourceNode);
+			var tab = SplitBrowser.getTabFromChild(aDragSession.sourceNode);
 			var tabbrowser = SplitBrowser.getTabBrowserFromChild(tab);
 			if (!tabbrowser) tab = null;
 
@@ -2490,7 +2490,7 @@ catch(e) {
 
 		var isCopy = this.isAccelKeyPressed(event);
 
-		var oldTab = this.getTabBrowserTabFromChild(dragSession.sourceNode);
+		var oldTab = this.getTabFromChild(dragSession.sourceNode);
 		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
 		if (oldTab &&
 			oldTabBrowser != aTabBrowser) {

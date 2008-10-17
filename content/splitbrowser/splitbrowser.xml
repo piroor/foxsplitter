@@ -1750,7 +1750,7 @@ sideBox.removeAttribute('style');
 						check.isRight
 					)
 					) {
-					var tab = SplitBrowser.getTabBrowserTabFromChild(aDragSession.sourceNode);
+					var tab = SplitBrowser.getTabFromChild(aDragSession.sourceNode);
 					var tabbrowser = SplitBrowser.getTabBrowserFromChild(tab);
 					if (!tabbrowser) tab = null;
 					SplitBrowser.fireSubBrowserAddRequestEventFromButton(
