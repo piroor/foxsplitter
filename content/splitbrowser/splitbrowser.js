@@ -2491,7 +2491,7 @@ catch(e) {
 		var isCopy = this.isAccelKeyPressed(event);
 
 		var oldTab = this.getTabFromChild(dragSession.sourceNode);
-		if (oldTab &&  'treeStyleTab' in aTabBrowser) return false;
+		if (oldTab && 'treeStyleTab' in aTabBrowser) return false;
 
 		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
 		if (oldTab &&
