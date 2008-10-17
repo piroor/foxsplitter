@@ -2047,6 +2047,13 @@ sideBox.removeAttribute('style');
 					}
 					catch(e) {
 					}
+					try {
+						window.removeEventListener('resize', b.mTabContainer, false);
+						b.mStrip.removeEventListener('overflow', b.mTabContainer, false);
+						b.mStrip.removeEventListener('underflow', b.mTabContainer, false);
+					}
+					catch(e) {
+					}
 				}
 				else {
 					if (b.getAttribute('type') == 'content-primary')
