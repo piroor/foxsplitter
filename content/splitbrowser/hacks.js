@@ -468,6 +468,39 @@ SplitBrowser.hackForOtherExtensions = function() {
 		
 	}
 
+
+	// ReloadEvery
+	if ('getCurTab' in window) {
+		eval('window.getCurTab = '+window.getCurTab.toSource().replace(
+			'getBrowser()',
+			'SplitBrowser.activeBrowser'
+		));
+		var gatherAllBrowsers = <![CDATA[
+				var browsers = Array.slice(gBrowser.browsers);
+				SplitBrowser.browsers.forEach(function(aSubBrowser) {
+					if (aSubBrowser.browser.localName == 'tabbrowser')
+						browsers = browsers.concat(Array.slice(aSubBrowser.browser.browsers));
+					else
+						browsers.push(aSubBrowser.browser);
+				});
+			]]>.toString();
+		eval('window.onReloadEveryEnableAllTabs = '+window.onReloadEveryEnableAllTabs.toSource().replace(
+			/getBrowser\(\)\.browsers/g,
+			'browsers'
+		).replace(
+			'{',
+			'{'+gatherAllBrowsers
+		));
+		eval('window.onReloadEveryDisableAllTabs = '+window.onReloadEveryEnableAllTabs.toSource().replace(
+			/getBrowser\(\)\.browsers/g,
+			'browsers'
+		).replace(
+			'{',
+			'{'+gatherAllBrowsers
+		));
+	}
+
+
 	window.setTimeout('SplitBrowser.hackForOtherExtensionsWithDelay()', 0);
 };
 
