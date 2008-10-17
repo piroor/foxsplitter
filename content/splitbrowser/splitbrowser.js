@@ -2491,6 +2491,8 @@ catch(e) {
 		var isCopy = this.isAccelKeyPressed(event);
 
 		var oldTab = this.getTabFromChild(dragSession.sourceNode);
+		if (oldTab &&  'treeStyleTab' in aTabBrowser) return false;
+
 		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
 		if (oldTab &&
 			oldTabBrowser != aTabBrowser) {
@@ -2574,15 +2576,24 @@ catch(e) {
  
 	getDraggedTabs : function(aNode)
 	{
-		if (
-			!('MultipleTabService' in window) ||
-			!('getSelectedTabs' in MultipleTabService)
-			)
-			return [aNode];
-
+		var single = [aNode];
 		var b = this.getTabBrowserFromChild(aNode);
-		var tabs = b ? MultipleTabService.getSelectedTabs(b) : [] ;
-		return tabs.length ? tabs : [aNode] ;
+		if (!b) return single;
+
+		var tabs;
+
+		if ('MultipleTabService' in window &&
+			'getSelectedTabs' in MultipleTabService) {
+			tabs = MultipleTabService.getSelectedTabs(b);
+			if (tabs.length) return tabs;
+		}
+
+		if ('TreeStyleTabService' in window) {
+			tabs = TreeStyleTabService.getDescendantTabs(aNode);
+			if (tabs.length) return single.concat(tabs);
+		}
+
+		return single;
 	},
  
 	selectNewTabsAfterDrop : function(aTabs, aAnotherTabBrowser) 
