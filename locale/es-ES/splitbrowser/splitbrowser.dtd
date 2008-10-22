@@ -10,16 +10,16 @@
 
 <!ENTITY splitbrowser.show.addbuttons.caption  "Botones &quot;Dividir&quot; en el área de contenido">
 <!ENTITY splitbrowser.show.addbuttons.hover.type "Cuando unos de los bordes del área de contenido es señalado">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Siempre mostrar los botones automáticamente">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Mostrar los botones automáticamente">
 <!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Mostrar los botones si es presionada la tecla &quot;Shift&quot;">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop "Mostrar botones mientras se arrastran archivos, enlaces, etc">
 
 <!ENTITY splitbrowser.tab.caption   "Pestaña">
-<!ENTITY splitbrowser.tab.closetab  "Cerrar la pestaña despúes que es dividida">
+<!ENTITY splitbrowser.tab.closetab  "Cerrar la pestaña después que es dividida">
 
 <!ENTITY splitbrowser.syncScroll.mainArea "Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Both vertically and horizontally">
-<!ENTITY splitbrowser.syncScroll.horizontal.false "Only vertically">
+<!ENTITY splitbrowser.syncScroll.horizontal.true "Vertical y horizontalmente">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "Solamente vertical">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apariencia">
