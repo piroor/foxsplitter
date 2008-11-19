@@ -2237,9 +2237,9 @@ alert(e+'\n\n'+state);
 			aEvent.preventBubble();
 
 			var uri = SplitBrowser.getURIFromDragData(aXferData, aDragSession, aEvent);
-			if (!uri) return;
-
 			var tab = SplitBrowser.getTabFromChild(aDragSession.sourceNode);
+			if (!uri && !tab) return;
+
 			var tabbrowser = SplitBrowser.getTabBrowserFromChild(tab);
 			if (!tabbrowser) tab = null;
 
@@ -2254,6 +2254,7 @@ alert(e+'\n\n'+state);
 		{
 			var flavourSet = new FlavourSet();
 			flavourSet.appendFlavour('application/x-moz-splitbrowser');
+			flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
 			flavourSet.appendFlavour('text/x-moz-url');
 			flavourSet.appendFlavour('text/unicode');
 			flavourSet.appendFlavour('application/x-moz-file', 'nsIFile');
@@ -3014,7 +3015,7 @@ catch(e) {
 			));
 			eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
 				'flavourSet.appendFlavour(',
-				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); $&'
+				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
 			));
 		}
 
@@ -3247,7 +3248,7 @@ catch(e) {
 		if ('getSupportedFlavours' in aBrowser) {
 			eval('aBrowser.getSupportedFlavours = '+aBrowser.getSupportedFlavours.toSource().replace(
 				'flavourSet.appendFlavour(',
-				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); $&'
+				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
 			));
 		}
 		if ('swapBrowsersAndCloseOther' in aBrowser) {

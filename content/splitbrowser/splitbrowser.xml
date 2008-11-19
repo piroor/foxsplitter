@@ -727,6 +727,7 @@ sideBox.removeAttribute('style');
 
 				var isSubBrowser = session.isDataFlavorSupported('application/x-moz-splitbrowser');
 				if (isSubBrowser ||
+					session.isDataFlavorSupported('application/x-moz-tabbrowser-tab') ||
 					session.isDataFlavorSupported('text/x-moz-url') ||
 					session.isDataFlavorSupported('text/unicode') ||
 					session.isDataFlavorSupported('application/x-moz-file')) {
@@ -1770,6 +1771,7 @@ sideBox.removeAttribute('style');
 			{
 				var flavourSet = new FlavourSet();
 				flavourSet.appendFlavour('application/x-moz-splitbrowser');
+				flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
 				flavourSet.appendFlavour('text/x-moz-url');
 				flavourSet.appendFlavour('text/unicode');
 				flavourSet.appendFlavour('text/plain');
