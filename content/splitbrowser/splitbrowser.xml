@@ -1996,7 +1996,7 @@ sideBox.removeAttribute('style');
 			aThis.mDelayedBrowserStartup(aThis);
 
 			var b = aThis.browser;
-			var t = b.mTabContainer.childNodes[0];
+			var t = SplitBrowser.getTabs(b).snapshotItem(0);
 			aThis.addProgressListener(t);
 
 			var autoHide = SplitBrowser.getPref('splitbrowser.tabs.autoHide');
@@ -2031,9 +2031,10 @@ sideBox.removeAttribute('style');
 
 					b.mCurrentBrowser.removeAttribute('type');
 					b.mCurrentBrowser.setAttribute('type', 'content');
-					for (var i = 0, maxi = b.mTabContainer.childNodes.length; i < maxi; i++)
+					var tabs = SplitBrowser.getTabs(b);
+					for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 					{
-						this.removeProgressListener(b.mTabContainer.childNodes[i]);
+						this.removeProgressListener(tabs.snapshotItem(i));
 						try {
 							b.browsers[i].destroy();
 							b.browsers[i].removeEventListener('DOMTitleChanged', b.onTitleChanged, true);
@@ -2106,7 +2107,7 @@ sideBox.removeAttribute('style');
 			<parameter name="aEvent"/>
 			<body><![CDATA[
 				this.removeProgressListener(aEvent.originalTarget);
-				if (this.browser.mTabContainer.childNodes.length <= 2) {
+				if (SplitBrowser.getTabs(this.browser).snapshotLength <= 2) {
 					this.browser.setStripVisibilityTo(!SplitBrowser.getPref('splitbrowser.tabs.autoHide'));
 				}
 			]]></body>

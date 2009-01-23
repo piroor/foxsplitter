@@ -185,15 +185,15 @@ var SplitBrowser = {
 		if (!b || b.localName != 'tabbrowser')
 			b = gBrowser;
 
-		var tabs = b.mTabContainer.childNodes;
+		var tabs = this.getTabs(b);
 
 		var docShell = (aFrame.top || aFrame)
 			.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
 			.getInterface(Components.interfaces.nsIWebNavigation)
 			.QueryInterface(Components.interfaces.nsIDocShell);
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
-			if (tabs[i].linkedBrowser.docShell == docShell)
+			if (tabs.snapshotItem(i).linkedBrowser.docShell == docShell)
 				return tabs[i];
 		}
 		return null;
@@ -202,10 +202,10 @@ var SplitBrowser = {
 	getTabFromBrowser : function(aBrowser) 
 	{
 		var b = this.getTabBrowserFromChild(aBrowser);
-		var tabs = b.mTabContainer.childNodes;
-		for (var i = 0, maxi = tabs.length; i < maxi; i++)
+		var tabs = this.getTabs(b);
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
-			if (tabs[i].linkedBrowser == aBrowser)
+			if (tabs.snapshotItem(i).linkedBrowser == aBrowser)
 				return tabs[i];
 		}
 		return null;
@@ -233,6 +233,28 @@ var SplitBrowser = {
 				XPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
 			).singleNodeValue;
+	},
+ 
+	getTabs : function(aTabBrowser) 
+	{
+		return aTabBrowser.ownerDocument.evaluate(
+				'descendant::*[local-name()="tab"]',
+				aTabBrowser.mTabContainer,
+				null,
+				XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+				null
+			);
+	},
+ 
+	getTabsArray : function(aTabBrowser)
+	{
+		var tabs = this.getTabs(aTabBrowser);
+		var array = [];
+		for (var i = 0, maxi = tabs.snapshotLength; i < maxi)
+		{
+			array.push(tabs.snapshotItem(i));
+		}
+		return array;
 	},
  
 	getSubBrowserFromChild : function(aNode) 
@@ -402,7 +424,7 @@ var SplitBrowser = {
 		var tabBroadcaster = this.featuresForMultipleTabsBroadcaster;
 		var b = SplitBrowser.activeBrowser;
 		if (b.localName != 'tabbrowser') b = gBrowser;
-		if (b.mTabContainer.childNodes.length > 1)
+		if (this.getTabs(b).snapshotLength > 1)
 			tabBroadcaster.removeAttribute('disabled');
 		else
 			tabBroadcaster.setAttribute('disabled', true);
@@ -580,20 +602,31 @@ var SplitBrowser = {
 			return;
 		}
 		if (aSource.localName == 'tabbrowser') {
-			var sourceTabs = aSource.mTabContainer;
-			var targetTabs = aTarget.mTabContainer;
-			while (sourceTabs.childNodes.length > targetTabs.childNodes.length)
+			var sourceTabs = SplitBrowser.getTabs(aSource);
+			var targetTabs = SplitBrowser.getTabs(aTarget);
+			while (sourceTabs.snapshotLength > targetTabs.snapshotLength)
 			{
 				aTarget.addTab();
 			}
-			while (sourceTabs.childNodes.length < targetTabs.childNodes.length)
+			targetTabs = SplitBrowser.getTabs(aTarget);
+			var count = targetTabs.snapshotLength;
+			var removedTabs = [];
+			for (var i = 0, maxi = count - sourceTabs.snapshotLength; i < maxi; i++)
 			{
-				aTarget.removeTab(targetTabs.lastChild);
+				removeTabs.push(targetTabs.snapshotItem(count-1-i));
 			}
-			targetTabs = Array.slice(targetTabs.childNodes);
-			Array.slice(sourceTabs.childNodes).forEach(function(aSourceTab, aIndex) {
-				SplitBrowser.swapOneBrowser(aSourceTab.linkedBrowser, targetTabs[aIndex].linkedBrowser);
+			removeTabs.forEach(function(aTab) {
+				aTarget.removeTab(aTab);
 			});
+			sourceTabs = SplitBrowser.getTabs(aSource);
+			targetTabs = SplitBrowser.getTabs(aTarget);
+			for (var i = 0, maxi = sourceTabs.snapshotLength; i < maxi; i++)
+			{
+				SplitBrowser.swapOneBrowser(
+					sourceTabs.snapshotItem(i).linkedBrowser,
+					targetTabs.snapshotItem(i).linkedBrowser
+				);
+			}
 		}
 		else {
 			SplitBrowser.swapOneBrowser(aSource, aTarget);
@@ -608,7 +641,7 @@ var SplitBrowser = {
 		var targetTabBrowser = this.getTabBrowserFromChild(targetTab);
 
 		if (
-			sourceTabBrowser.mTabContainer.childNodes.length == 1 &&
+			this.getTabs(sourceTabBrowser).snapshotLength == 1 &&
 			(
 				(
 					sourceTabBrowser.parentSubBrowser &&
@@ -914,7 +947,7 @@ var SplitBrowser = {
 	layoutTabs : function(aSubBrowser, aStyle) 
 	{
 		var b    = aSubBrowser.browser;
-		var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
+		var tabs = this.getTabsArray(b);
 
 		var isAfter      = false;
 		var isHorizontal = (aStyle == this.LAYOUT_ON_X_AXIS);
@@ -922,11 +955,6 @@ var SplitBrowser = {
 		var self = this;
 
 		var shouldDoFiltering = ('MultipleTabService' in window) ? MultipleTabService.hasSelection(b) : false ;
-
-		var TBETabGroup = (!shouldDoFiltering && this.tabbedBrowsingEnabled && 'TabbrowserService' in window && b.tabGroupsAvailable);
-
-		if (TBETabGroup)
-			tabs = tabs.filter(function(aTab) { return !aTab.parentTab; });
 
 		var horizontalMax   = (aStyle == this.LAYOUT_GRID) ? Math.ceil(Math.sqrt(tabs.length)) : -1 ;
 		var horizontalCount = 0;
@@ -983,8 +1011,6 @@ var SplitBrowser = {
 					(isHorizontal ? self.POSITION_LEFT : self.POSITION_TOP);
 			}
 
-			var children = (TBETabGroup) ? aTab.allChildTabs : null ;
-
 			var subbrowser = self.addSubBrowserFromTab(aTab, pos, (hPosTarget || vPosTarget), false);
 			lastSubBrowser = subbrowser;
 
@@ -994,14 +1020,6 @@ var SplitBrowser = {
 					この新しい行の分割ブラウザを基準にする。
 				*/
 				vPosTarget = lastSubBrowser;
-			}
-
-			if (TBETabGroup && children && children.length) {
-				children.forEach(function(aChildTab) {
-					var t = subbrowser.browser.addTab();
-					self.swapBrowser(aChildTab.linkedBrowser, t.linkedBrowser);
-					b.removeTabInternal(aChildTab, { preventUndo : true });
-				});
 			}
 		});
 	},
@@ -1024,7 +1042,7 @@ var SplitBrowser = {
 		var newTabs = [];
 		var b = aSubBrowser.browser;
 		if (this.tabbedBrowsingEnabled && 'TabbrowserService' in window && aTabBrowser.tabGroupsAvailable) {
-			var tabs = Array.prototype.slice.call(b.mTabContainer.childNodes);
+			var tabs = this.getTabsArray(b);
 
 			var t = aTabBrowser.addTab();
 			if (aMove)
@@ -1088,7 +1106,7 @@ var SplitBrowser = {
 			BrowserCloseTabOrWindow();
 		}
 		else {
-			if (b.localName == 'tabbrowser' && b.mTabContainer.childNodes.length > 1)
+			if (b.localName == 'tabbrowser' && this.getTabs(b).snapshotLength > 1)
 				b.removeTab(b.selectedTab);
 			else
 				b.parentSubBrowser.close();
@@ -1287,7 +1305,7 @@ var SplitBrowser = {
 			else {
 				var done = {};
 				PlacesUIUtils.showMinimalAddMultiBookmarkUI(
-					Array.prototype.slice.call(b.mTabContainer.childNodes)
+					this.getTabsArray(b)
 						.map(function(aTab) {
 							return aTab.linkedBrowser.currentURI;
 						})
@@ -1468,11 +1486,13 @@ var SplitBrowser = {
 			};
 
 		if (aBrowser.localName == 'tabbrowser') {
-			var tabs = aBrowser.mTabContainer.childNodes;
-			for (var i = 0, maxi = tabs.length; i < maxi; i++)
+			var tabs = this.getTabs(aBrowser);
+			var tab;
+			for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 			{
-				state.textZoom[i] = tabs[i].linkedBrowser.markupDocumentViewer.textZoom;
-				if (tabs[i] == aBrowser.selectedTab) {
+				tab = tabs.snapshotItem(i);
+				state.textZoom[i] = tab.linkedBrowser.markupDocumentViewer.textZoom;
+				if (tab == aBrowser.selectedTab) {
 					state.selectedTab = i;
 				}
 			}
@@ -1499,9 +1519,10 @@ var SplitBrowser = {
 	{
 		var histories = [];
 		if (aBrowser.localName == 'tabbrowser') {
-			for (var i = 0, maxi = aBrowser.mTabContainer.childNodes.length; i < maxi; i++)
+			var tabs = this.getTabs(aBrowser);
+			for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 			{
-				histories.push(this.serializeSessionHistory(aBrowser.getBrowserForTab(aBrowser.mTabContainer.childNodes[i])))
+				histories.push(this.serializeSessionHistory(aBrowser.getBrowserForTab(tabs.snapshotItem(i))));
 			}
 		}
 		else {
@@ -2498,7 +2519,7 @@ catch(e) {
 		if (oldTab &&
 			oldTabBrowser != aTabBrowser) {
 			var oldTabs = this.getDraggedTabs(oldTab);
-			var isCloseAll = !isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
+			var isCloseAll = !isCopy && (this.getTabs(oldTabBrowser).snapshotLength == oldTabs.length);
 			var newTabs = [];
 			oldTabs.forEach(function(aTab) {
 				var t = aTabBrowser.addTab();
@@ -2623,7 +2644,7 @@ catch(e) {
 		var b = aTabBrowser;
 		if (aTabs.length) {
 			b = b || this.getTabBrowserFromChild(aTabs[0]);
-			aIsCloseAll = aIsCloseAll || (b.mTabContainer.childNodes.length == aTabs.length);
+			aIsCloseAll = aIsCloseAll || (this.getTabs(b).snapshotLength == aTabs.length);
 			if ('MultipleTabService' in window &&
 				'closeTabs' in MultipleTabService) {
 				MultipleTabService.closeTabs(aTabs);
@@ -3451,7 +3472,7 @@ catch(e) {
 				if (aEvent.sourceTab) {
 					var oldTabs = this.tabbedBrowsingEnabled ? this.getDraggedTabs(aEvent.sourceTab) : [aEvent.sourceTab] ;
 					var oldTabBrowser = this.getTabBrowserFromChild(aEvent.sourceTab);
-					var isCloseAll = !aEvent.isCopy && (oldTabBrowser.mTabContainer.childNodes.length == oldTabs.length);
+					var isCloseAll = !aEvent.isCopy && (this.getTabs(oldTabBrowser).snapshotLength == oldTabs.length);
 					var subbrowser = this.addSubBrowserFromTab(oldTabs[0], aEvent.targetPosition, aEvent.targetSubBrowser, aEvent.isCopy);
 					oldTabs.splice(0, 1);
 					if (oldTabs.length) {
@@ -3647,9 +3668,9 @@ catch(e) {
 				if (!this.tabbedBrowsingEnabled) return;
 				var visible = !this.getPref(aPrefstring);
 				this.splitters.forEach(function(aBrowser) {
-					if (aBrowser.browser.mTabContainer.childNodes.length == 1)
+					if (this.getTabs(aBrowser.browser).snapshotLength == 1)
 						aBrowser.browser.setStripVisibilityTo(visible);
-				});
+				}, this);
 				break;
 
 			case 'splitbrowser.show.toolbar.navigation.always':

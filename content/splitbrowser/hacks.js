@@ -151,7 +151,7 @@ SplitBrowser.hackForOtherExtensions = function() {
 
 				var cIndex = -1,
 					sIndex = -1,
-					tabs = b.mTabContainer.childNodes;
+					tabs = SplitBrowser.getTabsArray(b);
 				for (var i = 0, maxi = tabs.length; i < maxi; i++)
 				{
 					if (tabs[i] == target)
