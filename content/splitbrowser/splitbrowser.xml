@@ -1996,7 +1996,7 @@ sideBox.removeAttribute('style');
 			aThis.mDelayedBrowserStartup(aThis);
 
 			var b = aThis.browser;
-			var t = SplitBrowser.getTabs(b).snapshotItem(0);
+			var t = SplitBrowser.getFirstTab(b);
 			aThis.addProgressListener(t);
 
 			var autoHide = SplitBrowser.getPref('splitbrowser.tabs.autoHide');

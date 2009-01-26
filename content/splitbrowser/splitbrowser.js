@@ -257,6 +257,28 @@ var SplitBrowser = {
 		return array;
 	},
  
+	getFirstTab : function(aTabBrowser) 
+	{
+		return aTabBrowser.ownerDocument.evaluate(
+				'descendant::*[local-name()="tab"][1]',
+				aTabBrowser.mTabContainer,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
+ 
+	getLastTab : function(aTabBrowser) 
+	{
+		return aTabBrowser.ownerDocument.evaluate(
+				'descendant::*[local-name()="tab"][last()]',
+				aTabBrowser.mTabContainer,
+				null,
+				XPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
+ 
 	getSubBrowserFromChild : function(aNode) 
 	{
 		if (!aNode) return null;
