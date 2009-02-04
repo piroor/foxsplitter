@@ -722,14 +722,8 @@ var SplitBrowser = {
 					aContent.setAttribute('width', aWidth);
 				}
 				aRefNode = aRefNode.nextSibling;
-				if (aRefNode) {
-					hContainer.insertBefore(splitter, aRefNode);
-					hContainer.insertBefore(container, aRefNode);
-				}
-				else {
-					hContainer.appendChild(splitter, aRefNode);
-					hContainer.appendChild(container, aRefNode);
-				}
+				hContainer.insertBefore(splitter, aRefNode);
+				hContainer.insertBefore(container, aRefNode);
 				break;
 
 			case this.POSITION_TOP:
@@ -751,14 +745,8 @@ var SplitBrowser = {
 					aContent.setAttribute('height', aHeight);
 				}
 				aRefNode = aRefNode.nextSibling;
-				if (aRefNode) {
-					vContainer.insertBefore(splitter, aRefNode);
-					vContainer.insertBefore(container, aRefNode);
-				}
-				else {
-					vContainer.appendChild(splitter, aRefNode);
-					vContainer.appendChild(container, aRefNode);
-				}
+				vContainer.insertBefore(splitter, aRefNode);
+				vContainer.insertBefore(container, aRefNode);
 				break;
 		}
 
@@ -3340,10 +3328,7 @@ catch(e) {
 		{
 			separator = separator.nextSibling;
 		}
-		if (separator)
-			tabContext.insertBefore(fragment, separator);
-		else
-			tabContext.appendChild(fragment);
+		tabContext.insertBefore(fragment, separator);
 
 		tabContext.addEventListener('popupshowing', this, false);
 		aBrowser.mTabContainer.addEventListener('select', this, false);
@@ -3367,10 +3352,10 @@ catch(e) {
 		// this is a hack, mainly for ScrapBook
 		var appcontent = document.getElementById('appcontent');
 		var node = appcontent.removeChild(aContent);
-		if (aDir > 0)
-			appcontent.innerContainer.appendChild(aContent);
-		else
-			appcontent.innerContainer.insertBefore(aContent, appcontent.innerContainer.firstChild);
+		appcontent.innerContainer.insertBefore(
+			aContent,
+			(aDir > 0 ? null : appcontent.innerContainer.firstChild )
+		);
 	},
  
 	newUpdateCurrentBrowser : function(aEvent, aXferData, aDragSession) 
