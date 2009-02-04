@@ -194,7 +194,7 @@ var SplitBrowser = {
 		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
 			if (tabs.snapshotItem(i).linkedBrowser.docShell == docShell)
-				return tabs[i];
+				return tabs.snapshotItem(i);
 		}
 		return null;
 	},
@@ -206,7 +206,7 @@ var SplitBrowser = {
 		for (var i = 0, maxi = tabs.snapshotLength; i < maxi; i++)
 		{
 			if (tabs.snapshotItem(i).linkedBrowser == aBrowser)
-				return tabs[i];
+				return tabs.snapshotItem(i);
 		}
 		return null;
 	},
@@ -623,7 +623,8 @@ var SplitBrowser = {
 			SplitBrowser.cloneBrowser(aSource, aTarget, aCallback);
 			return;
 		}
-		if (aSource.localName == 'tabbrowser') {
+		if (aSource.localName == 'tabbrowser' &&
+			aTarget.localName == 'tabbrowser') {
 			var sourceTabs = SplitBrowser.getTabs(aSource);
 			var targetTabs = SplitBrowser.getTabs(aTarget);
 			while (sourceTabs.snapshotLength > targetTabs.snapshotLength)
@@ -637,7 +638,7 @@ var SplitBrowser = {
 			{
 				removeTabs.push(targetTabs.snapshotItem(count-1-i));
 			}
-			removeTabs.forEach(function(aTab) {
+			removedTabs.forEach(function(aTab) {
 				aTarget.removeTab(aTab);
 			});
 			sourceTabs = SplitBrowser.getTabs(aSource);
