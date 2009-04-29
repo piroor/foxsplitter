@@ -3297,8 +3297,8 @@ catch(e) {
 				'tabListener = this.mTabProgressListener(',
 				'if (__splitbrowser__reRegister) { $&'
 			).replace(
-				/(if \((?:tabCount == 1|aOurTab == this.selectedTab)\))/,
-				'} if (this.parentSubBrowser && this.parentSubBrowser.addProgressListener) { this.parentSubBrowser.addProgressListener(aOurTab); } $1'
+				'if (aOurTab == this.selectedTab) {this.updateCurrentBrowser(',
+				'} if (this.parentSubBrowser && this.parentSubBrowser.addProgressListener) { this.parentSubBrowser.addProgressListener(aOurTab); } $&'
 			).replace(
 				'aOtherTab.ownerDocument.defaultView.getBrowser()',
 				'SplitBrowser.getTabBrowserFromChild(aOtherTab)'
