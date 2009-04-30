@@ -17,3 +17,5 @@ locale	splitbrowser	zh-CN	jar:chrome/splitbrowser.jar!/locale/zh-CN/splitbrowser
 skin	splitbrowser	classic/1.0	jar:chrome/splitbrowser.jar!/skin/classic/splitbrowser/
 
 style	chrome://global/content/customizeToolbar.xul	chrome://splitbrowser/skin/buttons.css
+
+resource splitbrowser-modules modules/

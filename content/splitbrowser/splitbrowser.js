@@ -1136,7 +1136,18 @@ var SplitBrowser = {
 		}
 	},
 	
-	undoCache : [], 
+	get undoCache() 
+	{
+		if (!this._undoCache) {
+			this._undoCache = {};
+			Components.utils.import(
+				'resource://splitbrowser-modules/undoCache.js',
+				this._undoCache
+			);
+		}
+		return this._undoCache.undoCache;
+	},
+	_undoCache : null,
  
 	get undoCount() { 
 		return this.getPref('splitbrowser.undo.max');
