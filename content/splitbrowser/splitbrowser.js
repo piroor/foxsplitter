@@ -3286,7 +3286,18 @@ catch(e) {
 		if ('swapBrowsersAndCloseOther' in aBrowser) {
 			eval('aBrowser.swapBrowsersAndCloseOther = '+aBrowser.swapBrowsersAndCloseOther.toSource().replace(
 				'{',
-				'{ if (this.parentSubBrowser && this.parentSubBrowser.removeProgressListener) { this.parentSubBrowser.removeProgressListener(aOurTab); }'
+				<![CDATA[$&
+					(function(aSelf) {
+						var d = aOtherTab.ownerDocument;
+						var w = d.defaultView;
+						var b = SplitBrowser.getTabBrowserFromChild(aOtherTab);
+						b.__splitbrowser__swappingLastMainPane = (d != document && !w.SplitBrowser.browsers.length);
+						w.setTimeout(function() { b.__splitbrowser__swappingLastMainPane = false; }, 100);
+						if (aSelf.parentSubBrowser && aSelf.parentSubBrowser.removeProgressListener) {
+							aSelf.parentSubBrowser.removeProgressListener(aOurTab);
+						}
+					})(this);
+				]]>.toString()
 			).replace(
 				'ourBrowser.webProgress.removeProgressListener(',
 				'var __splitbrowser__reRegister = false; if (this.mTabFilters.length) { __splitbrowser__reRegister = true; $&'
@@ -3307,13 +3318,31 @@ catch(e) {
 		if ('_beginRemoveTab' in aBrowser) {
 			eval('aBrowser._beginRemoveTab = '+aBrowser._beginRemoveTab.toSource().replace(
 				/((window.)?closeWindow\([^\)]*\))/,
-				'(function(aSelf) { var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf); if (subbrowser) { subbrowser.close(); return false; } else { return $1; }})(this)'
+				<![CDATA[(function(aSelf) {
+					var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf);
+					if (subbrowser) {
+						subbrowser.close();
+					}
+					else if (aSelf.__splitbrowser__swappingLastMainPane) {
+						return $1;
+					}
+					return false;
+				})(this)]]>.toString()
 			));
 		}
 		if ('_endRemoveTab' in aBrowser) {
 			eval('aBrowser._endRemoveTab = '+aBrowser._endRemoveTab.toSource().replace(
 				/((window.)?closeWindow\([^\)]*\))/,
-				'(function(aSelf) { var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf); if (subbrowser) { subbrowser.close(); return false; } else { return $1; }})(this)'
+				<![CDATA[(function(aSelf) {
+					var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf);
+					if (subbrowser) {
+						subbrowser.close();
+					}
+					else if (aSelf.__splitbrowser__swappingLastMainPane) {
+						return $1;
+					}
+					return false;
+				})(this)]]>.toString()
 			));
 		}
 
