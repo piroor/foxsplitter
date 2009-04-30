@@ -1,5 +1,3 @@
-@import url("chrome://splitbrowser-fx3/content/splitbrowser.css");
-
 @namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul");
 @namespace html url("http://www.w3.org/1999/xhtml");
 
@@ -98,28 +96,14 @@ subbrowser[toolbar-mode="vertical"] .subbrowser-toolbox-vertical {
 
 
 
-/* positioning of popup-button */
+/* popup-button */
 
-#splitbrowser-add-button-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 32000;
-}
-
-#splitbrowser-add-button,
-html|canvas#splitbrowser-add-button-background-canvas {
-	position: fixed;
-	z-index: 65000;
-}
-
-#splitbrowser-add-button,
-#splitbrowser-add-button-in-panel,
-html|canvas#splitbrowser-add-button-background-canvas {
+#splitbrowser-add-button-in-panel {
 	cursor: pointer;
 	width: 0;
 	height: 0;
 }
+
 
 
 /* make "tabbrowser" being able to be collapsed */

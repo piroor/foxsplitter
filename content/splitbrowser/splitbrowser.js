@@ -36,13 +36,9 @@ var SplitBrowser = {
   
 	get tabbedBrowsingEnabled() 
 	{
-		// tabbed browsing mode is not compatible with TBE or TMP
+		// tabbed browsing mode is not compatible with TMP
 		return !(
-			'TM_init' in window ||
-			(
-				'TabbrowserService' in window &&
-				!('TBECompatibilityServiceSplitBrowser' in window)
-			)
+			'TM_init' in window
 		);
 	},
  
@@ -95,7 +91,8 @@ var SplitBrowser = {
 			var newURI;
 			aURI = aURI || '';
 			if (aURI && aURI.indexOf('file:') == 0) {
-				var fileHandler = this.mIOService.getProtocolHandler('file').QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+				var fileHandler = this.mIOService.getProtocolHandler('file')
+						.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
 				var tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
 				newURI = this.mIOService.newFileURI(tempLocalFile); // we can use this instance with the nsIFileURL interface.
 			}
@@ -108,7 +105,9 @@ var SplitBrowser = {
 		}
 		return null;
 	},
-	mIOService : Components.classes['@mozilla.org/network/io-service;1'].getService(Components.interfaces.nsIIOService),
+	mIOService : Components
+			.classes['@mozilla.org/network/io-service;1']
+			.getService(Components.interfaces.nsIIOService),
  
 	getSubBrowserByName : function(aName) 
 	{
@@ -157,7 +156,9 @@ var SplitBrowser = {
 	get WindowManager() 
 	{
 		if (!this._WindowManager) {
-			this._WindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService(Components.interfaces.nsIWindowMediator);
+			this._WindowManager = Components
+						.classes['@mozilla.org/appshell/window-mediator;1']
+						.getService(Components.interfaces.nsIWindowMediator);
 		}
 		return this._WindowManager;
 	},
@@ -2075,11 +2076,7 @@ alert(e+'\n\n'+state);
 	addButtonIsShown : false,
 	
 	get addButton() { 
-		return document.getElementById(
-				this.addButtonUsePanel ?
-					'splitbrowser-add-button-in-panel' :
-					'splitbrowser-add-button'
-			);
+		return document.getElementById('splitbrowser-add-button-in-panel');
 	},
  
 	get addButtonSize() { 
@@ -2296,15 +2293,10 @@ alert(e+'\n\n'+state);
  
 /* for Firefox versions */ 
 	
-	get addButtonUsePanel() { 
-		return 'openPopupAtScreen' in document.getElementById('splitbrowser-add-button-panel');
-	},
- 
 	showHideAddButtonInternal : function(aShow) 
 	{
 		var button = this.addButton;
 		button.parentNode.hidden = button.hidden = !aShow;
-		if (!this.addButtonUsePanel) return;
 
 		if (aShow) {
 			var box = document.documentElement.boxObject;
@@ -2354,14 +2346,8 @@ alert(e+'\n\n'+state);
 			x = box.x + box.width - size;
 			y = box.areaY;
 		}
-		if (this.addButtonUsePanel) {
-			button.parentNode.nextX = x;
-			button.parentNode.nextY = y;
-		}
-		else {
-			button.parentNode.style.top = y+'px';
-			button.parentNode.style.left = x+'px';
-		}
+		button.parentNode.nextX = x;
+		button.parentNode.nextY = y;
 
 		var canvas = button.previousSibling;
 		if (canvas) {
@@ -2384,8 +2370,7 @@ alert(e+'\n\n'+state);
 		button.parentNode.hidden = button.hidden = aShow;
 		button.showHideAddButtonCurrent = button.style.opacity = aShow ? 0 : 1 ;
 		button.showHideAddButtonStart = new Date().getTime();
-		if (!this.addButtonUsePanel)
-			this.updateAddButtonBackground();
+		this.updateAddButtonBackground();
 		button.parentNode.hidden = button.hidden = false;
 	},
 	 
@@ -2516,7 +2501,7 @@ catch(e) {
 						.getService(Components.interfaces.nsIDragService)
 						.getCurrentSession();
 		}
-		else { // Firefox 2.0.0.x or 3.0.x
+		else { // Firefox 3.0.x
 			dragSession = aArgs[2];
 		}
 		if (!dragSession) return false;
@@ -2906,69 +2891,37 @@ catch(e) {
   
 /* Find Bar */ 
 	
-	overrideFindBar : function() 
-	{
-		var newGetBrowser = '(SplitBrowser.activeBrowser || getBrowser())';
-		var functions = [
-				'setCaseSensitivity', // Fx 2.0-
-				'toggleCaseSensitivity', // Fx -1.5
-				'finishFAYT',
-				'delayedCloseFindBar',
-				'shouldFastFind',
-				'onFindBarBlur',
-				'updateFoundLink',
-				'find',
-				'onFindAgainCmd',
-				'onFindPreviousCmd',
-				'findNext',
-				'findPrevious'
-			];
-		var base = ('gFindBar' in window) ? gFindBar : window ;
-		functions.forEach(function(aFunction) {
-			if (base[aFunction])
-				eval('base.'+aFunction+' = '+base[aFunction].toSource().replace(/getBrowser\(\)/g, newGetBrowser));
-		});
-	},
- 
 	updateFindBar : function(aEvent) 
 	{
+		var bar = document.getElementById('FindToolbar');
+		if (!bar) return;
+
 		var old = aEvent.lastFocused;
 		var oldB;
 		try {
 			oldB = old ? (old.browser ? old.browser : gBrowser ) : null ;
 			if (oldB) {
 				oldB.fastFind.setSelectionModeAndRepaint(Components.interfaces.nsISelectionController.SELECTION_ON);
-
-				if ('gFindBar' in window)
-					gFindBar.highlightDoc(null, null, null, oldB.contentWindow);
-				else
-					highlightDoc(null, null, null, oldB.contentWindow);
+				bar._highlightDoc(null, null, oldB.contentWindow);
 			}
 		}
 		catch(e) {
 		}
 
+		bar._findField.value = b.findString;
 
 		var b = this.activeBrowser;
-
-		var field = document.getElementById('find-field');
-		if (field)
-			field.value = b.findString;
-
-		var bar = document.getElementById('FindToolbar');
-		if (bar) bar.setAttribute('targetbrowser', b.getAttribute('id'));
+		bar.setAttribute('browserid', b.getAttribute('id'));
+		bar.browser = b;
 
 /*
 		var check = document.getElementById('highlight');
 		if (check && check.checked) {
-			if ('gFindBar' in window)
-				gFindBar.toggleHighlight(true);
-			else
-				toggleHighlight(true);
+			gFindBar.toggleHighlight(true);
 		}
 */
 
-		var check = document.getElementById('match-case-status');
+		var check = bar.getElement("match-case-status");
 		if (check)
 			b.fastFind.caseSensitive = check.checked;
 	},
@@ -2977,33 +2930,6 @@ catch(e) {
 	
 	overrideZoomManager : function() 
 	{
-/*
-		ZoomManager.prototype.__defineGetter__('textZoom', function() {
-			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
-			var currentZoom;
-			try {
-				currentZoom = Math.round(markupDocumentViewer.textZoom * 100);
-				if (this.indexOf(currentZoom) == -1) {
-					if (currentZoom != this.factorOther) {
-						this.factorOther = currentZoom;
-						this.factorAnchor = this.factorOther;
-					}
-				}
-			} catch (e) {
-				currentZoom = 100;
-			}
-			return currentZoom;
-		});
-		ZoomManager.prototype.__defineSetter__('textZoom', function(aZoom) {
-			if (aZoom < this.MIN || aZoom > this.MAX)
-				throw Components.results.NS_ERROR_INVALID_ARG;
-
-			var markupDocumentViewer = SplitBrowser.activeBrowser.markupDocumentViewer;
-			alert(SplitBrowser.activeBrowser == gBrowser);
-			markupDocumentViewer.textZoom = aZoom / 100;
-		});
-*/
-
 		window.getMarkupDocumentViewer = function() {
 			return SplitBrowser.activeBrowser.markupDocumentViewer;
 		};
@@ -3160,7 +3086,6 @@ catch(e) {
 			)
 		);
 
-		this.overrideFindBar();
 		this.overrideZoomManager();
 		this.hackForOtherExtensions();
 
@@ -3248,13 +3173,6 @@ catch(e) {
 			'SplitBrowser.activeBrowserAddBookmarkAs();');
 		this.updateCommandElement('Browser:BookmarkAllTabs',
 			'SplitBrowser.activeBrowserBookmarkAllTabs();');
-
-		var bar = document.getElementById('FindToolbar');
-		if (bar && bar.localName == 'findbar') {
-			bar.__defineGetter__('browser', function() {
-				return SplitBrowser.activeBrowser;
-			});
-		}
 	},
 	 
 	updateCommandElement : function(aId, aNewFeature) 
