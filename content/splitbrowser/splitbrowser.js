@@ -1,4 +1,5 @@
 var SplitBrowser = { 
+	useSessionStore : true,
 	
 	get scrollbarSize() { 
 		return this.getPref('splitbrowser.appearance.scrollbar.size');
@@ -408,6 +409,7 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
+		if (this.useSessionStore) this.save();
 		this.updateStatusTimer = null;
 	},
  
@@ -1361,12 +1363,26 @@ var SplitBrowser = {
 	},
 	_SessionStore : null,
  
-	save : function() 
+	save : function(aCount) 
 	{
-		var state = this.getContainerState(document.getElementById('appcontent'));
-		state = state.toSource();
-//		this.SessionStore.setWindowValue(window, 'splitbrowser.state', state);
-		this.setPref('splitbrowser.state', state);
+		try {
+			var state = this.getContainerState(document.getElementById('appcontent'));
+			state = state.toSource();
+			if (this.useSessionStore)
+				this.SessionStore.setWindowValue(window, 'splitbrowser.state', state);
+			else
+				this.setPref('splitbrowser.state', state);
+		}
+		catch(e) {
+			// try again!
+			if (!aCount)
+				aCount = 0;
+			else if (aCount > 10)
+				return;
+			window.setTimeout(function(aSelf) {
+				aSelf.save(aCount);
+			}, 1000, this, aCount++);
+		}
 	},
 	
 	getContainerState : function(aContainer) 
@@ -1755,8 +1771,11 @@ dump(e+'\n');
     
 	load : function() 
 	{
-		var state = /*this.SessionStore.getWindowValue(window, 'splitbrowser.state') ||*/ this.getPref('splitbrowser.state');
-//		this.SessionStore.setWindowValue(window, 'splitbrowser.state', '');
+		var state = this.SessionStore.getWindowValue(window, 'splitbrowser.state') || this.getPref('splitbrowser.state');
+		if (this.useSessionStore) {
+			this.clearPref('splitbrowser.state');
+			this.SessionStore.setWindowValue(window, 'splitbrowser.state', '');
+		}
 		if (!state) return;
 		try {
 			eval('state = '+state);
@@ -3080,6 +3099,7 @@ catch(e) {
 		this.activeSubBrowser = this.mainBrowserBox;
 
 		this.addPrefListener(this);
+		this.observe(window, 'nsPref:changed', 'browser.sessionstore.enabled');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.syncScroll');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
 		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
@@ -3580,7 +3600,8 @@ catch(e) {
 	},
  
 	domains : [ 
-		'splitbrowser'
+		'splitbrowser',
+		'browser.sessionstore.enabled'
 	],
  
 	observe : function(aSubject, aTopic, aPrefstring) 
@@ -3667,6 +3688,10 @@ catch(e) {
 					document.documentElement.setAttribute(attrName, true);
 				else
 					document.documentElement.removeAttribute(attrName);
+				break;
+
+			case 'browser.sessionstore.enabled':
+				this.useSessionStore = this.getPref(aPrefstring);
 				break;
 		}
 	},
