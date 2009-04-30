@@ -411,6 +411,8 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
+		this.undoCache.updateBroadcasters();
+
 		if (this.useSessionStore) this.save();
 		this.updateStatusTimer = null;
 	},
@@ -433,6 +435,11 @@ var SplitBrowser = {
 	get featuresForMultipleTabsBroadcaster() 
 	{
 		return document.getElementById('splitbrowser-featuresForMultipleTabs-broadcaster');
+	},
+ 
+	get undoBroadcaster() 
+	{
+		return document.getElementById('splitbrowser-undo-broadcaster');
 	},
   
 	updateMenu : function(aPopup) 
@@ -1119,9 +1126,9 @@ var SplitBrowser = {
 	undoRemoveSubBrowser : function(aIndex) 
 	{
 		if (!aIndex) aIndex = 0;
-		if (aIndex >= this.undoCache.length) return;
-		var data = this.undoCache[aIndex];
-		this.undoCache.splice(aIndex, 1);
+		var data = this.undoCache.getEntryAt(aIndex);
+		if (!data) return;
+		this.undoCache.removeEntryAt(aIndex);
 		try {
 			eval('state = '+data.state);
 			var box = gBrowser.boxObject;
@@ -1156,8 +1163,9 @@ var SplitBrowser = {
 	},
 	_undoCache : null,
  
-	get undoCount() { 
-		return this.getPref('splitbrowser.undo.max');
+	initUndoList : function(aPopup)
+	{
+		this.undoCache.initUndoList(aPopup);
 	},
   
 	activeBrowserOpenTab : function() 
@@ -3001,6 +3009,8 @@ catch(e) {
   
 	init : function() 
 	{
+		this.undoCache.registerBroadcaster(this.undoBroadcaster);
+
 		document.documentElement.addEventListener('SubBrowserAddRequest', this, true);
 		document.documentElement.addEventListener('SubBrowserAddRequestFromContent', this, true, true);
 		document.documentElement.addEventListener('SubBrowserRemoveRequest', this, true);
@@ -3459,6 +3469,8 @@ catch(e) {
   
 	destroy : function() 
 	{
+		this.undoCache.unregisterBroadcaster(this.undoBroadcaster);
+
 		if (this.getPref('splitbrowser.state.restore'))
 			this.save();
 
@@ -3602,14 +3614,8 @@ catch(e) {
 
 
 			case 'SubBrowserRemoved':
-				if (aEvent.state) {
-					this.undoCache.unshift({
-						title : aEvent.title,
-						icon  : aEvent.icon,
-						state : aEvent.state
-					});
-					this.undoCache.slice(0, this.undoCount);
-				}
+				if (aEvent.state)
+					this.undoCache.addEntry(aEvent.title, aEvent.icon, aEvent.state);
 			case 'SubBrowserAdded':
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':

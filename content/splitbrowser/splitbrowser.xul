@@ -26,6 +26,8 @@
 		disabled="true"/>
 	<broadcaster id="splitbrowser-featuresForMultipleTabs-broadcaster"
 		disabled="true"/>
+	<broadcaster id="splitbrowser-undo-broadcaster"
+		disabled="true"/>
 	<broadcaster id="splitbrowser-syncScroll-broadcaster"
 		checked="true"/>
 </broadcasterset>
@@ -40,6 +42,12 @@
 	<command id="splitbrowser-removeAll-command"
 		oncommand="SplitBrowser.removeAllSubBrowsers();"
 		observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+	<command id="splitbrowser-undo-command"
+		oncommand="SplitBrowser.undoRemoveSubBrowser();"
+		observes="splitbrowser-undo-broadcaster"/>
+	<command id="splitbrowser-undoList-command"
+		oncommand="SplitBrowser.undoRemoveSubBrowser(parseInt(event.target.getAttribute('index')));"
+		observes="splitbrowser-undo-broadcaster"/>
 	<command id="splitbrowser-layout-grid-command"
 		oncommand="
 			var b = SplitBrowser.activeBrowser;
@@ -87,6 +95,20 @@
 				accesskey="&splitbrowser.menu.removeAll.accesskey;"
 				command="splitbrowser-removeAll-command"
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+			<menuseparator id="splitbrowser-toolbarbutton-undo-separator"/>
+			<menuitem id="splitbrowser-toolbarbutton-undo"
+				class="menuitem-iconic splitbrowser-undo-item"
+				label="&splitbrowser.menu.undo.label;"
+				accesskey="&splitbrowser.menu.undo.accesskey;"
+				command="splitbrowser-undo-command"
+				observes="splitbrowser-undo-broadcaster"/>
+			<menu id="splitbrowser-toolbarbutton-undoList"
+				class="menu-iconic splitbrowser-undoList-item"
+				label="&splitbrowser.menu.undoList.label;"
+				observes="splitbrowser-undo-broadcaster">
+				<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
+					command="splitbrowser-undoList-command"/>
+			</menu>
 			<menuseparator id="splitbrowser-toolbarbutton-collapse-separator"/>
 			<menuitem id="splitbrowser-toolbarbutton-collapse-all"
 				class="menuitem-iconic splitbrowser-collapse-all-item"
@@ -206,6 +228,20 @@
 				accesskey="&splitbrowser.menu.removeAll.accesskey;"
 				command="splitbrowser-removeAll-command"
 				observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
+			<menuseparator id="splitbrowser-undo-separator"/>
+			<menuitem id="splitbrowser-undo"
+				class="menuitem-iconic splitbrowser-undo-item"
+				label="&splitbrowser.menu.undo.label;"
+				accesskey="&splitbrowser.menu.undo.accesskey;"
+				command="splitbrowser-undo-command"
+				observes="splitbrowser-undo-broadcaster"/>
+			<menu id="splitbrowser-undoList"
+				class="menu-iconic splitbrowser-undoList-item"
+				label="&splitbrowser.menu.undoList.label;"
+				observes="splitbrowser-undo-broadcaster">
+				<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
+					command="splitbrowser-undoList-command"/>
+			</menu>
 			<menuseparator id="splitbrowser-collapse-separator"/>
 			<menuitem id="splitbrowser-collapse-all"
 				class="menuitem-iconic splitbrowser-collapse-all-item"

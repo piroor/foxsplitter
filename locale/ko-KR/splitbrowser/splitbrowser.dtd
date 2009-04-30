@@ -102,6 +102,10 @@
 <!ENTITY splitbrowser.menu.accesskey "p">
 <!ENTITY splitbrowser.menu.removeAll.label       "분할된 화면 모두 닫기">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
+<!ENTITY splitbrowser.menu.undo.accesskey        "U">
+<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "R">
 <!ENTITY splitbrowser.menu.collapseAll.label     "분할된 화면 모두 감추기">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
 <!ENTITY splitbrowser.menu.expandAll.label       "분할된 화면 모두 보이기">

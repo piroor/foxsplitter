@@ -102,6 +102,10 @@
 <!ENTITY splitbrowser.menu.accesskey "p">
 <!ENTITY splitbrowser.menu.removeAll.label "Close All Split Browsers">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
+<!ENTITY splitbrowser.menu.undo.accesskey        "U">
+<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "R">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Collapse All Split Browsers">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
 <!ENTITY splitbrowser.menu.expandAll.label       "Expand All Split Browsers">

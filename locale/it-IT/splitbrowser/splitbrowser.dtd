@@ -102,6 +102,10 @@
 <!ENTITY splitbrowser.menu.accesskey "d">
 <!ENTITY splitbrowser.menu.removeAll.label "Chiudi tutti i riquadri">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "C">
+<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
+<!ENTITY splitbrowser.menu.undo.accesskey        "U">
+<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "R">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Contrai tutti i riquadri">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "t">
 <!ENTITY splitbrowser.menu.expandAll.label       "Espandi tutti i riquadri">

@@ -104,6 +104,10 @@
 
 <!ENTITY splitbrowser.menu.removeAll.label       "分割したブラウザをすべて閉じる">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
+<!ENTITY splitbrowser.menu.undo.label            "閉じたペインを元に戻す">
+<!ENTITY splitbrowser.menu.undo.accesskey        "u">
+<!ENTITY splitbrowser.menu.undoList.label        "最近閉じたペイン">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "r">
 <!ENTITY splitbrowser.menu.collapseAll.label     "分割したブラウザをすべてたたむ">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
 <!ENTITY splitbrowser.menu.expandAll.label       "分割したブラウザをすべてひろげる">
