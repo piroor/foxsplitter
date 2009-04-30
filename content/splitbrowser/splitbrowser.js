@@ -411,8 +411,6 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
-		this.undoCache.updateBroadcasters();
-
 		if (this.useSessionStore) this.save();
 		this.updateStatusTimer = null;
 	},

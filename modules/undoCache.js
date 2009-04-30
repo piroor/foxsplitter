@@ -6,7 +6,38 @@ const Prefs = Components
 
 var undoCache = {
 
-	entries : [],
+	get entries()
+	{
+		if (!this._entries) {
+			try {
+				if (!Prefs.getBoolPref('splitbrowser.state.restore')) {
+					this._entries = [];
+				}
+				else {
+					var entries = decodeURIComponent(escape(Prefs.getCharPref('splitbrowser.undo.state')));
+					this._entries = entries.split('|')
+							.map(function(aEntry) {
+								try {
+									aEntry = unescape(aEntry);
+									eval('aEntry = '+aEntry);
+								}
+								catch(e) {
+									aEntry = null;
+								}
+								return aEntry;
+							})
+							.filter(function(aEntry) {
+								return aEntry;
+							});
+				}
+			}
+			catch(e) {
+				this._entries = [];
+			}
+		}
+		return this._entries;
+	},
+	_entries : null,
 
 	addEntry : function(aTitle, aIcon, aState)
 	{
@@ -16,6 +47,7 @@ var undoCache = {
 			state : aState
 		});
 		this.entries.slice(0, this.maxCount);
+		this.updateBroadcasters();
 	},
 
 	getEntryAt : function(aIndex)
@@ -28,6 +60,7 @@ var undoCache = {
 	{
 		if (aIndex >= this.entries.length) return;
 		this.entries.splice(aIndex, 1);
+		this.updateBroadcasters();
 	},
 
 	get maxCount()
@@ -40,8 +73,10 @@ var undoCache = {
 
 	registerBroadcaster : function(aBroadcaster)
 	{
-		if (this.broadcasters.indexOf(aBroadcaster) < 0)
+		if (this.broadcasters.indexOf(aBroadcaster) < 0) {
 			this.broadcasters.push(aBroadcaster);
+			this.updateBroadcasters();
+		}
 	},
 
 	unregisterBroadcaster : function(aBroadcaster)
@@ -53,6 +88,7 @@ var undoCache = {
 
 	updateBroadcasters : function()
 	{
+		this.entries;
 		this.broadcasters.forEach(
 			this.entries.length ?
 				function(aBroadcaster) {
@@ -62,6 +98,7 @@ var undoCache = {
 					aBroadcaster.setAttribute('disabled', true);
 				}
 		);
+		this.saveEntries();
 	},
 
 
@@ -83,6 +120,29 @@ var undoCache = {
 
 		range.insertNode(f);
 		range.detach();
+	},
+
+	saveEntries : function()
+	{
+		if (!Prefs.getBoolPref('splitbrowser.state.restore')) return;
+		var entries = this._entries
+				.map(function(aEntry) {
+					try {
+						return escape(aEntry.toSource())
+					}
+					catch(e) {
+						return null;
+					}
+				})
+				.filter(function(aEntry) {
+					return aEntry;
+				})
+				.join('|');
+		try {
+			Prefs.setCharPref('splitbrowser.undo.state', unescape(encodeURIComponent(entries)));
+		}
+		catch(e) {
+		}
 	}
 
 };
