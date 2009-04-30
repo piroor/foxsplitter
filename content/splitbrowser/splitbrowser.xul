@@ -6,6 +6,8 @@
 <?xml-stylesheet href="chrome://splitbrowser/skin/toolbar.css" type="text/css"?>
 <?xml-stylesheet href="chrome://splitbrowser-platform/skin/toolbar.css" type="text/css"?>
 
+<?xul-overlay href="fullScreenCanvas.xul"?>
+
 <!DOCTYPE bindings SYSTEM "chrome://splitbrowser/locale/">
 
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"

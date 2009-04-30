@@ -523,6 +523,8 @@ var SplitBrowser = {
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition, aName) 
 	{
+		fullScreenCanvas.show();
+
 		if (!aURI) aURI = 'about:blank';
 		if (!aPosition) aPosition = this.POSITION_BOTTOM;
 
@@ -577,8 +579,11 @@ var SplitBrowser = {
 				0,
 				sourceSubBrowser.browser,
 				browser.browser,
-				(data.clone ? null : function() { sourceSubBrowser.close(); } )
+				(data.clone ? null : function() { sourceSubBrowser.close(); /* fullScreenCanvas.hide(); <= done by "close()" */ } )
 			);
+		}
+		else {
+			fullScreenCanvas.hide();
 		}
 
 		return browser;
@@ -586,6 +591,7 @@ var SplitBrowser = {
 	
 	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aCopy) 
 	{
+		fullScreenCanvas.show();
 		var b = this.getTabBrowserFromChild(aTab);
 		if (aTab.localName != 'tab')
 			aTab = b.selectedTab;
@@ -599,8 +605,9 @@ var SplitBrowser = {
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); } )
+			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); fullScreenCanvas.hide(); } )
 		);
+		if (aCopy) fullScreenCanvas.hide();
 
 		return browser;
 	},
@@ -811,6 +818,8 @@ var SplitBrowser = {
 	
 	removeSubBrowser : function(aBrowser) 
 	{
+		fullScreenCanvas.show();
+
 		var c = aBrowser.flexibleParent;
 		if (c &&
 			(c.nextSibling ? c.nextSibling.nextSibling : c.previousSibling.previousSibling).contentCollapsed) {
@@ -837,6 +846,8 @@ var SplitBrowser = {
 		browser.parentNode.removeChild(browser);
 
 		this.cleanUpContainer(container);
+
+		fullScreenCanvas.hide();
 	},
 	
 	cleanUpContainer : function(aContainer) 
@@ -1041,10 +1052,12 @@ var SplitBrowser = {
  
 	gatherSubBrowsers : function() 
 	{
+		fullScreenCanvas.show();
 		this._browsers.forEach(function(aSubBrowser) {
 			this.addTabsFromSubBrowserInto(aSubBrowser, gBrowser, true);
 			window.setTimeout(function() {
 				aSubBrowser.close();
+				fullScreenCanvas.hide();
 			}, 0);
 		}, this);
 	},
