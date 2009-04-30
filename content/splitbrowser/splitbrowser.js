@@ -5,11 +5,6 @@ var SplitBrowser = {
 		return this.getPref('splitbrowser.appearance.scrollbar.size');
 	},
  
-	get undoCount() { 
-		return this.getPref('splitbrowser.undo.max');
-	},
-	undoCache : [],
- 
 	get subBrowserToolbarShowDelay() { 
 		return this.getPref('splitbrowser.delay.subbrowser.toolbar.show');
 	},
@@ -1112,6 +1107,35 @@ var SplitBrowser = {
 			}, this);
 		}
 		return newTabs;
+	},
+  
+	undoRemoveSubBrowser(aIndex) 
+	{
+		if (!aIndex) aIndex = 0;
+		if (aIndex >= this.undoCache.length) return;
+		var data = this.undoCache[aIndex];
+		this.undoCache.splice(aIndex, 1);
+		try {
+			eval('state = '+state);
+			var box = gBrowser.boxObject;
+			state = {
+				content : {
+					type   : 'root',
+					width  : Math.round(Math.max(1, box.width) / 2),
+					height : Math.round(Math.max(1, box.height) / 2),
+				},
+				children : [state]
+			};
+			this.buildContent(state, document.getElementById('appcontent'));
+		}
+		catch(e) {
+		}
+	},
+	
+	undoCache : [], 
+ 
+	get undoCount() { 
+		return this.getPref('splitbrowser.undo.max');
 	},
   
 	activeBrowserOpenTab : function() 
