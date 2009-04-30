@@ -583,7 +583,14 @@ var SplitBrowser = {
 				0,
 				sourceSubBrowser.browser,
 				browser.browser,
-				(data.clone ? null : function() { sourceSubBrowser.close(true); /* fullScreenCanvas.hide(); <= done by "close()" */ } )
+				(data.clone ?
+					null :
+					function() {
+						var fromRemote = sourceSubBrowser.ownerDocument != document;
+						sourceSubBrowser.close(true);
+						if (fromRemote) fullScreenCanvas.hide();
+					}
+				)
 			);
 			if (data.clone) fullScreenCanvas.hide();
 		}
