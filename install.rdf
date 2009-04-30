@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{29c4afe1-db19-4298-8785-fcc94d1d6c1d}"
                    em:name="Split Browser"
-                   em:version="0.6.2008112201"
+                   em:version="0.6.2009043001"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
