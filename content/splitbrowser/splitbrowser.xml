@@ -884,30 +884,30 @@ sideBox.removeAttribute('style');
 		context="_child">
 		<xul:menupopup anonid="contextmenu"
 			onpopupshowing="
-				this.parentNode.resetNavigation();
-				this.parentNode.updateContextMenu(event);
+				SplitBrowser.getSubBrowserFromChild(this).resetNavigation();
+				SplitBrowser.getSubBrowserFromChild(this).updateContextMenu(event);
 			"
-			oncommand="this.parentNode.resetNavigation();"
+			oncommand="SplitBrowser.getSubBrowserFromChild(this).resetNavigation();"
 			ondraggesture="event.stopPropagation();">
 			<xul:menuitem class="subbrowser-context-close"
 				label="&splitbrowser.subbrowser.menu.close;"
-				oncommand="this.parentNode.parentNode.close();"/>
+				oncommand="SplitBrowser.getSubBrowserFromChild(this).close();"/>
 			<xul:menuitem class="subbrowser-context-collapse"
 				label="&splitbrowser.subbrowser.menu.collapse;"
-				oncommand="this.parentNode.parentNode.collapse();"/>
+				oncommand="SplitBrowser.getSubBrowserFromChild(this).collapse();"/>
 			<xul:menuitem class="subbrowser-context-expand"
 				label="&splitbrowser.subbrowser.menu.expand;"
-				oncommand="this.parentNode.parentNode.expand();"/>
+				oncommand="SplitBrowser.getSubBrowserFromChild(this).expand();"/>
 			<xul:menuseparator/>
 			<xul:menuitem class="subbrowser-context-openNewTab"
 				label="&splitbrowser.subbrowser.menu.openNewTab;"
-				oncommand="this.parentNode.parentNode.openNewTab();"/>
+				oncommand="SplitBrowser.getSubBrowserFromChild(this).openNewTab();"/>
 			<xul:menuseparator/>
 			<xul:menuitem class="subbrowser-context-syncScroll"
 				label="&splitbrowser.subbrowser.menu.syncScroll;"
 				type="checkbox"
 				autocheck="false"
-				oncommand="this.parentNode.parentNode.toggleSyncScroll();"/>
+				oncommand="SplitBrowser.getSubBrowserFromChild(this).toggleSyncScroll();"/>
 		</xul:menupopup>
 		<xul:hbox flex="1" class="subbrowser-content">
 			<xul:toolbox anonid="subbrowser-toolbox-vertical"
@@ -919,34 +919,35 @@ sideBox.removeAttribute('style');
 				class="subbrowser-toolbar subbrowser-toolbar-vertical"
 				align="center"
 			 	ondraggesture="
-			 		nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.pageDNDObserver);
+			 		SplitBrowser.getSubBrowserFromChild(this).resetNavigation();
+			 		nsDragAndDrop.startDrag(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);
 			 	"
-				ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
-				ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.pageDNDObserver);"
-				onclick="if (event.button == 1) var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleCollapsed();"
-				ondblclick="this.parentNode.parentNode.parentNode.toggleCollapsed();">
+				ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
+				ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
+				onclick="if (event.button == 1) SplitBrowser.getSubBrowserFromChild(this).toggleCollapsed();"
+				ondblclick="SplitBrowser.getSubBrowserFromChild(this).toggleCollapsed();">
 				<xul:toolbarbutton
 					anonid="close-button-vertical"
 					class="tabs-closebutton toolbarbutton-1"
 					tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.close();"
+					oncommand="SplitBrowser.getSubBrowserFromChild(this).close();"
 					ondblclick="event.stopPropagation();"/>
 				<xul:toolbarbutton
 					anonid="collapse-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.collapse();"
+					oncommand="SplitBrowser.getSubBrowserFromChild(this).collapse();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button collapse"/>
 				<xul:toolbarbutton
 					anonid="expand-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.expand();"
+					oncommand="SplitBrowser.getSubBrowserFromChild(this).expand();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button expand"/>
 				<xul:toolbarbutton
 					anonid="syncScroll-button-vertical"
 					tooltiptext="&splitbrowser.subbrowser.syncScroll.tooltip;"
-					oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleSyncScroll();"
+					oncommand="SplitBrowser.getSubBrowserFromChild(this).toggleSyncScroll();"
 					ondblclick="event.stopPropagation();"
 					class="subbrowser-toolbar-item button syncScroll"
 					type="checkbox"
@@ -956,7 +957,7 @@ sideBox.removeAttribute('style');
 					<xul:image class="subbrowser-toolbar-item favicon"
 						anonid="vertical-favicon"
 						validate="never"
-						onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+						onerror="SplitBrowser.getSubBrowserFromChild(this).addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 				</xul:box>
 				<xul:description anonid="vertical-title"
 					class="subbrowser-title subbrowser-vertical-title"
@@ -972,25 +973,23 @@ sideBox.removeAttribute('style');
 					align="center"
 					flex="1"
 				 	ondraggesture="
-				 		var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; };
-						s.resetNavigation();
-				 		nsDragAndDrop.startDrag(event, s.pageDNDObserver);
+				 		SplitBrowser.getSubBrowserFromChild(this).resetNavigation();
+				 		nsDragAndDrop.startDrag(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);
 				 	"
-					ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-					ondragover="nsDragAndDrop.dragOver(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+					ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
+					ondragover="nsDragAndDrop.dragOver(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
 				 	onclick="
-				 		var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; };
 				 		if (event.button == 0 &amp;&amp;
 				 			this.firstChild.getAttribute('selectedIndex') == '0')
-							s.resetNavigation();
+							SplitBrowser.getSubBrowserFromChild(this).resetNavigation();
 				 		if (event.button == 1)
-				 			s.toggleCollapsed();
+				 			SplitBrowser.getSubBrowserFromChild(this).toggleCollapsed();
 				 	"
-					ondblclick="this.parentNode.parentNode.parentNode.parentNode.toggleCollapsed();">
+					ondblclick="SplitBrowser.getSubBrowserFromChild(this).toggleCollapsed();">
 					<xul:toolbarbutton
 						anonid="syncScroll-button-horizontal"
 						tooltiptext="&splitbrowser.subbrowser.syncScroll.tooltip;"
-						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleSyncScroll();"
+						oncommand="SplitBrowser.getSubBrowserFromChild(this).toggleSyncScroll();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button syncScroll"
 						type="checkbox"
@@ -998,8 +997,8 @@ sideBox.removeAttribute('style');
 						xbl:inherits="checked=sync-scroll"/>
 					<xul:stack anonid="toolbar-deck"
 						flex="1"
-						onmouseover="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleNavigationOnHover(true);"
-						onmouseout="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.toggleNavigationOnHover(false);"
+						onmouseover="SplitBrowser.getSubBrowserFromChild(this).toggleNavigationOnHover(true);"
+						onmouseout="SplitBrowser.getSubBrowserFromChild(this).toggleNavigationOnHover(false);"
 						selectedIndex="0">
 						<xul:hbox class="subbrowser-toolbar-content" flex="1" align="center"
 							anonid="toolbar-deck-titlebar">
@@ -1007,8 +1006,8 @@ sideBox.removeAttribute('style');
 								<xul:image class="subbrowser-toolbar-item favicon"
 									anonid="favicon"
 									validate="never"
-									ondraggesture="nsDragAndDrop.startDrag(event, this.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
-									onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+									ondraggesture="nsDragAndDrop.startDrag(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
+									onerror="SplitBrowser.getSubBrowserFromChild(this).addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 							</xul:box>
 							<xul:stack flex="1">
 								<xul:progressmeter class="subbrowser-toolbar-item progress"
@@ -1028,28 +1027,28 @@ sideBox.removeAttribute('style');
 							<xul:toolbarbutton
 								anonid="back-button"
 								tooltiptext="&splitbrowser.subbrowser.goBack.tooltip;"
-								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.goBack();"
+								oncommand="SplitBrowser.getSubBrowserFromChild(this).goBack();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goBack"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="forward-button"
 								tooltiptext="&splitbrowser.subbrowser.goForward.tooltip;"
-								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.goForward();"
+								oncommand="SplitBrowser.getSubBrowserFromChild(this).goForward();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button goForward"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="reload-button"
 								tooltiptext="&splitbrowser.subbrowser.reload.tooltip;"
-								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.reload(event.shiftKey);"
+								oncommand="SplitBrowser.getSubBrowserFromChild(this).reload(event.shiftKey);"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button reload"
 								disabled="true"/>
 							<xul:toolbarbutton
 								anonid="stop-button"
 								tooltiptext="&splitbrowser.subbrowser.stop.tooltip;"
-								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.stop();"
+								oncommand="SplitBrowser.getSubBrowserFromChild(this).stop();"
 								ondblclick="event.stopPropagation();"
 								class="subbrowser-toolbar-item button stop"
 								disabled="true"/>
@@ -1064,9 +1063,9 @@ sideBox.removeAttribute('style');
 									<xul:textbox flex="1"
 										anonid="urlbar"
 										class="subbrowser-toolbar-item urlbar-textbox"
-										ontextentered="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.load(this.value);"
-										ontextreverted="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.load(this.value);"
-										onfocus="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.isUrlbarFocused = true;"
+										ontextentered="SplitBrowser.getSubBrowserFromChild(this).load(this.value);"
+										ontextreverted="SplitBrowser.getSubBrowserFromChild(this).load(this.value);"
+										onfocus="SplitBrowser.getSubBrowserFromChild(this).isUrlbarFocused = true;"
 										onclick="event.stopPropagation();"
 										ondblclick="event.stopPropagation();"
 										sizetopopup="pref"
@@ -1082,7 +1081,7 @@ sideBox.removeAttribute('style');
 											<xul:image class="subbrowser-toolbar-item urlbar-favicon"
 												anonid="urlbar-favicon"
 												validate="never"
-												onerror="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
+												onerror="SplitBrowser.getSubBrowserFromChild(this).addToMissedIconCache(this.getAttribute('src')); this.removeAttribute('src');"/>
 										</xul:box>
 									</xul:textbox>
 								 </xul:stack>
@@ -1092,27 +1091,27 @@ sideBox.removeAttribute('style');
 								class="subbrowser-toolbar-item go"
 								label="&splitbrowser.subbrowser.go.label;"
 								tooltiptext="&splitbrowser.subbrowser.go.tooltip;"
-								oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.go();"
+								oncommand="SplitBrowser.getSubBrowserFromChild(this).go();"
 								ondblclick="event.stopPropagation();"/>
 						</xul:hbox>
 					</xul:stack>
 					<xul:toolbarbutton
 						anonid="collapse-button"
 						tooltiptext="&splitbrowser.subbrowser.collapse.tooltip;"
-						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.collapse();"
+						oncommand="SplitBrowser.getSubBrowserFromChild(this).collapse();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button collapse"/>
 					<xul:toolbarbutton
 						anonid="expand-button"
 						tooltiptext="&splitbrowser.subbrowser.expand.tooltip;"
-						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.expand();"
+						oncommand="SplitBrowser.getSubBrowserFromChild(this).expand();"
 						ondblclick="event.stopPropagation();"
 						class="subbrowser-toolbar-item button expand"/>
 					<xul:toolbarbutton
 						anonid="close-button"
 						class="tabs-closebutton toolbarbutton-1"
 						tooltiptext="&splitbrowser.subbrowser.close.tooltip;"
-						oncommand="var s = this.parentNode; while (s.localName != 'subbrowser') { s = s.parentNode; }; s.close();"
+						oncommand="SplitBrowser.getSubBrowserFromChild(this).close();"
 						ondblclick="event.stopPropagation();"/>
 				</xul:toolbar>
 				</xul:toolbox>
@@ -1131,8 +1130,8 @@ sideBox.removeAttribute('style');
 							}
 							node.parentNode.openNewTab();
 						"
-						onclick="return contentAreaClick(event, SplitBrowser.fieldNormalClicks(this.parentNode.parentNode.parentNode.parentNode.name));"
-						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+						onclick="return contentAreaClick(event, SplitBrowser.fieldNormalClicks(SplitBrowser.getSubBrowserFromChild(this).name));"
+						ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
 						content="about:blank"
 						contenttooltip="aHTMLTooltip"
 						contextmenu="contentAreaContextMenu"
@@ -1144,7 +1143,7 @@ sideBox.removeAttribute('style');
 						flex="1"
 						type="content"
 						onclick="return contentAreaClick(event, false);"
-						ondragdrop="nsDragAndDrop.drop(event, this.parentNode.parentNode.parentNode.parentNode.pageDNDObserver);"
+						ondragdrop="nsDragAndDrop.drop(event, SplitBrowser.getSubBrowserFromChild(this).pageDNDObserver);"
 						content="about:blank"
 						contenttooltip="aHTMLTooltip"
 						contextmenu="contentAreaContextMenu"
@@ -1719,7 +1718,7 @@ sideBox.removeAttribute('style');
 					Components.interfaces.nsIDragService.DRAGDROP_ACTION_LINK;
 			},
 
-			onDragOver : function() {
+			onDragOver : function(aEvent, aFlavour, aDragSession) {
 			},
 
 			onDrop: function (aEvent, aXferData, aDragSession)
@@ -1736,8 +1735,16 @@ sideBox.removeAttribute('style');
 				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
 				if (!check) return;
 
-				if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
-					SplitBrowser.isEventFiredOnTabBar(aEvent)) {
+				if (
+					( // events on the tab bar should be handled by tabbrowser's "_onDrop" method
+						aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
+						SplitBrowser.isEventFiredOnTabBar(aEvent)
+					) ||
+					( // ignore self-drop onto the toolbar
+						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) == this.mOwner &&
+						this.mOwner.isEventFiredOnToolbar(aEvent)
+					)
+					) {
 					return;
 				}
 
@@ -1749,6 +1756,10 @@ sideBox.removeAttribute('style');
 						check.isBottom ||
 						check.isLeft ||
 						check.isRight
+					) &&
+					(
+						this.mOwner.browser.localName != 'tabbrowser' ||
+						!this.mOwner.isEventFiredOnToolbar(aEvent)
 					)
 					) {
 					var tab = SplitBrowser.getTabFromChild(aDragSession.sourceNode);
@@ -1760,7 +1771,14 @@ sideBox.removeAttribute('style');
 					);
 					return;
 				}
-				else if (SplitBrowser.performDropOnTabBrowser(arguments, this.mOwner.browser)) {
+
+				if (SplitBrowser.performDropOnTabBrowser(arguments, this.mOwner.browser)) {
+					return;
+				}
+
+				if (this.mOwner.browser.localName == 'tabbrowser' &&
+					this.mOwner.isEventFiredOnToolbar(aEvent)) {
+					this.mOwner.browser.selectedTab = this.mOwner.browser.addTab(uri);
 					return;
 				}
 
@@ -1772,6 +1790,7 @@ sideBox.removeAttribute('style');
 				var flavourSet = new FlavourSet();
 				flavourSet.appendFlavour('application/x-moz-splitbrowser');
 				flavourSet.appendFlavour('application/x-moz-tabbrowser-tab');
+				flavourSet.appendFlavour('text/x-moz-text-internal');
 				flavourSet.appendFlavour('text/x-moz-url');
 				flavourSet.appendFlavour('text/unicode');
 				flavourSet.appendFlavour('text/plain');
@@ -1780,6 +1799,18 @@ sideBox.removeAttribute('style');
 			}
 		})
 		]]></field>
+		<method name="isEventFiredOnToolbar">
+			<parameter name="aEvent"/>
+			<body><![CDATA[
+				var box = this.toolbar.boxObject;
+				return (
+					box.screenX <= aEvent.screenX &&
+					box.screenX + box.width >= aEvent.screenX &&
+					box.screenY <= aEvent.screenY &&
+					box.screenY + box.height >= aEvent.screenY
+					);
+			]]></body>
+		</method>
 
 
 		<method name="openNewTab">
