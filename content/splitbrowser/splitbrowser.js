@@ -372,7 +372,9 @@ var SplitBrowser = {
 			window.clearTimeout(this.updateStatusTimer);
 			this.updateStatusTimer = null;
 		}
-		this.updateStatusTimer = window.setTimeout('SplitBrowser.updateStatusCallback();', 1);
+		this.updateStatusTimer = window.setTimeout(function(aSelf) {
+			aSelf.updateStatusCallback();
+		}, 1, this);
 	},
 	
 	updateStatusCallback : function() 
@@ -1769,6 +1771,18 @@ dump(e+'\n');
 		return data;
 	},
     
+	saveWithDelay : function() 
+	{
+		if (!this.useSessionStore) return;
+		if (this.saveWithDelayTimer) {
+			window.clearTimeout(this.saveWithDelayTimer);
+			this.saveWithDelayTimer = null;
+		}
+		this.saveWithDelayTimer = window.setTimeout(function(aSelf) {
+			aSelf.save();
+		}, 1000, this);
+	},
+ 
 	load : function() 
 	{
 		var state = this.SessionStore.getWindowValue(window, 'splitbrowser.state') || this.getPref('splitbrowser.state');
@@ -3120,12 +3134,15 @@ catch(e) {
 		catch(e) {
 		}
 
-		window.setTimeout('SplitBrowser.delayedInit();', 100);
+		window.setTimeout(function(aSelf) {
+			aSelf.delayedInit();
 
-		if (this.getPref('splitbrowser.state.restore')) {
-//			this.load();
-			window.setTimeout('SplitBrowser.load();', 0);
-		}
+			if (aSelf.getPref('splitbrowser.state.restore')) {
+				window.setTimeout(function(aSelf) {
+					aSelf.load();
+				}, 100, aSelf);
+			}
+		}, 100, this);
 	},
 	
 	delayedInit : function() 
@@ -3295,6 +3312,7 @@ catch(e) {
 
 		tabContext.addEventListener('popupshowing', this, false);
 		aBrowser.mTabContainer.addEventListener('select', this, false);
+		aBrowser.mPanelContainer.addEventListener('load', this, true);
 	},
  
 	destroyTabBrowser : function(aBrowser) 
@@ -3304,6 +3322,7 @@ catch(e) {
 		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
 		aBrowser.mTabContainer.removeEventListener('select', this, false);
+		aBrowser.mPanelContainer.removeEventListener('load', this, true);
 	},
  
 	hackForOtherExtensions : function() 
@@ -3430,7 +3449,10 @@ catch(e) {
 		switch (aEvent.type)
 		{
 			case 'load':
-				this.init();
+				if (aEvent.currentTarget == window)
+					this.init();
+				else
+					this.saveWithDelay();
 				return;
 
 			case 'unload':
@@ -3533,6 +3555,7 @@ catch(e) {
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':
 				this.updateStatus();
+				this.saveWithDelay();
 				return;
 
 			case 'SubBrowserEnterContentAreaEdge':
@@ -3547,11 +3570,13 @@ catch(e) {
 			case 'SubBrowserFocusMoved':
 				this.updateFindBar(aEvent);
 				this.updateMultipleTabsState();
+				this.saveWithDelay();
 				return;
 
 			case 'TabOpen':
 			case 'TabClose':
 				window.setTimeout('SplitBrowser.updateMultipleTabsState();', 0);
+				this.saveWithDelay();
 				return;
 
 			case 'resize':
@@ -3577,6 +3602,7 @@ catch(e) {
 
 			case 'select': // ontabselect
 				this.hideAddButton(aEvent, true);
+				this.saveWithDelay();
 				return;
 
 
