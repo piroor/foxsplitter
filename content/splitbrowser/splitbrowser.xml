@@ -1687,7 +1687,7 @@ sideBox.removeAttribute('style');
 		({
 			mOwner : this,
 
-			onDragStart: function (aEvent, aXferData, aDragAction)
+			onDragStart : function (aEvent, aXferData, aDragAction)
 			{
 				var value = this.mOwner.src;
 				if (!value) return;
@@ -1721,7 +1721,7 @@ sideBox.removeAttribute('style');
 			onDragOver : function(aEvent, aFlavour, aDragSession) {
 			},
 
-			onDrop: function (aEvent, aXferData, aDragSession)
+			onDrop : function (aEvent, aXferData, aDragSession)
 			{
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
@@ -1738,7 +1738,7 @@ sideBox.removeAttribute('style');
 				if (
 					( // events on the tab bar should be handled by tabbrowser's "_onDrop" method
 						aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
-						SplitBrowser.isEventFiredOnTabBar(aEvent)
+						SplitBrowser.isEventFiredOnTabbar(aEvent)
 					) ||
 					( // ignore self-drop onto the toolbar
 						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) == this.mOwner &&
@@ -1785,7 +1785,7 @@ sideBox.removeAttribute('style');
 				this.mOwner.load(uri);
 			},
 
-			getSupportedFlavours: function ()
+			getSupportedFlavours : function ()
 			{
 				var flavourSet = new FlavourSet();
 				flavourSet.appendFlavour('application/x-moz-splitbrowser');

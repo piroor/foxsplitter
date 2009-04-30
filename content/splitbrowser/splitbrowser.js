@@ -507,7 +507,7 @@ var SplitBrowser = {
 		return (aEvent.type.indexOf('key') == 0 || aEvent.originalTarget.localName == 'key');
 	},
  
-	isEventFiredOnTabBar : function(aEvent, aTabBrowser) 
+	isEventFiredOnTabbar : function(aEvent, aTabBrowser) 
 	{
 		if (!aTabBrowser || aTabBrowser.localName != 'tabbrowser') return false;
 		var box = aTabBrowser.mTabContainer;
@@ -2530,7 +2530,7 @@ catch(e) {
 		if (!check) return true;
 
 		if (xferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
-			this.isEventFiredOnTabBar(event)) {
+			this.isEventFiredOnTabbar(event)) {
 			return;
 		}
 
