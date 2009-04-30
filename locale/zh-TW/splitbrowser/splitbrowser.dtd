@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general "一般">
 
 <!ENTITY splitbrowser.general.caption "一般">
-<!ENTITY splitbrowser.state.restore "儲存分割瀏覽區狀態">
 <!ENTITY splitbrowser.subbrowser.autoFocus "滑鼠經過時自動切換焦點到瀏覽區">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "切換焦點到瀏覽區的延遲時間">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after "毫秒">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "垂直排列所有分頁">
 <!ENTITY splitbrowser.show.tab.context.layout.y "水平排列所有分頁">
 <!ENTITY splitbrowser.show.tab.context.gather "集結此處所有的分割瀏覽區到各分頁">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "儲存分割瀏覽區狀態">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

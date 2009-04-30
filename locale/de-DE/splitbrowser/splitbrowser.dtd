@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general         "Allgemein">
 
 <!ENTITY splitbrowser.general.caption                   "Allgemein">
-<!ENTITY splitbrowser.state.restore                     "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
 <!ENTITY splitbrowser.subbrowser.autoFocus              "Geteilte Browser-Ansichten beim Überfahren mit der Maus fokussieren">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Automatisch fokussieren nach ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x      "Alle Tabs in geteilten Ansichten senkrecht anordnen">
 <!ENTITY splitbrowser.show.tab.context.layout.y      "Alle Tabs in geteilten Ansichten waagrecht anordnen">
 <!ENTITY splitbrowser.show.tab.context.gather        "Alle geteilten Ansichten in Tabs öffnen">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

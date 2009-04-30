@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "Általános">
 
 <!ENTITY splitbrowser.general.caption      "Általános">
-<!ENTITY splitbrowser.state.restore        "Felosztás állapotának mentése">
 <!ENTITY splitbrowser.subbrowser.autoFocus "Automatikus előtérbe helyezés">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Az előtérbe helyezés késleltetése ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ezredmásodperc.">
@@ -48,6 +47,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x    "Lapok felosztása függőlegesen">
 <!ENTITY splitbrowser.show.tab.context.layout.y    "Lapok felosztása vízszintesen">
 <!ENTITY splitbrowser.show.tab.context.gather      "Felosztott ablakok összegyűjtése ide lapokként">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "Felosztás állapotának mentése">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

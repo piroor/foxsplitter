@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general "常规">
 
 <!ENTITY splitbrowser.general.caption "常规">
-<!ENTITY splitbrowser.state.restore "保持拆分窗口的位置">
 <!ENTITY splitbrowser.subbrowser.autoFocus "鼠标悬停时自动获得窗口焦点">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "延迟:">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after "毫秒之后获得焦点">
@@ -29,6 +28,13 @@
 <!ENTITY splitbrowser.show.collapseexpand "在拆分窗口中显示&quot;折叠&quot;/&quot;展开&quot;工具栏按钮">
 <!ENTITY splitbrowser.tabs.autoHide "总是在拆分的窗口中显示标签栏">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "总是在拆分的窗口中显示导航工具">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "保持拆分窗口的位置">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 <!ENTITY splitbrowser.tab.target "合并">

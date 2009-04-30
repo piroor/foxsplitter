@@ -71,6 +71,12 @@ var undoCache = {
 		return Math.min(MAX_COUNT, Math.max(MIN_COUNT, Prefs.getIntPref('splitbrowser.undo.max')));
 	},
 
+	clearEntries : function()
+	{
+		this._entries = [];
+		this._onChange();
+	},
+
 
 	_broadcasters : [],
 

@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "全般">
 
 <!ENTITY splitbrowser.general.caption     "全般">
-<!ENTITY splitbrowser.state.restore       "分割ブラウザの状態を保存する">
 
 <!ENTITY splitbrowser.subbrowser.autoFocus "マウスオーバーで分割されたブラウザに自動的にフォーカスする">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "ブラウザの上に">
@@ -48,6 +47,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "すべてのタブを横に並べる">
 <!ENTITY splitbrowser.show.tab.context.layout.y   "すべてのタブを縦に並べる">
 <!ENTITY splitbrowser.show.tab.context.gather          "すべての分割したブラウザをタブに集める">
+
+
+<!ENTITY splitbrowser.tab.session         "状態の保存">
+<!ENTITY splitbrowser.state.restore       "分割ブラウザの状態を保存する">
+<!ENTITY splitbrowser.undo.max.before     "閉じたペインを">
+<!ENTITY splitbrowser.undo.max.after      "回まで元に戻せるようにする">
+<!ENTITY splitbrowser.undo.clearCache     "キャッシュを消去">
 
 
 

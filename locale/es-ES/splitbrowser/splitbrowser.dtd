@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "General">
 
 <!ENTITY splitbrowser.general.caption     "General">
-<!ENTITY splitbrowser.state.restore       "Guardar estado de las ventanas divididas">
 <!ENTITY splitbrowser.subbrowser.autoFocus "Establecer foco automáticamente en las ventanas al colocar el ratón encima">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Establecer foco luego de">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "mseg">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "Mosaico vertical todas las pestañas">
 <!ENTITY splitbrowser.show.tab.context.layout.y   "Mosaico horizontal todas las pestañas">
 <!ENTITY splitbrowser.show.tab.context.gather          "Deshacer ventanas divididas">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "Guardar estado de las ventanas divididas">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

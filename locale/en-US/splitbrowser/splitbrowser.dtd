@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "General">
 
 <!ENTITY splitbrowser.general.caption     "General">
-<!ENTITY splitbrowser.state.restore       "Save state of split browsers">
 <!ENTITY splitbrowser.subbrowser.autoFocus "Auto-focus to browsers on mouseover">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Focus to the browser after ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "Tile all tabs Vertically">
 <!ENTITY splitbrowser.show.tab.context.layout.y   "Tile all tabs Horizontally">
 <!ENTITY splitbrowser.show.tab.context.gather          "Gather all split browsers here as tabs">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "Save state of split browsers">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

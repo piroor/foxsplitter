@@ -13,9 +13,6 @@
 
 <prefpane id="prefpane-general" label="&splitbrowser.tab.general;">
 	<preferences>
-		<preference id="splitbrowser.state.restore"
-			name="splitbrowser.state.restore"
-			type="bool"/>
 		<preference id="splitbrowser.subbrowser.autoFocus"
 			name="splitbrowser.subbrowser.autoFocus"
 			type="bool"/>
@@ -41,9 +38,6 @@
 
 	<vbox>
 
-	<checkbox id="splitbrowser.state.restore-check" flex="1"
-		label="&splitbrowser.state.restore;"
-		preference="splitbrowser.state.restore"/>
 	<checkbox id="splitbrowser.subbrowser.autoFocus-check" flex="1"
 		label="&splitbrowser.subbrowser.autoFocus;"
 		preference="splitbrowser.subbrowser.autoFocus"/>
@@ -216,6 +210,37 @@
 
 </prefpane>
 
-<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js"/>
+<prefpane id="prefpane-session" label="&splitbrowser.tab.session;">
+	<preferences>
+		<preference id="splitbrowser.state.restore"
+			name="splitbrowser.state.restore"
+			type="bool"/>
+		<preference id="splitbrowser.undo.max"
+			name="splitbrowser.undo.max"
+			type="int"/>
+	</preferences>
+
+	<checkbox id="splitbrowser.state.restore-check" flex="1"
+		label="&splitbrowser.state.restore;"
+		preference="splitbrowser.state.restore"/>
+	<separator/>
+	<hbox align="center">
+		<label value="&splitbrowser.undo.max.before;"
+			control="splitbrowser.undo.max-textbox"/>
+		<textbox id="splitbrowser.undo.max-textbox" style="width:4em;"
+			preference="splitbrowser.undo.max"
+			type="number" min="0" max="1000" increment="1"/>
+		<label value="&splitbrowser.undo.max.after;"
+			control="splitbrowser.undo.max-textbox"/>
+	</hbox>
+	<hbox align="center">
+		<button label="&splitbrowser.undo.clearCache;"
+			oncommand="undoCache.clearEntries();"
+			flex="1"/>
+	</hbox>
+
+</prefpane>
+
+<script type="application/x-javascript" src="config.js"/>
 
 </prefwindow>

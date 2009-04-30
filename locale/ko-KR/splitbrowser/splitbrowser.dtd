@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "일반">
 
 <!ENTITY splitbrowser.general.caption     "일반">
-<!ENTITY splitbrowser.state.restore       "화면 분할 상태 저장">
 <!ENTITY splitbrowser.subbrowser.autoFocus "마우스가 위치하면 자동으로 초점 맞추기">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "초점 맞추기 대기 시간: ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "밀리초">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "모든 탭을 수직 바둑판식으로 보이기">
 <!ENTITY splitbrowser.show.tab.context.layout.y "모든 탭을 수평 바둑판식으로 보이기">
 <!ENTITY splitbrowser.show.tab.context.gather           "모든 분할 화면을 탭으로 보이기">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "화면 분할 상태 저장">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 

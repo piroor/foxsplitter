@@ -3,7 +3,6 @@
 <!ENTITY splitbrowser.tab.general     "Generale">
 
 <!ENTITY splitbrowser.general.caption     "Generale">
-<!ENTITY splitbrowser.state.restore       "Salva lo stato dei riquadri">
 <!ENTITY splitbrowser.subbrowser.autoFocus "Seleziona automaticamente i riquadri al passaggio del mouse">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "seleziona il riquadro dopo ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
@@ -47,6 +46,13 @@
 <!ENTITY splitbrowser.show.tab.context.layout.x "Affianca tutte le schede verticalmente">
 <!ENTITY splitbrowser.show.tab.context.layout.y   "Affianca tutte le schede orizzontalmente">
 <!ENTITY splitbrowser.show.tab.context.gather          "Raggruppa qui come schede tutti i riquadri">
+
+
+<!ENTITY splitbrowser.tab.session         "State">
+<!ENTITY splitbrowser.state.restore       "Salva lo stato dei riquadri">
+<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after      "times">
+<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
 
 
 
