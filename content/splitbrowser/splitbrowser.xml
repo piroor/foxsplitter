@@ -1718,7 +1718,17 @@ sideBox.removeAttribute('style');
 					Components.interfaces.nsIDragService.DRAGDROP_ACTION_LINK;
 			},
 
-			onDragOver : function(aEvent, aFlavour, aDragSession) {
+			onDragOver : function(aEvent, aFlavour, aDragSession)
+			{
+			},
+
+			canDrop : function(aEvent, aDragSession)
+			{
+				return (
+						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) != this.mOwner ||
+						(!SplitBrowser.isEventFiredOnTabbar(aEvent) &&
+						!this.mOwner.isEventFiredOnToolbar(aEvent))
+					);
 			},
 
 			onDrop : function (aEvent, aXferData, aDragSession)
@@ -1740,7 +1750,7 @@ sideBox.removeAttribute('style');
 						aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
 						SplitBrowser.isEventFiredOnTabbar(aEvent)
 					) ||
-					( // ignore self-drop onto the toolbar
+					( // ignore self-drop onto the toolbar (why we cannot prevent it by "canDrop()"...?)
 						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) == this.mOwner &&
 						this.mOwner.isEventFiredOnToolbar(aEvent)
 					)

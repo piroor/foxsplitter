@@ -2391,6 +2391,10 @@ try{
 				}
 			}
 		}
+		else if (aXferData.flavour.contentType == 'application/x-moz-tabbrowser-tab') {
+			uri = aXferData.data.linkedBrowser.currentURI;
+			uri = uri ? uri.spec : 'about:blank' ;
+		}
 		else {
 			// "window.retrieveURLFromData()" is old implementation
 			uri = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
@@ -2495,7 +2499,8 @@ catch(e) {
 		}
 
 		var draggedSubBrowser = this.getSubBrowserFromChild(dragSession.sourceNode);
-		if (draggedSubBrowser) {
+		var droppedSubBrowser = this.getSubBrowserFromChild(aTabBrowser);
+		if (draggedSubBrowser && draggedSubBrowser != droppedSubBrowser) {
 			var tabs = this.addTabsFromSubBrowserInto(draggedSubBrowser, aTabBrowser, !isCopy);
 			if (tabs.length < 1) return false;
 			aTabBrowser.selectedTab = tabs[0];
@@ -2505,6 +2510,17 @@ catch(e) {
 					draggedSubBrowser.close();
 				}, 0);
 			}
+			return true;
+		}
+
+		// self-drop: do nothing!
+		if (
+			!isCopy &&
+			!oldTab &&
+			draggedSubBrowser == droppedSubBrowser
+			) {
+			aEvent.preventDefault();
+			aEvent.stopPropagation();
 			return true;
 		}
 
