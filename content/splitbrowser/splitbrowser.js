@@ -1109,7 +1109,7 @@ var SplitBrowser = {
 		return newTabs;
 	},
   
-	undoRemoveSubBrowser(aIndex) 
+	undoRemoveSubBrowser : function(aIndex) 
 	{
 		if (!aIndex) aIndex = 0;
 		if (aIndex >= this.undoCache.length) return;
