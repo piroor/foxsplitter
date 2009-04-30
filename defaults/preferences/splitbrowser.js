@@ -1,4 +1,6 @@
 pref("splitbrowser.state.restore",            true);
+pref("splitbrowser.undo.state",               "");
+pref("splitbrowser.undo.max",                 10);
 pref("splitbrowser.tab.closetab",             false);
 pref("splitbrowser.tabs.autoHide",            true);
 pref("splitbrowser.subbrowser.autoFocus",     false);

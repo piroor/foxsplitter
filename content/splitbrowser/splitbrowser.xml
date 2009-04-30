@@ -1289,9 +1289,11 @@ sideBox.removeAttribute('style');
 		</method>
 
 		<method name="close">
+			<parameter name="aPreventRestore"/>
 			<body><![CDATA[
 				var event = document.createEvent('Events');
 				event.initEvent('SubBrowserRemoveRequest', false, true);
+				event.canRestore = !aPreventRestore;
 				this.dispatchEvent(event);
 			]]></body>
 		</method>
@@ -2059,7 +2061,31 @@ sideBox.removeAttribute('style');
 
 
 		<method name="destroy">
+			<parameter name="aPreventRestore"/>
 			<body><![CDATA[
+				var state = !aPreventRestore ? SplitBrowser.getContainerState(this.parentContainer) : null ;
+				if (state) {
+					let box = this.boxObject;
+					let main = gBrowser.boxObject;
+					if (window.getComputedStyle(this.parentContainer.parentNode, null).getPropertyValue('-moz-box-orient') == 'horizontal') {
+						if (box.screenX + box.width < main.screenX)
+							state.position = SplitBrowser.POSITION_LEFT;
+						else
+							state.position = SplitBrowser.POSITION_RIGHT;
+					}
+					else {
+						if (box.screenY + box.height < main.screenY)
+							state.position = SplitBrowser.POSITION_TOP;
+						else
+							state.position = SplitBrowser.POSITION_BOTTOM;
+					}
+					state.width = box.width;
+					state.height = box.height;
+					state.collapsed = this.contentCollapsed;
+				}
+				var title = this.title.getAttribute('value');
+				var icon  = this.mIconURL;
+
 				if (this.focused) {
 					gBrowser.contentWindow.focus();
 				}
@@ -2116,6 +2142,9 @@ sideBox.removeAttribute('style');
 
 				var newEvent = document.createEvent('Events');
 				newEvent.initEvent('SubBrowserRemoved', false, true);
+				newEvent.title = title || '';
+				newEvent.icon  = icon || '';
+				newEvent.state = state ? state.toSource() : '' ;
 				document.documentElement.dispatchEvent(newEvent);
 
 				b.parentSubBrowser = null;

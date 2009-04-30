@@ -5,6 +5,11 @@ var SplitBrowser = {
 		return this.getPref('splitbrowser.appearance.scrollbar.size');
 	},
  
+	get undoCount() { 
+		return this.getPref('splitbrowser.undo.max');
+	},
+	undoCache : [],
+ 
 	get subBrowserToolbarShowDelay() { 
 		return this.getPref('splitbrowser.delay.subbrowser.toolbar.show');
 	},
@@ -583,7 +588,7 @@ var SplitBrowser = {
 				0,
 				sourceSubBrowser.browser,
 				browser.browser,
-				(data.clone ? null : function() { sourceSubBrowser.close(); /* fullScreenCanvas.hide(); <= done by "close()" */ } )
+				(data.clone ? null : function() { sourceSubBrowser.close(true); /* fullScreenCanvas.hide(); <= done by "close()" */ } )
 			);
 			if (data.clone) fullScreenCanvas.hide();
 		}
@@ -824,7 +829,7 @@ var SplitBrowser = {
   
 /* remove sub-browser (unsplit) */ 
 	
-	removeSubBrowser : function(aBrowser) 
+	removeSubBrowser : function(aBrowser, aIsMoving) 
 	{
 		fullScreenCanvas.show();
 
@@ -850,7 +855,7 @@ var SplitBrowser = {
 			}
 		}
 
-		browser.destroy();
+		browser.destroy(aIsMoving);
 		browser.parentNode.removeChild(browser);
 
 		this.cleanUpContainer(container);
@@ -1064,7 +1069,7 @@ var SplitBrowser = {
 		this._browsers.forEach(function(aSubBrowser) {
 			this.addTabsFromSubBrowserInto(aSubBrowser, gBrowser, true);
 			window.setTimeout(function() {
-				aSubBrowser.close();
+				aSubBrowser.close(true);
 				fullScreenCanvas.hide();
 			}, 0);
 		}, this);
@@ -1869,7 +1874,7 @@ alert(e+'\n\n'+state);
 		var spacer = document.createElement('spacer');
 		spacer.setAttribute('flex', 1);
 		aState.children.forEach(function(aChild) {
-			container = SplitBrowser.addContainerTo(
+			container = this.addContainerTo(
 				aContainer,
 				aChild.position,
 				content,
@@ -1878,8 +1883,8 @@ alert(e+'\n\n'+state);
 			);
 			if (aChild.collapsed)
 				(aChild.position & this.POSITION_BEFORE ? container.nextSibling : container.previousSibling).setAttribute('state', 'collapsed');
-			SplitBrowser.buildContent(aChild, container);
-		});
+			this.buildContent(aChild, container);
+		}, this);
 
 		if (content && content.localName == 'spacer') {
 			if (content.nextSibling)
@@ -2544,7 +2549,7 @@ catch(e) {
 			this.selectNewTabsAfterDrop(tabs, draggedSubBrowser);
 			if (!isCopy) {
 				window.setTimeout(function() {
-					draggedSubBrowser.close();
+					draggedSubBrowser.close(true);
 				}, 0);
 			}
 			return true;
@@ -2667,7 +2672,7 @@ catch(e) {
 		}
 		if (aIsCloseAll && b) {
 			b = this.getSubBrowserFromChild(b);
-			if (b) b.close();
+			if (b) b.close(true);
 		}
 	},
   
@@ -3263,7 +3268,7 @@ catch(e) {
 				<![CDATA[(function(aSelf) {
 					var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf);
 					if (subbrowser) {
-						subbrowser.close();
+						subbrowser.close(true);
 					}
 					else if (aSelf.__splitbrowser__swappingLastMainPane) {
 						return $1;
@@ -3278,7 +3283,7 @@ catch(e) {
 				<![CDATA[(function(aSelf) {
 					var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf);
 					if (subbrowser) {
-						subbrowser.close();
+						subbrowser.close(true);
 					}
 					else if (aSelf.__splitbrowser__swappingLastMainPane) {
 						return $1;
@@ -3534,9 +3539,9 @@ catch(e) {
 			case 'SubBrowserRemoveRequest':
 				window.setTimeout('SplitBrowser.hideAddButton();', 0);
 				this.destroyTabBrowser((aEvent.originalTarget || aEvent.target).browser);
-				window.setTimeout(function(aSelf, aSubBrowser) {
-					aSelf.removeSubBrowser(aSubBrowser);
-				}, 0, this, aEvent.originalTarget || aEvent.target);
+				window.setTimeout(function(aSelf, aSubBrowser, aPreventRestore) {
+					aSelf.removeSubBrowser(aSubBrowser, aPreventRestore);
+				}, 0, this, aEvent.originalTarget || aEvent.target, !aEvent.canRestore);
 				return;
 
 			case 'SubBrowserRemoveRequestFromContent':
@@ -3550,8 +3555,16 @@ catch(e) {
 				return;
 
 
-			case 'SubBrowserAdded':
 			case 'SubBrowserRemoved':
+				if (aEvent.state) {
+					this.undoCache.unshift({
+						title : aEvent.title,
+						icon  : aEvent.icon,
+						state : aEvent.state
+					});
+					this.undoCache.slice(0, this.undoCount);
+				}
+			case 'SubBrowserAdded':
 			case 'SubBrowserContentCollapsed':
 			case 'SubBrowserContentExpanded':
 				this.updateStatus();
