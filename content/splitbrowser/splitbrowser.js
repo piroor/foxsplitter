@@ -3302,9 +3302,18 @@ catch(e) {
 			).replace(
 				'aOtherTab.ownerDocument.defaultView.getBrowser()',
 				'SplitBrowser.getTabBrowserFromChild(aOtherTab)'
-			).replace(
-				'aOtherTab.ownerDocument.defaultView.close();',
-				'var subbrowser = SplitBrowser.getSubBrowserFromChild(aOtherTab); if (subbrowser) { subbrowser.close(); } else if (aOtherTab.ownerDocument.defaultView != window) { $&; }'
+			));
+		}
+		if ('_beginRemoveTab' in aBrowser) {
+			eval('aBrowser._beginRemoveTab = '+aBrowser._beginRemoveTab.toSource().replace(
+				/((window.)?closeWindow\([^\)]*\))/,
+				'(function(aSelf) { var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf); if (subbrowser) { subbrowser.close(); return false; } else { return $1; }})(this)'
+			));
+		}
+		if ('_endRemoveTab' in aBrowser) {
+			eval('aBrowser._endRemoveTab = '+aBrowser._endRemoveTab.toSource().replace(
+				/((window.)?closeWindow\([^\)]*\))/,
+				'(function(aSelf) { var subbrowser = SplitBrowser.getSubBrowserFromChild(aSelf); if (subbrowser) { subbrowser.close(); return false; } else { return $1; }})(this)'
 			));
 		}
 
