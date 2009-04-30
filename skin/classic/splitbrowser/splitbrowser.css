@@ -89,13 +89,6 @@
 	background-image: url(./small/left-gray.png);
 }
 
-#splitbrowser-add-button-panel {
-	margin: 0;
-	padding: 0;
-	border: none 0;
-	background: transparent !important;
-}
-
 
 
 .subbrowser-toolbar-item.urlbar-box

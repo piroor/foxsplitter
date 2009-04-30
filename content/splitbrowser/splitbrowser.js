@@ -1,5 +1,5 @@
 var SplitBrowser = { 
-	 
+	
 	get scrollbarSize() { 
 		return this.getPref('splitbrowser.appearance.scrollbar.size');
 	},
@@ -18,7 +18,7 @@ var SplitBrowser = {
 	get shouldMoveSplitTab() { 
 		return this.getPref('splitbrowser.tab.closetab');
 	},
- 	
+ 
 	get isLinux() 
 	{
 		return (navigator.platform.indexOf('Linux') > -1);
@@ -1574,7 +1574,7 @@ var SplitBrowser = {
 			userInput : this.serializeUserInput(aBrowser.contentWindow)
 		};
 	},
-	 
+	
 	storePosition : function(aFrame, aEntry) 
 	{
 		aEntry.x = aFrame.scrollX;
@@ -1907,7 +1907,7 @@ alert(e+'\n\n'+state);
 			}
 		}
 	},
-	 
+	
 	restorePosition : function(aFrame, aEntry) 
 	{
 		aFrame.scrollTo(aEntry.x, aEntry.y);
@@ -2091,11 +2091,11 @@ alert(e+'\n\n'+state);
 	get addButtonHideDelay() {
 		return this.getPref('splitbrowser.delay.addbuttons.hide');
 	},
-	get addButtonFadeDelay() {
+	get addButtonFadeDuration() {
 		return this.getPref('splitbrowser.delay.addbuttons.fade');
 	},
  
-	showAddButton : function(aEvent, aJustNow) 
+	showAddButton : function(aEvent) 
 	{
 		if (this.addButtonIsShown) {
 			if (this.hideAddButtonTimer)
@@ -2117,16 +2117,16 @@ alert(e+'\n\n'+state);
 
 		this.addButtonIsShown = true;
 
-		this.hideAddButton(null, true);
+		this.hideAddButton();
 
 		var box = node.contentAreaSizeObject;
 		if (!box) return;
 
 		var button = this.addButton;
-		this.setButtonSizeAndPosition(aEvent);
 		button.targetSubBrowser = node;
 
-		this.showHideAddButton(true, aJustNow);
+		this.setButtonSizeAndPosition(aEvent);
+		this.showHideAddButton(true, aEvent);
 
 		this.addButtonIsShown = true;
 
@@ -2157,7 +2157,7 @@ alert(e+'\n\n'+state);
 		}
 
 		if (aEvent.firedBy.indexOf('drag') == 0) {
-			this.showAddButton(aEvent, true);
+			this.showAddButton(aEvent);
 		}
 		else if (aEvent.modifierKeyPressed) {
 			this.showAddButton(aEvent);
@@ -2166,19 +2166,19 @@ alert(e+'\n\n'+state);
 			this.showAddButtonTimer = window.setTimeout(this.delayedShowAddButtonCallback, this.addButtonShowDelay, this, aEvent);
 		}
 	},
-	 
+	
 	delayedShowAddButtonCallback : function(aThis, aEvent) 
 	{
 		aThis.showAddButton(aEvent);
 	},
    
-	hideAddButton : function(aEvent, aJustNow) 
+	hideAddButton : function(aEvent) 
 	{
 		this.stopDelayedHideAddButtonTimer();
 		if (!this.addButtonIsShown) return;
 
 		var button = this.addButton;
-		this.showHideAddButton(false, aJustNow);
+		this.showHideAddButton(false);
 		button.targetSubBrowser = null;
 
 		if (aEvent && aEvent.force) {
@@ -2197,7 +2197,7 @@ alert(e+'\n\n'+state);
 		this.stopDelayedHideAddButtonTimer();
 		this.hideAddButtonTimer = window.setTimeout(this.delayedHideAddButtonCallback, this.addButtonHideDelay, this);
 	},
-	 
+	
 	delayedHideAddButtonCallback : function(aThis) 
 	{
 		aThis.stopDelayedHideAddButtonTimer();
@@ -2210,45 +2210,89 @@ alert(e+'\n\n'+state);
 		this.hideAddButtonTimer = null;
 	},
    
-	showHideAddButton : function(aShow, aJustNow) 
+	showHideAddButton : function(aShow, aEvent) 
 	{
 		var button = this.addButton;
-		if (button.showHideAddButtonTimer) {
-			window.clearInterval(button.showHideAddButtonTimer);
-			button.showHideAddButtonTimer = null;
+		if (button.animationTask)
+			window['piro.sakura.ne.jp'].animationManager.removeTask(button.animationTask);
+
+		this.addButtonIsActive = false;
+		if (aShow) {
+			let box  = aEvent.targetSubBrowser.contentAreaSizeObject;
+			let size = this.addButtonSize;
+
+			let x, y, pos,
+				w = size,
+				h = size;
+			if (aEvent.isTop) {
+				pos = 'top';
+				w = box.areaWidth;
+				x = box.areaX;
+				y = box.y;
+			}
+			else if (aEvent.isBottom) {
+				pos = 'bottom';
+				w = box.areaWidth;
+				x = box.areaX;
+				y = box.y + box.height - size;
+			}
+			else if (aEvent.isLeft) {
+				pos = 'left';
+				h = box.areaHeight;
+				x = box.x;
+				y = box.areaY;
+			}
+			else if (aEvent.isRight) {
+				pos = 'right';
+				h = box.areaHeight;
+				x = box.x + box.width - size;
+				y = box.areaY;
+			}
+
+			button.parentNode.hidePopup();
+			button.className = 'splitbrowser-add-button '+pos;
+			button.buttonPos = pos;
+			button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
+
+			button.style.opacity = 0;
+			button.style.width = (button.width = w)+'px';
+			button.style.height = (button.height = h)+'px';
+
+			button.parentNode.style.border = '1px transparent solid'; // hack for correct rendering
+
+			let rootBox = document.documentElement.boxObject;
+			// "-1" is for the transparent border
+			button.parentNode.openPopupAtScreen(
+				x + rootBox.screenX - 1,
+				y + rootBox.screenY - 1,
+				false
+			);
 		}
-		if (aJustNow) {
-			this.showHideAddButtonInternal(aShow);
-			button.style.opacity = 1;
-			this.addButtonIsActive = aShow;
-			this.addButtonIsShown = aShow;
-		}
-		else {
-			this.addButtonIsActive = false;
-			this.initAddButtonAnimation(aShow);
-			this.showHideAddButtonInternal(true);
-			button.showHideAddButtonTimer = window.setInterval(this.showHideAddButtonCallback, 10, this, aShow);
-		}
+
+		var self = this;
+		button.animationTask = function(aTime, aBeginningValue, aTotalChange, aDuration) {
+			var opacity;
+			if (aTime >= aDuration) {
+				delete button.animationTask;
+				button.style.opacity = aShow ? 1 : 0 ;
+				if (!aShow) button.parentNode.hidePopup();
+				self.addButtonIsActive = aShow;
+				self.addButtonIsShown = aShow;
+				return true;
+			}
+			else {
+				opacity = aTime / aDuration;
+				if (!aShow) opacity = 1 - opacity;
+				button.style.opacity = opacity;
+				return false;
+			}
+		};
+		window['piro.sakura.ne.jp'].animationManager.addTask(
+			button.animationTask,
+			0, 0, this.addButtonFadeDuration
+		);
 	},
-	
-	showHideAddButtonCallback : function(aSelf, aShow) 
-	{
-		var button = aSelf.addButton;
-		var delta = new Date().getTime() - button.showHideAddButtonStart;
-		if (delta >= aSelf.addButtonFadeDelay) {
-			button.style.opacity = aShow ? 1 : 0 ;
-			aSelf.showHideAddButtonInternal(aShow);
-			window.clearInterval(button.showHideAddButtonTimer);
-			button.showHideAddButtonTimer = null;
-			aSelf.addButtonIsActive = aShow;
-			aSelf.addButtonIsShown = aShow;
-		}
-		else {
-			button.showHideAddButtonCurrent = delta / aSelf.addButtonFadeDelay;
-			button.style.opacity = Math.floor((aShow ? button.showHideAddButtonCurrent : 1-button.showHideAddButtonCurrent ) * 100) / 100;
-		}
-	},
-  
+ 
 	onAddButtonCommand : function(aEvent) 
 	{
 		var browser = aEvent.target.targetSubBrowser;
@@ -2293,106 +2337,10 @@ alert(e+'\n\n'+state);
  
 /* for Firefox versions */ 
 	
-	showHideAddButtonInternal : function(aShow) 
-	{
-		var button = this.addButton;
-		button.parentNode.hidden = button.hidden = !aShow;
-
-		if (aShow) {
-			var box = document.documentElement.boxObject;
-			button.parentNode.openPopupAtScreen(
-				button.parentNode.nextX + box.screenX,
-				button.parentNode.nextY + box.screenY,
-				false
-			);
-		}
-		else {
-			button.parentNode.hidePopup();
-		}
-	},
- 
 	setButtonSizeAndPosition : function(aEvent) 
 	{
-		var node   = aEvent.targetSubBrowser;
-		var box    = node.contentAreaSizeObject;
-		var button = this.addButton;
-
-		var size = button.width = button.height = this.addButtonSize;
-		button.style.width = button.style.height = size+'px';
-
-		var x, y;
-		var pos;
-		if (aEvent.isTop) {
-			pos = 'top';
-			button.style.width = (button.width = box.areaWidth)+'px';
-			x = box.areaX;
-			y = box.y;
-		}
-		else if (aEvent.isBottom) {
-			pos = 'bottom';
-			button.style.width = (button.width = box.areaWidth)+'px';
-			x = box.areaX;
-			y = box.y + box.height - size;
-		}
-		else if (aEvent.isLeft) {
-			pos = 'left';
-			button.style.height = (button.height = box.areaHeight)+'px';
-			x = box.x;
-			y = box.areaY;
-		}
-		else if (aEvent.isRight) {
-			pos = 'right';
-			button.style.height = (button.height = box.areaHeight)+'px';
-			x = box.x + box.width - size;
-			y = box.areaY;
-		}
-		button.parentNode.nextX = x;
-		button.parentNode.nextY = y;
-
-		var canvas = button.previousSibling;
-		if (canvas) {
-			button.canvasX = x;
-			button.canvasY = y;
-			canvas.width = button.width;
-			canvas.height = button.height;
-			canvas.style.width = button.style.width;
-			canvas.style.height = button.style.height;
-		}
-
-		button.className = 'splitbrowser-add-button '+pos;
-		button.buttonPos = pos;
-		button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
 	},
- 
-	initAddButtonAnimation : function(aShow) 
-	{
-		var button = this.addButton;
-		button.parentNode.hidden = button.hidden = aShow;
-		button.showHideAddButtonCurrent = button.style.opacity = aShow ? 0 : 1 ;
-		button.showHideAddButtonStart = new Date().getTime();
-		this.updateAddButtonBackground();
-		button.parentNode.hidden = button.hidden = false;
-	},
-	 
-	updateAddButtonBackground : function() 
-	{
-		var button = this.addButton;
-		var canvas = button.previousSibling;
-
-		var node   = button.targetSubBrowser;
-		try {
-			var context = canvas.getContext('2d');
-			var w = node.browser.contentWindow;
-			context.clearRect(0, 0, canvas.width, canvas.height);
-			context.save();
-			var bBox = (node.browser.mCurrentBrowser || node.browser).boxObject;
-			context.drawWindow(w, button.canvasX - bBox.x + w.scrollX, button.canvasY - bBox.y + w.scrollY, canvas.width, canvas.height, "rgb(255,255,255)");
-			context.restore();
-		}
-		catch(e) {
-		}
-	},
-    
+   
 /* drag-and-drop */ 
 	
 	getDropPositionOnContentArea : function(aEvent, aBox) 
@@ -2592,7 +2540,7 @@ catch(e) {
 		return false;
 	},
  
-	getDraggedTabs : function(aNode)
+	getDraggedTabs : function(aNode) 
 	{
 		var single = [aNode];
 		var b = this.getTabBrowserFromChild(aNode);
@@ -2908,9 +2856,8 @@ catch(e) {
 		catch(e) {
 		}
 
-		bar._findField.value = b.findString;
-
 		var b = this.activeBrowser;
+		bar._findField.value = b.findString;
 		bar.setAttribute('browserid', b.getAttribute('id'));
 		bar.browser = b;
 
@@ -3174,7 +3121,7 @@ catch(e) {
 		this.updateCommandElement('Browser:BookmarkAllTabs',
 			'SplitBrowser.activeBrowserBookmarkAllTabs();');
 	},
-	 
+	
 	updateCommandElement : function(aId, aNewFeature) 
 	{
 		var node = document.getElementById(aId);

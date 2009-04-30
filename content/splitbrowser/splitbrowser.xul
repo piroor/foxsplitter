@@ -13,6 +13,7 @@
 
 <script type="application/x-javascript" src="splitbrowser.js"/>
 <script type="application/x-javascript" src="hacks.js"/>
+<script type="application/x-javascript" src="animationManager.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="splitbrowser-collapseAll-broadcaster"
@@ -395,8 +396,7 @@
 			tooltiptext-top="&splitbrowser.add.button.top.tooltip;"
 			tooltiptext-bottom="&splitbrowser.add.button.bottom.tooltip;"
 			tooltiptext-left="&splitbrowser.add.button.left.tooltip;"
-			tooltiptext-right="&splitbrowser.add.button.right.tooltip;"
-			hidden="true"/>
+			tooltiptext-right="&splitbrowser.add.button.right.tooltip;"/>
 	</panel>
 	<data id="splitbrowser-template" collapsed="true">
 		<menu id="splitbrowser-tab-context-item-split-template"
