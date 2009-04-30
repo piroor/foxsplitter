@@ -581,6 +581,7 @@ var SplitBrowser = {
 				browser.browser,
 				(data.clone ? null : function() { sourceSubBrowser.close(); /* fullScreenCanvas.hide(); <= done by "close()" */ } )
 			);
+			if (data.clone) fullScreenCanvas.hide();
 		}
 		else {
 			fullScreenCanvas.hide();
@@ -633,31 +634,33 @@ var SplitBrowser = {
 		}
 		if (aSource.localName == 'tabbrowser' &&
 			aTarget.localName == 'tabbrowser') {
-			var sourceTabs = SplitBrowser.getTabs(aSource);
-			var targetTabs = SplitBrowser.getTabs(aTarget);
-			while (sourceTabs.snapshotLength > targetTabs.snapshotLength)
+			let sourceCount = SplitBrowser.getTabs(aSource).snapshotLength;
+			let targetCount = SplitBrowser.getTabs(aTarget).snapshotLength;
+			while (sourceCount > targetCount)
 			{
 				aTarget.addTab();
+				targetCount++;
 			}
-			targetTabs = SplitBrowser.getTabs(aTarget);
-			var count = targetTabs.snapshotLength;
-			var removedTabs = [];
-			for (var i = 0, maxi = count - sourceTabs.snapshotLength; i < maxi; i++)
+			let sourceTabs = SplitBrowser.getTabsArray(aSource);
+
+			let targetTabs = SplitBrowser.getTabs(aTarget);
+			let count = targetTabs.snapshotLength;
+			let removedTabs = [];
+			for (let i = 0, maxi = count - sourceTabs.length; i < maxi; i++)
 			{
 				removeTabs.push(targetTabs.snapshotItem(count-1-i));
 			}
 			removedTabs.forEach(function(aTab) {
 				aTarget.removeTab(aTab);
 			});
-			sourceTabs = SplitBrowser.getTabs(aSource);
-			targetTabs = SplitBrowser.getTabs(aTarget);
-			for (var i = 0, maxi = sourceTabs.snapshotLength; i < maxi; i++)
-			{
+
+			targetTabs = SplitBrowser.getTabsArray(aTarget);
+			sourceTabs.forEach(function(aSourceTab, aIndex) {
 				SplitBrowser.swapOneBrowser(
-					sourceTabs.snapshotItem(i).linkedBrowser,
-					targetTabs.snapshotItem(i).linkedBrowser
+					aSourceTab.linkedBrowser,
+					targetTabs[aIndex].linkedBrowser
 				);
-			}
+			}, this);
 		}
 		else {
 			SplitBrowser.swapOneBrowser(aSource, aTarget);
@@ -680,8 +683,9 @@ var SplitBrowser = {
 				) ||
 				sourceTabBrowser.ownerDocument.defaultView.SplitBrowser.browsers.length
 			)
-			)
+			) {
 			sourceTabBrowser.addTab();
+		}
 
 		targetTab.linkedBrowser.stop();
 		targetTab.linkedBrowser.docShell;
@@ -3203,7 +3207,7 @@ catch(e) {
 				'ourBrowser.webProgress.removeProgressListener(',
 				'var __splitbrowser__reRegister = false; if (this.mTabFilters.length) { __splitbrowser__reRegister = true; $&'
 			).replace(
-				'ourBrowser.swapDocShells(',
+				'var isBusy',
 				'} $&'
 			).replace(
 				'tabListener = this.mTabProgressListener(',
