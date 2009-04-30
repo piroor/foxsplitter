@@ -54,7 +54,7 @@ var SplitBrowser = {
 	POSITION_BOTTOM : 8,
 	POSITION_TAB    : 16,
 
-	POSITION_HORIZONAL : 3,
+	POSITION_HORIZONTAL : 3,
 	POSITION_VERTICAL  : 12,
 
 	POSITION_BEFORE : 5,
@@ -541,10 +541,10 @@ var SplitBrowser = {
 		var box = b ? b.boxObject : null ;
 		if (!box) box = gBrowser.boxObject;
 
-		var width  = (aPosition & this.POSITION_HORIZONAL) ? parseInt(box.width / 5 * 2) : -1 ;
+		var width  = (aPosition & this.POSITION_HORIZONTAL) ? parseInt(box.width / 5 * 2) : -1 ;
 		var height = (aPosition & this.POSITION_VERTICAL) ? parseInt(box.height / 5 * 2) : -1 ;
 
-		var refNode = (aPosition & this.POSITION_HORIZONAL) ? (b || this.mainBrowserBox ) : hContainer ;
+		var refNode = (aPosition & this.POSITION_HORIZONTAL) ? (b || this.mainBrowserBox ) : hContainer ;
 
 		var data = null;
 		if (aURI && aURI.indexOf('subbrowser\n') == 0) {
@@ -563,7 +563,7 @@ var SplitBrowser = {
 			}
 			else {
 				aURI   = null;
-				if (aPosition & this.POSITION_HORIZONAL && sourceSubBrowser.parentOrient == 'horizontal')
+				if (aPosition & this.POSITION_HORIZONTAL && sourceSubBrowser.parentOrient == 'horizontal')
 					width = data.width;
 				if (aPosition & this.POSITION_VERTICAL && sourceSubBrowser.parentOrient == 'vertical')
 					height = data.height;
@@ -704,7 +704,7 @@ var SplitBrowser = {
    
 	addContainerTo : function(aParent, aPosition, aRefNode, aWidth, aHeight, aContent) 
 	{
-		if (aPosition & this.POSITION_HORIZONAL)
+		if (aPosition & this.POSITION_HORIZONTAL)
 			aHeight = -1;
 		else
 			aWidth = -1;
@@ -803,13 +803,13 @@ var SplitBrowser = {
 //		splitter.setAttribute('contextmenu', 'subbrowser-splitter-contextmenu');
 		splitter.setAttribute('class', 'subbrowser-splitter');
 		splitter.setAttribute('state', 'open');
-		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONAL) ? 'horizontal' : 'vertical' ));
+		splitter.setAttribute('orient', ((aPosition & this.POSITION_HORIZONTAL) ? 'horizontal' : 'vertical' ));
 
 		splitter.setAttribute('_collapse', ((aPosition & this.POSITION_AFTER) ? 'after' : 'before' ));
 		if (!this.getPref('splitbrowser.show.toolbar.always'))
 			splitter.setAttribute('collapse', splitter.getAttribute('_collapse'));
 
-		var prop = (aPosition & this.POSITION_HORIZONAL) ? 'width' : 'height' ;
+		var prop = (aPosition & this.POSITION_HORIZONTAL) ? 'width' : 'height' ;
 		splitter.setAttribute('onmousedown', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 		splitter.setAttribute('onmouseup', 'SplitBrowser.updateSplitterSideBoxes(event, "'+prop+'");');
 
@@ -1116,13 +1116,17 @@ var SplitBrowser = {
 		var data = this.undoCache[aIndex];
 		this.undoCache.splice(aIndex, 1);
 		try {
-			eval('state = '+state);
+			eval('state = '+data.state);
 			var box = gBrowser.boxObject;
 			state = {
 				content : {
 					type   : 'root',
-					width  : Math.round(Math.max(1, box.width) / 2),
-					height : Math.round(Math.max(1, box.height) / 2),
+					width  : (state.position & this.POSITION_HORIZONTAL ?
+								Math.round(Math.max(1, box.width) / 2) :
+								box.width ),
+					height : (state.position & this.POSITION_VERTICAL ?
+								Math.round(Math.max(1, box.height) / 2) :
+								box.height )
 				},
 				children : [state]
 			};
