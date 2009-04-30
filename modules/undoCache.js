@@ -1,5 +1,8 @@
 var EXPORTED_SYMBOLS = ['undoCache'];
 
+const MAX_COUNT = 1000;
+const MIN_COUNT = 0;
+
 const Prefs = Components
 		.classes['@mozilla.org/preferences;1']
 		.getService(Components.interfaces.nsIPrefBranch);;
@@ -47,7 +50,7 @@ var undoCache = {
 			state : aState
 		});
 		this.entries.slice(0, this.maxCount);
-		this.updateBroadcasters();
+		this._onChange();
 	},
 
 	getEntryAt : function(aIndex)
@@ -60,36 +63,36 @@ var undoCache = {
 	{
 		if (aIndex >= this.entries.length) return;
 		this.entries.splice(aIndex, 1);
-		this.updateBroadcasters();
+		this._onChange();
 	},
 
 	get maxCount()
 	{
-		return Prefs.getIntPref('splitbrowser.undo.max');
+		return Math.min(MAX_COUNT, Math.max(MIN_COUNT, Prefs.getIntPref('splitbrowser.undo.max')));
 	},
 
 
-	broadcasters : [],
+	_broadcasters : [],
 
 	registerBroadcaster : function(aBroadcaster)
 	{
-		if (this.broadcasters.indexOf(aBroadcaster) < 0) {
-			this.broadcasters.push(aBroadcaster);
-			this.updateBroadcasters();
+		if (this._broadcasters.indexOf(aBroadcaster) < 0) {
+			this._broadcasters.push(aBroadcaster);
+			this._onChange();
 		}
 	},
 
 	unregisterBroadcaster : function(aBroadcaster)
 	{
-		var index = this.broadcasters.indexOf(aBroadcaster);
+		var index = this._broadcasters.indexOf(aBroadcaster);
 		if (index > -1)
-			this.broadcasters.splice(index, 1);
+			this._broadcasters.splice(index, 1);
 	},
 
-	updateBroadcasters : function()
+	_onChange : function()
 	{
 		this.entries;
-		this.broadcasters.forEach(
+		this._broadcasters.forEach(
 			this.entries.length ?
 				function(aBroadcaster) {
 					aBroadcaster.removeAttribute('disabled');
@@ -98,7 +101,7 @@ var undoCache = {
 					aBroadcaster.setAttribute('disabled', true);
 				}
 		);
-		this.saveEntries();
+		this._saveEntries();
 	},
 
 
@@ -122,7 +125,7 @@ var undoCache = {
 		range.detach();
 	},
 
-	saveEntries : function()
+	_saveEntries : function()
 	{
 		if (!Prefs.getBoolPref('splitbrowser.state.restore')) return;
 		var entries = this._entries
