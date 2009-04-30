@@ -220,24 +220,29 @@
 			type="int"/>
 	</preferences>
 
-	<checkbox id="splitbrowser.state.restore-check" flex="1"
-		label="&splitbrowser.state.restore;"
-		preference="splitbrowser.state.restore"/>
-	<separator/>
-	<hbox align="center">
-		<label value="&splitbrowser.undo.max.before;"
-			control="splitbrowser.undo.max-textbox"/>
-		<textbox id="splitbrowser.undo.max-textbox" style="width:4em;"
-			preference="splitbrowser.undo.max"
-			type="number" min="0" max="1000" increment="1"/>
-		<label value="&splitbrowser.undo.max.after;"
-			control="splitbrowser.undo.max-textbox"/>
-	</hbox>
-	<hbox align="center">
-		<button label="&splitbrowser.undo.clearCache;"
-			oncommand="undoCache.clearEntries();"
-			flex="1"/>
-	</hbox>
+	<vbox>
+		<checkbox id="splitbrowser.state.restore-check"
+			label="&splitbrowser.state.restore;"
+			preference="splitbrowser.state.restore"/>
+		<separator/>
+		<hbox align="center">
+			<label value="&splitbrowser.undo.max.before;"
+				control="splitbrowser.undo.max-textbox"/>
+			<textbox id="splitbrowser.undo.max-textbox" style="width:4em;"
+				preference="splitbrowser.undo.max"
+				type="number" min="0" max="1000" increment="1"/>
+			<label value="&splitbrowser.undo.max.after;"
+				control="splitbrowser.undo.max-textbox"/>
+		</hbox>
+		<hbox align="center">
+			<spacer flex="1"/>
+			<button label="&splitbrowser.undo.clearCache;"
+				oncommand="undoCache.clearEntries();"
+				flex="1"/>
+			<spacer flex="1"/>
+		</hbox>
+		<spacer flex="1"/>
+	</vbox>
 
 </prefpane>
 
