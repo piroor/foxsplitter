@@ -3152,7 +3152,14 @@ catch(e) {
 		if (onDropFunc in aBrowser) {
 			eval('aBrowser.'+onDropFunc+' = '+aBrowser[onDropFunc].toSource().replace(
 				'{',
-				'{ if (SplitBrowser.performDropOnTabBrowser(arguments, this)) return;'
+				<![CDATA[$&
+					if (SplitBrowser.performDropOnTabBrowser(arguments, this)) {
+						// on Firefox 3.5 or later, we have to cancel this event to prevent subbrowser's handling
+						aEvent.preventDefault();
+						aEvent.stopPropagation();
+						return;
+					}
+				]]>.toString()
 			));
 		}
 		if ('getSupportedFlavours' in aBrowser) {
