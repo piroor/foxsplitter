@@ -344,6 +344,16 @@
 		observes="splitbrowser-expandAll-broadcaster"/>
 </menupopup>
 
+<menupopup id="goPopup">
+	<menu id="splitbrowser-goMenu-undoList"
+		class="menu-iconic splitbrowser-undoList-item"
+		label="&splitbrowser.menu.undoList.label;"
+		observes="splitbrowser-undo-broadcaster">
+		<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
+			command="splitbrowser-undoList-command"/>
+	</menu>
+</menupopup>
+
 <popup id="contentAreaContextMenu">
 	<menu id="splitbrowser-context-item-link"
 		class="menu-iconic"
