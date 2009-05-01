@@ -6,42 +6,66 @@ const MAX_CACHE_COUNT = 1000;
 const Prefs = Components
 		.classes['@mozilla.org/preferences;1']
 		.getService(Components.interfaces.nsIPrefBranch);
+
 const ObserverService = Components
 		.classes['@mozilla.org/observer-service;1']
 		.getService(Components.interfaces.nsIObserverService);
 
+const PrivateBrowsing = 'nsIPrivateBrowsingService' in Components.interfaces ?
+		Components
+			.classes['@mozilla.org/privatebrowsing;1']
+			.getService(Components.interfaces.nsIPrivateBrowsingService) :
+		null ;
+
 var undoCache = {
+
+	_init : function()
+	{
+		ObserverService.addObserver(this, 'private-browsing', false);
+
+		// "didShutdownSanitize" pref is turned on when "quite-application" is fired.
+		// "profile-change-teardown" is fired next to the "quite-application" event, so
+		// we should handle it.
+		ObserverService.addObserver(this, 'profile-change-teardown', false);
+
+		if (Prefs.getBoolPref('splitbrowser.state.restore')) {
+			try {
+				var entries = decodeURIComponent(escape(Prefs.getCharPref('splitbrowser.undo.state')));
+				this._globalEntries = entries.split('|')
+						.map(function(aEntry) {
+							try {
+								aEntry = unescape(aEntry);
+								eval('aEntry = '+aEntry);
+							}
+							catch(e) {
+								aEntry = null;
+							}
+							return aEntry;
+						})
+						.filter(function(aEntry) {
+							return aEntry;
+						});
+			}
+			catch(e) {
+				this._globalEntries = [];
+			}
+		}
+
+		this.entries = (PrivateBrowsing && PrivateBrowsing.privateBrowsingEnabled) ?
+				this._privateEntries :
+				this._globalEntries ;
+	},
+	_globalEntries  : [],
+	_privateEntries : [],
 
 	get entries()
 	{
-		if (!this._entries) {
-			try {
-				if (!Prefs.getBoolPref('splitbrowser.state.restore')) {
-					this._entries = [];
-				}
-				else {
-					var entries = decodeURIComponent(escape(Prefs.getCharPref('splitbrowser.undo.state')));
-					this._entries = entries.split('|')
-							.map(function(aEntry) {
-								try {
-									aEntry = unescape(aEntry);
-									eval('aEntry = '+aEntry);
-								}
-								catch(e) {
-									aEntry = null;
-								}
-								return aEntry;
-							})
-							.filter(function(aEntry) {
-								return aEntry;
-							});
-				}
-			}
-			catch(e) {
-				this._entries = [];
-			}
-		}
 		return this._entries;
+	},
+	set entries(aValue)
+	{
+		this._entries = aValue;
+		return aValue;
 	},
 	_entries : null,
 
@@ -53,7 +77,7 @@ var undoCache = {
 			state : aState,
 			date  : Date.now()
 		});
-		this._entries = this.entries.slice(0, this.maxCount);
+		this.entries = this.entries.slice(0, this.maxCount);
 		this._onChange();
 	},
 
@@ -77,8 +101,12 @@ var undoCache = {
 
 	saveEntries : function(aForce)
 	{
-		if (!aForce && !Prefs.getBoolPref('splitbrowser.state.restore')) return;
-		var entries = this._entries
+		if (
+			(this._entries == this._privateEntries) ||
+			(!aForce && !Prefs.getBoolPref('splitbrowser.state.restore'))
+			)
+			return;
+		var entries = this.entries
 				.map(function(aEntry) {
 					try {
 						return escape(aEntry.toSource())
@@ -101,10 +129,10 @@ var undoCache = {
 	clearEntries : function(aClearRange)
 	{
 		if (!aClearRange) {
-			this._entries = [];
+			this.entries = [];
 		}
 		else if (aClearRange.length == 2) {
-			this._entries = this._entries.filter(function(aEntry) {
+			this.entries = this.entries.filter(function(aEntry) {
 				var date = aEntry.date * 1000;
 				return aRange[0] <= date && aRange[1] >= date;
 			});
@@ -121,8 +149,8 @@ var undoCache = {
 			!Prefs.getBoolPref('privacy.sanitize.didShutdownSanitize')
 			)
 			return;
+		this.observe(null, 'private-browsing', 'exit');
 		this.clearEntries();
-		this.saveEntries();
 	},
 
 
@@ -145,7 +173,6 @@ var undoCache = {
 
 	_onChange : function()
 	{
-		this.entries;
 		this._broadcasters.forEach(
 			this.entries.length ?
 				function(aBroadcaster) {
@@ -186,6 +213,22 @@ var undoCache = {
 	{
 		switch (aTopic)
 		{
+			case 'private-browsing':
+				switch (aData)
+				{
+					case 'enter':
+						if (this.entries == this._globalEntries)
+							this.saveEntries();
+						this._privateEntries = [];
+						this.entries = this._privateEntries;
+						break;
+					case 'exit':
+						this._privateEntries = [];
+						this.entries = this._globalEntries;
+						break;
+				}
+				return;
+
 			case 'profile-change-teardown':
 				this._autoSanitizeOnShutdown();
 				return;
@@ -194,7 +237,4 @@ var undoCache = {
 
 };
 
-// "didShutdownSanitize" pref is turned on when "quite-application" is fired.
-// "profile-change-teardown" is fired next to the "quite-application" event, so
-// we should handle it.
-ObserverService.addObserver(undoCache, 'profile-change-teardown', false);
+undoCache._init();
