@@ -519,7 +519,7 @@ var SplitBrowser = {
 	isEventFiredOnTabbar : function(aEvent, aTabBrowser) 
 	{
 		if (!aTabBrowser || aTabBrowser.localName != 'tabbrowser') return false;
-		var box = aTabBrowser.mTabContainer;
+		var box = aTabBrowser.mStrip.boxObject;
 		return (
 			box.screenX <= aEvent.screenX &&
 			box.screenX + box.width >= aEvent.screenX &&
@@ -2648,8 +2648,6 @@ catch(e) {
 			draggedSubBrowser &&
 			draggedSubBrowser == droppedSubBrowser
 			) {
-			event.preventDefault();
-			event.stopPropagation();
 			return true;
 		}
 
@@ -2674,8 +2672,7 @@ catch(e) {
 		var check = box.checkEventFiredOnEdge(event, forceCheck);
 		if (!check) return true;
 
-		if (xferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
-			this.isEventFiredOnTabbar(event)) {
+		if (this.isEventFiredOnTabbar(event, gBrowser)) {
 			return;
 		}
 

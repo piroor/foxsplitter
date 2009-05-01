@@ -1728,13 +1728,24 @@ sideBox.removeAttribute('style');
 			{
 				return (
 						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) != this.mOwner ||
-						(!SplitBrowser.isEventFiredOnTabbar(aEvent) &&
-						!this.mOwner.isEventFiredOnToolbar(aEvent))
+						(
+							!SplitBrowser.isEventFiredOnTabbar(aEvent, this.mOwner.browser) &&
+							!this.mOwner.isEventFiredOnToolbar(aEvent)
+						)
 					);
 			},
 
 			onDrop : function (aEvent, aXferData, aDragSession)
 			{
+				// events on the tab bar should be handled by tabbrowser's "_onDrop" method
+				if (SplitBrowser.isEventFiredOnTabbar(aEvent, this.mOwner.browser))
+					return;
+
+				// ignore self-drop onto the toolbar (why we cannot prevent it by "canDrop()"...?)
+				if (SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) == this.mOwner &&
+					this.mOwner.isEventFiredOnToolbar(aEvent))
+					return;
+
 				aEvent.preventDefault();
 				aEvent.stopPropagation();
 
@@ -1746,19 +1757,6 @@ sideBox.removeAttribute('style');
 				var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
 				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
 				if (!check) return;
-
-				if (
-					( // events on the tab bar should be handled by tabbrowser's "_onDrop" method
-						aXferData.flavour.contentType == 'application/x-moz-splitbrowser' &&
-						SplitBrowser.isEventFiredOnTabbar(aEvent)
-					) ||
-					( // ignore self-drop onto the toolbar (why we cannot prevent it by "canDrop()"...?)
-						SplitBrowser.getSubBrowserFromChild(aDragSession.sourceNode) == this.mOwner &&
-						this.mOwner.isEventFiredOnToolbar(aEvent)
-					)
-					) {
-					return;
-				}
 
 				if (
 					(forceCheck || SplitBrowser.isLinux) &&
@@ -1791,10 +1789,10 @@ sideBox.removeAttribute('style');
 				if (this.mOwner.browser.localName == 'tabbrowser' &&
 					this.mOwner.isEventFiredOnToolbar(aEvent)) {
 					this.mOwner.browser.selectedTab = this.mOwner.browser.addTab(uri);
-					return;
 				}
-
-				this.mOwner.load(uri);
+				else {
+					this.mOwner.load(uri);
+				}
 			},
 
 			getSupportedFlavours : function ()
