@@ -227,6 +227,7 @@ var undoCache = {
 						this.entries = this._globalEntries;
 						break;
 				}
+				this._onChange();
 				return;
 
 			case 'profile-change-teardown':
