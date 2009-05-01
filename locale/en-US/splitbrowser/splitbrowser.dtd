@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Expand all of panes">
 <!ENTITY splitbrowser.button.removeAll.label     "Close All">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Close all of panes">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

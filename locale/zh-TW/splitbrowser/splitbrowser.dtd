@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "展開所有分割瀏覽區">
 <!ENTITY splitbrowser.button.removeAll.label     "全部關閉">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "關閉所有分割瀏覽區">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

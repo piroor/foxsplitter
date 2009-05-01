@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Déployer toutes les fenêtres partagées">
 <!ENTITY splitbrowser.button.removeAll.label     "Fermer tout">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Fermer toutes les fenêtres partagées">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

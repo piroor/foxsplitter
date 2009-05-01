@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Expandir ventanas divididas">
 <!ENTITY splitbrowser.button.removeAll.label     "Cerrar todo">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Cerrar ventanas divididas">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

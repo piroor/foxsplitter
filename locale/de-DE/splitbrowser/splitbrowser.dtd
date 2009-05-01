@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Alle geteilten Ansichten ausklappen">
 <!ENTITY splitbrowser.button.removeAll.label     "Alle schließen">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Alle geteilten Ansichten schließen">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

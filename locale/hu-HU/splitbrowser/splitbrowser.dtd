@@ -177,3 +177,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Minden felosztott ablak kinyitása">
 <!ENTITY splitbrowser.button.removeAll.label     "Mindegyik bezárása">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Minden felosztott ablak bezárása">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

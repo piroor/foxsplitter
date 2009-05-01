@@ -47,7 +47,8 @@ var undoCache = {
 		this.entries.unshift({
 			title : aTitle,
 			icon  : aIcon,
-			state : aState
+			state : aState,
+			date  : Date.now()
 		});
 		this._entries = this.entries.slice(0, this.maxCount);
 		this._onChange();
@@ -71,9 +72,40 @@ var undoCache = {
 		return Math.min(MAX_COUNT, Math.max(MIN_COUNT, Prefs.getIntPref('splitbrowser.undo.max')));
 	},
 
-	clearEntries : function()
+	saveEntries : function(aForce)
 	{
-		this._entries = [];
+		if (!aForce && !Prefs.getBoolPref('splitbrowser.state.restore')) return;
+		var entries = this._entries
+				.map(function(aEntry) {
+					try {
+						return escape(aEntry.toSource())
+					}
+					catch(e) {
+						return null;
+					}
+				})
+				.filter(function(aEntry) {
+					return aEntry;
+				})
+				.join('|');
+		try {
+			Prefs.setCharPref('splitbrowser.undo.state', unescape(encodeURIComponent(entries)));
+		}
+		catch(e) {
+		}
+	},
+
+	clearEntries : function(aClearRange)
+	{
+		if (!aClearRange) {
+			this._entries = [];
+		}
+		else if (aClearRange.length == 2) {
+			this._entries = this._entries.filter(function(aEntry) {
+				var date = aEntry.date * 1000;
+				return aRange[0] <= date && aRange[1] >= date;
+			});
+		}
 		this._onChange();
 	},
 
@@ -107,7 +139,7 @@ var undoCache = {
 					aBroadcaster.setAttribute('disabled', true);
 				}
 		);
-		this._saveEntries();
+		this.saveEntries();
 	},
 
 
@@ -132,29 +164,6 @@ var undoCache = {
 
 		range.insertNode(f);
 		range.detach();
-	},
-
-	_saveEntries : function()
-	{
-		if (!Prefs.getBoolPref('splitbrowser.state.restore')) return;
-		var entries = this._entries
-				.map(function(aEntry) {
-					try {
-						return escape(aEntry.toSource())
-					}
-					catch(e) {
-						return null;
-					}
-				})
-				.filter(function(aEntry) {
-					return aEntry;
-				})
-				.join('|');
-		try {
-			Prefs.setCharPref('splitbrowser.undo.state', unescape(encodeURIComponent(entries)));
-		}
-		catch(e) {
-		}
 	}
 
 };

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE bindings SYSTEM "chrome://splitbrowser/locale/">
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<prefpane id="SanitizeDialogPane">
+	<preferences id="sanitizePreferences">
+		<preference id="privacy.item.splitBrowserUndoCache"
+			name="privacy.item.splitBrowserUndoCache"
+			type="bool"/>
+	</preferences>
+	<checkbox label="&splitbrowser.privacy.undoCache.label;"
+		accesskey="&splitbrowser.privacy.undoCache.accesskey;"
+		preference="privacy.item.splitBrowserUndoCache"
+		onsyncfrompreference="return gSanitizePromptDialog.onReadGeneric();"/>
+</prefpane>
+<script type="application/x-javascript" src="sanitizeOverlay.js"/>
+</overlay>

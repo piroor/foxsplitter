@@ -176,3 +176,8 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "분할된 화면을 모두 보입니다">
 <!ENTITY splitbrowser.button.removeAll.label     "모두 닫기">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "분할된 화면을 모두 닫습니다">
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

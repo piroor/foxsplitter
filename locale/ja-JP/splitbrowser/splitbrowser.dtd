@@ -178,3 +178,9 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "分割されたペインをすべてひろげる">
 <!ENTITY splitbrowser.button.removeAll.label     "分割を解除">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "分割されたペインをすべて閉じる">
+
+
+
+
+<!ENTITY splitbrowser.privacy.undoCache.label     "分割ブラウザで閉じたペインの復元用キャッシュ">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">
