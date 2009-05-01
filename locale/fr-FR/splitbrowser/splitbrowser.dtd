@@ -2,57 +2,61 @@
 
 <!ENTITY splitbrowser.tab.general         "Générales">
 
-<!ENTITY splitbrowser.general.caption     "Générales">
-<!ENTITY splitbrowser.subbrowser.autoFocus "Autofocus sur les fenêtres selon la position de la souris">
+<!ENTITY splitbrowser.subbrowser.autoFocus              "Autofocus sur les fenêtres selon la position de la souris">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Mettre en avant la fenêtre après ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "Boutons &quot;Partager&quot; dans la fenêtre">
-<!ENTITY splitbrowser.show.addbuttons.hover.type "Lorsqu'un des cotés de la fenêtre est pointé par la souris :">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Toujours afficher automatiquement les boutons &quot;Partager&quot;.">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Montrer les boutons &quot;Partager&quot; si la touche &quot;Maj.&quot; est aussi maintenue appuyée.">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "Montrer les boutons &quot;Partager&quot; lorsque l'on fait glisser des liens, des fichiers, etc...">
+<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
+<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
 
-<!ENTITY splitbrowser.tab.caption   "Onglet">
-<!ENTITY splitbrowser.tab.closetab  "Fermer l'onglet après son partage dans le navigateur">
-
-<!ENTITY splitbrowser.syncScroll.mainArea "Synchroniser l'état de défilement dans l'espace principal des fenêtres partagées qui sont choisies avec l'option de synchroniser le défilement">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Verticalement et horizontalement ensemble">
+<!ENTITY splitbrowser.syncScroll.mainArea         "Synchroniser l'état de défilement dans l'espace principal des fenêtres partagées qui sont choisies avec l'option de synchroniser le défilement">
+<!ENTITY splitbrowser.syncScroll.horizontal.true  "Verticalement et horizontalement ensemble">
 <!ENTITY splitbrowser.syncScroll.horizontal.false "Seulement verticalement">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apparence">
 
-<!ENTITY splitbrowser.show.toolbar.always "Toujours montrer la barre d'outils dans les fenêtres partagées.">
-<!ENTITY splitbrowser.show.syncScroll "Montrer le bouton &quot;Synchroniser le défilement&quot; dans la barre d'outils des fenêtres partagées">
-<!ENTITY splitbrowser.show.collapseexpand "Montrer les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans la barre d'outils des fenêtres partagées.">
-<!ENTITY splitbrowser.tabs.autoHide "Toujours montrer la barre d'onglets dans les fenêtres partagées">
+<!ENTITY splitbrowser.show.toolbar.always            "Toujours montrer la barre d'outils dans les fenêtres partagées.">
+<!ENTITY splitbrowser.show.syncScroll                "Montrer le bouton &quot;Synchroniser le défilement&quot; dans la barre d'outils des fenêtres partagées">
+<!ENTITY splitbrowser.show.collapseexpand            "Montrer les boutons &quot;Réduire&quot; / &quot;Déployer&quot; dans la barre d'outils des fenêtres partagées.">
+<!ENTITY splitbrowser.tabs.autoHide                  "Toujours montrer la barre d'onglets dans les fenêtres partagées">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.">
 
-
-<!ENTITY splitbrowser.tab.target              "Combinaison">
-
-<!ENTITY splitbrowser.search.loadResultsIn    "Charger les résultats de recherche dans">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "l&quot;aire principale (le défaut avec Firefox)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "le panneau actif">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "le panneau de résultats de recherche">
-
-
-<!ENTITY splitbrowser.tab.menu              "Menu">
-<!ENTITY splitbrowser.show.menu             "Montrer le menu &quot;Partager&quot; dans la barre de menu">
-<!ENTITY splitbrowser.show.context.caption  "Éléments additionnels du menu contextuel des onglets :">
-<!ENTITY splitbrowser.show.tab.context.split           "Partager l'onglet...">
-<!ENTITY splitbrowser.show.tab.context.layout.grid            "Arranger tous les onglets">
-<!ENTITY splitbrowser.show.tab.context.layout.x  "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.show.tab.context.layout.y  "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.show.tab.context.gather          "Rassembler toutes les fenêtres partagées ici comme des onglets">
+<!ENTITY splitbrowser.show.addbuttons.caption      "Boutons &quot;Partager&quot; dans la fenêtre">
+<!ENTITY splitbrowser.show.addbuttons.hover.type   "Lorsqu'un des cotés de la fenêtre est pointé par la souris :">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Toujours afficher automatiquement les boutons &quot;Partager&quot;.">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Montrer les boutons &quot;Partager&quot; si la touche &quot;Maj.&quot; est aussi maintenue appuyée.">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop     "Montrer les boutons &quot;Partager&quot; lorsque l'on fait glisser des liens, des fichiers, etc...">
+<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
 
 
-<!ENTITY splitbrowser.tab.session         "State">
-<!ENTITY splitbrowser.state.restore       "Sauvegarder l'état des fenêtres partagées">
-<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after      "times">
-<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
+<!ENTITY splitbrowser.tab.target             "Combinaison">
+
+<!ENTITY splitbrowser.search.loadResultsIn   "Charger les résultats de recherche dans">
+<!ENTITY splitbrowser.search.loadResultsIn.0 "l&quot;aire principale (le défaut avec Firefox)">
+<!ENTITY splitbrowser.search.loadResultsIn.1 "le panneau actif">
+<!ENTITY splitbrowser.search.loadResultsIn.2 "le panneau de résultats de recherche">
+
+
+<!ENTITY splitbrowser.tab.menu                     "Menu">
+<!ENTITY splitbrowser.show.menu                    "Montrer le menu &quot;Partager&quot; dans la barre de menu">
+<!ENTITY splitbrowser.show.context.caption         "Éléments additionnels du menu contextuel des onglets :">
+<!ENTITY splitbrowser.show.tab.context.split       "Partager l'onglet...">
+<!ENTITY splitbrowser.show.tab.context.layout.grid "Arranger tous les onglets">
+<!ENTITY splitbrowser.show.tab.context.layout.x    "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.show.tab.context.layout.y    "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.show.tab.context.gather      "Rassembler toutes les fenêtres partagées ici comme des onglets">
+
+
+<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.state.restore   "Sauvegarder l'état des fenêtres partagées">
+<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after  "times">
+<!ENTITY splitbrowser.undo.clearCache "Clear cache">
 
 
 
@@ -62,7 +66,7 @@
 <!ENTITY splitbrowser.add.button.left.tooltip   "Partager à gauche">
 
 
-<!ENTITY splitbrowser.file.removeAll.label "Fermer toutes fenêtres partagées">
+<!ENTITY splitbrowser.file.removeAll.label       "Fermer toutes fenêtres partagées">
 <!ENTITY splitbrowser.file.removeAll.accesskey   "F">
 <!ENTITY splitbrowser.view.collapseAll.label     "Réduire toutes les fenêtres partagées">
 <!ENTITY splitbrowser.view.collapseAll.accesskey "R">
@@ -96,17 +100,17 @@
 
 
 
-<!ENTITY splitbrowser.tab.layout.grid.label           "Arranger tous les onglets">
-<!ENTITY splitbrowser.tab.layout.x.label "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.tab.layout.y.label "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.tab.gather.label         "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
+<!ENTITY splitbrowser.tab.layout.grid.label "Arranger tous les onglets">
+<!ENTITY splitbrowser.tab.layout.x.label    "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.tab.layout.y.label    "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.tab.gather.label      "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
 
 
 
 
-<!ENTITY splitbrowser.menu.label     "Partager">
-<!ENTITY splitbrowser.menu.accesskey "p">
-<!ENTITY splitbrowser.menu.removeAll.label "Fermer toutes fenêtres partagées">
+<!ENTITY splitbrowser.menu.label                 "Partager">
+<!ENTITY splitbrowser.menu.accesskey             "p">
+<!ENTITY splitbrowser.menu.removeAll.label       "Fermer toutes fenêtres partagées">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "F">
 <!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
 <!ENTITY splitbrowser.menu.undo.accesskey        "U">
@@ -121,43 +125,43 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "Au dessous">
 <!ENTITY splitbrowser.menu.add.right.label       "À droite">
 <!ENTITY splitbrowser.menu.add.left.label        "À gauche">
-<!ENTITY splitbrowser.menu.layout.grid.label            "Arranger tous les onglets">
-<!ENTITY splitbrowser.menu.layout.grid.accesskey        "A">
-<!ENTITY splitbrowser.menu.layout.x.label     "Disposer tous les onglets verticalement">
-<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
-<!ENTITY splitbrowser.menu.layout.y.label       "Disposer tous les onglets horizontalement">
-<!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
-<!ENTITY splitbrowser.menu.gather.label               "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
-<!ENTITY splitbrowser.menu.gather.accesskey           "O">
+<!ENTITY splitbrowser.menu.layout.grid.label     "Arranger tous les onglets">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey "A">
+<!ENTITY splitbrowser.menu.layout.x.label        "Disposer tous les onglets verticalement">
+<!ENTITY splitbrowser.menu.layout.x.accesskey    "v">
+<!ENTITY splitbrowser.menu.layout.y.label        "Disposer tous les onglets horizontalement">
+<!ENTITY splitbrowser.menu.layout.y.accesskey    "h">
+<!ENTITY splitbrowser.menu.gather.label          "Rassembler toutes les fenêtres partagées ici sous forme d'onglets">
+<!ENTITY splitbrowser.menu.gather.accesskey      "O">
 <!ENTITY splitbrowser.menu.syncScroll.label      "Synchroniser le défillement des fenêtres partagées avec l'espace principal">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 
-<!ENTITY multipletab.layout.grid.label               "Arranger">
-<!ENTITY multipletab.layout.x.label     "Disposer verticalement">
-<!ENTITY multipletab.layout.y.label     "Disposer horizontalement">
+<!ENTITY multipletab.layout.grid.label "Arranger">
+<!ENTITY multipletab.layout.x.label    "Disposer verticalement">
+<!ENTITY multipletab.layout.y.label    "Disposer horizontalement">
 
 
 
-<!ENTITY splitbrowser.subbrowser.blank             "(Sans titre)">
-<!ENTITY splitbrowser.subbrowser.loading           "Chargement...">
+<!ENTITY splitbrowser.subbrowser.blank              "(Sans titre)">
+<!ENTITY splitbrowser.subbrowser.loading            "Chargement...">
 <!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Synchroniser le défilement">
-<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Reculer d'une page">
-<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Avancer d'une page">
-<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Actualiser la page courante">
-<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Arrêter le chargement de la page">
-<!ENTITY splitbrowser.subbrowser.go.label          "Go">
-<!ENTITY splitbrowser.subbrowser.go.tooltip        "Se rendre à la page indiquée dans la barre d'adresse">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Réduire">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Déployer">
-<!ENTITY splitbrowser.subbrowser.close.tooltip     "Fermer">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip     "Reculer d'une page">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip  "Avancer d'une page">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip     "Actualiser la page courante">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip       "Arrêter le chargement de la page">
+<!ENTITY splitbrowser.subbrowser.go.label           "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip         "Se rendre à la page indiquée dans la barre d'adresse">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip   "Réduire">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip     "Déployer">
+<!ENTITY splitbrowser.subbrowser.close.tooltip      "Fermer">
 
-<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nouvel onglet">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "Réduire">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "Déployer">
-<!ENTITY splitbrowser.subbrowser.menu.close        "Fermer">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Synchroniser le défilement">
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab "Nouvel onglet">
+<!ENTITY splitbrowser.subbrowser.menu.collapse   "Réduire">
+<!ENTITY splitbrowser.subbrowser.menu.expand     "Déployer">
+<!ENTITY splitbrowser.subbrowser.menu.close      "Fermer">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll "Synchroniser le défilement">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Partager">
@@ -170,5 +174,5 @@
 <!ENTITY splitbrowser.button.collapseAll.tooltip "Réduire toutes les fenêtres partagées">
 <!ENTITY splitbrowser.button.expandAll.label     "Déployer">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Déployer toutes les fenêtres partagées">
-<!ENTITY splitbrowser.button.removeAll.label      "Fermer tout">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "Fermer toutes les fenêtres partagées">
+<!ENTITY splitbrowser.button.removeAll.label     "Fermer tout">
+<!ENTITY splitbrowser.button.removeAll.tooltip   "Fermer toutes les fenêtres partagées">

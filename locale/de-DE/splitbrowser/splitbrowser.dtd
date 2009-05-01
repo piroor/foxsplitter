@@ -2,22 +2,16 @@
 
 <!ENTITY splitbrowser.tab.general         "Allgemein">
 
-<!ENTITY splitbrowser.general.caption                   "Allgemein">
 <!ENTITY splitbrowser.subbrowser.autoFocus              "Geteilte Browser-Ansichten beim Überfahren mit der Maus fokussieren">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Automatisch fokussieren nach ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ms">
 
-<!ENTITY splitbrowser.show.addbuttons.caption      "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
-<!ENTITY splitbrowser.show.addbuttons.hover.type   "Beim Berühren der Randmitte mit dem Mauszeiger:">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Teilungsschaltflächen immer automatisch anzeigen">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Teilungsschaltflächen anzeigen, wenn die Umschalttaste gedrückt ist">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop     "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
+<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
+<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
 
-<!ENTITY splitbrowser.tab.caption   "Tabs">
-<!ENTITY splitbrowser.tab.closetab  "Ursprungs-Tab nach dem Öffnen in geteilter Ansicht schließen">
-
-<!ENTITY splitbrowser.syncScroll.mainArea "Bildlauf der Hauptansicht mit dem der ausgewählten geteilten Browser-Ansichten synchronisieren">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Senkrecht und waagrecht">
+<!ENTITY splitbrowser.syncScroll.mainArea         "Bildlauf der Hauptansicht mit dem der ausgewählten geteilten Browser-Ansichten synchronisieren">
+<!ENTITY splitbrowser.syncScroll.horizontal.true  "Senkrecht und waagrecht">
 <!ENTITY splitbrowser.syncScroll.horizontal.false "Nur senkrecht">
 
 
@@ -29,6 +23,16 @@
 <!ENTITY splitbrowser.tabs.autoHide                  "Tab-Leiste in geteilten Browser-Ansichten immer anzeigen">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Navigationssymbole in geteilten Ansichten immer anzeigen">
 
+<!ENTITY splitbrowser.show.addbuttons.caption      "Einblenden der Teilungsschaltflächen an Rändern des Inhaltsbereichs">
+<!ENTITY splitbrowser.show.addbuttons.hover.type   "Beim Berühren der Randmitte mit dem Mauszeiger:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Teilungsschaltflächen immer automatisch anzeigen">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Teilungsschaltflächen anzeigen, wenn die Umschalttaste gedrückt ist">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop     "Beim Ziehen von Links, Dateien etc. auf die Randmitte">
+<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
+
 
 <!ENTITY splitbrowser.tab.target              "Verknüpfung">
 
@@ -38,21 +42,21 @@
 <!ENTITY splitbrowser.search.loadResultsIn.2  "der Ansicht für Suchergebnisse">
 
 
-<!ENTITY splitbrowser.tab.menu                       "Menü">
-<!ENTITY splitbrowser.show.menu                      "&quot;Teilen&quot;-Menü in der Menüleiste anzeigen">
-<!ENTITY splitbrowser.show.context.caption           "Zusätzliche Einträge im Kontextmenü der Tabs:">
-<!ENTITY splitbrowser.show.tab.context.split         "Tab in geteilter Ansicht öffnen">
-<!ENTITY splitbrowser.show.tab.context.layout.grid   "Alle Tabs in geteilten Ansichten anordnen">
-<!ENTITY splitbrowser.show.tab.context.layout.x      "Alle Tabs in geteilten Ansichten senkrecht anordnen">
-<!ENTITY splitbrowser.show.tab.context.layout.y      "Alle Tabs in geteilten Ansichten waagrecht anordnen">
-<!ENTITY splitbrowser.show.tab.context.gather        "Alle geteilten Ansichten in Tabs öffnen">
+<!ENTITY splitbrowser.tab.menu                     "Menü">
+<!ENTITY splitbrowser.show.menu                    "&quot;Teilen&quot;-Menü in der Menüleiste anzeigen">
+<!ENTITY splitbrowser.show.context.caption         "Zusätzliche Einträge im Kontextmenü der Tabs:">
+<!ENTITY splitbrowser.show.tab.context.split       "Tab in geteilter Ansicht öffnen">
+<!ENTITY splitbrowser.show.tab.context.layout.grid "Alle Tabs in geteilten Ansichten anordnen">
+<!ENTITY splitbrowser.show.tab.context.layout.x    "Alle Tabs in geteilten Ansichten senkrecht anordnen">
+<!ENTITY splitbrowser.show.tab.context.layout.y    "Alle Tabs in geteilten Ansichten waagrecht anordnen">
+<!ENTITY splitbrowser.show.tab.context.gather      "Alle geteilten Ansichten in Tabs öffnen">
 
 
-<!ENTITY splitbrowser.tab.session         "State">
-<!ENTITY splitbrowser.state.restore       "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
-<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after      "times">
-<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
+<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.state.restore   "Browser-Aufteilung speichern und beim nächsten Start wiederherstellen">
+<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after  "times">
+<!ENTITY splitbrowser.undo.clearCache "Clear cache">
 
 
 
@@ -104,8 +108,8 @@
 
 
 
-<!ENTITY splitbrowser.menu.label     "Teilen">
-<!ENTITY splitbrowser.menu.accesskey "t">
+<!ENTITY splitbrowser.menu.label                 "Teilen">
+<!ENTITY splitbrowser.menu.accesskey             "t">
 <!ENTITY splitbrowser.menu.removeAll.label       "Alle geteilten Ansichten schließen">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "g">
 <!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
@@ -121,46 +125,46 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "Unten">
 <!ENTITY splitbrowser.menu.add.right.label       "Rechts">
 <!ENTITY splitbrowser.menu.add.left.label        "Links">
-<!ENTITY splitbrowser.menu.layout.grid.label            "Alle Tabs in geteilten Ansichten anordnen">
-<!ENTITY splitbrowser.menu.layout.grid.accesskey        "o">
-<!ENTITY splitbrowser.menu.layout.x.label               "Alle Tabs in geteilten Ansichten senkrecht anordnen">
-<!ENTITY splitbrowser.menu.layout.x.accesskey           "s">
-<!ENTITY splitbrowser.menu.layout.y.label               "Alle Tabs in geteilten Ansichten waagrecht anordnen">
-<!ENTITY splitbrowser.menu.layout.y.accesskey           "w">
-<!ENTITY splitbrowser.menu.gather.label                 "Alle geteilten Ansichten in Tabs öffnen">
-<!ENTITY splitbrowser.menu.gather.accesskey             "t">
+<!ENTITY splitbrowser.menu.layout.grid.label     "Alle Tabs in geteilten Ansichten anordnen">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey "o">
+<!ENTITY splitbrowser.menu.layout.x.label        "Alle Tabs in geteilten Ansichten senkrecht anordnen">
+<!ENTITY splitbrowser.menu.layout.x.accesskey    "s">
+<!ENTITY splitbrowser.menu.layout.y.label        "Alle Tabs in geteilten Ansichten waagrecht anordnen">
+<!ENTITY splitbrowser.menu.layout.y.accesskey    "w">
+<!ENTITY splitbrowser.menu.gather.label          "Alle geteilten Ansichten in Tabs öffnen">
+<!ENTITY splitbrowser.menu.gather.accesskey      "t">
 <!ENTITY splitbrowser.menu.syncScroll.label      "Bildlauf der geteilten Ansichten mit der Hauptansicht synchronisieren">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 
-<!ENTITY multipletab.layout.grid.label  "Anordnen">
-<!ENTITY multipletab.layout.x.label     "Senkrecht anordnen">
-<!ENTITY multipletab.layout.y.label     "Waagrecht anordnen">
+<!ENTITY multipletab.layout.grid.label "Anordnen">
+<!ENTITY multipletab.layout.x.label    "Senkrecht anordnen">
+<!ENTITY multipletab.layout.y.label    "Waagrecht anordnen">
 
 
 
-<!ENTITY splitbrowser.subbrowser.blank             "(Unbenannt)">
-<!ENTITY splitbrowser.subbrowser.loading           "Laden...">
+<!ENTITY splitbrowser.subbrowser.blank              "(Unbenannt)">
+<!ENTITY splitbrowser.subbrowser.loading            "Laden...">
 <!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Bildlauf synchronisieren">
-<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Zurück">
-<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Vor">
-<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Neu laden">
-<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Stopp">
-<!ENTITY splitbrowser.subbrowser.go.label          "Go">
-<!ENTITY splitbrowser.subbrowser.go.tooltip        "Diese Adresse laden">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Einklappen">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Ausklappen">
-<!ENTITY splitbrowser.subbrowser.close.tooltip     "Schließen">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip     "Zurück">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip  "Vor">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip     "Neu laden">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip       "Stopp">
+<!ENTITY splitbrowser.subbrowser.go.label           "Go">
+<!ENTITY splitbrowser.subbrowser.go.tooltip         "Diese Adresse laden">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip   "Einklappen">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip     "Ausklappen">
+<!ENTITY splitbrowser.subbrowser.close.tooltip      "Schließen">
 
-<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Neuer Tab">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "Einklappen">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "Ausklappen">
-<!ENTITY splitbrowser.subbrowser.menu.close        "Schließen">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Bildlauf synchronisieren">
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab "Neuer Tab">
+<!ENTITY splitbrowser.subbrowser.menu.collapse   "Einklappen">
+<!ENTITY splitbrowser.subbrowser.menu.expand     "Ausklappen">
+<!ENTITY splitbrowser.subbrowser.menu.close      "Schließen">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll "Bildlauf synchronisieren">
 
 
-<!ENTITY splitbrowser.button.menu.label          " Teilen">
+<!ENTITY splitbrowser.button.menu.label          "Teilen">
 <!ENTITY splitbrowser.button.menu.tooltip        "Geteilte Ansicht">
 <!ENTITY splitbrowser.button.layout.grid.label   "Anordnen">
 <!ENTITY splitbrowser.button.layout.grid.tooltip "Alle Tabs in geteilten Ansichten anordnen">

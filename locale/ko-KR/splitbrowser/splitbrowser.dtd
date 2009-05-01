@@ -2,57 +2,61 @@
 
 <!ENTITY splitbrowser.tab.general     "일반">
 
-<!ENTITY splitbrowser.general.caption     "일반">
-<!ENTITY splitbrowser.subbrowser.autoFocus "마우스가 위치하면 자동으로 초점 맞추기">
+<!ENTITY splitbrowser.subbrowser.autoFocus              "마우스가 위치하면 자동으로 초점 맞추기">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "초점 맞추기 대기 시간: ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "밀리초">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "컨텐트 영역의 &quot;분할&quot; 버튼">
-<!ENTITY splitbrowser.show.addbuttons.hover.type "마우스가 컨텐트 영역의 가장자리 중 한 곳에 위치하면:">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "항상 자동으로 &quot;분할&quot; 버튼 보이기">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "&quot;Shift&quot; 키가 눌리면 &quot;분할&quot; 버튼 보이기">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "링크, 파일 등을 드래그할 때 &quot;분할&quot; 버튼 보이기">
+<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
+<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
 
-<!ENTITY splitbrowser.tab.caption   "탭">
-<!ENTITY splitbrowser.tab.closetab  "새 창으로 분할할 때 탭 닫기">
-
-<!ENTITY splitbrowser.syncScroll.mainArea "스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "수직 및 수평 모두">
+<!ENTITY splitbrowser.syncScroll.mainArea         "스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화">
+<!ENTITY splitbrowser.syncScroll.horizontal.true  "수직 및 수평 모두">
 <!ENTITY splitbrowser.syncScroll.horizontal.false "수직만">
 
 
 <!ENTITY splitbrowser.tab.appearance     "모양">
 
-<!ENTITY splitbrowser.show.toolbar.always "항상 분할된 화면에 도구 모음 보이기">
-<!ENTITY splitbrowser.show.syncScroll "분할된 화면에 &quot;스크롤 동기화&quot; 도구 모음 버튼 보이기">
-<!ENTITY splitbrowser.show.collapseexpand "분할된 화면에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
-<!ENTITY splitbrowser.tabs.autoHide "항상 분할된 화면에 탭 도구 모음 보이기">
+<!ENTITY splitbrowser.show.toolbar.always            "항상 분할된 화면에 도구 모음 보이기">
+<!ENTITY splitbrowser.show.syncScroll                "분할된 화면에 &quot;스크롤 동기화&quot; 도구 모음 버튼 보이기">
+<!ENTITY splitbrowser.show.collapseexpand            "분할된 화면에 &quot;감추기&quot;/&quot;보이기&quot; 도구 모음 버튼 보이기">
+<!ENTITY splitbrowser.tabs.autoHide                  "항상 분할된 화면에 탭 도구 모음 보이기">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "항상 분할된 화면에 도구 모음 네비게이션 보이기">
 
-
-<!ENTITY splitbrowser.tab.target              "조합">
-
-<!ENTITY splitbrowser.search.loadResultsIn    "검색 결과 열기">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "주 영역 (Firefox 기본값)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "활성 창">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "검색 결과 창">
-
-
-<!ENTITY splitbrowser.tab.menu              "메뉴">
-<!ENTITY splitbrowser.show.menu             "메뉴 도구 모음에 &quot;Split&quot; 메뉴 보이기">
-<!ENTITY splitbrowser.show.context.caption  "탭 상에 추가할 컨텍스트 메뉴 항목:">
-<!ENTITY splitbrowser.show.tab.context.split            "화면 분할...">
-<!ENTITY splitbrowser.show.tab.context.layout.grid            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.show.tab.context.layout.x "모든 탭을 수직 바둑판식으로 보이기">
-<!ENTITY splitbrowser.show.tab.context.layout.y "모든 탭을 수평 바둑판식으로 보이기">
-<!ENTITY splitbrowser.show.tab.context.gather           "모든 분할 화면을 탭으로 보이기">
+<!ENTITY splitbrowser.show.addbuttons.caption      "컨텐트 영역의 &quot;분할&quot; 버튼">
+<!ENTITY splitbrowser.show.addbuttons.hover.type   "마우스가 컨텐트 영역의 가장자리 중 한 곳에 위치하면:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "항상 자동으로 &quot;분할&quot; 버튼 보이기">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "&quot;Shift&quot; 키가 눌리면 &quot;분할&quot; 버튼 보이기">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop     "링크, 파일 등을 드래그할 때 &quot;분할&quot; 버튼 보이기">
+<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
 
 
-<!ENTITY splitbrowser.tab.session         "State">
-<!ENTITY splitbrowser.state.restore       "화면 분할 상태 저장">
-<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after      "times">
-<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
+<!ENTITY splitbrowser.tab.target             "조합">
+
+<!ENTITY splitbrowser.search.loadResultsIn   "검색 결과 열기">
+<!ENTITY splitbrowser.search.loadResultsIn.0 "주 영역 (Firefox 기본값)">
+<!ENTITY splitbrowser.search.loadResultsIn.1 "활성 창">
+<!ENTITY splitbrowser.search.loadResultsIn.2 "검색 결과 창">
+
+
+<!ENTITY splitbrowser.tab.menu                     "메뉴">
+<!ENTITY splitbrowser.show.menu                    "메뉴 도구 모음에 &quot;Split&quot; 메뉴 보이기">
+<!ENTITY splitbrowser.show.context.caption         "탭 상에 추가할 컨텍스트 메뉴 항목:">
+<!ENTITY splitbrowser.show.tab.context.split       "화면 분할...">
+<!ENTITY splitbrowser.show.tab.context.layout.grid "모든 탭을 바둑판식으로 보이기">
+<!ENTITY splitbrowser.show.tab.context.layout.x    "모든 탭을 수직 바둑판식으로 보이기">
+<!ENTITY splitbrowser.show.tab.context.layout.y    "모든 탭을 수평 바둑판식으로 보이기">
+<!ENTITY splitbrowser.show.tab.context.gather      "모든 분할 화면을 탭으로 보이기">
+
+
+<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.state.restore   "화면 분할 상태 저장">
+<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after  "times">
+<!ENTITY splitbrowser.undo.clearCache "Clear cache">
 
 
 
@@ -96,16 +100,16 @@
 
 
 
-<!ENTITY splitbrowser.tab.layout.grid.label            "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.tab.layout.x.label "모든 탭을 수직 바둑판식으로 보이기">
-<!ENTITY splitbrowser.tab.layout.y.label "모든 탭을 수평 바둑판식으로 보이기">
-<!ENTITY splitbrowser.tab.gather.label           "모든 분할 화면을 탭으로 보이기">
+<!ENTITY splitbrowser.tab.layout.grid.label "모든 탭을 바둑판식으로 보이기">
+<!ENTITY splitbrowser.tab.layout.x.label    "모든 탭을 수직 바둑판식으로 보이기">
+<!ENTITY splitbrowser.tab.layout.y.label    "모든 탭을 수평 바둑판식으로 보이기">
+<!ENTITY splitbrowser.tab.gather.label      "모든 분할 화면을 탭으로 보이기">
 
 
 
 
-<!ENTITY splitbrowser.menu.label     "Split">
-<!ENTITY splitbrowser.menu.accesskey "p">
+<!ENTITY splitbrowser.menu.label                 "Split">
+<!ENTITY splitbrowser.menu.accesskey             "p">
 <!ENTITY splitbrowser.menu.removeAll.label       "분할된 화면 모두 닫기">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
 <!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
@@ -116,49 +120,49 @@
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
 <!ENTITY splitbrowser.menu.expandAll.label       "분할된 화면 모두 보이기">
 <!ENTITY splitbrowser.menu.expandAll.accesskey   "x">
-<!ENTITY splitbrowser.menu.add.label        "화면 분할">
-<!ENTITY splitbrowser.menu.add.top.label    "위쪽">
-<!ENTITY splitbrowser.menu.add.bottom.label "아래쪽">
-<!ENTITY splitbrowser.menu.add.right.label  "오른쪽">
-<!ENTITY splitbrowser.menu.add.left.label   "왼쪽">
-<!ENTITY splitbrowser.menu.layout.grid.label                "모든 탭을 바둑판식으로 보이기">
-<!ENTITY splitbrowser.menu.layout.grid.accesskey            "t">
-<!ENTITY splitbrowser.menu.layout.x.label     "모든 탭을 수직 바둑판식으로 보이기">
-<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
-<!ENTITY splitbrowser.menu.layout.y.label       "모든 탭을 수평 바둑판식으로 보이기">
-<!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
-<!ENTITY splitbrowser.menu.gather.label               "모든 분할 화면을 탭으로 보이기">
-<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+<!ENTITY splitbrowser.menu.add.label             "화면 분할">
+<!ENTITY splitbrowser.menu.add.top.label         "위쪽">
+<!ENTITY splitbrowser.menu.add.bottom.label      "아래쪽">
+<!ENTITY splitbrowser.menu.add.right.label       "오른쪽">
+<!ENTITY splitbrowser.menu.add.left.label        "왼쪽">
+<!ENTITY splitbrowser.menu.layout.grid.label     "모든 탭을 바둑판식으로 보이기">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey "t">
+<!ENTITY splitbrowser.menu.layout.x.label        "모든 탭을 수직 바둑판식으로 보이기">
+<!ENTITY splitbrowser.menu.layout.x.accesskey    "v">
+<!ENTITY splitbrowser.menu.layout.y.label        "모든 탭을 수평 바둑판식으로 보이기">
+<!ENTITY splitbrowser.menu.layout.y.accesskey    "h">
+<!ENTITY splitbrowser.menu.gather.label          "모든 분할 화면을 탭으로 보이기">
+<!ENTITY splitbrowser.menu.gather.accesskey      "g">
 <!ENTITY splitbrowser.menu.syncScroll.label      "주 영역으로 분할 화면 스크롤 동기화">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 
-<!ENTITY multipletab.layout.grid.label               "바둑판식으로 보이기">
-<!ENTITY multipletab.layout.x.label     "수직 바둑판식으로 보이기">
-<!ENTITY multipletab.layout.y.label     "수평 바둑판식으로 보이기">
+<!ENTITY multipletab.layout.grid.label "바둑판식으로 보이기">
+<!ENTITY multipletab.layout.x.label    "수직 바둑판식으로 보이기">
+<!ENTITY multipletab.layout.y.label    "수평 바둑판식으로 보이기">
 
 
 
 
-<!ENTITY splitbrowser.subbrowser.blank             "(비어 있음)">
-<!ENTITY splitbrowser.subbrowser.loading           "로드 중...">
+<!ENTITY splitbrowser.subbrowser.blank              "(비어 있음)">
+<!ENTITY splitbrowser.subbrowser.loading            "로드 중...">
 <!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "스크롤 동기화">
-<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "뒤로">
-<!ENTITY splitbrowser.subbrowser.goForward.tooltip "앞으로">
-<!ENTITY splitbrowser.subbrowser.reload.tooltip    "새로 고침">
-<!ENTITY splitbrowser.subbrowser.stop.tooltip      "중지">
-<!ENTITY splitbrowser.subbrowser.go.label          "가기">
-<!ENTITY splitbrowser.subbrowser.go.tooltip        "현재 URI 로드">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "감추기">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "보이기">
-<!ENTITY splitbrowser.subbrowser.close.tooltip     "닫기">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip     "뒤로">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip  "앞으로">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip     "새로 고침">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip       "중지">
+<!ENTITY splitbrowser.subbrowser.go.label           "가기">
+<!ENTITY splitbrowser.subbrowser.go.tooltip         "현재 URI 로드">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip   "감추기">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip     "보이기">
+<!ENTITY splitbrowser.subbrowser.close.tooltip      "닫기">
 
-<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "새 탭">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "감추기">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "보이기">
-<!ENTITY splitbrowser.subbrowser.menu.close        "닫기">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "스크롤 동기화">
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab "새 탭">
+<!ENTITY splitbrowser.subbrowser.menu.collapse   "감추기">
+<!ENTITY splitbrowser.subbrowser.menu.expand     "보이기">
+<!ENTITY splitbrowser.subbrowser.menu.close      "닫기">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll "스크롤 동기화">
 
 <!ENTITY splitbrowser.button.menu.label          "화면 분할">
 <!ENTITY splitbrowser.button.menu.tooltip        "브라우저 화면을 분할합니다.">
@@ -170,5 +174,5 @@
 <!ENTITY splitbrowser.button.collapseAll.tooltip "분할된 화면을 모두 감춥니다">
 <!ENTITY splitbrowser.button.expandAll.label     "보이기">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "분할된 화면을 모두 보입니다">
-<!ENTITY splitbrowser.button.removeAll.label      "모두 닫기">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "분할된 화면을 모두 닫습니다">
+<!ENTITY splitbrowser.button.removeAll.label     "모두 닫기">
+<!ENTITY splitbrowser.button.removeAll.tooltip   "분할된 화면을 모두 닫습니다">

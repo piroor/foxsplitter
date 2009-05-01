@@ -2,57 +2,61 @@
 
 <!ENTITY splitbrowser.tab.general     "General">
 
-<!ENTITY splitbrowser.general.caption     "General">
-<!ENTITY splitbrowser.subbrowser.autoFocus "Establecer foco automáticamente en las ventanas al colocar el ratón encima">
+<!ENTITY splitbrowser.subbrowser.autoFocus              "Establecer foco automáticamente en las ventanas al colocar el ratón encima">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Establecer foco luego de">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "mseg">
 
-<!ENTITY splitbrowser.show.addbuttons.caption  "Botones &quot;Dividir&quot; en el área de contenido">
-<!ENTITY splitbrowser.show.addbuttons.hover.type "Cuando unos de los bordes del área de contenido es señalado">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Mostrar los botones automáticamente">
-<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Mostrar los botones si es presionada la tecla &quot;Shift&quot;">
-<!ENTITY splitbrowser.show.addbuttons.dragdrop "Mostrar botones mientras se arrastran archivos, enlaces, etc">
+<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
+<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
 
-<!ENTITY splitbrowser.tab.caption   "Pestaña">
-<!ENTITY splitbrowser.tab.closetab  "Cerrar la pestaña después que es dividida">
-
-<!ENTITY splitbrowser.syncScroll.mainArea "Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)">
-<!ENTITY splitbrowser.syncScroll.horizontal.true "Vertical y horizontalmente">
+<!ENTITY splitbrowser.syncScroll.mainArea         "Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)">
+<!ENTITY splitbrowser.syncScroll.horizontal.true  "Vertical y horizontalmente">
 <!ENTITY splitbrowser.syncScroll.horizontal.false "Solamente vertical">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Apariencia">
 
-<!ENTITY splitbrowser.show.toolbar.always "Siempre mostrar la barra de herramientas en las ventanas divididas">
-<!ENTITY splitbrowser.show.syncScroll "Mostrar el botón &quot;Sincronizar desplazamiento&quot; en las ventanas divididas">
-<!ENTITY splitbrowser.show.collapseexpand "Mostrar el botón &quot;Colapsar&quot;/&quot;Expandir&quot; en las ventanas divididas">
-<!ENTITY splitbrowser.tabs.autoHide "Siempre mostrar la barra de pestañas en las ventanas divididas">
+<!ENTITY splitbrowser.show.toolbar.always            "Siempre mostrar la barra de herramientas en las ventanas divididas">
+<!ENTITY splitbrowser.show.syncScroll                "Mostrar el botón &quot;Sincronizar desplazamiento&quot; en las ventanas divididas">
+<!ENTITY splitbrowser.show.collapseexpand            "Mostrar el botón &quot;Colapsar&quot;/&quot;Expandir&quot; en las ventanas divididas">
+<!ENTITY splitbrowser.tabs.autoHide                  "Siempre mostrar la barra de pestañas en las ventanas divididas">
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Siempre mostrar la barra de navegación en las ventanas divididas">
 
-
-<!ENTITY splitbrowser.tab.target              "Combinación">
-
-<!ENTITY splitbrowser.search.loadResultsIn    "Cargar resultados de búsqueda dentro del">
-<!ENTITY splitbrowser.search.loadResultsIn.0  "Área de contenido (Predeterminado en Firefox)">
-<!ENTITY splitbrowser.search.loadResultsIn.1  "Panel activo">
-<!ENTITY splitbrowser.search.loadResultsIn.2  "Panel de resultados de búsqueda">
-
-
-<!ENTITY splitbrowser.tab.menu              "Menú">
-<!ENTITY splitbrowser.show.menu             "Mostrar &quot;Dividir&quot; en la barra de menus">
-<!ENTITY splitbrowser.show.context.caption  "Elementos adicionales del menú contextual en las pestañas">
-<!ENTITY splitbrowser.show.tab.context.split           "Dividir Pestaña...">
-<!ENTITY splitbrowser.show.tab.context.layout.grid            "Mosaico todas las pestañas">
-<!ENTITY splitbrowser.show.tab.context.layout.x "Mosaico vertical todas las pestañas">
-<!ENTITY splitbrowser.show.tab.context.layout.y   "Mosaico horizontal todas las pestañas">
-<!ENTITY splitbrowser.show.tab.context.gather          "Deshacer ventanas divididas">
+<!ENTITY splitbrowser.show.addbuttons.caption      "Botones &quot;Dividir&quot; en el área de contenido">
+<!ENTITY splitbrowser.show.addbuttons.hover.type   "Cuando unos de los bordes del área de contenido es señalado">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Mostrar los botones automáticamente">
+<!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Mostrar los botones si es presionada la tecla &quot;Shift&quot;">
+<!ENTITY splitbrowser.show.addbuttons.dragdrop     "Mostrar botones mientras se arrastran archivos, enlaces, etc">
+<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
 
 
-<!ENTITY splitbrowser.tab.session         "State">
-<!ENTITY splitbrowser.state.restore       "Guardar estado de las ventanas divididas">
-<!ENTITY splitbrowser.undo.max.before     "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after      "times">
-<!ENTITY splitbrowser.undo.clearCache     "Clear cache">
+<!ENTITY splitbrowser.tab.target             "Combinación">
+
+<!ENTITY splitbrowser.search.loadResultsIn   "Cargar resultados de búsqueda dentro del">
+<!ENTITY splitbrowser.search.loadResultsIn.0 "Área de contenido (Predeterminado en Firefox)">
+<!ENTITY splitbrowser.search.loadResultsIn.1 "Panel activo">
+<!ENTITY splitbrowser.search.loadResultsIn.2 "Panel de resultados de búsqueda">
+
+
+<!ENTITY splitbrowser.tab.menu                     "Menú">
+<!ENTITY splitbrowser.show.menu                    "Mostrar &quot;Dividir&quot; en la barra de menus">
+<!ENTITY splitbrowser.show.context.caption         "Elementos adicionales del menú contextual en las pestañas">
+<!ENTITY splitbrowser.show.tab.context.split       "Dividir Pestaña...">
+<!ENTITY splitbrowser.show.tab.context.layout.grid "Mosaico todas las pestañas">
+<!ENTITY splitbrowser.show.tab.context.layout.x    "Mosaico vertical todas las pestañas">
+<!ENTITY splitbrowser.show.tab.context.layout.y    "Mosaico horizontal todas las pestañas">
+<!ENTITY splitbrowser.show.tab.context.gather      "Deshacer ventanas divididas">
+
+
+<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.state.restore   "Guardar estado de las ventanas divididas">
+<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
+<!ENTITY splitbrowser.undo.max.after  "times">
+<!ENTITY splitbrowser.undo.clearCache "Clear cache">
 
 
 
@@ -62,7 +66,7 @@
 <!ENTITY splitbrowser.add.button.left.tooltip   "Dividir Izquierda">
 
 
-<!ENTITY splitbrowser.file.removeAll.label "Cerrar todas las ventanas divididas">
+<!ENTITY splitbrowser.file.removeAll.label       "Cerrar todas las ventanas divididas">
 <!ENTITY splitbrowser.file.removeAll.accesskey   "b">
 <!ENTITY splitbrowser.view.collapseAll.label     "Colapsar todas las ventanas divididas">
 <!ENTITY splitbrowser.view.collapseAll.accesskey "l">
@@ -96,17 +100,17 @@
 
 
 
-<!ENTITY splitbrowser.tab.layout.grid.label         "Mosaico todas las pestañas">
-<!ENTITY splitbrowser.tab.layout.x.label "Mosaico vertical todas las pestañas">
-<!ENTITY splitbrowser.tab.layout.y.label   "Mosaico horizontal todas las pestañas">
-<!ENTITY splitbrowser.tab.gather.label           "Deshacer ventanas divididas">
+<!ENTITY splitbrowser.tab.layout.grid.label "Mosaico todas las pestañas">
+<!ENTITY splitbrowser.tab.layout.x.label    "Mosaico vertical todas las pestañas">
+<!ENTITY splitbrowser.tab.layout.y.label    "Mosaico horizontal todas las pestañas">
+<!ENTITY splitbrowser.tab.gather.label      "Deshacer ventanas divididas">
 
 
 
 
-<!ENTITY splitbrowser.menu.label     "Dividir">
-<!ENTITY splitbrowser.menu.accesskey "p">
-<!ENTITY splitbrowser.menu.removeAll.label "Cerrar todas las ventanas divididas">
+<!ENTITY splitbrowser.menu.label                 "Dividir">
+<!ENTITY splitbrowser.menu.accesskey             "p">
+<!ENTITY splitbrowser.menu.removeAll.label       "Cerrar todas las ventanas divididas">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
 <!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
 <!ENTITY splitbrowser.menu.undo.accesskey        "U">
@@ -121,43 +125,43 @@
 <!ENTITY splitbrowser.menu.add.bottom.label      "Debajo">
 <!ENTITY splitbrowser.menu.add.right.label       "Derecha">
 <!ENTITY splitbrowser.menu.add.left.label        "Izquierda">
-<!ENTITY splitbrowser.menu.layout.grid.label         "Mosaico todas las pestañas">
-<!ENTITY splitbrowser.menu.layout.grid.accesskey     "t">
-<!ENTITY splitbrowser.menu.layout.x.label     "Mosaico vertical todas las pestañas">
-<!ENTITY splitbrowser.menu.layout.x.accesskey "v">
-<!ENTITY splitbrowser.menu.layout.y.label       "Mosaico horizontal todas las pestañas">
-<!ENTITY splitbrowser.menu.layout.y.accesskey   "h">
-<!ENTITY splitbrowser.menu.gather.label               "Deshacer ventanas divididas">
-<!ENTITY splitbrowser.menu.gather.accesskey           "g">
+<!ENTITY splitbrowser.menu.layout.grid.label     "Mosaico todas las pestañas">
+<!ENTITY splitbrowser.menu.layout.grid.accesskey "t">
+<!ENTITY splitbrowser.menu.layout.x.label        "Mosaico vertical todas las pestañas">
+<!ENTITY splitbrowser.menu.layout.x.accesskey    "v">
+<!ENTITY splitbrowser.menu.layout.y.label        "Mosaico horizontal todas las pestañas">
+<!ENTITY splitbrowser.menu.layout.y.accesskey    "h">
+<!ENTITY splitbrowser.menu.gather.label          "Deshacer ventanas divididas">
+<!ENTITY splitbrowser.menu.gather.accesskey      "g">
 <!ENTITY splitbrowser.menu.syncScroll.label      "Sincronizar desplazamiento de las ventanas divididas con el área de contenido">
 <!ENTITY splitbrowser.menu.syncScroll.accesskey  "s">
 
 
 
-<!ENTITY multipletab.layout.grid.label                "Mosaico">
-<!ENTITY multipletab.layout.x.label     "Mosaico vertical">
-<!ENTITY multipletab.layout.y.label       "Mosaico horizontal">
+<!ENTITY multipletab.layout.grid.label "Mosaico">
+<!ENTITY multipletab.layout.x.label    "Mosaico vertical">
+<!ENTITY multipletab.layout.y.label    "Mosaico horizontal">
 
 
 
-<!ENTITY splitbrowser.subbrowser.blank             "(about:blank)">
-<!ENTITY splitbrowser.subbrowser.loading           "Cargando...">
+<!ENTITY splitbrowser.subbrowser.blank              "(about:blank)">
+<!ENTITY splitbrowser.subbrowser.loading            "Cargando...">
 <!ENTITY splitbrowser.subbrowser.syncScroll.tooltip "Sincronizar desplazamiento">
-<!ENTITY splitbrowser.subbrowser.goBack.tooltip    "Anterior">
-<!ENTITY splitbrowser.subbrowser.goForward.tooltip "Siguiente">
-<!ENTITY splitbrowser.subbrowser.reload.tooltip    "Recargar">
-<!ENTITY splitbrowser.subbrowser.stop.tooltip      "Parar">
-<!ENTITY splitbrowser.subbrowser.go.label          "Ir">
-<!ENTITY splitbrowser.subbrowser.go.tooltip        "Cargar esta URI">
-<!ENTITY splitbrowser.subbrowser.collapse.tooltip  "Colapsar">
-<!ENTITY splitbrowser.subbrowser.expand.tooltip    "Expandir">
-<!ENTITY splitbrowser.subbrowser.close.tooltip     "Cerrar">
+<!ENTITY splitbrowser.subbrowser.goBack.tooltip     "Anterior">
+<!ENTITY splitbrowser.subbrowser.goForward.tooltip  "Siguiente">
+<!ENTITY splitbrowser.subbrowser.reload.tooltip     "Recargar">
+<!ENTITY splitbrowser.subbrowser.stop.tooltip       "Parar">
+<!ENTITY splitbrowser.subbrowser.go.label           "Ir">
+<!ENTITY splitbrowser.subbrowser.go.tooltip         "Cargar esta URI">
+<!ENTITY splitbrowser.subbrowser.collapse.tooltip   "Colapsar">
+<!ENTITY splitbrowser.subbrowser.expand.tooltip     "Expandir">
+<!ENTITY splitbrowser.subbrowser.close.tooltip      "Cerrar">
 
-<!ENTITY splitbrowser.subbrowser.menu.openNewTab   "Nueva pestaña">
-<!ENTITY splitbrowser.subbrowser.menu.collapse     "Colapsar">
-<!ENTITY splitbrowser.subbrowser.menu.expand       "Expandir">
-<!ENTITY splitbrowser.subbrowser.menu.close        "Cerrar">
-<!ENTITY splitbrowser.subbrowser.menu.syncScroll   "Sincronizar desplazamiento">
+<!ENTITY splitbrowser.subbrowser.menu.openNewTab "Nueva pestaña">
+<!ENTITY splitbrowser.subbrowser.menu.collapse   "Colapsar">
+<!ENTITY splitbrowser.subbrowser.menu.expand     "Expandir">
+<!ENTITY splitbrowser.subbrowser.menu.close      "Cerrar">
+<!ENTITY splitbrowser.subbrowser.menu.syncScroll "Sincronizar desplazamiento">
 
 
 <!ENTITY splitbrowser.button.menu.label          "Dividir">
@@ -170,5 +174,5 @@
 <!ENTITY splitbrowser.button.collapseAll.tooltip "Colapsar ventanas divididas">
 <!ENTITY splitbrowser.button.expandAll.label     "Expandir">
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Expandir ventanas divididas">
-<!ENTITY splitbrowser.button.removeAll.label      "Cerrar todo">
-<!ENTITY splitbrowser.button.removeAll.tooltip    "Cerrar ventanas divididas">
+<!ENTITY splitbrowser.button.removeAll.label     "Cerrar todo">
+<!ENTITY splitbrowser.button.removeAll.tooltip   "Cerrar ventanas divididas">
