@@ -612,7 +612,6 @@ sideBox.removeAttribute('style');
 
 		<method name="checkEventFiredOnEdge">
 			<parameter name="aEvent"/>
-			<parameter name="aForceFire"/>
 			<body><![CDATA[
 				if (this.contentCollapsed) {
 					return {
@@ -623,52 +622,24 @@ sideBox.removeAttribute('style');
 					};
 				}
 
-				var offset   = SplitBrowser.addButtonSize;
-				var box      = this.contentAreaSizeObject;
+				var box = this.contentAreaSizeObject;
 				if (!box) return null;
 
-				if (aForceFire || aEvent.ctrlKey) {
-					var pos = SplitBrowser.getDropPositionOnContentArea(aEvent, box.box);
-					return {
-						isTop    : pos == SplitBrowser.POSITION_TOP,
-						isBottom : pos == SplitBrowser.POSITION_BOTTOM,
-						isLeft   : pos == SplitBrowser.POSITION_LEFT,
-						isRight  : pos == SplitBrowser.POSITION_RIGHT
-					};
-				}
-
-				var isTop    = (aEvent.screenY >= box.screenY &&
-								aEvent.screenY < box.screenY+offset &&
-								aEvent.screenX >= box.areaScreenX &&
-								aEvent.screenX < box.areaScreenX+box.areaWidth);
-				var isBottom = (aEvent.screenY <= box.screenY+box.height &&
-								aEvent.screenY > box.screenY+box.height-offset &&
-								aEvent.screenX >= box.areaScreenX &&
-								aEvent.screenX < box.areaScreenX+box.areaWidth);
-				var isLeft   = (aEvent.screenX >= box.screenX &&
-								aEvent.screenX < box.screenX+offset &&
-								aEvent.screenY >= box.areaScreenY &&
-								aEvent.screenY < box.areaScreenY+box.areaHeight);
-				var isRight  = (aEvent.screenX <= box.screenX+box.width &&
-								aEvent.screenX > box.screenX+box.width-offset &&
-								aEvent.screenY >= box.areaScreenY &&
-								aEvent.screenY < box.areaScreenY+box.areaHeight);
-
+				var pos = SplitBrowser.getDropPositionOnContentArea(aEvent, box.box);
 				return {
-					isTop    : isTop,
-					isBottom : isBottom,
-					isLeft   : isLeft,
-					isRight  : isRight
+					isTop    : pos == SplitBrowser.POSITION_TOP,
+					isBottom : pos == SplitBrowser.POSITION_BOTTOM,
+					isLeft   : pos == SplitBrowser.POSITION_LEFT,
+					isRight  : pos == SplitBrowser.POSITION_RIGHT
 				};
 			]]></body>
 		</method>
 
 		<method name="handleMouseOverEvent">
 			<parameter name="aEvent"/>
-			<parameter name="aForceFire"/>
 			<parameter name="aModifierPressed"/>
 			<body><![CDATA[
-				var check = this.checkEventFiredOnEdge(aEvent, aForceFire);
+				var check = this.checkEventFiredOnEdge(aEvent);
 				if (!check) return;
 
 				if (
@@ -731,8 +702,8 @@ sideBox.removeAttribute('style');
 					session.isDataFlavorSupported('text/x-moz-url') ||
 					session.isDataFlavorSupported('text/unicode') ||
 					session.isDataFlavorSupported('application/x-moz-file')) {
-					this.handleMouseOverEvent(aEvent, isSubBrowser);
-					var check = this.checkEventFiredOnEdge(aEvent, isSubBrowser);
+					this.handleMouseOverEvent(aEvent);
+					var check = this.checkEventFiredOnEdge(aEvent);
 					if (!check) return;
 					if (
 						SplitBrowser.isLinux &&
@@ -832,7 +803,7 @@ sideBox.removeAttribute('style');
 
 	<handlers>
 		<handler event="mousemove"
-			action="var type = SplitBrowser.getPref('splitbrowser.show.addbuttons.hover.type'); var isModifier = type == 1 &amp;&amp; SplitBrowser.modifierKeyPressed; if (type == 0 || isModifier) this.handleMouseOverEvent(event, false, isModifier); return true;"/>
+			action="var type = SplitBrowser.getPref('splitbrowser.show.addbuttons.hover.type'); var isModifier = type == 1 &amp;&amp; SplitBrowser.modifierKeyPressed; if (type == 0 || isModifier) this.handleMouseOverEvent(event, isModifier); return true;"/>
 		<handler event="dragover" phase="capturing"
 			action="if (SplitBrowser.getPref('splitbrowser.show.addbuttons.dragdrop')) this.handleDragOverEvent(event); return true;"/>
 
@@ -1755,7 +1726,7 @@ sideBox.removeAttribute('style');
 				// fallback for Linux
 				// in Linux, "dragdrop" event doesn't fire on the button.
 				var forceCheck = aEvent.ctrlKey || aXferData.flavour.contentType == 'application/x-moz-splitbrowser';
-				var check = this.mOwner.checkEventFiredOnEdge(aEvent, forceCheck);
+				var check = this.mOwner.checkEventFiredOnEdge(aEvent);
 				if (!check) return;
 
 				if (

@@ -110,6 +110,14 @@ var SplitBrowser = {
 			.classes['@mozilla.org/network/io-service;1']
 			.getService(Components.interfaces.nsIIOService),
  
+	getCurrentDragSession : function() 
+	{
+		return Components
+			.classes['@mozilla.org/widget/dragservice;1']
+			.getService(Components.interfaces.nsIDragService)
+			.getCurrentSession();
+	},
+ 
 	getSubBrowserByName : function(aName) 
 	{
 		if (aName == '_top')
@@ -1161,7 +1169,7 @@ var SplitBrowser = {
 	},
 	_undoCache : null,
  
-	initUndoList : function(aPopup)
+	initUndoList : function(aPopup) 
 	{
 		this.undoCache.initUndoList(aPopup);
 	},
@@ -2585,10 +2593,7 @@ catch(e) {
 
 		var dragSession;
 		if (aArgs.length == 1) { // Firefox 3.1 or later
-			dragSession = Components
-						.classes['@mozilla.org/widget/dragservice;1']
-						.getService(Components.interfaces.nsIDragService)
-						.getCurrentSession();
+			dragSession = this.getCurrentDragSession();
 		}
 		else { // Firefox 3.0.x
 			dragSession = aArgs[2];
@@ -2669,7 +2674,7 @@ catch(e) {
 		var box = this.mainBrowserBox;
 
 		var forceCheck = event.ctrlKey || xferData.flavour.contentType == 'application/x-moz-splitbrowser';
-		var check = box.checkEventFiredOnEdge(event, forceCheck);
+		var check = box.checkEventFiredOnEdge(event);
 		if (!check) return true;
 
 		if (this.isEventFiredOnTabbar(event, gBrowser)) {
@@ -3654,6 +3659,13 @@ catch(e) {
 				return;
 
 			case 'SubBrowserEnterContentAreaEdge':
+				// ignore self-drop
+				if (aEvent.firedBy == 'dragover') {
+					var dragged = this.getCurrentDragSession().sourceNode;
+					if (!this.getTabBrowserFromChild(dragged) &&
+						this.getSubBrowserFromChild(dragged) == aEvent.targetSubBrowser)
+						return;
+				}
 				this.delayedShowAddButton(aEvent);
 				return;
 
