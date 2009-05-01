@@ -1,4 +1,5 @@
 var SplitBrowser = { 
+	initialized : false,
 	useSessionStore : true,
 	
 	get scrollbarSize() { 
@@ -420,7 +421,7 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
-		if (this.useSessionStore) this.save();
+		if (this.useSessionStore && this.initialized) this.save();
 		this.updateStatusTimer = null;
 	},
  
@@ -1839,7 +1840,7 @@ dump(e+'\n');
     
 	saveWithDelay : function() 
 	{
-		if (!this.useSessionStore) return;
+		if (!this.useSessionStore || !this.initialized) return;
 		if (this.saveWithDelayTimer) {
 			window.clearTimeout(this.saveWithDelayTimer);
 			this.saveWithDelayTimer = null;
@@ -1861,7 +1862,7 @@ dump(e+'\n');
 			eval('state = '+state);
 		}
 		catch(e) {
-alert(e+'\n\n'+state);
+			Application.console.log(e+'\n\n'+state);
 			return;
 		}
 
@@ -3232,16 +3233,16 @@ catch(e) {
 		this.activeSubBrowser = this.mainBrowserBox;
 
 		this.addPrefListener(this);
-		this.observe(window, 'nsPref:changed', 'browser.sessionstore.enabled');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.syncScroll');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.collapseexpand');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.toolbar.navigation.always');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.menu');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.split');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.grid');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.x');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.layout.y');
-		this.observe(window, 'nsPref:changed', 'splitbrowser.show.tab.context.gather');
+		this.onPrefChange('browser.sessionstore.enabled');
+		this.onPrefChange('splitbrowser.show.syncScroll');
+		this.onPrefChange('splitbrowser.show.collapseexpand');
+		this.onPrefChange('splitbrowser.show.toolbar.navigation.always');
+		this.onPrefChange('splitbrowser.show.menu');
+		this.onPrefChange('splitbrowser.show.tab.context.split');
+		this.onPrefChange('splitbrowser.show.tab.context.layout.grid');
+		this.onPrefChange('splitbrowser.show.tab.context.layout.x');
+		this.onPrefChange('splitbrowser.show.tab.context.layout.y');
+		this.onPrefChange('splitbrowser.show.tab.context.gather');
 
 
 		try {
@@ -3255,6 +3256,7 @@ catch(e) {
 
 		window.setTimeout(function(aSelf) {
 			aSelf.delayedInit();
+			aSelf.initialized = true;
 
 			if (aSelf.getPref('splitbrowser.state.restore')) {
 				window.setTimeout(function(aSelf) {
