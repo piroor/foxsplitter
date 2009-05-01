@@ -3084,6 +3084,41 @@ catch(e) {
 		window.getMarkupDocumentViewer = function() {
 			return SplitBrowser.activeBrowser.markupDocumentViewer;
 		};
+
+		[
+			'onContentPrefSet',
+			'onContentPrefRemoved',
+			'setSettingValue',
+			'_applyPrefToSetting',
+			'_applySettingToPref',
+			'_removePref'
+		].forEach(function(aFunc) {
+			if ('FullZoom' in window && aFunc in FullZoom) {
+				eval('FullZoom.'+aFunc+' = '+FullZoom[aFunc].toSource().replace(
+					/gBrowser/g,
+					'SplitBrowser.activeBrowser'
+				));
+			}
+		}, this);
+
+		if ('ZoomManager' in window && 'zoom' in ZoomManager) {
+			try {
+				var zoomGetter = ZoomManager.__lookupGetter__('zoom');
+				var zoomSetter = ZoomManager.__lookupSetter__('zoom');
+				eval('zoomGetter = '+zoomGetter.toSource().replace(
+					/getBrowser\(\)/g,
+					'SplitBrowser.activeBrowser'
+				));
+				eval('zoomSetter = '+zoomSetter.toSource().replace(
+					/getBrowser\(\)/g,
+					'SplitBrowser.activeBrowser'
+				));
+				ZoomManager.__defineGetter__('zoom', zoomGetter);
+				ZoomManager.__defineSetter__('zoom', zoomSetter);
+			}
+			catch(e) {
+			}
+		}
 	},
   
 /* CtrlTab (Tab Previews) */ 
@@ -3120,7 +3155,7 @@ catch(e) {
 		}
 		if ('updatePreview' in ctrlTab) {
 			eval('ctrlTab.updatePreview = '+ctrlTab.updatePreview.toSource().replace(
-				'aTab.label',
+				/aTab\.label/g,
 				<![CDATA[(function(aTab) {
 					var tabbrowser = SplitBrowser.getTabBrowserFromChild(aTab);
 					var subbrowser = SplitBrowser.getSubBrowserFromChild(aTab);
