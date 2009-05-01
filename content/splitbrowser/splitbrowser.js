@@ -1,6 +1,11 @@
 var SplitBrowser = { 
 	initialized : false,
 	useSessionStore : true,
+	get canSave()
+	{
+		return this.initialized &&
+			(!this.PrivateBrowsing || !this.PrivateBrowsing.privateBrowsingEnabled);
+	},
 	
 	get scrollbarSize() { 
 		return this.getPref('splitbrowser.appearance.scrollbar.size');
@@ -19,6 +24,10 @@ var SplitBrowser = {
  
 	get shouldMoveSplitTab() { 
 		return this.getPref('splitbrowser.tab.closetab');
+	},
+ 
+	get shouldSave() { 
+		return this.getPref('splitbrowser.state.restore');
 	},
  
 	get isLinux() 
@@ -85,6 +94,18 @@ var SplitBrowser = {
 			}
 		}
 	},
+ 
+	ObserverService : Components
+		.classes['@mozilla.org/observer-service;1']
+		.getService(Components.interfaces.nsIObserverService),
+ 
+	PrivateBrowsing : (
+		'nsIPrivateBrowsingService' in Components.interfaces ?
+			Components
+				.classes['@mozilla.org/privatebrowsing;1']
+				.getService(Components.interfaces.nsIPrivateBrowsingService) :
+			null
+	),
  
 /* utilities */ 
 	
@@ -421,7 +442,7 @@ var SplitBrowser = {
 				this.collapseAllBroadcaster.setAttribute('disabled', true);
 		}
 
-		if (this.useSessionStore && this.initialized) this.save();
+		if (this.useSessionStore && this.canSave) this.save();
 		this.updateStatusTimer = null;
 	},
  
@@ -846,7 +867,7 @@ var SplitBrowser = {
   
 /* remove sub-browser (unsplit) */ 
 	
-	removeSubBrowser : function(aBrowser, aIsMoving) 
+	removeSubBrowser : function(aBrowser, aPreventRestore) 
 	{
 		fullScreenCanvas.show();
 
@@ -872,7 +893,7 @@ var SplitBrowser = {
 			}
 		}
 
-		browser.destroy(aIsMoving);
+		browser.destroy(aPreventRestore);
 		browser.parentNode.removeChild(browser);
 
 		this.cleanUpContainer(container);
@@ -971,11 +992,11 @@ var SplitBrowser = {
 		aSplitter.parentNode.removeChild(aSplitter);
 	},
   
-	removeAllSubBrowsers : function() 
+	removeAllSubBrowsers : function(aPreventRestore) 
 	{
 		for (var i = this._browsers.length-1; i > -1; i--)
 		{
-			this.removeSubBrowser(this._browsers[i]);
+			this.removeSubBrowser(this._browsers[i], aPreventRestore);
 		}
 	},
   
@@ -1840,7 +1861,7 @@ dump(e+'\n');
     
 	saveWithDelay : function() 
 	{
-		if (!this.useSessionStore || !this.initialized) return;
+		if (!this.useSessionStore || !this.canSave) return;
 		if (this.saveWithDelayTimer) {
 			window.clearTimeout(this.saveWithDelayTimer);
 			this.saveWithDelayTimer = null;
@@ -3068,6 +3089,7 @@ catch(e) {
 	init : function() 
 	{
 		this.undoCache.registerBroadcaster(this.undoBroadcaster);
+		this.ObserverService.addObserver(this, 'private-browsing', false);
 
 		document.documentElement.addEventListener('SubBrowserAddRequest', this, true);
 		document.documentElement.addEventListener('SubBrowserAddRequestFromContent', this, true, true);
@@ -3258,7 +3280,7 @@ catch(e) {
 			aSelf.delayedInit();
 			aSelf.initialized = true;
 
-			if (aSelf.getPref('splitbrowser.state.restore')) {
+			if (aSelf.shouldSave) {
 				window.setTimeout(function(aSelf) {
 					aSelf.load();
 				}, 100, aSelf);
@@ -3530,8 +3552,9 @@ catch(e) {
 	destroy : function() 
 	{
 		this.undoCache.unregisterBroadcaster(this.undoBroadcaster);
+		this.ObserverService.removeObserver(this, 'private-browsing');
 
-		if (this.getPref('splitbrowser.state.restore'))
+		if (this.shouldSave && this.canSave)
 			this.save();
 
 		document.documentElement.removeEventListener('SubBrowserAddRequest', this, true);
@@ -3766,6 +3789,25 @@ catch(e) {
 	{
 		switch (aTopic)
 		{
+			case 'private-browsing':
+				switch (aData)
+				{
+					case 'enter':
+						if (this.shouldSave) {
+							this.save();
+						}
+						this.removeAllSubBrowsers(true);
+						break;
+					case 'exit':
+						if (this.shouldSave) {
+							window.setTimeout(function(aSelf) {
+								aSelf.load();
+							}, 100, this);
+						}
+						break;
+				}
+				break;
+
 			case 'nsPref:changed':
 				this.onPrefChange(aData);
 				break;
