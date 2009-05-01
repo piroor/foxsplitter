@@ -22,7 +22,7 @@ var SplitBrowser = {
  
 	get isLinux() 
 	{
-		return (navigator.platform.indexOf('Linux') > -1);
+		return (navigator.platform.toLowerCase().indexOf('linux') > -1);
 	},
  
 	get isMac() 
@@ -2324,13 +2324,41 @@ alert(e+'\n\n'+state);
 			window['piro.sakura.ne.jp'].animationManager.removeTask(button.animationTask);
 
 		this.addButtonIsActive = false;
+
+		var self = this;
+		var popup = button.parentNode;
+		var doAnimation = function() {
+				button.animationTask = function(aTime, aBeginningValue, aTotalChange, aDuration) {
+					var opacity;
+					if (aTime >= aDuration) {
+						delete button.animationTask;
+						button.style.opacity = aShow ? 1 : 0 ;
+						if (!aShow) popup.hidePopup();
+						self.addButtonIsActive = aShow;
+						self.addButtonIsShown = aShow;
+						return true;
+					}
+					else {
+						opacity = aTime / aDuration;
+						if (!aShow) opacity = 1 - opacity;
+						button.style.opacity = opacity;
+						return false;
+					}
+				};
+				window['piro.sakura.ne.jp'].animationManager.addTask(
+					button.animationTask,
+					0, 0, self.addButtonFadeDuration
+				);
+			};
+
 		if (aShow) {
 			let box  = aEvent.targetSubBrowser.contentAreaSizeObject;
 			let size = this.addButtonSize;
-
-			let x, y, pos,
+			let x = 0,
+				y = 0,
 				w = size,
-				h = size;
+				h = size,
+				pos;
 			if (aEvent.isTop) {
 				pos = 'top';
 				w = box.areaWidth;
@@ -2356,48 +2384,50 @@ alert(e+'\n\n'+state);
 				y = box.areaY;
 			}
 
-			button.parentNode.hidePopup();
-			button.className = 'splitbrowser-add-button '+pos;
-			button.buttonPos = pos;
-			button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
-
 			button.style.opacity = 0;
-			button.style.width = (button.width = w)+'px';
-			button.style.height = (button.height = h)+'px';
+			button.style.width = button.width = 0;
+			button.style.height = button.height = 0;
 
-			button.parentNode.style.border = '1px transparent solid'; // hack for correct rendering
+			var showPopup = function() {
+					button.className = 'splitbrowser-add-button '+pos;
+					button.buttonPos = pos;
+					button.setAttribute('tooltiptext', button.getAttribute('tooltiptext-'+pos));
 
-			let rootBox = document.documentElement.boxObject;
-			// "-1" is for the transparent border
-			button.parentNode.openPopupAtScreen(
-				x + rootBox.screenX - 1,
-				y + rootBox.screenY - 1,
-				false
-			);
+					popup.style.border = '1px transparent solid'; // hack for correct rendering
+
+					popup.addEventListener('popupshown', function() {
+						popup.removeEventListener('popupshown', arguments.callee, false);
+						button.style.width = (button.width = w)+'px';
+						button.style.height = (button.height = h)+'px';
+						doAnimation();
+					}, false);
+
+					let rootBox = document.documentElement.boxObject;
+					// "-1" is for the transparent border
+					popup.openPopupAtScreen(
+						x + rootBox.screenX - 1,
+						y + rootBox.screenY - 1,
+						false
+					);
+				};
+
+			window.setTimeout(function() {
+				if (popup.popupBoxObject.popupState == 'closed') {
+					showPopup();
+				}
+				else {
+					popup.addEventListener('popuphidden', function() {
+						popup.removeEventListener('popuphidden', arguments.callee, false);
+						showPopup();
+					}, false);
+					popup.hidePopup();
+				}
+			}, 0);
 		}
-
-		var self = this;
-		button.animationTask = function(aTime, aBeginningValue, aTotalChange, aDuration) {
-			var opacity;
-			if (aTime >= aDuration) {
-				delete button.animationTask;
-				button.style.opacity = aShow ? 1 : 0 ;
-				if (!aShow) button.parentNode.hidePopup();
-				self.addButtonIsActive = aShow;
-				self.addButtonIsShown = aShow;
-				return true;
-			}
-			else {
-				opacity = aTime / aDuration;
-				if (!aShow) opacity = 1 - opacity;
-				button.style.opacity = opacity;
-				return false;
-			}
-		};
-		window['piro.sakura.ne.jp'].animationManager.addTask(
-			button.animationTask,
-			0, 0, this.addButtonFadeDuration
-		);
+		else {
+			if (popup.popupBoxObject.popupState != 'closed')
+				doAnimation();
+		}
 	},
  
 	onAddButtonCommand : function(aEvent) 
