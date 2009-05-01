@@ -112,12 +112,13 @@ var undoCache = {
 		this._onChange();
 	},
 
-	_sanitizeOnShutdown : function()
+	_autoSanitizeOnShutdown : function()
 	{
-		const SHOUTDOWN_PREF = 'privacy.sanitize.didShutdownSanitize';
 		if (
-			!Prefs.prefHasUserValue(SHOUTDOWN_PREF) ||
-			!Prefs.getBoolPref(SHOUTDOWN_PREF)
+			Prefs.getBoolPref('privacy.sanitize.promptOnSanitize') ||
+			!Prefs.getBoolPref('privacy.sanitize.sanitizeOnShutdown') ||
+			!Prefs.prefHasUserValue('privacy.sanitize.didShutdownSanitize') ||
+			!Prefs.getBoolPref('privacy.sanitize.didShutdownSanitize')
 			)
 			return;
 		this.clearEntries();
@@ -186,7 +187,7 @@ var undoCache = {
 		switch (aTopic)
 		{
 			case 'profile-change-teardown':
-				this._sanitizeOnShutdown();
+				this._autoSanitizeOnShutdown();
 				return;
 		}
 	}
