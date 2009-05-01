@@ -3110,10 +3110,10 @@ catch(e) {
 			eval('ctrlTab.onPopupHiding = '+ctrlTab.onPopupHiding.toSource().replace(
 				/gBrowser(\.selectedTab = this\._tabToSelect)/,
 				<![CDATA[
-					SplitBrowser.getTabBrowserFromChild(this._tabToSelect)$1
+					SplitBrowser.getTabBrowserFromChild(this._tabToSelect)$1;
 					(function(aTab) {
 						var subbrowser = SplitBrowser.getSubBrowserFromChild(aTab);
-						subbrowser.focus();
+						if (subbrowser) subbrowser.focus();
 					})(this._tabToSelect);
 				]]>.toString()
 			));
