@@ -615,22 +615,48 @@ sideBox.removeAttribute('style');
 			<body><![CDATA[
 				if (this.contentCollapsed) {
 					return {
-						isTop    : false,
-						isBottom : false,
-						isLeft   : false,
-						isRight  : false
+						onTopEdge    : false,
+						onBottomEdge : false,
+						onLeftEdge   : false,
+						onRightEdge  : false,
+						inTopArea    : false,
+						inBottomArea : false,
+						inLeftArea   : false,
+						inRightArea  : false
 					};
 				}
 
-				var box = this.contentAreaSizeObject;
+				var offset = SplitBrowser.addButtonSize;
+				var box    = this.contentAreaSizeObject;
 				if (!box) return null;
+
+				var isTop    = (aEvent.screenY >= box.screenY &&
+								aEvent.screenY < box.screenY+offset &&
+								aEvent.screenX >= box.areaScreenX &&
+								aEvent.screenX < box.areaScreenX+box.areaWidth);
+				var isBottom = (aEvent.screenY <= box.screenY+box.height &&
+								aEvent.screenY > box.screenY+box.height-offset &&
+								aEvent.screenX >= box.areaScreenX &&
+								aEvent.screenX < box.areaScreenX+box.areaWidth);
+				var isLeft   = (aEvent.screenX >= box.screenX &&
+								aEvent.screenX < box.screenX+offset &&
+								aEvent.screenY >= box.areaScreenY &&
+								aEvent.screenY < box.areaScreenY+box.areaHeight);
+				var isRight  = (aEvent.screenX <= box.screenX+box.width &&
+								aEvent.screenX > box.screenX+box.width-offset &&
+								aEvent.screenY >= box.areaScreenY &&
+								aEvent.screenY < box.areaScreenY+box.areaHeight);
 
 				var pos = SplitBrowser.getDropPositionOnContentArea(aEvent, box.box);
 				return {
-					isTop    : pos == SplitBrowser.POSITION_TOP,
-					isBottom : pos == SplitBrowser.POSITION_BOTTOM,
-					isLeft   : pos == SplitBrowser.POSITION_LEFT,
-					isRight  : pos == SplitBrowser.POSITION_RIGHT
+					onTopEdge    : isTop,
+					onBottomEdge : isBottom,
+					onLeftEdge   : isLeft,
+					onRightEdge  : isRight,
+					inTopArea    : pos == SplitBrowser.POSITION_TOP,
+					inBottomArea : pos == SplitBrowser.POSITION_BOTTOM,
+					inLeftArea   : pos == SplitBrowser.POSITION_LEFT,
+					inRightArea  : pos == SplitBrowser.POSITION_RIGHT
 				};
 			]]></body>
 		</method>
@@ -643,33 +669,41 @@ sideBox.removeAttribute('style');
 				if (!check) return;
 
 				if (
-					check.isTop ||
-					check.isBottom ||
-					check.isLeft ||
-					check.isRight
+					check.inTopArea ||
+					check.inBottomArea ||
+					check.inLeftArea ||
+					check.inRightArea
 					) {
+					var isFirstEnter = false;
 					if (
-						(check.isTop && !this.mIsMouseOverTop) ||
-						(check.isBottom && !this.mIsMouseOverBottom) ||
-						(check.isLeft && !this.mIsMouseOverLeft) ||
-						(check.isRight && !this.mIsMouseOverRight)
+						(check.inTopArea && !this.mIsMouseOverTop) ||
+						(check.inBottomArea && !this.mIsMouseOverBottom) ||
+						(check.inLeftArea && !this.mIsMouseOverLeft) ||
+						(check.inRightArea && !this.mIsMouseOverRight)
 						) {
-						this.mIsMouseOverTop    = check.isTop;
-						this.mIsMouseOverBottom = check.isBottom;
-						this.mIsMouseOverLeft   = check.isLeft;
-						this.mIsMouseOverRight  = check.isRight;
-
-						var newEvent = document.createEvent('Events');
-						newEvent.initEvent('SubBrowserEnterContentAreaEdge', false, true);
-						newEvent.isTop    = check.isTop;
-						newEvent.isBottom = check.isBottom;
-						newEvent.isLeft   = check.isLeft;
-						newEvent.isRight  = check.isRight;
-						newEvent.targetSubBrowser = this;
-						newEvent.firedBy = aEvent.type;
-						newEvent.modifierKeyPressed = aModifierPressed;
-						this.dispatchEvent(newEvent);
+						this.mIsMouseOverTop    = check.inTopArea;
+						this.mIsMouseOverBottom = check.inBottomArea;
+						this.mIsMouseOverLeft   = check.inLeftArea;
+						this.mIsMouseOverRight  = check.inRightArea;
+						isFirstEnter = true;
 					}
+					var newEvent = document.createEvent('Events');
+					newEvent.initEvent(
+						(isFirstEnter ?
+							'SubBrowserEnterContentAreaEdge' :
+							'SubBrowserHoverContentAreaEdge'
+						),
+						false,
+						true
+					);
+					newEvent.isTop    = check.inTopArea;
+					newEvent.isBottom = check.inBottomArea;
+					newEvent.isLeft   = check.inLeftArea;
+					newEvent.isRight  = check.inRightArea;
+					newEvent.targetSubBrowser = this;
+					newEvent.firedBy = aEvent.type;
+					newEvent.modifierKeyPressed = aModifierPressed;
+					this.dispatchEvent(newEvent);
 				}
 				else if (
 					this.mIsMouseOverTop ||
@@ -709,10 +743,10 @@ sideBox.removeAttribute('style');
 						SplitBrowser.isLinux &&
 						SplitBrowser.addButton.targetSubBrowser == this &&
 						(
-							check.isTop ||
-							check.isBottom ||
-							check.isLeft ||
-							check.isRight
+							check.inTopArea ||
+							check.inBottomArea ||
+							check.inLeftArea ||
+							check.inRightArea
 						)
 						) {
 						session.canDrop = true;
@@ -1733,10 +1767,10 @@ sideBox.removeAttribute('style');
 					(forceCheck || SplitBrowser.isLinux) &&
 					SplitBrowser.addButton.targetSubBrowser == this.mOwner &&
 					(
-						check.isTop ||
-						check.isBottom ||
-						check.isLeft ||
-						check.isRight
+						check.inTopArea ||
+						check.inBottomArea ||
+						check.inLeftArea ||
+						check.inRightArea
 					) &&
 					(
 						this.mOwner.browser.localName != 'tabbrowser' ||

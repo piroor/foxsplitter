@@ -2271,15 +2271,20 @@ alert(e+'\n\n'+state);
 			this.hideAddButton();
 		}
 
+		var justNow = false;
 		if (aEvent.firedBy.indexOf('drag') == 0) {
-			this.showAddButton(aEvent);
+			justNow = this.getDraggingSubBrowser();
 		}
 		else if (aEvent.modifierKeyPressed) {
-			this.showAddButton(aEvent);
+			justNow = true;
 		}
-		else {
-			this.showAddButtonTimer = window.setTimeout(this.delayedShowAddButtonCallback, this.addButtonShowDelay, this, aEvent);
-		}
+
+		this.showAddButtonTimer = window.setTimeout(
+			this.delayedShowAddButtonCallback,
+			(justNow ? 0 : this.addButtonShowDelay),
+			this,
+			aEvent
+		);
 	},
 	
 	delayedShowAddButtonCallback : function(aThis, aEvent) 
@@ -2488,6 +2493,16 @@ alert(e+'\n\n'+state);
    
 /* drag-and-drop */ 
 	
+	getDraggingSubBrowser : function() 
+	{
+		var session = this.getCurrentDragSession();
+		if (!session) return false;
+		var dragged = session.sourceNode;
+		return this.getTabBrowserFromChild(dragged) ?
+				null :
+				this.getSubBrowserFromChild(dragged) ;
+	},
+ 
 	getDropPositionOnContentArea : function(aEvent, aBox) 
 	{
 		var W = aBox.boxObject.width;
@@ -2685,10 +2700,10 @@ catch(e) {
 			(forceCheck || this.isLinux) &&
 			this.addButton.targetSubBrowser == box &&
 			(
-				check.isTop ||
-				check.isBottom ||
-				check.isLeft ||
-				check.isRight
+				check.inTopArea ||
+				check.inBottomArea ||
+				check.inLeftArea ||
+				check.inRightArea
 			)
 			) {
 			this.fireSubBrowserAddRequestEventFromButton(uri, this.isAccelKeyPressed(event));
@@ -3055,6 +3070,7 @@ catch(e) {
 		document.documentElement.addEventListener('SubBrowserContentCollapsed', this, true);
 		document.documentElement.addEventListener('SubBrowserContentExpanded', this, true);
 		document.documentElement.addEventListener('SubBrowserEnterContentAreaEdge', this, true);
+		document.documentElement.addEventListener('SubBrowserHoverContentAreaEdge', this, true);
 		document.documentElement.addEventListener('SubBrowserExitContentAreaEdge', this, true);
 		document.documentElement.addEventListener('SubBrowserFocusMoved', this, true);
 		document.documentElement.addEventListener('TabOpen', this, true);
@@ -3518,6 +3534,7 @@ catch(e) {
 		document.documentElement.removeEventListener('SubBrowserContentCollapsed', this, true);
 		document.documentElement.removeEventListener('SubBrowserContentExpanded', this, true);
 		document.documentElement.removeEventListener('SubBrowserEnterContentAreaEdge', this, true);
+		document.documentElement.removeEventListener('SubBrowserHoverContentAreaEdge', this, true);
 		document.documentElement.removeEventListener('SubBrowserExitContentAreaEdge', this, true);
 		document.documentElement.removeEventListener('SubBrowserFocusMoved', this, true);
 		document.documentElement.removeEventListener('TabOpen', this, true);
@@ -3658,14 +3675,13 @@ catch(e) {
 				this.saveWithDelay();
 				return;
 
+//			case 'SubBrowserHoverContentAreaEdge':
+//				if (this.addButtonIsShown) return;
 			case 'SubBrowserEnterContentAreaEdge':
 				// ignore self-drop
-				if (aEvent.firedBy == 'dragover') {
-					var dragged = this.getCurrentDragSession().sourceNode;
-					if (!this.getTabBrowserFromChild(dragged) &&
-						this.getSubBrowserFromChild(dragged) == aEvent.targetSubBrowser)
-						return;
-				}
+				if (aEvent.firedBy == 'dragover' &&
+					aEvent.targetSubBrowser == this.getDraggingSubBrowser())
+					return;
 				this.delayedShowAddButton(aEvent);
 				return;
 
