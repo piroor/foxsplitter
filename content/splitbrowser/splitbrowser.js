@@ -2267,8 +2267,7 @@ dump(e+'\n');
 
 		this.addButtonIsShown = true;
 
-		if (this.hideAddButtonTimer)
-			this.stopDelayedHideAddButtonTimer();
+		this.stopDelayedHideAddButtonTimer();
 		this.delayedHideAddButton();
 	},
 	
@@ -2336,7 +2335,6 @@ dump(e+'\n');
 	delayedHideAddButton : function() 
 	{
 		if (this.hideAddButtonTimer) return;
-		this.stopDelayedHideAddButtonTimer();
 		this.hideAddButtonTimer = window.setTimeout(this.delayedHideAddButtonCallback, this.addButtonHideDelay, this);
 	},
 	
@@ -3801,14 +3799,29 @@ catch(e) {
 				this.saveWithDelay();
 				return;
 
-//			case 'SubBrowserHoverContentAreaEdge':
-//				if (this.addButtonIsShown) return;
 			case 'SubBrowserEnterContentAreaEdge':
 				// ignore self-drop
 				if (aEvent.firedBy == 'dragover' &&
 					aEvent.targetSubBrowser == this.getDraggingSubBrowser())
 					return;
+				this._lastHoverX = aEvent.screenX;
+				this._lastHoverY = aEvent.screenY;
 				this.delayedShowAddButton(aEvent);
+				return;
+
+			case 'SubBrowserHoverContentAreaEdge':
+				if (
+					this.addButtonIsShown &&
+					(
+						Math.abs(aEvent.screenX - this._lastHoverX) > 10 ||
+						Math.abs(aEvent.screenY - this._lastHoverY) > 10
+					)
+					) {
+					this.stopDelayedHideAddButtonTimer();
+					this.delayedHideAddButton();
+					this._lastHoverX = aEvent.screenX;
+					this._lastHoverY = aEvent.screenY;
+				}
 				return;
 
 			case 'SubBrowserExitContentAreaEdge':
@@ -3866,6 +3879,8 @@ catch(e) {
 				return;
 		}
 	},
+	_lastHoverX : 0,
+	_lastHoverY : 0,
 	toggleFullScreen : function()
 	{
 		if (window.fullScreen)
