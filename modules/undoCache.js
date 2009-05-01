@@ -1,11 +1,16 @@
 var EXPORTED_SYMBOLS = ['undoCache'];
 
-const MAX_COUNT = 1000;
-const MIN_COUNT = 0;
+const MIN_CACHE_COUNT = 0;
+const MAX_CACHE_COUNT = 1000;
 
 const Prefs = Components
 		.classes['@mozilla.org/preferences;1']
-		.getService(Components.interfaces.nsIPrefBranch);;
+		.getService(Components.interfaces.nsIPrefBranch);
+const ObserverService = Components
+		.classes['@mozilla.org/observer-service;1']
+		.getService(Components.interfaces.nsIObserverService);
+
+const SHOUTDOWN_PREF = 'privacy.sanitize.didShutdownSanitize';
 
 var undoCache = {
 
@@ -69,7 +74,7 @@ var undoCache = {
 
 	get maxCount()
 	{
-		return Math.min(MAX_COUNT, Math.max(MIN_COUNT, Prefs.getIntPref('splitbrowser.undo.max')));
+		return Math.min(MAX_CACHE_COUNT, Math.max(MIN_CACHE_COUNT, Prefs.getIntPref('splitbrowser.undo.max')));
 	},
 
 	saveEntries : function(aForce)
@@ -107,6 +112,17 @@ var undoCache = {
 			});
 		}
 		this._onChange();
+	},
+
+	sanitizeOnShutdown : function()
+	{
+		if (
+			!Prefs.prefHasUserValue(SHOUTDOWN_PREF) ||
+			!Prefs.getBoolPref(SHOUTDOWN_PREF)
+			)
+			return;
+		this.clearEntries();
+		this.saveEntries();
 	},
 
 
@@ -164,6 +180,18 @@ var undoCache = {
 
 		range.insertNode(f);
 		range.detach();
+	},
+
+	observe : function(aSubject, aTopic, aData) 
+	{
+		switch (aTopic)
+		{
+			case 'profile-change-teardown':
+				this.sanitizeOnShutdown();
+				return;
+		}
 	}
 
 };
+
+ObserverService.addObserver(undoCache, 'profile-change-teardown', false);
