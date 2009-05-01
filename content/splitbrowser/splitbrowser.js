@@ -2217,7 +2217,6 @@ alert(e+'\n\n'+state);
 			if (this.hideAddButtonTimer)
 				this.stopDelayedHideAddButtonTimer();
 			this.delayedHideAddButton();
-			return;
 		}
 
 		var node = aEvent.targetSubBrowser;
@@ -3761,10 +3760,17 @@ catch(e) {
 		'browser.sessionstore.enabled'
 	],
  
-	observe : function(aSubject, aTopic, aPrefstring) 
+	observe : function(aSubject, aTopic, aData) 
 	{
-		if (aTopic != 'nsPref:changed') return;
-
+		switch (aTopic)
+		{
+			case 'nsPref:changed':
+				this.onPrefChange(aData);
+				break;
+		}
+	},
+	onPrefChange : function(aPrefstring)
+	{
 		switch (aPrefstring)
 		{
 			case 'splitbrowser.show.syncScroll':
