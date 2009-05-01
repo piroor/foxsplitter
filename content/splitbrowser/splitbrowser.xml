@@ -668,23 +668,31 @@ sideBox.removeAttribute('style');
 				var check = this.checkEventFiredOnEdge(aEvent);
 				if (!check) return;
 
-				if (
-					check.inTopArea ||
-					check.inBottomArea ||
-					check.inLeftArea ||
-					check.inRightArea
-					) {
+				var isTop, isBottom, isRight, isLeft;
+				if (aEvent.type.indexOf('drag') < 0) { // mousemove
+					isTop    = check.onTopEdge;
+					isBottom = check.onBottomEdge;
+					isLeft   = check.onLeftEdge;
+					isRight  = check.onRightEdge;
+				}
+				else { // drag***
+					isTop    = check.inTopArea;
+					isBottom = check.inBottomArea;
+					isLeft   = check.inLeftArea;
+					isRight  = check.inRightArea;
+				}
+				if (isTop || isBottom || isLeft || isRight) {
 					var isFirstEnter = false;
 					if (
-						(check.inTopArea && !this.mIsMouseOverTop) ||
-						(check.inBottomArea && !this.mIsMouseOverBottom) ||
-						(check.inLeftArea && !this.mIsMouseOverLeft) ||
-						(check.inRightArea && !this.mIsMouseOverRight)
+						(isTop && !this.mIsMouseOverTop) ||
+						(isBottom && !this.mIsMouseOverBottom) ||
+						(isLeft && !this.mIsMouseOverLeft) ||
+						(isRight && !this.mIsMouseOverRight)
 						) {
-						this.mIsMouseOverTop    = check.inTopArea;
-						this.mIsMouseOverBottom = check.inBottomArea;
-						this.mIsMouseOverLeft   = check.inLeftArea;
-						this.mIsMouseOverRight  = check.inRightArea;
+						this.mIsMouseOverTop    = isTop;
+						this.mIsMouseOverBottom = isBottom;
+						this.mIsMouseOverLeft   = isLeft;
+						this.mIsMouseOverRight  = isRight;
 						isFirstEnter = true;
 					}
 					var newEvent = document.createEvent('Events');
@@ -696,10 +704,10 @@ sideBox.removeAttribute('style');
 						false,
 						true
 					);
-					newEvent.isTop    = check.inTopArea;
-					newEvent.isBottom = check.inBottomArea;
-					newEvent.isLeft   = check.inLeftArea;
-					newEvent.isRight  = check.inRightArea;
+					newEvent.isTop    = isTop;
+					newEvent.isBottom = isBottom;
+					newEvent.isLeft   = isLeft;
+					newEvent.isRight  = isRight;
 					newEvent.targetSubBrowser = this;
 					newEvent.firedBy = aEvent.type;
 					newEvent.modifierKeyPressed = aModifierPressed;

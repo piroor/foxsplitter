@@ -53,6 +53,7 @@ var SplitBrowser = {
 	POSITION_TOP    : 4,
 	POSITION_BOTTOM : 8,
 	POSITION_TAB    : 16,
+	POSITION_INSIDE : 0,
 
 	POSITION_HORIZONTAL : 3,
 	POSITION_VERTICAL  : 12,
@@ -2505,12 +2506,19 @@ alert(e+'\n\n'+state);
  
 	getDropPositionOnContentArea : function(aEvent, aBox) 
 	{
-		var W = aBox.boxObject.width;
-		var H = aBox.boxObject.height;
+		var W = Math.max(1, aBox.boxObject.width);
+		var H = Math.max(1, aBox.boxObject.height);
 		var X = aBox.boxObject.screenX;
 		var Y = aBox.boxObject.screenY;
 		var x = aEvent.screenX - X;
 		var y = aEvent.screenY - Y;
+
+		// óÃàÊÇÃí[Ç©ÇÁ30ÅìÇÃïîï™ÇæÇØîΩâûÅBÇªÇÍÇÊÇËì‡ë§ÇÕñ≥éãÅB
+		var Wunit = W * 0.3;
+		var Hunit = H * 0.3;
+		if (Wunit < x && W - Wunit > x &&
+			Hunit < y && H - Hunit > y)
+			return SplitBrowser.POSITION_INSIDE;
 
 		var isTL = x <= W - (y * W / H);
 		var isBL = x <= y * W / H;
