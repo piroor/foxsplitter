@@ -3213,6 +3213,18 @@ catch(e) {
 			));
 		}
 
+		[
+			'initMenu',
+			'__textlink__initItems'
+		].forEach(function(aFunc) {
+			if (!(aFunc in nsContextMenu.prototype)) return;
+			eval('nsContextMenu.prototype.'+aFunc+' = '+
+				nsContextMenu.prototype[aFunc].toSource().replace(
+					/this\.browser = aBrowser/g,
+					'this.browser = (aBrowser == gBrowser ? SplitBrowser.activeBrowser : aBrowser )'
+				)
+			);
+		}, this);
 
 		eval('window.nsBrowserAccess.prototype.openURI = '+
 			window.nsBrowserAccess.prototype.openURI.toSource().replace(
@@ -3257,6 +3269,7 @@ catch(e) {
 				]]></>
 			)
 		);
+
 		eval('window.nsBrowserAccess.prototype.isTabContentWindow = '+
 			window.nsBrowserAccess.prototype.isTabContentWindow.toSource().replace(
 				'{',
