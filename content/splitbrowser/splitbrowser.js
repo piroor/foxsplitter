@@ -95,11 +95,11 @@ var SplitBrowser = {
 		}
 	},
  
-	ObserverService : Components
+	ObserverService : Components 
 		.classes['@mozilla.org/observer-service;1']
 		.getService(Components.interfaces.nsIObserverService),
  
-	PrivateBrowsing : (
+	PrivateBrowsing : ( 
 		'nsIPrivateBrowsingService' in Components.interfaces ?
 			Components
 				.classes['@mozilla.org/privatebrowsing;1']
@@ -3086,6 +3086,52 @@ catch(e) {
 		};
 	},
   
+/* CtrlTab (Tab Previews) */ 
+	
+	overrideCtrlTab : function() 
+	{
+		if (!('ctrlTab' in window)) return;
+
+		if ('tabList' in ctrlTab) {
+			var tabListGetter = ctrlTab.__lookupGetter__('tabList');
+			eval('tabListGetter = '+tabListGetter.toSource().replace(
+				'if (!this._useTabBarOrder && this.recentlyUsedLimit != 0) {',
+				<![CDATA[
+					SplitBrowser.browsers.forEach(function(aSubBrowser) {
+						var b = aSubBrowser.browser;
+						if (b.localName != 'tabbrowser') return;
+						list = list.concat(Array.slice(b.mTabs));
+					});
+				$&]]>.toString()
+			));
+			ctrlTab.__defineGetter__('tabList', tabListGetter);
+		}
+		if ('onPopupHiding' in ctrlTab) {
+			eval('ctrlTab.onPopupHiding = '+ctrlTab.onPopupHiding.toSource().replace(
+				/gBrowser(\.selectedTab = this\._tabToSelect)/,
+				<![CDATA[
+					SplitBrowser.getTabBrowserFromChild(this._tabToSelect)$1
+					(function(aTab) {
+						var subbrowser = SplitBrowser.getSubBrowserFromChild(aTab);
+						subbrowser.focus();
+					})(this._tabToSelect);
+				]]>.toString()
+			));
+		}
+		if ('updatePreview' in ctrlTab) {
+			eval('ctrlTab.updatePreview = '+ctrlTab.updatePreview.toSource().replace(
+				'aTab.label',
+				<![CDATA[(function(aTab) {
+					var tabbrowser = SplitBrowser.getTabBrowserFromChild(aTab);
+					var subbrowser = SplitBrowser.getSubBrowserFromChild(aTab);
+					return (subbrowser && tabbrowser.mTabs.length == 1) ?
+						subbrowser.title.getAttribute('value') :
+						aTab.label ;
+				})(aTab)]]>.toString()
+			));
+		}
+	},
+  
 	init : function() 
 	{
 		this.undoCache.registerBroadcaster(this.undoBroadcaster);
@@ -3230,7 +3276,6 @@ catch(e) {
 			);
 		}
 
-		// for Firefox 3
 		eval('window.openUILinkIn = '+
 			window.openUILinkIn.toSource().replace(
 				'{',
@@ -3242,6 +3287,7 @@ catch(e) {
 		);
 
 		this.overrideZoomManager();
+		this.overrideCtrlTab();
 		this.hackForOtherExtensions();
 
 		if (this.tabbedBrowsingEnabled) {
