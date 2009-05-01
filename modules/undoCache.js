@@ -10,8 +10,6 @@ const ObserverService = Components
 		.classes['@mozilla.org/observer-service;1']
 		.getService(Components.interfaces.nsIObserverService);
 
-const SHOUTDOWN_PREF = 'privacy.sanitize.didShutdownSanitize';
-
 var undoCache = {
 
 	get entries()
@@ -114,8 +112,9 @@ var undoCache = {
 		this._onChange();
 	},
 
-	sanitizeOnShutdown : function()
+	_sanitizeOnShutdown : function()
 	{
+		const SHOUTDOWN_PREF = 'privacy.sanitize.didShutdownSanitize';
 		if (
 			!Prefs.prefHasUserValue(SHOUTDOWN_PREF) ||
 			!Prefs.getBoolPref(SHOUTDOWN_PREF)
@@ -187,11 +186,14 @@ var undoCache = {
 		switch (aTopic)
 		{
 			case 'profile-change-teardown':
-				this.sanitizeOnShutdown();
+				this._sanitizeOnShutdown();
 				return;
 		}
 	}
 
 };
 
+// "didShutdownSanitize" pref is turned on when "quite-application" is fired.
+// "profile-change-teardown" is fired next to the "quite-application" event, so
+// we should handle it.
 ObserverService.addObserver(undoCache, 'profile-change-teardown', false);
