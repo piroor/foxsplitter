@@ -105,6 +105,7 @@
 			<menu id="splitbrowser-toolbarbutton-undoList"
 				class="menu-iconic splitbrowser-undoList-item"
 				label="&splitbrowser.menu.undoList.label;"
+				accesskey="&splitbrowser.menu.undoList.accesskey;"
 				observes="splitbrowser-undo-broadcaster">
 				<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
 					command="splitbrowser-undoList-command"/>
@@ -238,6 +239,7 @@
 			<menu id="splitbrowser-undoList"
 				class="menu-iconic splitbrowser-undoList-item"
 				label="&splitbrowser.menu.undoList.label;"
+				accesskey="&splitbrowser.menu.undoList.accesskey;"
 				observes="splitbrowser-undo-broadcaster">
 				<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
 					command="splitbrowser-undoList-command"/>
@@ -348,6 +350,7 @@
 	<menu id="splitbrowser-goMenu-undoList"
 		class="menu-iconic splitbrowser-undoList-item"
 		label="&splitbrowser.menu.undoList.label;"
+		accesskey="&splitbrowser.menu.undoList.accesskey;"
 		observes="splitbrowser-undo-broadcaster">
 		<menupopup onpopupshowing="SplitBrowser.initUndoList(this);"
 			command="splitbrowser-undoList-command"/>
