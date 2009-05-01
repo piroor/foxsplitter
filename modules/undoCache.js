@@ -11,6 +11,10 @@ const ObserverService = Components
 		.classes['@mozilla.org/observer-service;1']
 		.getService(Components.interfaces.nsIObserverService);
 
+const FaviconService = Components
+		.classes['@mozilla.org/browser/favicon-service;1']
+		.getService(Components.interfaces.nsIFaviconService);
+
 const PrivateBrowsing = 'nsIPrivateBrowsingService' in Components.interfaces ?
 		Components
 			.classes['@mozilla.org/privatebrowsing;1']
@@ -199,8 +203,13 @@ var undoCache = {
 			let item = f.appendChild(d.createElement('menuitem'));
 			item.setAttribute('label', aEntry.title);
 			item.setAttribute('index', aIndex);
-			item.setAttribute('src', aEntry.icon);
 			item.setAttribute('class', 'menuitem-iconic');
+			item.setAttribute(
+				'src',
+				aEntry.icon ?
+					'moz-anno:favicon:'+aEntry.icon :
+					FaviconService.defaultFavicon.spec
+			);
 			if (aIndex <= max)
 				item.setAttribute('accesskey', aIndex.toString(max));
 		}, this);
