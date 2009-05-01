@@ -709,8 +709,12 @@ sideBox.removeAttribute('style');
 					newEvent.isLeft   = isLeft;
 					newEvent.isRight  = isRight;
 					newEvent.targetSubBrowser = this;
-					newEvent.firedBy = aEvent.type;
 					newEvent.modifierKeyPressed = aModifierPressed;
+					newEvent.firedBy = aEvent.type;
+					newEvent.clientX = aEvent.clientX;
+					newEvent.clientY = aEvent.clientY;
+					newEvent.screenX = aEvent.screenX;
+					newEvent.screenY = aEvent.screenY;
 					this.dispatchEvent(newEvent);
 				}
 				else if (
