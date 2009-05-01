@@ -2601,25 +2601,29 @@ catch(e) {
 		if (oldTab && 'treeStyleTab' in aTabBrowser) return false;
 
 		var oldTabBrowser = this.getTabBrowserFromChild(oldTab);
-		if (oldTab &&
-			oldTabBrowser != aTabBrowser) {
-			var oldTabs = this.getDraggedTabs(oldTab);
-			var isCloseAll = !isCopy && (this.getTabs(oldTabBrowser).snapshotLength == oldTabs.length);
-			var newTabs = [];
-			oldTabs.forEach(function(aTab) {
-				var t = aTabBrowser.addTab();
-				newTabs.push(t);
-				if (isCopy)
-					this.cloneBrowser(aTab.linkedBrowser, t.linkedBrowser);
-				else
-					this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
-			}, this);
-			aTabBrowser.selectedTab = newTabs[0];
-			this.selectNewTabsAfterDrop(newTabs, oldTabBrowser);
-			if (!isCopy) {
-				this.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
+		if (oldTab) {
+			if (oldTabBrowser == aTabBrowser) {
+				return false;
 			}
-			return true;
+			else {
+				var oldTabs = this.getDraggedTabs(oldTab);
+				var isCloseAll = !isCopy && (this.getTabs(oldTabBrowser).snapshotLength == oldTabs.length);
+				var newTabs = [];
+				oldTabs.forEach(function(aTab) {
+					var t = aTabBrowser.addTab();
+					newTabs.push(t);
+					if (isCopy)
+						this.cloneBrowser(aTab.linkedBrowser, t.linkedBrowser);
+					else
+						this.swapBrowser(aTab.linkedBrowser, t.linkedBrowser);
+				}, this);
+				aTabBrowser.selectedTab = newTabs[0];
+				this.selectNewTabsAfterDrop(newTabs, oldTabBrowser);
+				if (!isCopy) {
+					this.closeOldTabsAfterDrop(oldTabs, oldTabBrowser, isCloseAll);
+				}
+				return true;
+			}
 		}
 
 		var draggedSubBrowser = this.getSubBrowserFromChild(dragSession.sourceNode);
@@ -2641,10 +2645,11 @@ catch(e) {
 		if (
 			!isCopy &&
 			!oldTab &&
+			draggedSubBrowser &&
 			draggedSubBrowser == droppedSubBrowser
 			) {
-			aEvent.preventDefault();
-			aEvent.stopPropagation();
+			event.preventDefault();
+			event.stopPropagation();
 			return true;
 		}
 
