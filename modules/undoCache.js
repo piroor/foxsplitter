@@ -49,7 +49,7 @@ var undoCache = {
 			icon  : aIcon,
 			state : aState
 		});
-		this.entries.slice(0, this.maxCount);
+		this._entries = this.entries.slice(0, this.maxCount);
 		this._onChange();
 	},
 
@@ -119,12 +119,15 @@ var undoCache = {
 		range.deleteContents();
 
 		var f = d.createDocumentFragment();
+		var max = 36;
 		this.entries.forEach(function(aEntry, aIndex) {
 			let item = f.appendChild(d.createElement('menuitem'));
 			item.setAttribute('label', aEntry.title);
 			item.setAttribute('index', aIndex);
 			item.setAttribute('src', aEntry.icon);
 			item.setAttribute('class', 'menuitem-iconic');
+			if (aIndex <= max)
+				item.setAttribute('accesskey', aIndex.toString(max));
 		}, this);
 
 		range.insertNode(f);
