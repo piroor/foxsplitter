@@ -3523,31 +3523,34 @@ catch(e) {
 			));
 		}
 
-		var id = aBrowser.id || parseInt(Math.random() * 65000) ;
-
-		var fragment = document.createDocumentFragment();
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-layout-grid-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-grid-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-x-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-y-template').cloneNode(true));
-		fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather-template').cloneNode(true));
-
-		Array.prototype.slice.call(fragment.childNodes).forEach(function(aNode) {
-			aNode.setAttribute('id', aNode.getAttribute('id').replace('template', id));
-		});
-
-		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
-		var separator = tabContext.firstChild;
-		while (separator.localName != 'menuseparator' && separator)
-		{
-			separator = separator.nextSibling;
-		}
-		tabContext.insertBefore(fragment, separator);
-
-		tabContext.addEventListener('popupshowing', this, false);
 		aBrowser.mTabContainer.addEventListener('select', this, false);
 		aBrowser.mPanelContainer.addEventListener('load', this, true);
+
+		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
+		tabContext.addEventListener('popupshowing', this, false);
+		if (!('MultipleTabService' in window)) {
+			var id = aBrowser.id || parseInt(Math.random() * 65000) ;
+
+			var fragment = document.createDocumentFragment();
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-split').cloneNode(true));
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-separator-layout-grid').cloneNode(true));
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-grid').cloneNode(true));
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-x').cloneNode(true));
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-layout-y').cloneNode(true));
+			fragment.appendChild(document.getElementById('splitbrowser-tab-context-item-gather').cloneNode(true));
+
+			Array.prototype.slice.call(fragment.childNodes).forEach(function(aNode) {
+				aNode.setAttribute('id', aNode.getAttribute('id').replace('template', id));
+			});
+
+			var separator = tabContext.firstChild;
+			while (separator.localName != 'menuseparator' && separator)
+			{
+				separator = separator.nextSibling;
+			}
+			tabContext.insertBefore(fragment, separator);
+
+		}
 	},
  
 	destroyTabBrowser : function(aBrowser) 

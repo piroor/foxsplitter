@@ -449,8 +449,12 @@
 			tooltiptext-left="&splitbrowser.add.button.left.tooltip;"
 			tooltiptext-right="&splitbrowser.add.button.right.tooltip;"/>
 	</panel>
-	<data id="splitbrowser-template" collapsed="true">
-		<menu id="splitbrowser-tab-context-item-split-template"
+</window>
+
+
+<popupset id="mainPopupSet">
+	<menupopup id="multipletab-tabcontext-menu-template">
+		<menu id="splitbrowser-tab-context-item-split"
 			class="menu-iconic splitbrowser-split-item tab-context"
 			label="&splitbrowser.tab.add.label;"
 			tbattr="tabbrowser-multiple"
@@ -476,9 +480,9 @@
 					splitbrowser-position="POSITION_BOTTOM"/>
 			</menupopup>
 		</menu>
-		<menuseparator id="splitbrowser-tab-context-separator-layout-grid-template"
+		<menuseparator id="splitbrowser-tab-context-separator-layout-grid"
 			class="splitbrowser-tab-context-separator"/>
-		<menuitem id="splitbrowser-tab-context-item-layout-grid-template"
+		<menuitem id="splitbrowser-tab-context-item-layout-grid"
 			class="menuitem-iconic splitbrowser-layout-grid-item tab-context"
 			label="&splitbrowser.tab.layout.grid.label;"
 			tbattr="tabbrowser-multiple"
@@ -489,7 +493,7 @@
 					b = b.parentNode;
 				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_GRID);
 			"/>
-		<menuitem id="splitbrowser-tab-context-item-layout-x-template"
+		<menuitem id="splitbrowser-tab-context-item-layout-x"
 			class="menuitem-iconic splitbrowser-layout-x-item tab-context"
 			label="&splitbrowser.tab.layout.x.label;"
 			tbattr="tabbrowser-multiple"
@@ -500,7 +504,7 @@
 					b = b.parentNode;
 				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_X_AXIS);
 			"/>
-		<menuitem id="splitbrowser-tab-context-item-layout-y-template"
+		<menuitem id="splitbrowser-tab-context-item-layout-y"
 			class="menuitem-iconic splitbrowser-layout-y-item tab-context"
 			label="&splitbrowser.tab.layout.y.label;"
 			tbattr="tabbrowser-multiple"
@@ -511,14 +515,14 @@
 					b = b.parentNode;
 				SplitBrowser.layoutTabs(b.parentSubBrowser, SplitBrowser.LAYOUT_ON_Y_AXIS);
 			"/>
-		<menuitem id="splitbrowser-tab-context-item-gather-template"
+		<menuitem id="splitbrowser-tab-context-item-gather"
 			class="menuitem-iconic splitbrowser-gather-item tab-context"
 			label="&splitbrowser.tab.gather.label;"
 			oncommand="SplitBrowser.gatherSubBrowsers();"
 			observes="splitbrowser-featuresForSplitBrowsers-broadcaster"/>
-	</data>
+	</menupopup>
+</popupset>
 
-</window>
 
 <popupset id="splitbrowser-popupset">
 	<menupopup id="subbrowser-splitter-contextmenu"
