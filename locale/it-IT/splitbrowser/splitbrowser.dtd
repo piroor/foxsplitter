@@ -6,13 +6,13 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "seleziona il riquadro dopo ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "msec">
 
-<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
-<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
-<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.caption "Comportamento suddivisione schede"> <!-- ????-->
+<!ENTITY splitbrowser.tab.closetab.move    "Chiudi la scheda originale (sposta la scheda nel nuovo riquadro)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Mantieni la scheda originale (copia la scheda nel nuovo riquadro)">
 
 <!ENTITY splitbrowser.syncScroll.mainArea         "Scorri simultaneamente i riquadri impostati per sincronizzare il movimento">
-<!ENTITY splitbrowser.syncScroll.horizontal.true  "verticalmente e orizzontalmente"> <!-- NUOVA -->
-<!ENTITY splitbrowser.syncScroll.horizontal.false "solo verticalmente"> <!-- NUOVA -->
+<!ENTITY splitbrowser.syncScroll.horizontal.true  "verticalmente e orizzontalmente">
+<!ENTITY splitbrowser.syncScroll.horizontal.false "solo verticalmente">
 
 
 <!ENTITY splitbrowser.tab.appearance     "Aspetto">
@@ -24,14 +24,14 @@
 <!ENTITY splitbrowser.show.toolbar.navigation.always "Mostra sempre i pulsati di navigazione nei riquadri">
 
 <!ENTITY splitbrowser.show.addbuttons.caption      "Maniglia di suddivisione del riquadro">
-<!ENTITY splitbrowser.show.addbuttons.hover.type   "Quando il mouse viene portato presso uno dei bordi dell&apos;area attiva:">
+<!ENTITY splitbrowser.show.addbuttons.hover.type   "Al passaggio del mouse su uno dei bordi dell&apos;area attiva:">
 <!ENTITY splitbrowser.show.addbuttons.hover.type.0 "mostra la maniglia automaticamente">
 <!ENTITY splitbrowser.show.addbuttons.hover.type.1 "mostra la maniglia solo se viene premuto il tasto Maiusc">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop     "Mostra la maniglia di suddivisione durante le operazioni di trascinamento">
-<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
-<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.size.before       "Altezza del pulsante &quot;Suddividi&quot;:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixel">
+<!ENTITY splitbrowser.addbuttons.area.before       "Larghezza del pulsante &quot;Suddividi&quot;:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixel">
 
 
 <!ENTITY splitbrowser.tab.target             "Impostazioni speciali">
@@ -52,11 +52,11 @@
 <!ENTITY splitbrowser.show.tab.context.gather      "Raggruppa qui come schede tutti i riquadri">
 
 
-<!ENTITY splitbrowser.tab.session     "State">
-<!ENTITY splitbrowser.state.restore   "Salva lo stato dei riquadri">
-<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after  "times">
-<!ENTITY splitbrowser.undo.clearCache "Clear cache">
+<!ENTITY splitbrowser.tab.session     "Cronologia">
+<!ENTITY splitbrowser.state.restore   "Salva la cronologia dei riquadri">
+<!ENTITY splitbrowser.undo.max.before "Permetti di riaprire sino a ">
+<!ENTITY splitbrowser.undo.max.after  "riquadri">
+<!ENTITY splitbrowser.undo.clearCache "Svuota la cache">
 
 
 
@@ -112,10 +112,10 @@
 <!ENTITY splitbrowser.menu.accesskey             "d">
 <!ENTITY splitbrowser.menu.removeAll.label       "Chiudi tutti i riquadri">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "C">
-<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
-<!ENTITY splitbrowser.menu.undo.accesskey        "U">
-<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
-<!ENTITY splitbrowser.menu.undoList.accesskey    "R">
+<!ENTITY splitbrowser.menu.undo.label            "Riapri riquadro chiuso">
+<!ENTITY splitbrowser.menu.undo.accesskey        "u">
+<!ENTITY splitbrowser.menu.undoList.label        "Riquadri chiusi di recente">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "s">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Contrai tutti i riquadri">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "t">
 <!ENTITY splitbrowser.menu.expandAll.label       "Espandi tutti i riquadri">
@@ -171,13 +171,13 @@
 <!ENTITY splitbrowser.button.gather.label        "Raggruppa">
 <!ENTITY splitbrowser.button.gather.tooltip      "Raggruppa come schede tutti i riquadri">
 <!ENTITY splitbrowser.button.collapseAll.label   "Contrai">
-<!ENTITY splitbrowser.button.collapseAll.tooltip "Contrai tutti i riquadri">
+<!ENTITY splitbrowser.button.collapseAll.tooltip "Contrae tutti i riquadri">
 <!ENTITY splitbrowser.button.expandAll.label     "Espandi">
-<!ENTITY splitbrowser.button.expandAll.tooltip   "Espandi tutti i riquadri">
+<!ENTITY splitbrowser.button.expandAll.tooltip   "Espande tutti i riquadri">
 <!ENTITY splitbrowser.button.removeAll.label     "Chiudi tutti">
-<!ENTITY splitbrowser.button.removeAll.tooltip   "Chiudi tutti i riquadri">
+<!ENTITY splitbrowser.button.removeAll.tooltip   "Chiude tutti i riquadri">
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
-<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Cache riquadri chiusi di Split Browser"> <!-- errore nella stringa inglese-->
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "B">
