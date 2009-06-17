@@ -569,7 +569,7 @@ SplitBrowser.hackForOtherExtensionsWithDelay = function() {
 			},
 			warnAboutClosingTabs : function()
 			{
-				return SplitBrowser.activeBrowser.addTab.apply(SplitBrowser.activeBrowser, arguments);
+				return SplitBrowser.activeBrowser.warnAboutClosingTabs.apply(SplitBrowser.activeBrowser, arguments);
 			},
 			getBrowserForTab : function()
 			{
