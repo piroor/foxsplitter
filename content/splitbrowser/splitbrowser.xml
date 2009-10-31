@@ -583,8 +583,7 @@ sideBox.removeAttribute('style');
 				var w = this.mOwner.browser.contentWindow;
 				if (aSubject.top == w) return;
 
-				var info;
-				eval('info = '+aData);
+				var info = SplitBrowser.evalInSandbox(aData);
 				this.mOwner.scrollSynchronizing = true;
 				w.scrollTo(
 					(
@@ -2005,12 +2004,10 @@ sideBox.removeAttribute('style');
 			}
 
 			if (b.localName == 'tabbrowser') {
-				eval('b.addTab = '+
-					b.addTab.toSource().replace(
-						'if (!this.mTabChangedListenerAdded) {',
-						'$& this.attrChangedListener = attrChanged;'
-					)
-				);
+				eval('b.addTab = '+b.addTab.toSource().replace(
+					'if (!this.mTabChangedListenerAdded) {',
+					'$& this.attrChangedListener = attrChanged;'
+				));
 				b.__splitbrowser__updateCurrentBrowser = b.updateCurrentBrowser;
 				b.updateCurrentBrowser = this.newUpdateCurrentBrowser;
 

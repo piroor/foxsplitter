@@ -65,29 +65,20 @@ SplitBrowser.hackForOtherExtensions = function() {
 		Firebug.__defineGetter__('tabBrowser', getTabBrowser);
 		Firebug.__defineSetter__('tabBrowser', getTabBrowser);
 
-		eval(
-			'Firebug.toggleBar = '+
-			Firebug.toggleBar.toSource().replace(
-				'{',
-				'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
-			)
-		);
-		eval(
-			'Firebug.showBar = '+
-			Firebug.showBar.toSource().replace(
-				'{',
-				'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
-			)
-		);
+		eval('Firebug.toggleBar = '+Firebug.toggleBar.toSource().replace(
+			'{',
+			'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
+		));
+		eval('Firebug.showBar = '+Firebug.showBar.toSource().replace(
+			'{',
+			'{ if (contentBox.collapsed) { window.__splitbrowser_firebug__lastBrowser = SplitBrowser.activeBrowser; } '
+		));
 		var funcs = 'initialize,destroy,activate,deactivate,watchTopWindow,getBrowserByWindow'.split(',');
 		funcs.forEach(function(aFunc) {
-			eval(
-				'TabWatcher.'+aFunc+' = '+
-				TabWatcher[aFunc].toSource().replace(
-					/tabBrowser/g,
-					'window.tabBrowser'
-				)
-			);
+			eval('TabWatcher.'+aFunc+' = '+TabWatcher[aFunc].toSource().replace(
+				/tabBrowser/g,
+				'window.tabBrowser'
+			));
 		});
 		window.__splitbrowser_firebug__fireBugToggle = function(aEvent) {
 			if (aEgent &&
@@ -117,13 +108,10 @@ SplitBrowser.hackForOtherExtensions = function() {
 
 	// hack for Grab and Drag
 	if ('gadInit' in window) {
-		eval(
-			'window.gadInit = '+
-			window.gadInit.toSource().replace(
-				/document\.getElementById\(['"]content['"]\)/g,
-				'SplitBrowser.activeBrowser'
-			)
-		);
+		eval('window.gadInit = '+window.gadInit.toSource().replace(
+			/document\.getElementById\(['"]content['"]\)/g,
+			'SplitBrowser.activeBrowser'
+		));
 		document.documentElement.addEventListener('SubBrowserFocusMoved', gadInit, false);
 		window.addEventListener('unload', function() {
 			document.documentElement.removeEventListener('SubBrowserFocusMoved', gadInit, false);
@@ -203,16 +191,13 @@ SplitBrowser.hackForOtherExtensions = function() {
 		this.tabbedBrowsingEnabled) {
 		var funcs = 'switchCase,onTabClick,onTabBarDblClick,duplicateInTab,closeAllTabs'.split(',');
 		funcs.forEach(function(aFunc) {
-			eval(
-				'tabClicking.'+aFunc+' = '+
-				tabClicking[aFunc].toSource().replace(
-					/gBrowser|getBrowser\(\)/g,
-					'SplitBrowser.activeBrowser'
-				).replace(
-					/gURLBar.select()/g,
-					'SplitBrowser.activeBrowserSelectURLBar()'
-				)
-			);
+			eval('tabClicking.'+aFunc+' = '+tabClicking[aFunc].toSource().replace(
+				/gBrowser|getBrowser\(\)/g,
+				'SplitBrowser.activeBrowser'
+			).replace(
+				/gURLBar.select()/g,
+				'SplitBrowser.activeBrowserSelectURLBar()'
+			));
 		});
 		tabClicking.__splitbrowser__selectURLBar = tabClicking.selectURLBar;
 		tabClicking.selectURLBar = function() {
@@ -265,57 +250,50 @@ SplitBrowser.hackForOtherExtensions = function() {
 			};
 		}
 
-		eval('window.aioTabFocus = '+window.aioTabFocus.toSource()
-			.replace(
-				/\{/,
-				'{'+
-					'if (e.originalTarget.ownerDocument != document) return;'+
-					'var b = e.originalTarget;'+
-					'while (b.localName != "tabbrowser")'+
-						'b = b.parentNode;'
-			).replace(
-				/aioTabsNb/g,
-				'b.aioTabsNb'
-			).replace(
-				/aioContent/g,
-				'b'
-			).replace(
-				/aioRendering/g,
-				'(b.mPanelContainer || b)'
-			)
-		);
-		eval('window.aioTabLoad = '+window.aioTabLoad.toSource()
-			.replace(
-				/\{/,
-				'{'+
-					'if ((e.originalTarget.ownerDocument || e.originalTarget) == document) return;'+
-					'var b, w = (e.originalTarget.ownerDocument || e.originalTarget).defaultView.top;'+
-					'if (gBrowser.browsers.some(function(aBrowser) { return w == aBrowser.contentWindow; })) {'+
-						'b = gBrowser;'+
+		eval('window.aioTabFocus = '+window.aioTabFocus.toSource().replace(
+			/\{/,
+			'{'+
+				'if (e.originalTarget.ownerDocument != document) return;'+
+				'var b = e.originalTarget;'+
+				'while (b.localName != "tabbrowser")'+
+					'b = b.parentNode;'
+		).replace(
+			/aioTabsNb/g,
+			'b.aioTabsNb'
+		).replace(
+			/aioContent/g,
+			'b'
+		).replace(
+			/aioRendering/g,
+			'(b.mPanelContainer || b)'
+		));
+		eval('window.aioTabLoad = '+window.aioTabLoad.toSource().replace(
+			/\{/,
+			'{'+
+				'if ((e.originalTarget.ownerDocument || e.originalTarget) == document) return;'+
+				'var b, w = (e.originalTarget.ownerDocument || e.originalTarget).defaultView.top;'+
+				'if (gBrowser.browsers.some(function(aBrowser) { return w == aBrowser.contentWindow; })) {'+
+					'b = gBrowser;'+
+				'}'+
+				'else {'+
+					'for (var i = 0, maxi = SplitBrowser.browsers.length; i < maxi; i++)'+
+					'{'+
+						'if ((b = SplitBrowser.browsers[i].browser).browsers.some(function(aBrowser) { return w == aBrowser.contentWindow; })) break;'+
 					'}'+
-					'else {'+
-						'for (var i = 0, maxi = SplitBrowser.browsers.length; i < maxi; i++)'+
-						'{'+
-							'if ((b = SplitBrowser.browsers[i].browser).browsers.some(function(aBrowser) { return w == aBrowser.contentWindow; })) break;'+
-						'}'+
-					'}'
-			).replace(
-				/aioTabsNb/g,
-				'b.aioTabsNb'
-			).replace(
-				/aioRendering/g,
-				'(b.mPanelContainer || b)'
-			)
-		);
+				'}'
+		).replace(
+			/aioTabsNb/g,
+			'b.aioTabsNb'
+		).replace(
+			/aioRendering/g,
+			'(b.mPanelContainer || b)'
+		));
 		var funcs = 'aioStartTrail,aioIsAreaOK,aioIsPastable,aioMouseDown,aioAddMarker,aioWheelScroll'.split(',');
 		funcs.forEach(function(aFunc) {
-			eval(
-				'window.'+aFunc+' = '+
-				window[aFunc].toSource().replace(
-					/e.target/g,
-					'e.originalTarget'
-				)
-			);
+			eval('window.'+aFunc+' = '+window[aFunc].toSource().replace(
+				/e.target/g,
+				'e.originalTarget'
+			));
 		});
 		eval('window.aioOpenInNewTab = '+window.aioOpenInNewTab.toSource().replace(
 			/BrowserOpenTab\(\);/,
@@ -344,36 +322,34 @@ SplitBrowser.hackForOtherExtensions = function() {
 			window.removeEventListener('unload', arguments.callee, false);
 		}, false);
 
-		eval('window.aioActionTable = '+window.aioActionTable.toSource()
-			.replace(
-				/addBookmarkAs\(aioContent\)/g,
-				'addBookmarkAs\(SplitBrowser.activeBrowser\)'
-			).replace(
-				/BrowserReload\(\)/g,
-				'SplitBrowser.activeBrowserReload()'
-			).replace(
-				/BrowserReloadSkipCache\(\)/g,
-				'SplitBrowser.activeBrowserReloadSkipCache()'
-			).replace(
-				/BrowserOpenTab\(\)/g,
-				'SplitBrowser.activeBrowserOpenTab()'
-			).replace(
-				/BrowserStop\(\)/g,
-				'SplitBrowser.activeBrowserStop()'
-			).replace(
-				/BrowserBack\(([^\)]*)\)/g,
-				'SplitBrowser.activeBrowserBack($1)'
-			).replace(
-				/BrowserForward\(([^\)]*)\)/g,
-				'SplitBrowser.activeBrowserForward($1)'
-			).replace(
-				/BrowserPageInfo\(\)/g,
-				'SplitBrowser.activeBrowserViewPageInfo()'
-			).replace(
-				/aioSrcEvent.target/g,
-				'aioSrcEvent.originalTarget'
-			)
-		);
+		eval('window.aioActionTable = '+window.aioActionTable.toSource().replace(
+			/addBookmarkAs\(aioContent\)/g,
+			'addBookmarkAs\(SplitBrowser.activeBrowser\)'
+		).replace(
+			/BrowserReload\(\)/g,
+			'SplitBrowser.activeBrowserReload()'
+		).replace(
+			/BrowserReloadSkipCache\(\)/g,
+			'SplitBrowser.activeBrowserReloadSkipCache()'
+		).replace(
+			/BrowserOpenTab\(\)/g,
+			'SplitBrowser.activeBrowserOpenTab()'
+		).replace(
+			/BrowserStop\(\)/g,
+			'SplitBrowser.activeBrowserStop()'
+		).replace(
+			/BrowserBack\(([^\)]*)\)/g,
+			'SplitBrowser.activeBrowserBack($1)'
+		).replace(
+			/BrowserForward\(([^\)]*)\)/g,
+			'SplitBrowser.activeBrowserForward($1)'
+		).replace(
+			/BrowserPageInfo\(\)/g,
+			'SplitBrowser.activeBrowserViewPageInfo()'
+		).replace(
+			/aioSrcEvent.target/g,
+			'aioSrcEvent.originalTarget'
+		));
 	}
 
 
@@ -406,23 +382,13 @@ SplitBrowser.hackForOtherExtensions = function() {
 		for (var i in IeTab.prototype)
 		{
 			try {
-				eval(
-					'IeTab.prototype.'+i+' = '+
-					IeTab.prototype[i].toSource().replace(
-						/gIeTab/g,
-						'this'
-					).replace(
-						/thisChromeStr/g,
-						'gIeTabChromeStr'
-					)
-				);
-				dump(IeTab.prototype[i].toSource().replace(
-						/gIeTab/g,
-						'this'
-					).replace(
-						/thisChromeStr/g,
-						'gIeTabChromeStr'
-					)+'\n');
+				eval('IeTab.prototype.'+i+' = '+IeTab.prototype[i].toSource().replace(
+					/gIeTab/g,
+					'this'
+				).replace(
+					/thisChromeStr/g,
+					'gIeTabChromeStr'
+				));
 			}
 			catch(e) {
 				dump('IeTab.prototype.'+i+' // '+e+'\n');
@@ -431,13 +397,10 @@ SplitBrowser.hackForOtherExtensions = function() {
 		funcs = 'getIeTabElmt,getIeTabElmtURL,switchTabEngine,switchEngine,loadIeTab,addIeTab,getHandledURL,updateUrlBar,updateBackForwardButtons,updateStopReloadButtons,updateProgressStatus,onProgressChange,closeIeTab,getContextTab,viewPage,updateTabbarMenu,createTabbarMenu,hookCodeAll,addEventAll,removeEventAll'.split(',');
 		funcs.forEach(function(aFunc) {
 			try {
-				eval(
-					'IeTab.prototype.'+aFunc+' = '+
-					IeTab.prototype[aFunc].toSource().replace(
-						/gBrowser/g,
-						'this.gBrowser'
-					)
-				);
+				eval('IeTab.prototype.'+aFunc+' = '+IeTab.prototype[aFunc].toSource().replace(
+					/gBrowser/g,
+					'this.gBrowser'
+				));
 			}
 			catch(e) {
 				dump('IeTab.prototype.'+i+' // '+e+'\n');

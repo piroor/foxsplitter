@@ -107,6 +107,17 @@ var SplitBrowser = {
 			null
 	),
  
+	evalInSandbox : function(aCode, aOwner) 
+	{
+		try {
+			var sandbox = new Components.utils.Sandbox(aOwner || 'about:blank');
+			return Components.utils.evalInSandbox(aCode, sandbox);
+		}
+		catch(e) {
+		}
+		return void(0);
+	},
+ 
 /* utilities */ 
 	
 	makeURIFromSpec : function(aURI) 
@@ -585,7 +596,7 @@ var SplitBrowser = {
 		var data = null;
 		if (aURI && aURI.indexOf('subbrowser\n') == 0) {
 			try {
-				eval('data = '+aURI.replace('subbrowser\n', ''));
+				data = this.evalInSandbox(aURI.replace('subbrowser\n', ''));
 			}
 			catch(e) {
 			}
@@ -1159,7 +1170,7 @@ var SplitBrowser = {
 		if (!data) return;
 		this.undoCache.removeEntryAt(aIndex);
 		try {
-			eval('state = '+data.state);
+			state = this.evalInSandbox(data.state);
 			var box = gBrowser.boxObject;
 			state = {
 				content : {
@@ -1880,7 +1891,7 @@ dump(e+'\n');
 		}
 		if (!state) return;
 		try {
-			eval('state = '+state);
+			state = this.evalInSandbox(state);
 		}
 		catch(e) {
 			Application.console.log(e+'\n\n'+state);
@@ -2556,8 +2567,7 @@ try{
 			uri = aXferData.data;
 			if (this.isAccelKeyPressed(aEvent)) {
 				try {
-					var info;
-					eval('info = '+uri.replace('subbrowser\n', ''));
+					var info = this.evalInSandbox(uri.replace('subbrowser\n', ''));
 					info.clone = true;
 					uri = 'subbrowser\n'+info.toSource();
 				}
@@ -2895,47 +2905,35 @@ catch(e) {
 				source = search[funcs[i]].toSource();
 				if (/^\(?function doSearch\(/.test(source)) {
 					if (source.indexOf('openUILinkIn') > -1) { // Firefox 3
-					eval(
-						'search.'+funcs[i]+' = '+
-							source
-								.replace(
-									'{',
-									'$& SplitBrowser.readyToOpenSpecialPane("search");'
-								).replace(
-									/(\}\)?)$/,
-									'SplitBrowser.specialPaneOpened("search"); $1'
-								)
-					);
+						eval('search.'+funcs[i]+' = '+source.replace(
+							'{',
+							'$& SplitBrowser.readyToOpenSpecialPane("search");'
+						).replace(
+							/(\}\)?)$/,
+							'SplitBrowser.specialPaneOpened("search"); $1'
+						));
 					}
 					else { // Firefox 2
-					eval(
-						'search.'+funcs[i]+' = '+
-							source
-								.replace(
-									/(getBrowser\(\)|gBrowser)/g,
-									'SplitBrowser.browserForSearch'
-								).replace(
-									/content.focus\(\)/g,
-									'SplitBrowser.browserForSearch.contentWindow.focus()'
-								).replace(
-									/([^.])loadURI\(([^\),]+), ([^\),]+), ([^\),]+), ([^\),]+)\)/,
-									'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE, $3, $4, null)'
-								)
-					);
+						eval('search.'+funcs[i]+' = '+source.replace(
+							/(getBrowser\(\)|gBrowser)/g,
+							'SplitBrowser.browserForSearch'
+						).replace(
+							/content.focus\(\)/g,
+							'SplitBrowser.browserForSearch.contentWindow.focus()'
+						).replace(
+							/([^.])loadURI\(([^\),]+), ([^\),]+), ([^\),]+), ([^\),]+)\)/,
+							'$1SplitBrowser.browserForSearch.webNavigation.loadURI($2, Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE, $3, $4, null)'
+						));
 					}
 					break;
 				}
 			}
 		}
 		else if ('onEnginePopupCommand' in textbox && textbox.onEnginePopupCommand.toSource().indexOf('SplitBrowser') < 0) { // Firefox 1.5
-			eval(
-				'textbox.onEnginePopupCommand = '+
-					textbox.onEnginePopupCommand.toSource()
-						.replace(
-							/([^.])loadURI\(/,
-							'$1SplitBrowser.browserForSearch.loadURI('
-						)
-			);
+			eval('textbox.onEnginePopupCommand = '+textbox.onEnginePopupCommand.toSource().replace(
+				/([^.])loadURI\(/,
+				'$1SplitBrowser.browserForSearch.loadURI('
+			));
 		}
 
 		search.splitbrowserInitialized = true;
@@ -3216,74 +3214,66 @@ catch(e) {
 			'__textlink__initItems'
 		].forEach(function(aFunc) {
 			if (!(aFunc in nsContextMenu.prototype)) return;
-			eval('nsContextMenu.prototype.'+aFunc+' = '+
-				nsContextMenu.prototype[aFunc].toSource().replace(
-					/this\.browser = aBrowser/g,
-					'this.browser = (aBrowser == gBrowser ? SplitBrowser.activeBrowser : aBrowser )'
-				)
-			);
+			eval('nsContextMenu.prototype.'+aFunc+' = '+nsContextMenu.prototype[aFunc].toSource().replace(
+				/this\.browser = aBrowser/g,
+				'this.browser = (aBrowser == gBrowser ? SplitBrowser.activeBrowser : aBrowser )'
+			));
 		}, this);
 
-		eval('window.nsBrowserAccess.prototype.openURI = '+
-			window.nsBrowserAccess.prototype.openURI.toSource().replace(
-				/switch\s*\(aWhere\)/,
-				<><![CDATA[
-					var pos = aOpener &&
-							aOpener.document &&
-							aOpener.document.documentElement &&
-							(pos = aOpener.document.documentElement.getAttribute('_moz-split-browser-to')) &&
-							/^(top|right|bottom|left|tab)$/i.test(pos) ? pos.toUpperCase() : null ;
-					if (pos && pos == 'TAB') {
-						aWhere = Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB;
+		eval('window.nsBrowserAccess.prototype.openURI = '+window.nsBrowserAccess.prototype.openURI.toSource().replace(
+			/switch\s*\(aWhere\)/,
+			<![CDATA[
+				var pos = aOpener &&
+						aOpener.document &&
+						aOpener.document.documentElement &&
+						(pos = aOpener.document.documentElement.getAttribute('_moz-split-browser-to')) &&
+						/^(top|right|bottom|left|tab)$/i.test(pos) ? pos.toUpperCase() : null ;
+				if (pos && pos == 'TAB') {
+					aWhere = Components.interfaces.nsIBrowserDOMWindow.OPEN_NEWTAB;
+				}
+				else if (pos) {
+					pos = SplitBrowser['POSITION_'+pos];
+					var target = null;
+					var browsers = SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener);
+					if (browsers.subBrowser)
+						target = browsers.subBrowser;
+
+					var referrer = Components.classes['@mozilla.org/network/io-service;1']
+							.getService(Components.interfaces.nsIIOService)
+							.newURI(aOpener.location, null, null);
+
+					url = url.replace(RegExp.$1, '');
+					var subbrowser = SplitBrowser.addSubBrowser(null, target, pos);
+					var win = subbrowser.browser.docShell
+								.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+								.getInterface(Components.interfaces.nsIDOMWindow);
+					try {
+						win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+							.getInterface(Components.interfaces.nsIWebNavigation)
+							.loadURI(url, loadflags, referrer, null, null);
 					}
-					else if (pos) {
-						pos = SplitBrowser['POSITION_'+pos];
-						var target = null;
-						var browsers = SplitBrowser.getSubBrowserAndBrowserFromFrame(aOpener);
-						if (browsers.subBrowser)
-							target = browsers.subBrowser;
+					catch(e) {
+					}
 
-						var referrer = Components.classes['@mozilla.org/network/io-service;1']
-								.getService(Components.interfaces.nsIIOService)
-								.newURI(aOpener.location, null, null);
+					return win;
+				};
 
-						url = url.replace(RegExp.$1, '');
-						var subbrowser = SplitBrowser.addSubBrowser(null, target, pos);
-						var win = subbrowser.browser.docShell
-									.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-									.getInterface(Components.interfaces.nsIDOMWindow);
-						try {
-							win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-								.getInterface(Components.interfaces.nsIWebNavigation)
-								.loadURI(url, loadflags, referrer, null, null);
-						}
-						catch(e) {
-						}
+				switch(aWhere)
+			]]>
+		));
 
-						return win;
-					};
-
-					switch(aWhere)
-				]]></>
-			)
-		);
-
-		eval('window.nsBrowserAccess.prototype.isTabContentWindow = '+
-			window.nsBrowserAccess.prototype.isTabContentWindow.toSource().replace(
-				'{',
-				<><![CDATA[$&
-					return SplitBrowser.getSubBrowserAndBrowserFromFrame(aWindow).browser ? true : false ;
-				]]></>
-			)
-		);
+		eval('window.nsBrowserAccess.prototype.isTabContentWindow = '+window.nsBrowserAccess.prototype.isTabContentWindow.toSource().replace(
+			'{',
+			<![CDATA[$&
+				return SplitBrowser.getSubBrowserAndBrowserFromFrame(aWindow).browser ? true : false ;
+			]]>
+		));
 
 		if (this.tabbedBrowsingEnabled) {
-			eval('window.nsBrowserAccess.prototype.openURI = '+
-				window.nsBrowserAccess.prototype.openURI.toSource().replace(
-					/gBrowser/g,
-					'SplitBrowser.activeBrowser'
-				)
-			);
+			eval('window.nsBrowserAccess.prototype.openURI = '+window.nsBrowserAccess.prototype.openURI.toSource().replace(
+				/gBrowser/g,
+				'SplitBrowser.activeBrowser'
+			));
 		}
 
 		window.QueryInterface(Components.interfaces.nsIDOMChromeWindow).browserDOMWindow = null;
@@ -3308,29 +3298,25 @@ catch(e) {
 		}
 
 		if ('SearchLoadURL' in window) {
-			eval('window.SearchLoadURL = '+
-				window.SearchLoadURL.toSource().replace(
-					/(getBrowser\(\)|gBrowser)/g,
-					'SplitBrowser.browserForSearch'
-				).replace(
-					/content.focus\(\)/g,
-					'SplitBrowser.browserForSearch.contentWindow.focus()'
-				).replace(
-					/([^.])loadURI\(/,
-					'$1SplitBrowser.browserForSearch.loadURI('
-				)
-			);
+			eval('window.SearchLoadURL = '+window.SearchLoadURL.toSource().replace(
+				/(getBrowser\(\)|gBrowser)/g,
+				'SplitBrowser.browserForSearch'
+			).replace(
+				/content.focus\(\)/g,
+				'SplitBrowser.browserForSearch.contentWindow.focus()'
+			).replace(
+				/([^.])loadURI\(/,
+				'$1SplitBrowser.browserForSearch.loadURI('
+			));
 		}
 
-		eval('window.openUILinkIn = '+
-			window.openUILinkIn.toSource().replace(
-				'{',
-				<><![CDATA[$&
-					if (SplitBrowser.checkToOpenSpecialPane.apply(SplitBrowser, arguments))
-						return;
-				]]></>
-			)
-		);
+		eval('window.openUILinkIn = '+window.openUILinkIn.toSource().replace(
+			'{',
+			<![CDATA[$&
+				if (SplitBrowser.checkToOpenSpecialPane.apply(SplitBrowser, arguments))
+					return;
+			]]>
+		));
 
 		this.overrideZoomManager();
 		this.overrideCtrlTab();
@@ -3383,20 +3369,16 @@ catch(e) {
 	delayedInit : function() 
 	{
 		if ('BrowserHandleBackspace' in window) {
-			eval('window.BrowserHandleBackspace = '+
-				window.BrowserHandleBackspace.toSource().replace(
-					/BrowserBack\(/g,
-					'SplitBrowser.activeBrowserBack('
-				)
-			);
+			eval('window.BrowserHandleBackspace = '+window.BrowserHandleBackspace.toSource().replace(
+				/BrowserBack\(/g,
+				'SplitBrowser.activeBrowserBack('
+			));
 		}
 		if ('BrowserHandleShiftBackspace' in window) {
-			eval('window.BrowserHandleShiftBackspace = '+
-				window.BrowserHandleShiftBackspace.toSource().replace(
-					/BrowserForward\(/g,
-					'SplitBrowser.activeBrowserForward('
-				)
-			);
+			eval('window.BrowserHandleShiftBackspace = '+window.BrowserHandleShiftBackspace.toSource().replace(
+				/BrowserForward\(/g,
+				'SplitBrowser.activeBrowserForward('
+			));
 		}
 
 		this.updateCommandElement('cmd_newNavigatorTab',
