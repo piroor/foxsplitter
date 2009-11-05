@@ -74,12 +74,15 @@
 <prefpane id="prefpane-appearance" label="&splitbrowser.tab.appearance;"
 	onpaneload="
 		var check = document.getElementById('splitbrowser.tabs.autoHide-check');
-		if (nsPreferences.getBoolPref('splitbrowser.tabs.enabled'))
+		if (document.getElementById('splitbrowser.tabs.enabled').value)
 			check.removeAttribute('hidden');
 		else
 			check.setAttribute('hidden', true);
 	">
 	<preferences>
+		<preference id="splitbrowser.tabs.enabled"
+			name="splitbrowser.tabs.enabled"
+			type="bool"/>
 		<preference id="splitbrowser.show.toolbar.always"
 			name="splitbrowser.show.toolbar.always"
 			type="bool"/>
