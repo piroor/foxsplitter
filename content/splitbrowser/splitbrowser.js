@@ -596,7 +596,7 @@ var SplitBrowser = {
 		var data = null;
 		if (aURI && aURI.indexOf('subbrowser\n') == 0) {
 			try {
-				data = this.evalInSandbox(aURI.replace('subbrowser\n', ''));
+				data = this.evalInSandbox('('+aURI.replace('subbrowser\n', '')+')');
 			}
 			catch(e) {
 			}
@@ -1170,7 +1170,7 @@ var SplitBrowser = {
 		if (!data) return;
 		this.undoCache.removeEntryAt(aIndex);
 		try {
-			state = this.evalInSandbox(data.state);
+			state = this.evalInSandbox('('+data.state+')');
 			var box = gBrowser.boxObject;
 			state = {
 				content : {
@@ -1891,7 +1891,7 @@ dump(e+'\n');
 		}
 		if (!state) return;
 		try {
-			state = this.evalInSandbox(state);
+			state = this.evalInSandbox('('+state+')');
 		}
 		catch(e) {
 			Application.console.log(e+'\n\n'+state);
@@ -2567,7 +2567,7 @@ try{
 			uri = aXferData.data;
 			if (this.isAccelKeyPressed(aEvent)) {
 				try {
-					var info = this.evalInSandbox(uri.replace('subbrowser\n', ''));
+					var info = this.evalInSandbox('('+uri.replace('subbrowser\n', '')+')');
 					info.clone = true;
 					uri = 'subbrowser\n'+info.toSource();
 				}

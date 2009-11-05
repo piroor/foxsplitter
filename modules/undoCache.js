@@ -38,7 +38,7 @@ var undoCache = {
 				this._globalEntries = entries.split('|')
 						.map(function(aEntry) {
 							try {
-								aEntry = SplitBrowser.evalInSandbox(unescape(aEntry));
+								aEntry = SplitBrowser.evalInSandbox('('+unescape(aEntry)+')');
 							}
 							catch(e) {
 								aEntry = null;

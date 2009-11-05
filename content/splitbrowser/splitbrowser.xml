@@ -583,7 +583,7 @@ sideBox.removeAttribute('style');
 				var w = this.mOwner.browser.contentWindow;
 				if (aSubject.top == w) return;
 
-				var info = SplitBrowser.evalInSandbox(aData);
+				var info = SplitBrowser.evalInSandbox('('+aData+')');
 				this.mOwner.scrollSynchronizing = true;
 				w.scrollTo(
 					(
