@@ -2562,52 +2562,106 @@ dump(e+'\n');
 	getURIFromDragData : function(aXferData, aDragSession, aEvent) 
 	{
 		var uri = null;
-try{
-		if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
-			uri = aXferData.data;
-			if (this.isAccelKeyPressed(aEvent)) {
-				try {
-					var info = this.evalInSandbox('('+uri.replace('subbrowser\n', '')+')');
-					info.clone = true;
-					uri = 'subbrowser\n'+info.toSource();
-				}
-				catch(e) {
-				}
-			}
-		}
-		else if (aXferData.flavour.contentType == 'application/x-moz-tabbrowser-tab') {
-			uri = aXferData.data.linkedBrowser.currentURI;
-			uri = uri ? uri.spec : 'about:blank' ;
-		}
-		else {
-			// "window.retrieveURLFromData()" is old implementation
-			uri = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
 
-			if (!uri || !uri.length || uri.indexOf(' ', 0) != -1)
-				return null;
-
-			var sourceDoc = aDragSession.sourceDocument;
-			if (sourceDoc &&
-				sourceDoc.documentURI.indexOf('chrome://') < 0) {
-				var sourceURI = sourceDoc.documentURI;
-				const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
-				var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
-				try {
-					secMan.checkLoadURIStr(sourceURI, uri, nsIScriptSecurityManager.STANDARD);
-				}
-				catch(e) {
-					aEvent.stopPropagation();
-					throw sourceURI+'\nDrop of ' + uri + ' denied.';
+		try{
+			if (aXferData.flavour.contentType == 'application/x-moz-splitbrowser') {
+				uri = aXferData.data;
+				if (this.isAccelKeyPressed(aEvent)) {
+					try {
+						var info = this.evalInSandbox('('+uri.replace('subbrowser\n', '')+')');
+						info.clone = true;
+						uri = 'subbrowser\n'+info.toSource();
+					}
+					catch(e) {
+					}
 				}
 			}
+			else if (aXferData.flavour.contentType == 'application/x-moz-tabbrowser-tab') {
+				uri = aXferData.data.linkedBrowser.currentURI;
+				uri = uri ? uri.spec : 'about:blank' ;
+			}
+			else {
+				// "window.retrieveURLFromData()" is old implementation
+				uri = 'retrieveURLFromData' in window ? retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) : transferUtils.retrieveURLFromData(aXferData.data, aXferData.flavour.contentType) ;
 
-			uri = getShortcutOrURI(uri);
+				if (!uri || !uri.length || uri.indexOf(' ', 0) != -1)
+					return null;
+
+				var sourceDoc = aDragSession.sourceDocument;
+				if (sourceDoc &&
+					sourceDoc.documentURI.indexOf('chrome://') < 0) {
+					var sourceURI = sourceDoc.documentURI;
+					const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+					var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
+					try {
+						secMan.checkLoadURIStr(sourceURI, uri, nsIScriptSecurityManager.STANDARD);
+					}
+					catch(e) {
+						aEvent.stopPropagation();
+						throw sourceURI+'\nDrop of ' + uri + ' denied.';
+					}
+				}
+
+				uri = getShortcutOrURI(uri);
+			}
 		}
-}
-catch(e) {
-	alert(e);
-}
+		catch(e) {
+			alert(e);
+		}
 
+		return uri;
+	},
+ 
+	getURIFromDragEvent : function(aEvent, aDragSession) 
+	{
+		var uri = null;
+
+		try {
+			var dt = aEvent.dataTransfer;
+			var types = dt.types;
+			if (types.contains('application/x-moz-splitbrowser')) {
+				uri = dt.getData('application/x-moz-splitbrowser');
+				if (this.isAccelKeyPressed(aEvent)) {
+					try {
+						var info = this.evalInSandbox('('+uri.replace('subbrowser\n', '')+')');
+						info.clone = true;
+						uri = 'subbrowser\n'+info.toSource();
+					}
+					catch(e) {
+					}
+				}
+			}
+			else if (types.contains('application/x-moz-tabbrowser-tab')) {
+				uri = dt.getData('application/x-moz-tabbrowser-tab').linkedBrowser.currentURI;
+				uri = uri ? uri.spec : 'about:blank' ;
+			}
+			else {
+				uri = browserDragAndDrop.getDragURLFromDataTransfer(dt);
+
+				if (!uri || !uri.length || uri.indexOf(' ', 0) != -1)
+					return null;
+
+				var sourceDoc = aDragSession.sourceDocument;
+				if (sourceDoc &&
+					sourceDoc.documentURI.indexOf('chrome://') < 0) {
+					var sourceURI = sourceDoc.documentURI;
+					const nsIScriptSecurityManager = Components.interfaces.nsIScriptSecurityManager;
+					var secMan = Components.classes['@mozilla.org/scriptsecuritymanager;1'].getService(nsIScriptSecurityManager);
+					try {
+						secMan.checkLoadURIStr(sourceURI, uri, nsIScriptSecurityManager.STANDARD);
+					}
+					catch(e) {
+						aEvent.stopPropagation();
+						throw sourceURI+'\nDrop of ' + uri + ' denied.';
+					}
+				}
+
+				uri = getShortcutOrURI(uri);
+			}
+		}
+		catch(e) {
+			alert(e);
+		}
 		return uri;
 	},
  
@@ -2717,7 +2771,14 @@ catch(e) {
 		var xferData = aArgs[1];
 		var dragSession = aArgs[2];
 
-		var uri = this.getURIFromDragData(xferData, dragSession, event);
+		var uri;
+		if (xferData) { // old method
+			uri = this.getURIFromDragData(xferData, dragSession, event);
+		}
+		else {
+			dragSession = this.getCurrentDragSession();
+			uri = this.getURIFromDragEvent(event, dragSession);
+		}
 		if (!uri) return true;
 
 		// fallback for Linux
@@ -2725,7 +2786,11 @@ catch(e) {
 
 		var box = this.mainBrowserBox;
 
-		var forceCheck = event.ctrlKey || xferData.flavour.contentType == 'application/x-moz-splitbrowser';
+		var forceCheck = (
+				event.ctrlKey ||
+				(!xferData && event.dataTransfer.types.contains('application/x-moz-splitbrowser')) ||
+				(xferData && xferData.flavour.contentType == 'application/x-moz-splitbrowser')
+			);
 		var check = box.checkEventFiredOnEdge(event);
 		if (!check) return true;
 
@@ -3203,10 +3268,12 @@ catch(e) {
 				'{',
 				'{ if (SplitBrowser.performDropOnContentArea(arguments)) return;'
 			));
-			eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
-				'flavourSet.appendFlavour(',
-				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
-			));
+			if ('getSupportedFlavours' in contentAreaDNDObserver) {
+				eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
+					'flavourSet.appendFlavour(',
+					'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
+				));
+			}
 		}
 
 		[
