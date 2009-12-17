@@ -58,16 +58,6 @@ var SplitBrowser = {
 		return document.getElementById('appcontent').contentWrapper;
 	},
  
-	get rootContentViewer() 
-	{
-		return window
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShell)
-				.contentViewer
-				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
-	},
- 
 	POSITION_LEFT   : 1, 
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
@@ -579,12 +569,32 @@ var SplitBrowser = {
 			box.screenY + box.height >= aEvent.screenY
 			);
 	},
-  
+ 
+	stopRendering : function() 
+	{
+		this.rootContentViewer.hide();
+	},
+	
+	startRendering : function() 
+	{
+		this.rootContentViewer.show();
+	},
+ 
+	get rootContentViewer() 
+	{
+		return window
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+	},
+   
 /* add sub-browser (split contents) */ 
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition, aName) 
 	{
-		this.rootContentViewer.hide();
+		this.stopRendering();
 
 		if (!aURI) aURI = 'about:blank';
 		if (!aPosition) aPosition = this.POSITION_BOTTOM;
@@ -646,14 +656,14 @@ var SplitBrowser = {
 					function() {
 						var fromRemote = sourceSubBrowser.ownerDocument != document;
 						sourceSubBrowser.close(true);
-						if (fromRemote) self.rootContentViewer.show();
+						if (fromRemote) self.startRendering();
 					}
 				)
 			);
-			if (data.clone) this.rootContentViewer.show();
+			if (data.clone) this.startRendering();
 		}
 		else {
-			this.rootContentViewer.show();
+			this.startRendering();
 		}
 
 		return browser;
@@ -661,7 +671,7 @@ var SplitBrowser = {
 	
 	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aCopy) 
 	{
-		this.rootContentViewer.hide();
+		this.stopRendering();
 		var b = this.getTabBrowserFromChild(aTab);
 		if (aTab.localName != 'tab')
 			aTab = b.selectedTab;
@@ -676,9 +686,9 @@ var SplitBrowser = {
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); self.rootContentViewer.show(); } )
+			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); self.startRendering(); } )
 		);
-		if (aCopy) this.rootContentViewer.show();
+		if (aCopy) this.startRendering();
 
 		return browser;
 	},
@@ -892,7 +902,7 @@ var SplitBrowser = {
 	
 	removeSubBrowser : function(aBrowser, aPreventRestore) 
 	{
-		this.rootContentViewer.hide();
+		this.stopRendering();
 
 		var c = aBrowser.flexibleParent;
 		if (c &&
@@ -921,7 +931,7 @@ var SplitBrowser = {
 
 		this.cleanUpContainer(container);
 
-		this.rootContentViewer.show();
+		this.startRendering();
 	},
 	
 	cleanUpContainer : function(aContainer) 
@@ -1126,12 +1136,12 @@ var SplitBrowser = {
  
 	gatherSubBrowsers : function() 
 	{
-		this.rootContentViewer.hide();
+		this.stopRendering();
 		this._browsers.forEach(function(aSubBrowser) {
 			this.addTabsFromSubBrowserInto(aSubBrowser, gBrowser, true);
 			window.setTimeout(function(aSelf) {
 				aSubBrowser.close(true);
-				aSelf.rootContentViewer.show();
+				aSelf.startRendering();
 			}, 0, this);
 		}, this);
 	},
