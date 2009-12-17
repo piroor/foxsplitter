@@ -574,7 +574,7 @@ var SplitBrowser = {
 	
 	addSubBrowser : function(aURI, aBrowser, aPosition, aName) 
 	{
-		fullScreenCanvas.show();
+		this.rootContentViewer.hide();
 
 		if (!aURI) aURI = 'about:blank';
 		if (!aPosition) aPosition = this.POSITION_BOTTOM;
@@ -625,6 +625,7 @@ var SplitBrowser = {
 		if (sourceSubBrowser) {
 			browser.syncScroll = sourceSubBrowser.syncScroll;
 			browser.name = sourceSubBrowser.name + (data.clone ? '-clone'+parseInt(Math.random() * 65000) : '' );
+			var self = this;
 			window.setTimeout(
 				(data.clone ? this.cloneBrowser : this.swapBrowser ),
 				0,
@@ -635,14 +636,14 @@ var SplitBrowser = {
 					function() {
 						var fromRemote = sourceSubBrowser.ownerDocument != document;
 						sourceSubBrowser.close(true);
-						if (fromRemote) fullScreenCanvas.hide();
+						if (fromRemote) self.rootContentViewer.show();
 					}
 				)
 			);
-			if (data.clone) fullScreenCanvas.hide();
+			if (data.clone) this.rootContentViewer.show();
 		}
 		else {
-			fullScreenCanvas.hide();
+			this.rootContentViewer.show();
 		}
 
 		return browser;
@@ -650,7 +651,7 @@ var SplitBrowser = {
 	
 	addSubBrowserFromTab : function(aTab, aPosition, aPositionTarget, aCopy) 
 	{
-		fullScreenCanvas.show();
+		this.rootContentViewer.hide();
 		var b = this.getTabBrowserFromChild(aTab);
 		if (aTab.localName != 'tab')
 			aTab = b.selectedTab;
@@ -659,14 +660,15 @@ var SplitBrowser = {
 
 		var browser = this.addSubBrowser(uri, (aPositionTarget || b.parentSubBrowser || this.mainBrowserBox), aPosition);
 
+		var self = this;
 		window.setTimeout(
 			(aCopy ? this.cloneBrowser : this.swapBrowser ),
 			0,
 			aTab.linkedBrowser,
 			browser.browser,
-			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); fullScreenCanvas.hide(); } )
+			(aCopy ? null : function() { if (aTab.parentNode) b.removeTab(aTab); self.rootContentViewer.show(); } )
 		);
-		if (aCopy) fullScreenCanvas.hide();
+		if (aCopy) this.rootContentViewer.show();
 
 		return browser;
 	},
@@ -880,7 +882,7 @@ var SplitBrowser = {
 	
 	removeSubBrowser : function(aBrowser, aPreventRestore) 
 	{
-		fullScreenCanvas.show();
+		this.rootContentViewer.hide();
 
 		var c = aBrowser.flexibleParent;
 		if (c &&
@@ -909,7 +911,7 @@ var SplitBrowser = {
 
 		this.cleanUpContainer(container);
 
-		fullScreenCanvas.hide();
+		this.rootContentViewer.show();
 	},
 	
 	cleanUpContainer : function(aContainer) 
@@ -1114,13 +1116,13 @@ var SplitBrowser = {
  
 	gatherSubBrowsers : function() 
 	{
-		fullScreenCanvas.show();
+		this.rootContentViewer.hide();
 		this._browsers.forEach(function(aSubBrowser) {
 			this.addTabsFromSubBrowserInto(aSubBrowser, gBrowser, true);
-			window.setTimeout(function() {
+			window.setTimeout(function(aSelf) {
 				aSubBrowser.close(true);
-				fullScreenCanvas.hide();
-			}, 0);
+				aSelf.rootContentViewer.show();
+			}, 0, this);
 		}, this);
 	},
 	
