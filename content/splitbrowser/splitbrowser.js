@@ -58,6 +58,16 @@ var SplitBrowser = {
 		return document.getElementById('appcontent').contentWrapper;
 	},
  
+	get rootContentViewer() 
+	{
+		return window
+				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+				.getInterface(Components.interfaces.nsIWebNavigation)
+				.QueryInterface(Components.interfaces.nsIDocShell)
+				.contentViewer
+				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+	},
+ 
 	POSITION_LEFT   : 1, 
 	POSITION_RIGHT  : 2,
 	POSITION_TOP    : 4,
