@@ -14,6 +14,7 @@
 <script type="application/x-javascript" src="splitbrowser.js"/>
 <script type="application/x-javascript" src="hacks.js"/>
 <script type="application/x-javascript" src="animationManager.js"/>
+<script type="application/x-javascript" src="stopRendering.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="splitbrowser-collapseAll-broadcaster"

@@ -572,22 +572,12 @@ var SplitBrowser = {
  
 	stopRendering : function() 
 	{
-		this.rootContentViewer.hide();
+		window['piro.sakura.ne.jp'].stopRendering.stop();
 	},
 	
 	startRendering : function() 
 	{
-		this.rootContentViewer.show();
-	},
- 
-	get rootContentViewer() 
-	{
-		return window
-				.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
-				.getInterface(Components.interfaces.nsIWebNavigation)
-				.QueryInterface(Components.interfaces.nsIDocShell)
-				.contentViewer
-				.QueryInterface(Components.interfaces.nsIMarkupDocumentViewer);
+		window['piro.sakura.ne.jp'].stopRendering.start();
 	},
    
 /* add sub-browser (split contents) */ 
