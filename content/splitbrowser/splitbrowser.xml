@@ -1308,7 +1308,7 @@ sideBox.removeAttribute('style');
 			<parameter name="aPreventRestore"/>
 			<body><![CDATA[
 				var event = document.createEvent('UIEvents');
-				event.initEvent('SubBrowserRemoveRequest', false, true, window, 0);
+				event.initUIEvent('SubBrowserRemoveRequest', false, true, window, 0);
 				event.canRestore = !aPreventRestore;
 				this.dispatchEvent(event);
 			]]></body>
