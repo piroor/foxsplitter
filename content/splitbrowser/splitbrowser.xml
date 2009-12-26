@@ -99,7 +99,7 @@
 		<handler event="mousedown"><![CDATA[
 			var newEvent = document.createEvent('Events');
 			newEvent.force = true;
-			newEvent.initEvent('SubBrowserExitContentAreaEdge', false, true);
+			newEvent.initEvent('SubBrowserExitContentAreaEdge', false, false);
 			this.dispatchEvent(newEvent);
 		]]></handler>
 	</handlers>
@@ -701,7 +701,7 @@ sideBox.removeAttribute('style');
 							'SubBrowserHoverContentAreaEdge'
 						),
 						false,
-						true
+						false
 					);
 					newEvent.isTop    = isTop;
 					newEvent.isBottom = isBottom;
@@ -728,7 +728,7 @@ sideBox.removeAttribute('style');
 					this.mIsMouseOverRight  = false;
 
 					var newEvent = document.createEvent('Events');
-					newEvent.initEvent('SubBrowserExitContentAreaEdge', false, true);
+					newEvent.initEvent('SubBrowserExitContentAreaEdge', false, false);
 					this.dispatchEvent(newEvent);
 				}
 			]]></body>
@@ -1307,8 +1307,8 @@ sideBox.removeAttribute('style');
 		<method name="close">
 			<parameter name="aPreventRestore"/>
 			<body><![CDATA[
-				var event = document.createEvent('Events');
-				event.initEvent('SubBrowserRemoveRequest', false, true);
+				var event = document.createEvent('UIEvents');
+				event.initEvent('SubBrowserRemoveRequest', false, true, window, 0);
 				event.canRestore = !aPreventRestore;
 				this.dispatchEvent(event);
 			]]></body>
@@ -2041,7 +2041,7 @@ sideBox.removeAttribute('style');
 				aThis.mUpdateToolbarMode();
 
 				var newEvent = document.createEvent('Events');
-				newEvent.initEvent('SubBrowserAdded', false, true);
+				newEvent.initEvent('SubBrowserAdded', false, false);
 				aThis.dispatchEvent(newEvent);
 			]]></body>
 		</method>
@@ -2153,7 +2153,7 @@ sideBox.removeAttribute('style');
 				}
 
 				var newEvent = document.createEvent('Events');
-				newEvent.initEvent('SubBrowserRemoved', false, true);
+				newEvent.initEvent('SubBrowserRemoved', false, false);
 				newEvent.title = title || '';
 				newEvent.icon  = icon || '';
 				newEvent.state = state ? state.toSource() : '' ;
@@ -2172,7 +2172,7 @@ sideBox.removeAttribute('style');
 				this.updateToolbarForCurrentTab(true);
 
 				var newEvent = document.createEvent('Events');
-				newEvent.initEvent('SubBrowserTabSelect', false, true);
+				newEvent.initEvent('SubBrowserTabSelect', false, false);
 				newEvent.targetTab = this.browser.selectedTab;
 				this.dispatchEvent(newEvent);
 			]]></body>
@@ -2237,7 +2237,7 @@ sideBox.removeAttribute('style');
 						this.toggleNavigation(false);
 
 					var newEvent = document.createEvent('Events');
-					newEvent.initEvent('SubBrowserContentCollapsed', false, true);
+					newEvent.initEvent('SubBrowserContentCollapsed', false, false);
 					document.documentElement.dispatchEvent(newEvent);
 				}
 				else {
@@ -2246,7 +2246,7 @@ sideBox.removeAttribute('style');
 						this.toggleNavigation(true);
 
 					var newEvent = document.createEvent('Events');
-					newEvent.initEvent('SubBrowserContentExpanded', false, true);
+					newEvent.initEvent('SubBrowserContentExpanded', false, false);
 					document.documentElement.dispatchEvent(newEvent);
 				}
 			]]></body>
