@@ -513,8 +513,8 @@ var SplitBrowser = {
 		if (browser.localName == 'tabbrowser')
 			browser = browser.getBrowserForTab(browser.selectedTab);
 
-		var newEvent = document.createEvent('UIEvents');
-		newEvent.initUIEvent('SubBrowserAddRequest', false, true, window, 0);
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
 
 		var appcontent = document.getElementById('appcontent');
 
@@ -530,8 +530,8 @@ var SplitBrowser = {
  
 	fireSubBrowserAddRequestEvent : function(aURI, aBrowser, aPosition, aEventTarget) 
 	{
-		var newEvent = document.createEvent('UIEvents');
-		newEvent.initUIEvent('SubBrowserAddRequest', false, true, window, 0);
+		var newEvent = document.createEvent('Events');
+		newEvent.initEvent('SubBrowserAddRequest', false, true);
 
 		var appcontent = document.getElementById('appcontent');
 
