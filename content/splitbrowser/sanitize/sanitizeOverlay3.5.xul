@@ -13,5 +13,5 @@
 		preference="privacy.cpd.splitBrowserUndoCache"
 		onsyncfrompreference="return gSanitizePromptDialog.onReadGeneric();"/>
 </listbox>
-<script type="application/x-javascript" src="sanitizeOverlay.js"/>
+<script type="application/javascript" src="sanitizeOverlay.js"/>
 </overlay>

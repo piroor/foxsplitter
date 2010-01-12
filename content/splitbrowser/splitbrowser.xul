@@ -11,10 +11,10 @@
 <overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
 	xmlns:html="http://www.w3.org/1999/xhtml">
 
-<script type="application/x-javascript" src="splitbrowser.js"/>
-<script type="application/x-javascript" src="hacks.js"/>
-<script type="application/x-javascript" src="animationManager.js"/>
-<script type="application/x-javascript" src="stopRendering.js"/>
+<script type="application/javascript" src="splitbrowser.js"/>
+<script type="application/javascript" src="hacks.js"/>
+<script type="application/javascript" src="animationManager.js"/>
+<script type="application/javascript" src="stopRendering.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
 	<broadcaster id="splitbrowser-collapseAll-broadcaster"

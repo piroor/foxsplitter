@@ -6,7 +6,7 @@
 		accesskey="&splitbrowser.privacy.undoCache.accesskey;"
 		preference="privacy.item.splitBrowserUndoCache"/>
 </prefpane>
-<script type="application/x-javascript"><![CDATA[
+<script type="application/javascript"><![CDATA[
 window.addEventListener('DOMContentLoaded', function() {
 	window.removeEventListener('DOMContentLoaded', arguments.callee, false);
 	var preference = document.createElement('preference');
