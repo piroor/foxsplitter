@@ -6,9 +6,9 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Az előtérbe helyezés késleltetése ">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "ezredmásodperc.">
 
-<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
-<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
-<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.caption "Lap felosztása">
+<!ENTITY splitbrowser.tab.closetab.move    "Eredeti lap bezárása (áthelyezés új panelbe)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Eredeti lap megtartása (másolat új panelbe)">
 
 <!ENTITY splitbrowser.syncScroll.mainArea         "Főlap csúszkájának szinkronizációja a felosztott lapok csúszkáival">
 <!ENTITY splitbrowser.syncScroll.horizontal.true  "Függőlegesen és vízszintesen">
@@ -29,10 +29,10 @@
 <!ENTITY splitbrowser.show.addbuttons.hover.type.0 "A &quot;Felosztás&quot; gomb automatikus megjelenítése">
 <!ENTITY splitbrowser.show.addbuttons.hover.type.1 "A &quot;Felosztás&quot; gomb megjelenítése a &quot;Shift&quot; billentyű lenyomásakor">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop     "A &quot;Felosztás&quot; gomb megjelenítése link, fájl, stb. áthúzásakor">
-<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
-<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.size.before       "&quot;Felosztás&quot; gombok magassága:">
+<!ENTITY splitbrowser.addbuttons.size.after        "képpont">
+<!ENTITY splitbrowser.addbuttons.area.before       "&quot;Felosztás&quot; gombok szélessége:">
+<!ENTITY splitbrowser.addbuttons.area.after        "képpont">
 
 
 <!ENTITY splitbrowser.tab.target             "Kombináció">
@@ -53,11 +53,11 @@
 <!ENTITY splitbrowser.show.tab.context.gather      "Felosztott ablakok összegyűjtése ide lapokként">
 
 
-<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.tab.session     "Állapot">
 <!ENTITY splitbrowser.state.restore   "Felosztás állapotának mentése">
-<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after  "times">
-<!ENTITY splitbrowser.undo.clearCache "Clear cache">
+<!ENTITY splitbrowser.undo.max.before "Bezárt panel újranyitásának engedélyezése ">
+<!ENTITY splitbrowser.undo.max.after  "alkalommal">
+<!ENTITY splitbrowser.undo.clearCache "Gyorstár törlése">
 
 
 
@@ -113,10 +113,10 @@
 <!ENTITY splitbrowser.menu.accesskey             "L">
 <!ENTITY splitbrowser.menu.removeAll.label       "Minden felosztott ablak bezárása">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
-<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
-<!ENTITY splitbrowser.menu.undo.accesskey        "U">
-<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
-<!ENTITY splitbrowser.menu.undoList.accesskey    "R">
+<!ENTITY splitbrowser.menu.undo.label            "Panel bezárásának visszavonása">
+<!ENTITY splitbrowser.menu.undo.accesskey        "z">
+<!ENTITY splitbrowser.menu.undoList.label        "Mostanában bezárt panelek">
+<!ENTITY splitbrowser.menu.undoList.accesskey    "p">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Minden felosztott ablak összecsukása">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
 <!ENTITY splitbrowser.menu.expandAll.label       "Minden felosztott ablak kinyitása">
@@ -180,5 +180,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
-<!ENTITY splitbrowser.privacy.undoCache.accesskey "u">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Split Browser által bezárt panelek gyorsítótára">
+<!ENTITY splitbrowser.privacy.undoCache.accesskey "p">
