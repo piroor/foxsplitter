@@ -33,6 +33,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -51,6 +52,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -69,6 +71,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -87,6 +90,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -105,6 +109,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -123,6 +128,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -141,6 +147,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -159,6 +166,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -177,6 +185,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -195,6 +204,7 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -213,6 +223,26 @@
 		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
+      </RDF:Description>
+    </em:localized>
+    <em:localized>
+      <RDF:Description em:locale="cs-CZ"
+                       em:name="Split Browser"
+                       em:description="Umožňuje zobrazení obsahu panelů v současně zobrazovaných subpanelech."
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
+                       em:creator="SHIMODA Hiroshi">
+		<em:translator>Menet (fr-FR locale)</em:translator>
+		<em:translator>ReinekeFux (de-DE locale)</em:translator>
+		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
+		<em:translator>sushizang (ko-KR locale)</em:translator>
+		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
+		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
+		<em:translator>tito (es-ES locale)</em:translator>
+		<em:translator>Godai71 (it-IT locale)</em:translator>
+		<em:translator>Vincent D (zh-CN locale)</em:translator>
+		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
+		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
 

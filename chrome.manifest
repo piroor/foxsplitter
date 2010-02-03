@@ -20,6 +20,7 @@ locale	splitbrowser	es-ES	jar:chrome/splitbrowser.jar!/locale/es-ES/splitbrowser
 locale	splitbrowser	it-IT	jar:chrome/splitbrowser.jar!/locale/it-IT/splitbrowser/
 locale	splitbrowser	zh-CN	jar:chrome/splitbrowser.jar!/locale/zh-CN/splitbrowser/
 locale	splitbrowser	pl	jar:chrome/splitbrowser.jar!/locale/pl/splitbrowser/
+locale	splitbrowser	cs-CZ	jar:chrome/splitbrowser.jar!/locale/cs-CZ/splitbrowser/
 
 skin	splitbrowser	classic/1.0	jar:chrome/splitbrowser.jar!/skin/classic/splitbrowser/
 
