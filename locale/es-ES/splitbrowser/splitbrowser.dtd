@@ -6,9 +6,9 @@
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Establecer foco luego de">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.after  "mseg">
 
-<!ENTITY splitbrowser.tab.closetab.caption "Split Tab Behavior">
-<!ENTITY splitbrowser.tab.closetab.move    "Close the original tab (move the tab to the new pane)">
-<!ENTITY splitbrowser.tab.closetab.clone   "Keep the original tab open (clone the tab to the new pane)">
+<!ENTITY splitbrowser.tab.closetab.caption "Comportamiento de dividir pestaña">
+<!ENTITY splitbrowser.tab.closetab.move    "Cerrar la pestaña original (mueve la pestaña al nuevo panel)">
+<!ENTITY splitbrowser.tab.closetab.clone   "Mantener intacta la pestaña original (clona la pestaña hacia el nuevo panel)">
 
 <!ENTITY splitbrowser.syncScroll.mainArea         "Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)">
 <!ENTITY splitbrowser.syncScroll.horizontal.true  "Vertical y horizontalmente">
@@ -28,10 +28,10 @@
 <!ENTITY splitbrowser.show.addbuttons.hover.type.0 "Mostrar los botones automáticamente">
 <!ENTITY splitbrowser.show.addbuttons.hover.type.1 "Mostrar los botones si es presionada la tecla &quot;Shift&quot;">
 <!ENTITY splitbrowser.show.addbuttons.dragdrop     "Mostrar botones mientras se arrastran archivos, enlaces, etc">
-<!ENTITY splitbrowser.addbuttons.size.before       "Height of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.size.after        "pixels">
-<!ENTITY splitbrowser.addbuttons.area.before       "Width of &quot;Split&quot; buttons:">
-<!ENTITY splitbrowser.addbuttons.area.after        "pixels">
+<!ENTITY splitbrowser.addbuttons.size.before       "Altura de los botones &quot;Dividir&quot;:">
+<!ENTITY splitbrowser.addbuttons.size.after        "pixeles">
+<!ENTITY splitbrowser.addbuttons.area.before       "Ancho de los botones &quot;Dividir&quot;:">
+<!ENTITY splitbrowser.addbuttons.area.after        "pixeles">
 
 
 <!ENTITY splitbrowser.tab.target             "Combinación">
@@ -43,7 +43,7 @@
 
 
 <!ENTITY splitbrowser.tab.menu                     "Menú">
-<!ENTITY splitbrowser.show.menu                    "Mostrar &quot;Dividir&quot; en la barra de menus">
+<!ENTITY splitbrowser.show.menu                    "Mostrar &quot;Dividir&quot; en la barra de menús">
 <!ENTITY splitbrowser.show.context.caption         "Elementos adicionales del menú contextual en las pestañas">
 <!ENTITY splitbrowser.show.tab.context.split       "Dividir Pestaña...">
 <!ENTITY splitbrowser.show.tab.context.layout.grid "Mosaico todas las pestañas">
@@ -52,11 +52,11 @@
 <!ENTITY splitbrowser.show.tab.context.gather      "Deshacer ventanas divididas">
 
 
-<!ENTITY splitbrowser.tab.session     "State">
+<!ENTITY splitbrowser.tab.session     "Estado">
 <!ENTITY splitbrowser.state.restore   "Guardar estado de las ventanas divididas">
-<!ENTITY splitbrowser.undo.max.before "Allow to reopen closed panes until ">
-<!ENTITY splitbrowser.undo.max.after  "times">
-<!ENTITY splitbrowser.undo.clearCache "Clear cache">
+<!ENTITY splitbrowser.undo.max.before "Permitir reabrir paneles cerrados hasta ">
+<!ENTITY splitbrowser.undo.max.after  "veces">
+<!ENTITY splitbrowser.undo.clearCache "Limpiar cache">
 
 
 
@@ -112,9 +112,9 @@
 <!ENTITY splitbrowser.menu.accesskey             "p">
 <!ENTITY splitbrowser.menu.removeAll.label       "Cerrar todas las ventanas divididas">
 <!ENTITY splitbrowser.menu.removeAll.accesskey   "b">
-<!ENTITY splitbrowser.menu.undo.label            "Undo Close Pane">
+<!ENTITY splitbrowser.menu.undo.label            "Deshacer cerrado de panel">
 <!ENTITY splitbrowser.menu.undo.accesskey        "U">
-<!ENTITY splitbrowser.menu.undoList.label        "Recently Closed Panes">
+<!ENTITY splitbrowser.menu.undoList.label        "Paneles cerrados recientemente">
 <!ENTITY splitbrowser.menu.undoList.accesskey    "R">
 <!ENTITY splitbrowser.menu.collapseAll.label     "Colapsar todas las ventanas divididas">
 <!ENTITY splitbrowser.menu.collapseAll.accesskey "l">
@@ -179,5 +179,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Fox Splitter">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Cache de deshacer para los paneles cerrados de Fox Splitter">
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "u">
