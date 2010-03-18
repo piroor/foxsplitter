@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title           "Split Browser - ustawienia">
+<!ENTITY splitbrowser.title           "Fox Splitter - ustawienia">
 
 <!ENTITY splitbrowser.tab.general     "Ogólne">
 
@@ -173,5 +173,5 @@
 <!ENTITY splitbrowser.button.expandAll.tooltip   "Rozwija wszystkie panele">
 <!ENTITY splitbrowser.button.removeAll.label     "Zamknij wszystkie">
 <!ENTITY splitbrowser.button.removeAll.tooltip   "Zamyka wszystkie panele">
-<!ENTITY splitbrowser.privacy.undoCache.label     "Przywróć bufor dla zamkniętych paneli Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Przywróć bufor dla zamkniętych paneli Fox Splitter">
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "P">

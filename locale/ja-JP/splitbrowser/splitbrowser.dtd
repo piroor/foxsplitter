@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title               "分割ブラウザの設定">
+<!ENTITY splitbrowser.title               "Fox Splitterの設定">
 
 <!ENTITY splitbrowser.tab.general         "全般">
 
@@ -182,5 +182,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "分割ブラウザで閉じたペインの復元用キャッシュ">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Fox Splitterで閉じたペインの復元用キャッシュ">
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

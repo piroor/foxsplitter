@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title "Split Browser 設定">
+<!ENTITY splitbrowser.title "Fox Splitter 設定">
 
 <!ENTITY splitbrowser.tab.general "一般">
 
@@ -179,5 +179,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Split Browser">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Undo cahce for closed panes of Fox Splitter">
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "u">

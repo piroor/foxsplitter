@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title           "Split Browser – Beállítások">
+<!ENTITY splitbrowser.title           "Fox Splitter – Beállítások">
 
 <!ENTITY splitbrowser.tab.general     "Általános">
 
@@ -180,5 +180,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Split Browser által bezárt panelek gyorsítótára">
+<!ENTITY splitbrowser.privacy.undoCache.label     "Fox Splitter által bezárt panelek gyorsítótára">
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "p">

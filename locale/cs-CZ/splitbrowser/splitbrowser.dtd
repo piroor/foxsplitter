@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title           "Split Browser - nastavení">
+<!ENTITY splitbrowser.title           "Fox Splitter - nastavení">
 <!ENTITY splitbrowser.tab.general     "Hlavní">
 <!ENTITY splitbrowser.subbrowser.autoFocus              "Aktivovat subpanel po najetí kurzorem">
 <!ENTITY splitbrowser.delay.subbrowser.autoFocus.before "Aktivovat subpanel po">

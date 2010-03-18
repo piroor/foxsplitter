@@ -1,4 +1,4 @@
-<!ENTITY splitbrowser.title           "Configurazione di Split Browser">
+<!ENTITY splitbrowser.title           "Configurazione di Fox Splitter">
 
 <!ENTITY splitbrowser.tab.general     "Generale">
 
@@ -179,5 +179,5 @@
 
 
 
-<!ENTITY splitbrowser.privacy.undoCache.label     "Cache riquadri chiusi di Split Browser"> <!-- errore nella stringa inglese-->
+<!ENTITY splitbrowser.privacy.undoCache.label     "Cache riquadri chiusi di Fox Splitter"> <!-- errore nella stringa inglese-->
 <!ENTITY splitbrowser.privacy.undoCache.accesskey "B">
