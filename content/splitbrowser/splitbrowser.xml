@@ -2132,8 +2132,9 @@ sideBox.removeAttribute('style');
 					}
 					try {
 						window.removeEventListener('resize', b.mTabContainer, false);
-						b.mStrip.removeEventListener('overflow', b.mTabContainer, false);
-						b.mStrip.removeEventListener('underflow', b.mTabContainer, false);
+						var strip = SplitBrowser.getTabStrip(b);
+						strip.removeEventListener('overflow', b.mTabContainer, false);
+						strip.removeEventListener('underflow', b.mTabContainer, false);
 					}
 					catch(e) {
 					}

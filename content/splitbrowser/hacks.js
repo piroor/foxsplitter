@@ -241,10 +241,12 @@ SplitBrowser.hackForOtherExtensions = function() {
 				SplitBrowser._browsers.forEach(
 					aioTabSwitching ?
 						function(aBrowser) {
-							aBrowser.browser.mStrip.addEventListener('DOMMouseScroll', aioSwitchTabs, true);
+							var strip = SplitBrowser.getTabStrip(aBrowser.browser);
+							strip.addEventListener('DOMMouseScroll', aioSwitchTabs, true);
 						} :
 						function(aBrowser) {
-							aBrowser.browser.mStrip.removeEventListener('DOMMouseScroll', aioSwitchTabs, true);
+							var strip = SplitBrowser.getTabStrip(aBrowser.browser);
+							strip.removeEventListener('DOMMouseScroll', aioSwitchTabs, true);
 						}
 				);
 			};
@@ -502,7 +504,8 @@ SplitBrowser.hackForOtherExtensionsWithDelay = function() {
 				return SplitBrowser.activeBrowser.mPanelContainer;
 			},
 			get mStrip() {
-				return SplitBrowser.activeBrowser.mStrip;
+				return SplitBrowser.activeBrowser.mStrip ||
+						SplitBrowser.activeBrowser.tabContainer.parentNode;
 			},
 			get ownerDocument() {
 				return SplitBrowser.activeBrowser.ownerDocument;

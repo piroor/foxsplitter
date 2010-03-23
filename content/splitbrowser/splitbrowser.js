@@ -221,6 +221,11 @@ var SplitBrowser = {
 		return null;
 	},
  
+	getTabStrip : function(aTabBrowser) 
+	{
+		return aTabBrowser.mStrip || aTabBrowser.tabContainer.parentNode;
+	},
+ 
 	getTabFromFrame : function(aFrame) 
 	{
 		var b = this.getSubBrowserFromFrame(aFrame);
@@ -561,7 +566,8 @@ var SplitBrowser = {
 	isEventFiredOnTabbar : function(aEvent, aTabBrowser) 
 	{
 		if (!aTabBrowser || aTabBrowser.localName != 'tabbrowser') return false;
-		var box = aTabBrowser.mStrip.boxObject;
+		var strip = this.getTabStrip(aTabBrowser);
+		var box = strip.boxObject;
 		return (
 			box.screenX <= aEvent.screenX &&
 			box.screenX + box.width >= aEvent.screenX &&
