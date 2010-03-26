@@ -223,7 +223,10 @@ var SplitBrowser = {
  
 	getTabStrip : function(aTabBrowser) 
 	{
-		return aTabBrowser.mStrip || aTabBrowser.tabContainer.parentNode;
+		var strip = aTabBrowser.mStrip;
+		return (strip && strip.localName == 'hbox') ?
+				strip :
+				aTabBrowser.tabContainer.parentNode;
 	},
  
 	getTabFromFrame : function(aFrame) 
@@ -3595,7 +3598,8 @@ dump(e+'\n');
 		aBrowser.mTabContainer.addEventListener('select', this, false);
 		aBrowser.mPanelContainer.addEventListener('load', this, true);
 
-		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
+		var tabContext = aBrowser.tabContextMenu ||
+						document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		tabContext.addEventListener('popupshowing', this, false);
 		if (!('MultipleTabService' in window)) {
 			var id = aBrowser.id || parseInt(Math.random() * 65000) ;
@@ -3626,7 +3630,8 @@ dump(e+'\n');
 	{
 		if (aBrowser.localName != 'tabbrowser') return;
 
-		var tabContext = document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
+		var tabContext = aBrowser.tabContextMenu ||
+						document.getAnonymousElementByAttribute(aBrowser, 'anonid', 'tabContextMenu');
 		tabContext.removeEventListener('popupshowing', this, false);
 		aBrowser.mTabContainer.removeEventListener('select', this, false);
 		aBrowser.mPanelContainer.removeEventListener('load', this, true);

@@ -504,7 +504,9 @@ SplitBrowser.hackForOtherExtensionsWithDelay = function() {
 				return SplitBrowser.activeBrowser.mPanelContainer;
 			},
 			get mStrip() {
-				return SplitBrowser.activeBrowser.mStrip ||
+				var strip = SplitBrowser.activeBrowser.mStrip;
+				return (strip && strip.localName == 'hbox') ?
+						strip :
 						SplitBrowser.activeBrowser.tabContainer.parentNode;
 			},
 			get ownerDocument() {
