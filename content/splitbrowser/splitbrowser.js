@@ -3306,17 +3306,12 @@ dump(e+'\n');
 		gBrowser.__splitbrowser__updateCurrentBrowser = gBrowser.updateCurrentBrowser;
 		gBrowser.updateCurrentBrowser = this.newUpdateCurrentBrowser;
 
-		if ('contentAreaDNDObserver' in window) {
-			eval('contentAreaDNDObserver.onDrop = '+contentAreaDNDObserver.onDrop.toSource().replace(
-				'{',
-				'{ if (SplitBrowser.performDropOnContentArea(arguments)) return;'
+		if ('contentAreaDNDObserver' in window &&
+			'getSupportedFlavours' in contentAreaDNDObserver) { // Firefox 3.6 or older
+			eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
+				'flavourSet.appendFlavour(',
+				'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
 			));
-			if ('getSupportedFlavours' in contentAreaDNDObserver) {
-				eval('contentAreaDNDObserver.getSupportedFlavours = '+contentAreaDNDObserver.getSupportedFlavours.toSource().replace(
-					'flavourSet.appendFlavour(',
-					'flavourSet.appendFlavour("application/x-moz-splitbrowser"); flavourSet.appendFlavour("application/x-moz-tabbrowser-tab"); $&'
-				));
-			}
 		}
 
 		[

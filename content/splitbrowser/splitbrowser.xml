@@ -2015,6 +2015,9 @@ sideBox.removeAttribute('style');
 				SplitBrowser.updateTabBrowser(b);
 
 				window.setTimeout(this.mDelayedTabbrowserStartup, 0, this);
+
+				b.mPanelContainer.addEventListener('dragdrop', this.contentAreaDNDObserver, false);
+				b.mPanelContainer.addEventListener('drop', this.contentAreaDNDObserver, true);
 			}
 			else {
 				this.addProgressListener(null);
@@ -2023,6 +2026,9 @@ sideBox.removeAttribute('style');
 
 				if (this.getAttribute('src'))
 					this.load(this.getAttribute('src'));
+
+				b.addEventListener('dragdrop', this.contentAreaDNDObserver, false);
+				b.addEventListener('drop', this.contentAreaDNDObserver, true);
 			}
 
 			var os = Components.classes['@mozilla.org/observer-service;1']
@@ -2138,6 +2144,9 @@ sideBox.removeAttribute('style');
 					}
 					catch(e) {
 					}
+
+					b.mPanelContainer.removeEventListener('dragdrop', this.contentAreaDNDObserver, false);
+					b.mPanelContainer.removeEventListener('drop', this.contentAreaDNDObserver, true);
 				}
 				else {
 					if (b.getAttribute('type') == 'content-primary')
@@ -2152,6 +2161,9 @@ sideBox.removeAttribute('style');
 					}
 					catch(e) {
 					}
+
+					b.removeEventListener('dragdrop', this.contentAreaDNDObserver, false);
+					b.removeEventListener('drop', this.contentAreaDNDObserver, true);
 				}
 
 				var newEvent = document.createEvent('Events');
@@ -2166,6 +2178,20 @@ sideBox.removeAttribute('style');
 				b.parentNode.removeChild(b);
 			]]></body>
 		</method>
+
+
+		<field name="contentAreaDNDObserver"><![CDATA[
+		({
+			handleEvent : function (aEvent)
+			{
+				if (!SplitBrowser.performDropOnContentArea(arguments))
+					return;
+
+				aEvent.stopPropagation();
+				aEvent.preventDefault();
+			}
+		})
+		]]></field>
 
 
 		<method name="onTabSelect">
