@@ -2659,9 +2659,29 @@ dump(e+'\n');
 				uri = uri ? uri.spec : 'about:blank' ;
 			}
 			else {
-				uri = browserDragAndDrop.getDragURLFromDataTransfer(dt);
-
-				if (!uri || !uri.length || uri.indexOf(' ', 0) != -1)
+				Array.slice(types).some(function(aType) {
+					switch (aType)
+					{
+						case 'text/uri-list':
+							uri = dt.getData('URL').replace(/^\s+|\s+$/g, '');
+							return true;
+						case 'text/plain':
+						case 'text/x-moz-text-internal':
+							uri = dt.getData(aType).replace(/^\s+|\s+$/g, '');
+							return true;
+						case 'text/x-moz-url':
+							uri = dt.getData(aType).split('\n')[1];
+							return true;
+				});
+				if (!uri) {
+					let file = dt.mozGetDataAt('application/x-moz-file', 0);
+					if (file) {
+						uri = this.mIOService.getProtocolHandler('file')
+								.QueryInterface(Components.interfaces.nsIFileProtocolHandler)
+								.getURLSpecFromFile(file);
+					}
+				}
+				if (!uri || uri == ' ')
 					return null;
 
 				var sourceDoc = aDragSession.sourceDocument;
