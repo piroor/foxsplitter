@@ -2672,6 +2672,7 @@ dump(e+'\n');
 						case 'text/x-moz-url':
 							uri = dt.getData(aType).split('\n')[1];
 							return true;
+					}
 				});
 				if (!uri) {
 					let file = dt.mozGetDataAt('application/x-moz-file', 0);
