@@ -2388,7 +2388,7 @@ dump(e+'\n');
 	{
 		var button = this.addButton;
 		if (button.animationTask)
-			window['piro.sakura.ne.jp'].animationManager.removeTask(button.animationTask);
+			this.animationManager.removeTask(button.animationTask);
 
 		this.addButtonIsActive = false;
 
@@ -2412,7 +2412,7 @@ dump(e+'\n');
 						return false;
 					}
 				};
-				window['piro.sakura.ne.jp'].animationManager.addTask(
+				self.animationManager.addTask(
 					button.animationTask,
 					0, 0, self.addButtonFadeDuration
 				);
@@ -3274,6 +3274,8 @@ dump(e+'\n');
   
 	init : function() 
 	{
+		Components.utils.import('resource://splitbrowser-modules/animationManager.js', this);
+
 		this.undoCache.registerBroadcaster(this.undoBroadcaster);
 		this.ObserverService.addObserver(this, 'private-browsing', false);
 
@@ -3736,6 +3738,9 @@ dump(e+'\n');
   
 	destroy : function() 
 	{
+		if (this.addButton.animationTask)
+			this.animationManager.removeTask(this.addButton.animationTask);
+
 		this.undoCache.unregisterBroadcaster(this.undoBroadcaster);
 		this.ObserverService.removeObserver(this, 'private-browsing');
 

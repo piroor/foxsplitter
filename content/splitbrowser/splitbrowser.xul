@@ -13,7 +13,6 @@
 
 <script type="application/javascript" src="splitbrowser.js"/>
 <script type="application/javascript" src="hacks.js"/>
-<script type="application/javascript" src="animationManager.js"/>
 <script type="application/javascript" src="stopRendering.js"/>
 
 <broadcasterset id="mainBroadcasterSet">
