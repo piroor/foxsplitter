@@ -3663,7 +3663,6 @@ dump(e+'\n');
 	{
 		// this is a hack, mainly for ScrapBook
 		var appcontent = document.getElementById('appcontent');
-		var node = appcontent.removeChild(aContent);
 		appcontent.innerContainer.insertBefore(
 			aContent,
 			(aDir > 0 ? null : appcontent.innerContainer.firstChild )
