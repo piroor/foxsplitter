@@ -384,16 +384,16 @@
 		<menupopup>
 			<menuitem label="&splitbrowser.add.top.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-top"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_TOP, null, true);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView, null, SplitBrowser.POSITION_TOP, null, true);"/>
 			<menuitem label="&splitbrowser.add.right.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-right"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_RIGHT, null, true);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView, null, SplitBrowser.POSITION_RIGHT, null, true);"/>
 			<menuitem label="&splitbrowser.add.left.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-left"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_LEFT, null, true);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView, null, SplitBrowser.POSITION_LEFT, null, true);"/>
 			<menuitem label="&splitbrowser.add.bottom.label;"
 				class="menuitem-iconic splitbrowser-menuitem-add-bottom"
-				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(document.popupNode.ownerDocument.defaultView, null, SplitBrowser.POSITION_BOTTOM, null, true);"/>
+				oncommand="SplitBrowser.fireSubBrowserAddRequestEventFromFrame(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView, null, SplitBrowser.POSITION_BOTTOM, null, true);"/>
 		</menupopup>
 	</menu>
 </popup>
@@ -407,16 +407,16 @@
 			<menupopup>
 				<menuitem label="&splitbrowser.frame.add.top.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-top"
-					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_TOP);"/>
+					oncommand="SplitBrowser.addSubBrowser(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_TOP);"/>
 				<menuitem label="&splitbrowser.frame.add.right.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-right"
-					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_RIGHT);"/>
+					oncommand="SplitBrowser.addSubBrowser(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_RIGHT);"/>
 				<menuitem label="&splitbrowser.frame.add.left.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-left"
-					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_LEFT);"/>
+					oncommand="SplitBrowser.addSubBrowser(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_LEFT);"/>
 				<menuitem label="&splitbrowser.frame.add.bottom.label;"
 					class="menuitem-iconic splitbrowser-menuitem-add-bottom"
-					oncommand="SplitBrowser.addSubBrowser(document.popupNode.ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_BOTTOM);"/>
+					oncommand="SplitBrowser.addSubBrowser(SplitBrowser.getPopupNode('contentAreaContextMenu').ownerDocument.defaultView.location.href, null, SplitBrowser.POSITION_BOTTOM);"/>
 			</menupopup>
 		</menu>
 	</menupopup>

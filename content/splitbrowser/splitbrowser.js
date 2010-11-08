@@ -581,6 +581,22 @@ var SplitBrowser = {
 			);
 	},
  
+	getPopupNode : function(aNode) 
+	{
+		if (aNode && typeof aNode == 'string')
+			aNode = document.getElementById(aNode);
+		if (!aNode)
+			return null;
+		var popup = aNode.ownerDocument.evaluate(
+						'ancestor-or-self::*[local-name()="menupopup"][1]',
+						aNode,
+						this.NSResolver,
+						XPathResult.FIRST_ORDERED=NODE_TYPE,
+						null
+					).singleNodeValue;
+		return (popup ? popup.triggerNode : null ) || aNode.ownerDocument.popupNode;
+	},
+ 
 	stopRendering : function() 
 	{
 		window['piro.sakura.ne.jp'].stopRendering.stop();
@@ -2982,10 +2998,10 @@ dump(e+'\n');
  
 	updateSplitterContextMenu : function() 
 	{
-		var c = this.getSplitterTarget(document.popupNode);
+		var popup = document.getElementById('subbrowser-splitter-contextmenu');
+		var c = this.getSplitterTarget(this.getPopupNode(popup));
 		if (!c) return;
 
-		var popup = document.getElementById('subbrowser-splitter-contextmenu');
 		var collapsed = c.isCollapsed();
 		popup.getElementsByAttribute('class', 'subbrowser-context-collapse')[0].hidden = collapsed;
 		popup.getElementsByAttribute('class', 'subbrowser-context-expand')[0].hidden = !collapsed;
@@ -2993,7 +3009,8 @@ dump(e+'\n');
  
 	toggleSplitterCollapsed : function() 
 	{
-		var c = this.getSplitterTarget(document.popupNode);
+		var popup = document.getElementById('subbrowser-splitter-contextmenu');
+		var c = this.getSplitterTarget(this.getPopupNode(popup));
 		if (c) c.toggleCollapsed();
 	},
   
