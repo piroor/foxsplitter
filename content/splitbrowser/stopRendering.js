@@ -6,13 +6,13 @@
    // do something
    window['piro.sakura.ne.jp'].stopRendering.start();
 
- license: The MIT License, Copyright (c) 2009-2010 SHIMODA "Piro" Hiroshi
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/license.txt
+ license: The MIT License, Copyright (c) 2009-2011 SHIMODA "Piro" Hiroshi
+   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
  original:
-   http://www.cozmixng.org/repos/piro/fx3-compatibility-lib/trunk/stopRendering.js
+   http://github.com/piroor/fxaddonlibs/blob/master/stopRendering.js
 */
 (function() {
-	const currentRevision = 7;
+	const currentRevision = 10;
 
 	if (!('piro.sakura.ne.jp' in window)) window['piro.sakura.ne.jp'] = {};
 
@@ -140,13 +140,18 @@
 					aEvent.stopPropagation();
 					aEvent.preventDefault();
 					return;
+
+				case 'DOMContentLoaded':
+					window.removeEventListener('DOMContentLoaded', this, true);
+					this.initCanvas();
+					return;
 			}
 		},
 
 		init : function()
 		{
 			if (this.useCanvas) {
-				this.initCanvas();
+				window.addEventListener('DOMContentLoaded', this, true);
 			}
 			else {
 				this._popups = [];
@@ -160,6 +165,11 @@
 		destroy : function()
 		{
 			if (this.useCanvas) {
+				try {
+					window.removeEventListener('DOMContentLoaded', this, true);
+				}
+				catch(e) {
+				}
 				this.destroyCanvas();
 			}
 			else {
@@ -179,8 +189,10 @@
 								.getService(Ci.nsIXULAppInfo);
 			const comparator = Cc['@mozilla.org/xpcom/version-comparator;1']
 								.getService(Ci.nsIVersionComparator);
-			return comparator.compare(XULAppInfo.version, '3.6.9999') > 0;
+			return comparator.compare(XULAppInfo.version, '4.0b1') > 0;
 		})(),
+
+		BASE_ID : 'piro.sakura.ne.jp-fullScreenCanvas',
 
 		DRAW_WINDOW_FLAGS : Ci.nsIDOMCanvasRenderingContext2D.DRAWWINDOW_DRAW_VIEW |
 							Ci.nsIDOMCanvasRenderingContext2D.DRAWWINDOW_DRAW_CARET |
@@ -265,61 +277,53 @@
 		initCanvas : function()
 		{
 			var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
-			canvas.setAttribute('id', 'fullScreenCanvas-canvas');
+			canvas.setAttribute('id', this.BASE_ID+'-canvas');
 			canvas.setAttribute('width', '0');
 			canvas.setAttribute('height', '0');
 			canvas.setAttribute('style', 'width:0;height:0;');
 			this.canvas = canvas;
 
-			var style = document.createElementNS('http://www.w3.org/1999/xhtml', 'style');
-			style.setAttribute('id', 'fullScreenCanvas-style');
-			style.setAttribute('type', 'text/css');
-			style.appendChild(document.createTextNode([
-				':root[fullScreenCanvas-state="shown"] > *:not(#fullScreenCanvas-box) {',
-				'	visibility: hidden !important;',
-				'}',
-				'#fullScreenCanvas-style {',
-				'	display: none;',
-				'}',
-				'#fullScreenCanvas-box {',
-				'	position: fixed;',
-				'	z-index: 65000;',
-				'	top: 0;',
-				'	left: 0;',
-				'	visibility: collapse;',
-				'}',
-				':root[fullScreenCanvas-state="shown"] > #fullScreenCanvas-box {',
-				'	visibility: visible;',
-				'}'
-			].join('')));
+			var style = document.createProcessingInstruction('xml-stylesheet',
+					'type="text/css" href="data:text/css,'+encodeURIComponent(
+					[
+						':root[fullScreenCanvas-state="shown"] > *:not(#%BASE_ID%-box) {',
+						'	visibility: hidden !important;',
+						'}',
+						'#%BASE_ID%-box {',
+						'	position: fixed;',
+						'	z-index: 65000;',
+						'	top: 0;',
+						'	left: 0;',
+						'	visibility: collapse;',
+						'}',
+						':root[fullScreenCanvas-state="shown"] > #%BASE_ID%-box {',
+						'	visibility: visible;',
+						'}'
+					].join('\n').replace(/%BASE_ID%/g, this.BASE_ID.replace(/\./g, '\\.'))
+					)+'"'
+				);
 			this.style = style;
 
-			var stylePI = document.createProcessingInstruction(
-							'xml-stylesheet',
-							'type="text/css" href="#fullScreenCanvas-style"'
-						);
-			this.stylePI = stylePI;
-
 			var box = document.createElement('box');
-			box.setAttribute('id', 'fullScreenCanvas-box');
+			box.setAttribute('id', this.BASE_ID+'-box');
 			box.setAttribute('onmousedown', 'window["piro.sakura.ne.jp"].stopRendering.handleEvent(event);');
 			this.box = box;
 
 			box.appendChild(canvas);
-			box.appendChild(style);
+			document.insertBefore(style, document.documentElement);
 			document.documentElement.appendChild(box);
-
-			document.insertBefore(stylePI, document.documentElement);
 		},
 
 		destroyCanvas : function()
 		{
+			if (!this.canvas)
+				return;
+
 			document.documentElement.removeChild(this.box);
-			document.removeChild(this.stylePI);
 			this.box = null;
 			this.canvas = null;
+			document.removeChild(this.style);
 			this.style = null;
-			this.stylePI = null;
 		}
 	};
 
