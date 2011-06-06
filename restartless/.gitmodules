@@ -1,3 +1,0 @@
-[submodule "buildscript"]
-	path = buildscript
-	url = git@github.com:piroor/makexpi.git
