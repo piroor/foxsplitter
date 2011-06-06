@@ -1,4 +1,3 @@
-load('lib/jsdeferred');
 load('lib/WindowManager');
 load('window');
 
@@ -25,7 +24,6 @@ function shutdown()
 		delete aWindow.SplitBrowser;
 	});
 
-	Deferred = void(0);
 	WindowManager = void(0);
 	FoxSplitterWindow = void(0);
 }
