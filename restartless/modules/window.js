@@ -7,20 +7,28 @@ function FoxSplitterWindow(aWindow)
 	this.init(aWindow);
 }
 FoxSplitterWindow.prototype = {
+	isGroup : false,
+
 	init : function FSW_init(aWindow) 
 	{
 		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
-		this.group = null;
+		this.parent = null;
 
-		this._window = aWindow;
-		this._window.addEventListener('unload', this, false);
+		this.window = aWindow;
 
-		this._initGroup();
+		this.lastScreenX = aWindow.screenX;
+		this.lastScreenY = aWindow.screenY;
+
+		this.window.addEventListener('unload', this, false);
+		this.window.addEventListener('DOMAttrModified', this, false);
+		this.window.addEventListener('resize', this, false);
+
+		this._initParent();
 	},
 
-	_initGroup : function FSW_initGroup()
+	_initParent : function FSW_initParent()
 	{
-		var arguments = this._window.arguments;
+		var arguments = this.window.arguments;
 		var parentDoc = (
 				arguments &&
 				arguments.length > 0 &&
@@ -29,23 +37,24 @@ FoxSplitterWindow.prototype = {
 			) ? arguments[0].ownerDocument : null ;
 		var parentWin = parentDoc ? parentDoc.defaultView : null ;
 
-		if (parentWin) {
-			parentWin.FoxSplitter.group.register(this);
-		}
-		else {
-			let group = new FoxSplitterGroup();
-			group.register(this);
-		}
+		if (!parentWin)
+			return;
+
+		var parent = new FoxSplitterGroup();
+		parent.register(this);
+		parent.register(parentWin.FoxSplitter.parent || parentWin.FoxSplitter);
 	},
 
 
 	destroy : function FSW_destroy() 
 	{
-		if (this.group)
-			this.group.unregister(this);
+		if (this.parent)
+			this.parent.unregister(this);
 
-		this._window.removeEventListener('unload', this, false);
-		this._window = null;
+		this.window.removeEventListener('unload', this, false);
+		this.window.removeEventListener('DOMAttrModified', this, false);
+		this.window.removeEventListener('resize', this, false);
+		this.window = null;
 	},
 
 
@@ -55,14 +64,57 @@ FoxSplitterWindow.prototype = {
 		{
 			case 'unload':
 				return this.destroy();
+
+			case 'DOMAttrModified':
+				return this.onMove(aEvent);
+
+			case 'resize':
+				return this.onResize(aEvent);
 		}
+	},
+
+
+	onMove : function FSW_onMove(aEvent)
+	{
+		var root = this.window.document.documentElement;
+		if (
+			aEvent.target != root ||
+			(aEvent.attrName != 'screenX' && aEvent.attrName != 'screenY') ||
+			this.syncMoving
+			)
+			return;
+
+		this.syncMoving = true;
+
+		var w = this.window;
+		var x = w.screenX;
+		var y = w.screenY;
+		if (this.parent)
+			this.parent.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
+
+		this.lastScreenX = x;
+		this.lastScreenY = y;
+		this.syncMoving = false;
+	},
+
+	moveBy : function FSW_moveBy(aDX, aDY)
+	{
+		if (this.syncMoving) return;
+		this.syncMoving = true;
+		this.window.moveBy(aDX, aDY);
+		this.syncMoving = false;
+	},
+
+
+	onResize : function FSW_onResize(aEvent)
+	{
 	},
 
 
 	// compatibility for old versions
 	get activeBrowser()
 	{
-		return this._window && this._window.gBrowser;
+		return this.window && this.window.gBrowser;
 	},
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame()
 	{
