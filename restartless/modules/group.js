@@ -89,8 +89,8 @@ FoxSplitterGroup.prototype = {
 	moveBy : function FSG_moveBy(aDX, aDY, aSource)
 	{
 		this.members.forEach(function(aMember) {
-			if (!aMember.isGroup && aMember != aSource)
-				aMember.moveBy(aDX, aDY);
+			if (aMember != aSource)
+				aMember.moveBy(aDX, aDY, aSource);
 		});
 	},
 
