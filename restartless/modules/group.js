@@ -42,8 +42,10 @@ FoxSplitterGroup.prototype = {
 		}
 		if (this.members.length == 1) {
 			if (this.parent) {
-				this.parent.register(this.members[0]);
-				this.unregister(this.member[0]);
+				let lastMember = this.members[0];
+				lastMember.position = this.position;
+				this.parent.register(lastMember);
+				this.unregister(lastMember);
 			}
 			this.destroy();
 		}
