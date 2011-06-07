@@ -57,6 +57,18 @@ FoxSplitterGroup.prototype = {
 		return members.length ? members[0] : null ;
 	},
 
+	get allWindows()
+	{
+		var members = this.members;
+		members.forEach(function(aMember) {
+			if (aMember.isGroup)
+				members = members.concat(aMember.allWindows);
+		});
+		return members.filter(function(aMember) {
+			return !aMember.isGroup;
+		});
+	},
+
 
 	init : function FSG_init() 
 	{
