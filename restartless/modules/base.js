@@ -5,15 +5,20 @@ function FoxSplitterBase()
 }
 FoxSplitterBase.prototype = {
 	kATTACHED_POSITION : 'foxsplitter-attached-position',
+	kATTACHED_BASE     : 'foxsplitter-attached-base',
 
 	kPOSITION_TOP    : (1 << 0),
 	kPOSITION_RIGHT  : (1 << 1),
 	kPOSITION_BOTTOM : (1 << 2),
 	kPOSITION_LEFT   : (1 << 3),
+
 	kPOSITION_HORIZONTAL : (1 << 1) | (1 << 3),
 	kPOSITION_VERTICAL   : (1 << 0) | (1 << 2),
+
 	kPOSITION_OUTSIDE : (1 << 4),
 	kPOSITION_INSIDE  : (1 << 5),
+
+	kPOSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
 	kPOSITION_INVALID : (1 << 4) | (1 << 5),
 
 	isGroup : false,
