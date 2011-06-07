@@ -158,19 +158,21 @@ FoxSplitterWindow.prototype = {
 	},
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame()
 	{
-		var docShell = aFrame.top
-			.QueryInterface(Ci.nsIInterfaceRequestor)
-			.getInterface(Ci.nsIWebNavigation)
-			.QueryInterface(Ci.nsIDocShell);
+		if (aFrame) {
+			let docShell = aFrame.top
+				.QueryInterface(Ci.nsIInterfaceRequestor)
+				.getInterface(Ci.nsIWebNavigation)
+				.QueryInterface(Ci.nsIDocShell);
 
-		var browsers = this.activeBrowser.browsers;
-		for (let i = 0, maxi = browsers.length; i < maxi; i++)
-		{
-			if (browsers[i].docShell == docShell)
-				return {
-					subBrowser : null,
-					browser    : browsers[i]
-				};
+			let browsers = this.activeBrowser.browsers;
+			for (let i = 0, maxi = browsers.length; i < maxi; i++)
+			{
+				if (browsers[i].docShell == docShell)
+					return {
+						subBrowser : null,
+						browser    : browsers[i]
+					};
+			}
 		}
 
 		return {
