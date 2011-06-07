@@ -103,7 +103,7 @@ FoxSplitterWindow.prototype = {
 			width = w.outerWidth * 0.5;
 			height = w.outerHeight;
 			if (aPosition == this.kPOSITION_LEFT) {
-				x = w.screenX - width;
+				x = w.screenX;
 				aParent.moveBy(width, 0);
 			}
 			else {
@@ -116,7 +116,7 @@ FoxSplitterWindow.prototype = {
 			width = w.outerWidth;
 			height = w.outerHeight * 0.5;
 			if (aPosition == this.kPOSITION_TOP) {
-				y = w.screenY - height;
+				y = w.screenY;
 				aParent.moveBy(0, height);
 			}
 			else {
