@@ -3,9 +3,9 @@ load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
  
-function FoxSplitterWindow(aWindow) 
+function FoxSplitterWindow(aWindow, aInitJustNow) 
 {
-	this.init(aWindow);
+	this.init(aWindow, aInitJustNow);
 }
 FoxSplitterWindow.prototype = {
 	kATTACHED_POSITION : 'foxsplitter-attached-position',
@@ -23,24 +23,27 @@ FoxSplitterWindow.prototype = {
 	lastScreenX : null,
 	lastScreenY : null,
 
-	init : function FSW_init(aWindow) 
+	init : function FSW_init(aWindow, aInitJustNow) 
 	{
 		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 
 		this.window = aWindow;
 
-		aWindow.addEventListener('load', this, false);
+		if (!aInitJustNow)
+			aWindow.addEventListener('load', this, false);
+
 		aWindow.addEventListener('unload', this, false);
 		aWindow.addEventListener('dragend', this, true);
 
 		this._initParent();
+
+		if (aInitJustNow)
+			this._initAfterLoad();
 	},
 
-	initWithDelay : function FSW_initWithDelay()
+	_initAfterLoad : function FSW__initAfterLoad()
 	{
-		this.window.removeEventListener('load', this, false);
-
 		var self = this;
 		Deferred.next(function() {
 			self.lastScreenX = self.window.screenX;
@@ -202,7 +205,9 @@ FoxSplitterWindow.prototype = {
 		switch (aEvent.type)
 		{
 			case 'load':
-				return this.initWithDelay();
+				this.window.removeEventListener('load', this, false);
+				this._initAfterLoad();
+				return;
 
 			case 'unload':
 				return this.destroy();
@@ -233,6 +238,7 @@ FoxSplitterWindow.prototype = {
 
 	onMove : function FSW_onMove(aEvent)
 	{
+dump('onMove '+this.lastScreenX+' / '+this.lastScreenY+' / '+this.positionSynching+'\n');
 		if (
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
@@ -247,6 +253,7 @@ FoxSplitterWindow.prototype = {
 		var y = w.screenY;
 
 		var root = this.root;
+dump('root '+root+'\n');
 		if (root)
 			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
 

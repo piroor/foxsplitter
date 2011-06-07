@@ -3,17 +3,19 @@ load('window');
 
 const TYPE_BROWSER = 'navigator:browser';
 
-function handleWindow(aWindow)
+function handleWindow(aWindow, aInitialization)
 {
 	var doc = aWindow.document;
 	if (doc.documentElement.getAttribute('windowtype') != TYPE_BROWSER)
 		return;
 
-	aWindow.FoxSplitter = new FoxSplitterWindow(aWindow);
+	aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
 	aWindow.SplitBrowser = aWindow.FoxSplitter;
 }
 
-WindowManager.getWindows(TYPE_BROWSER).forEach(handleWindow);
+WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
+	handleWindow(aWindow, true);
+});
 WindowManager.addHandler(handleWindow);
 
 function shutdown()
