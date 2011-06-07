@@ -347,10 +347,18 @@ FoxSplitterWindow.prototype = {
 	}
 };
 
-FoxSplitterWindow.prototype.positionName = {};
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_TOP] = 'top';
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_RIGHT] = 'right';
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_BOTTOM] = 'bottom';
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_LEFT] = 'left';
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_INSIDE] = 'in';
-FoxSplitterWindow.prototype.positionName[FoxSplitterWindow.prototype.kPOSITION_OUTSIDE] = 'out';
+var prototype = FoxSplitterWindow.prototype;
+prototype.positionName = {};
+prototype.positionName[prototype.kPOSITION_TOP]     = 'top';
+prototype.positionName[prototype.kPOSITION_RIGHT]   = 'right';
+prototype.positionName[prototype.kPOSITION_BOTTOM]  = 'bottom';
+prototype.positionName[prototype.kPOSITION_LEFT]    = 'left';
+prototype.positionName[prototype.kPOSITION_INSIDE]  = 'in';
+prototype.positionName[prototype.kPOSITION_OUTSIDE] = 'out';
+prototype.opposite = {};
+prototype.opposite[prototype.kPOSITION_TOP]     = prototype.kPOSITION_BOTTOM;
+prototype.opposite[prototype.kPOSITION_RIGHT]   = prototype.kPOSITION_LEFT;
+prototype.opposite[prototype.kPOSITION_BOTTOM]  = prototype.kPOSITION_TOP;
+prototype.opposite[prototype.kPOSITION_LEFT]    = prototype.kPOSITION_RIGHT;
+prototype.opposite[prototype.kPOSITION_INSIDE]  = prototype.kPOSITION_OUTSIDE;
+prototype.opposite[prototype.kPOSITION_OUTSIDE] = prototype.kPOSITION_INSIDE;
