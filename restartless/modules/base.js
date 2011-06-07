@@ -45,7 +45,7 @@ FoxSplitterBase.prototype = {
 		return otherMembers[0];
 	},
 
-	onResizeTop : function FSW_onResizeTop(aDelta)
+	onResizeTop : function FSB_onResizeTop(aDelta)
 	{
 		if (!aDelta) return;
 		var splitterResizing = false;
@@ -65,7 +65,7 @@ FoxSplitterBase.prototype = {
 			parent.onResizeTop(aDelta);
 	},
 
-	onResizeRight : function FSW_onResizeRight(aDelta)
+	onResizeRight : function FSB_onResizeRight(aDelta)
 	{
 		if (!aDelta) return;
 		var splitterResizing = false;
@@ -85,7 +85,7 @@ FoxSplitterBase.prototype = {
 			parent.onResizeRight(aDelta);
 	},
 
-	onResizeBottom : function FSW_onResizeBottom(aDelta)
+	onResizeBottom : function FSB_onResizeBottom(aDelta)
 	{
 		if (!aDelta) return;
 		var splitterResizing = false;
@@ -105,7 +105,7 @@ FoxSplitterBase.prototype = {
 			parent.onResizeBottom(aDelta);
 	},
 
-	onResizeLeft : function FSW_onResizeLeft(aDelta)
+	onResizeLeft : function FSB_onResizeLeft(aDelta)
 	{
 		if (!aDelta) return;
 		var splitterResizing = false;
