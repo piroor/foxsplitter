@@ -38,6 +38,74 @@ FoxSplitterBase.prototype = {
 				return aMember != this;
 			}, this);
 		return otherMembers[0];
+	},
+
+	onResizeTop : function FSW_onResizeTop(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling) {
+			if (sibling.position == this.kPOSITION_TOP) {
+				sibling.resizeBy(0, -aDelta);
+			}
+			else if (sibling.position & this.kPOSITION_HORIZONTAL) {
+				sibling.moveBy(0, -aDelta);
+				sibling.resizeBy(0, aDelta);
+			}
+		}
+		var parent = this.parent;
+		if (parent)
+			parent.onResizeTop();
+	},
+
+	onResizeRight : function FSW_onResizeRight(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling) {
+			if (sibling.position == this.kPOSITION_RIGHT) {
+				sibling.moveBy(aDelta, 0);
+				sibling.resizeBy(-aDelta, 0);
+			}
+			else if (sibling.position & this.kPOSITION_VERTICAL) {
+				sibling.resizeBy(aDelta, 0);
+			}
+		}
+		var parent = this.parent;
+		if (parent)
+			parent.onResizeRight();
+	},
+
+	onResizeBottom : function FSW_onResizeBottom(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling) {
+			if (sibling.position == this.kPOSITION_BOTTOM) {
+				sibling.moveBy(0, aDelta);
+				sibling.resizeBy(0, -aDelta);
+			}
+			else if (sibling.position & this.kPOSITION_HORIZONTAL) {
+				sibling.resizeBy(0, aDelta);
+			}
+		}
+		var parent = this.parent;
+		if (parent)
+			parent.onResizeBottom();
+	},
+
+	onResizeLeft : function FSW_onResizeLeft(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling) {
+			if (sibling.position == this.kPOSITION_LEFT) {
+				sibling.resizeBy(-aDelta, 0);
+			}
+			else if (sibling.position & this.kPOSITION_VERTICAL) {
+				sibling.moveBy(-aDelta, 0);
+				sibling.resizeBy(aDelta, 0);
+			}
+		}
+		var parent = this.parent;
+		if (parent)
+			parent.onResizeLeft();
 	}
 };
 

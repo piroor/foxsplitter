@@ -13,31 +13,48 @@ FoxSplitterGroup.prototype = {
 
 	get screenX()
 	{
-		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_LEFT;
-			});
-		return members.length ? members[0].screenX : 0 ;
+		var member = this.leftMember;
+		return member ? member.screenX : 0 ;
 	},
 	get screenY()
 	{
-		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_TOP;
-			});
-		return members.length ? members[0].screenY : 0 ;
+		var member = this.topMember;
+		return member ? member.screenY : 0 ;
 	},
 	get width()
 	{
-		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_RIGHT;
-			});
-		return members.length ? members[0].screenX - this.screenX + members[0].width : 0 ;
+		var member = this.rightMember;
+		return member ? member.screenX - this.screenX + member.width : 0 ;
 	},
 	get height()
 	{
+		var member = this.bottomMember;
+		return member ? member.screenY - this.screenY + member.height : 0 ;
+	},
+
+
+	get topMember()
+	{
+		return this._getMemberAt(this.kPOSITION_TOP);
+	},
+	get rightMember()
+	{
+		return this._getMemberAt(this.kPOSITION_RIGHT);
+	},
+	get bottomMember()
+	{
+		return this._getMemberAt(this.kPOSITION_TOP);
+	},
+	get leftMember()
+	{
+		return this._getMemberAt(this.kPOSITION_LEFT);
+	},
+	_getMemberAt : function FSG_getMemberAt(aPosition)
+	{
 		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_BOTTOM;
+				aMember.position == aPosition;
 			});
-		return members.length ? members[0].screenY - this.screenY + members[0].height : 0 ;
+		return members.length ? members[0] : null ;
 	},
 
 
@@ -45,6 +62,9 @@ FoxSplitterGroup.prototype = {
 	{
 		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
+
+		this.positionUpdating = 0;
+		this.sizeUpdating     = 0;
 
 		this.members = [];
 	},
@@ -61,38 +81,48 @@ FoxSplitterGroup.prototype = {
 
 
 
-	moveTo : function FSG_moveTo(aX, aY)
+	moveTo : function FSG_moveTo(aX, aY, aSource)
 	{
+		this.moveBy(aX - this.screenX, aY - this.screenY, aSource);
 	},
 
-	moveBy : function FSG_moveBy(aDX, aDY)
-	{
-	},
-
-	resizeTo : function FSG_resizeTo(aW, aH)
-	{
-	},
-
-	resizeBy : function FSG_resizeBy(aDW, aDH)
-	{
-	},
-
-	onMove : function FSG_onMove(aFSWindow, aDX, aDY)
+	moveBy : function FSG_moveBy(aDX, aDY, aSource)
 	{
 		this.members.forEach(function(aMember) {
-			if (aMember.isGroup)
-				aMember.onMove(aFSWindow, aDX, aDY);
-			else
+			if (!aMember.isGroup && aMember != aSource)
 				aMember.moveBy(aDX, aDY);
 		});
 	},
 
-	onResize : function FSG_onResize(aFSWindow, aEvent)
+	resizeTo : function FSG_resizeTo(aW, aH)
 	{
-		this.members.forEach(function(aMember) {
-			if (aMember.isGroup)
-				aMember.onResize(aFSWindow, aEvent);
-		});
+		this.resizeBy(aW - this.width, aH - this.height);
+	},
+
+	resizeBy : function FSG_resizeBy(aDW, aDH)
+	{
+		if (aDW) {
+			let right = this.rightMember;
+			if (right) {
+				right.resizeBy(aDW, 0);
+			}
+			else {
+				this.members.forEach(function(aMember) {
+					aMember.resizeBy(aDW, 0);
+				});
+			}
+		}
+		if (aDH) {
+			let bottom = this.bottomMember;
+			if (bottom) {
+				bottom.resizeBy(0, aDH);
+			}
+			else {
+				this.members.forEach(function(aMember) {
+					aMember.resizeBy(0, aDH);
+				});
+			}
+		}
 	},
 
 
