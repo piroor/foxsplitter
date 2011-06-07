@@ -42,7 +42,23 @@ FoxSplitterWindow.prototype = {
 
 		var parent = new FoxSplitterGroup();
 		parent.register(this);
-		parent.register(parentWin.FoxSplitter.parent || parentWin.FoxSplitter);
+
+		var grandParent = parentWin.FoxSplitter.parent;
+		if (grandParent) {
+			grandParent.register(parent);
+			grandParent.unregister(parentWin.FoxSplitter);
+		}
+		parent.register(parentWin.FoxSplitter);
+	},
+
+	get root()
+	{
+		var parent = this;
+		while (parent.parent)
+		{
+			parent = parent.parent;
+		}
+		return (parent && parent != this) ? parent : null ;
 	},
 
 
@@ -89,8 +105,10 @@ FoxSplitterWindow.prototype = {
 		var w = this.window;
 		var x = w.screenX;
 		var y = w.screenY;
-		if (this.parent)
-			this.parent.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
+
+		var root = this.root;
+		if (root)
+			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
@@ -102,6 +120,8 @@ FoxSplitterWindow.prototype = {
 		if (this.syncMoving) return;
 		this.syncMoving = true;
 		this.window.moveBy(aDX, aDY);
+		this.lastScreenX = this.window.screenX;
+		this.lastScreenY = this.window.screenY;
 		this.syncMoving = false;
 	},
 
