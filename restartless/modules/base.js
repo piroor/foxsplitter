@@ -4,6 +4,8 @@ function FoxSplitterBase()
 {
 }
 FoxSplitterBase.prototype = {
+	kATTACHED_POSITION : 'foxsplitter-attached-position',
+
 	kPOSITION_TOP    : (1 << 0),
 	kPOSITION_RIGHT  : (1 << 1),
 	kPOSITION_BOTTOM : (1 << 2),

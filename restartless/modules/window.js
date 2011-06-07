@@ -10,7 +10,6 @@ function FoxSplitterWindow(aWindow, aOnInit)
 }
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
-	kATTACHED_POSITION : 'foxsplitter-attached-position',
 
 	lastScreenX : null,
 	lastScreenY : null,
