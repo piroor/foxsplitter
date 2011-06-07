@@ -1,4 +1,5 @@
 load('group');
+load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
  
@@ -29,10 +30,13 @@ FoxSplitterWindow.prototype = {
 
 	initWithDelay : function FSW_initWithDelay()
 	{
-		this.lastScreenX = this.window.screenX;
-		this.lastScreenY = this.window.screenY;
-
 		this.window.removeEventListener('load', this, false);
+
+		var self = this;
+		Deferred.next(function() {
+			self.lastScreenX = self.window.screenX;
+			self.lastScreenY = self.window.screenY;
+		});
 	},
 
 	_initParent : function FSW_initParent()
