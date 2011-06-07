@@ -42,9 +42,12 @@ FoxSplitterBase.prototype = {
 
 	onResizeTop : function FSW_onResizeTop(aDelta)
 	{
+		if (!aDelta) return;
+		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
 			if (sibling.position == this.kPOSITION_TOP) {
+				splitterResizing = true;
 				sibling.resizeBy(0, -aDelta);
 			}
 			else if (sibling.position & this.kPOSITION_HORIZONTAL) {
@@ -53,15 +56,18 @@ FoxSplitterBase.prototype = {
 			}
 		}
 		var parent = this.parent;
-		if (parent)
-			parent.onResizeTop();
+		if (!splitterResizing && parent)
+			parent.onResizeTop(aDelta);
 	},
 
 	onResizeRight : function FSW_onResizeRight(aDelta)
 	{
+		if (!aDelta) return;
+		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
 			if (sibling.position == this.kPOSITION_RIGHT) {
+				splitterResizing = true;
 				sibling.moveBy(aDelta, 0);
 				sibling.resizeBy(-aDelta, 0);
 			}
@@ -70,15 +76,18 @@ FoxSplitterBase.prototype = {
 			}
 		}
 		var parent = this.parent;
-		if (parent)
-			parent.onResizeRight();
+		if (!splitterResizing && parent)
+			parent.onResizeRight(aDelta);
 	},
 
 	onResizeBottom : function FSW_onResizeBottom(aDelta)
 	{
+		if (!aDelta) return;
+		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
 			if (sibling.position == this.kPOSITION_BOTTOM) {
+				splitterResizing = true;
 				sibling.moveBy(0, aDelta);
 				sibling.resizeBy(0, -aDelta);
 			}
@@ -87,15 +96,18 @@ FoxSplitterBase.prototype = {
 			}
 		}
 		var parent = this.parent;
-		if (parent)
-			parent.onResizeBottom();
+		if (!splitterResizing && parent)
+			parent.onResizeBottom(aDelta);
 	},
 
 	onResizeLeft : function FSW_onResizeLeft(aDelta)
 	{
+		if (!aDelta) return;
+		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
 			if (sibling.position == this.kPOSITION_LEFT) {
+				splitterResizing = true;
 				sibling.resizeBy(-aDelta, 0);
 			}
 			else if (sibling.position & this.kPOSITION_VERTICAL) {
@@ -104,8 +116,8 @@ FoxSplitterBase.prototype = {
 			}
 		}
 		var parent = this.parent;
-		if (parent)
-			parent.onResizeLeft();
+		if (!splitterResizing && parent)
+			parent.onResizeLeft(aDelta);
 	}
 };
 
