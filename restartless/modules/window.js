@@ -8,6 +8,8 @@ function FoxSplitterWindow(aWindow)
 }
 FoxSplitterWindow.prototype = {
 	isGroup : false,
+	lastScreenX : null,
+	lastScreenY : null,
 
 	init : function FSW_init(aWindow) 
 	{
@@ -16,14 +18,21 @@ FoxSplitterWindow.prototype = {
 
 		this.window = aWindow;
 
-		this.lastScreenX = aWindow.screenX;
-		this.lastScreenY = aWindow.screenY;
+		this.window.addEventListener('load', this, false);
 
 		this.window.addEventListener('unload', this, false);
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
 
 		this._initParent();
+	},
+
+	initWithDelay : function FSW_initWithDelay()
+	{
+		this.lastScreenX = this.window.screenX;
+		this.lastScreenY = this.window.screenY;
+
+		this.window.removeEventListener('load', this, false);
 	},
 
 	_initParent : function FSW_initParent()
@@ -78,6 +87,9 @@ FoxSplitterWindow.prototype = {
 	{
 		switch (aEvent.type)
 		{
+			case 'load':
+				return this.initWithDelay();
+
 			case 'unload':
 				return this.destroy();
 
@@ -96,6 +108,8 @@ FoxSplitterWindow.prototype = {
 		if (
 			aEvent.target != root ||
 			(aEvent.attrName != 'screenX' && aEvent.attrName != 'screenY') ||
+			this.lastScreenX === null ||
+			this.lastScreenY === null ||
 			this.syncMoving
 			)
 			return;
