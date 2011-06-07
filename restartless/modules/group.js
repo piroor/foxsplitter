@@ -11,20 +11,6 @@ FoxSplitterGroup.prototype = {
 
 	isGroup : true,
 
-	get width()
-	{
-		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_RIGHT;
-			});
-		return members.length ? members[0].screenX - this.screenX + members[0].width : 0 ;
-	},
-	get height()
-	{
-		var members = this.members.filter(function(aMember) {
-				aMember.position == this.kPOSITION_BOTTOM;
-			});
-		return members.length ? members[0].screenY - this.screenY + members[0].height : 0 ;
-	},
 	get screenX()
 	{
 		var members = this.members.filter(function(aMember) {
@@ -39,6 +25,21 @@ FoxSplitterGroup.prototype = {
 			});
 		return members.length ? members[0].screenY : 0 ;
 	},
+	get width()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_RIGHT;
+			});
+		return members.length ? members[0].screenX - this.screenX + members[0].width : 0 ;
+	},
+	get height()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_BOTTOM;
+			});
+		return members.length ? members[0].screenY - this.screenY + members[0].height : 0 ;
+	},
+
 
 	init : function FSG_init() 
 	{
@@ -58,32 +59,7 @@ FoxSplitterGroup.prototype = {
 			this.parent.unregister(this);
 	},
 
-	register : function FSG_register(aFSWindow)
-	{
-		if (this.members.indexOf(aFSWindow) < 0) {
-			this.members.push(aFSWindow);
-			aFSWindow.parent = this;
-		}
-	},
 
-	unregister : function FSG_unregister(aFSWindow)
-	{
-		var index = this.members.indexOf(aFSWindow);
-		if (index > -1) {
-			this.members.splice(index, 1);
-			aFSWindow.parent = null;
-		}
-		if (this.members.length == 1) {
-			if (this.parent) {
-				// swap existing relations
-				let lastMember = this.members[0];
-				lastMember.position = this.position;
-				this.parent.register(lastMember);
-				this.unregister(lastMember);
-			}
-			this.destroy();
-		}
-	},
 
 	moveTo : function FSG_moveTo(aX, aY)
 	{
@@ -117,6 +93,36 @@ FoxSplitterGroup.prototype = {
 			if (aMember.isGroup)
 				aMember.onResize(aFSWindow, aEvent);
 		});
+	},
+
+
+	// group specific features
+
+	register : function FSG_register(aFSWindow)
+	{
+		if (this.members.indexOf(aFSWindow) < 0) {
+			this.members.push(aFSWindow);
+			aFSWindow.parent = this;
+		}
+	},
+
+	unregister : function FSG_unregister(aFSWindow)
+	{
+		var index = this.members.indexOf(aFSWindow);
+		if (index > -1) {
+			this.members.splice(index, 1);
+			aFSWindow.parent = null;
+		}
+		if (this.members.length == 1) {
+			if (this.parent) {
+				// swap existing relations
+				let lastMember = this.members[0];
+				lastMember.position = this.position;
+				this.parent.register(lastMember);
+				this.unregister(lastMember);
+			}
+			this.destroy();
+		}
 	}
 };
   

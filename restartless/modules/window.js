@@ -14,15 +14,9 @@ FoxSplitterWindow.prototype = {
 
 	lastScreenX : null,
 	lastScreenY : null,
+	lastWidth   : null,
+	lastHeight  : null,
 
-	get width()
-	{
-		return this.window.outerWidth;
-	},
-	get height()
-	{
-		return this.window.outerHeight;
-	},
 	get screenX()
 	{
 		return this.window.screenX;
@@ -30,6 +24,14 @@ FoxSplitterWindow.prototype = {
 	get screenY()
 	{
 		return this.window.screenY;
+	},
+	get width()
+	{
+		return this.window.outerWidth;
+	},
+	get height()
+	{
+		return this.window.outerHeight;
 	},
 
 	get position()
@@ -83,12 +85,14 @@ FoxSplitterWindow.prototype = {
 			this._initAfterLoad();
 	},
 
-	_initAfterLoad : function FSW__initAfterLoad()
+	_initAfterLoad : function FSW_initAfterLoad()
 	{
 		var self = this;
 		Deferred.next(function() {
-			self.lastScreenX = self.window.screenX;
-			self.lastScreenY = self.window.screenY;
+			self.lastScreenX = self.screenX;
+			self.lastScreenY = self.screenY;
+			self.lastWidth   = self.width;
+			self.lastHeight  = self.height;
 
 			// workaround to fix misrendering by resizing on DOMContentLoaded
 			self.resizeBy(0, -1);
@@ -96,23 +100,6 @@ FoxSplitterWindow.prototype = {
 
 			self.startListen();
 		});
-	},
-
-	startListen : function FSW_startListen()
-	{
-		if (this._listening) return;
-		this.window.addEventListener('DOMAttrModified', this, false);
-		this.window.addEventListener('resize', this, false);
-		this._listening = true;
-	},
-	_listening : false,
-
-	endListen : function FSW_endListen()
-	{
-		if (!this._listening) return;
-		this.window.removeEventListener('DOMAttrModified', this, false);
-		this.window.removeEventListener('resize', this, false);
-		this._listening = false;
 	},
 
 	_initParent : function FSW_initParent(aOnInit)
@@ -221,128 +208,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	handleEvent : function FSW_handleEvent(aEvent) 
-	{
-		switch (aEvent.type)
-		{
-			case 'load':
-				this.window.removeEventListener('load', this, false);
-				this._initAfterLoad();
-				return;
-
-			case 'unload':
-				return this.destroy();
-
-
-			case 'DOMAttrModified':
-				if (
-					aEvent.target == this.documentElement &&
-					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
-					)
-					this.onMove(aEvent);
-				return;
-
-			case 'resize':
-				return this.onResize(aEvent);
-
-
-			case 'dragend':
-				if (
-					aEvent.target.localName == 'tab' &&
-					aEvent.target.className.indexOf('tabbrowser-tab') > -1
-					)
-					this.onTabDragEnd(aEvent);
-				return;
-		}
-	},
-
-
-	onMove : function FSW_onMove(aEvent)
-	{
-		if (
-			this.lastScreenX === null ||
-			this.lastScreenY === null ||
-			this.positionSynching
-			)
-			return;
-
-		this.positionSynching = true;
-
-		var w = this.window;
-		var x = w.screenX;
-		var y = w.screenY;
-
-		var root = this.root;
-		if (root)
-			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
-
-		this.lastScreenX = x;
-		this.lastScreenY = y;
-		this.positionSynching = false;
-	},
-
-
-	onResize : function FSW_onResize(aEvent)
-	{
-	},
-
-
-	onTabDragEnd : function FSW_onTabDragEnd(aEvent)
-	{
-		var position = this.getDropPosition(aEvent);
-		if (position & this.kPOSITION_INVALID)
-			return;
-
-		var tab = this.getTabFromEvent(aEvent);
-		tab.setAttribute(this.kATTACHED_POSITION, position);
-	},
-
-	getTabFromEvent : function FSW_getTabFromEvent(aEvent)
-	{
-		var node = aEvent.originalTarget;
-		var d = node.ownerDocument;
-		return d.evaluate(
-				'ancestor-or-self::*[local-name()="tab" and contains(concat(" ", @class, " "), " tabbrowser-tab ")][1]',
-				node,
-				null,
-				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
-				null
-			).singleNodeValue;
-	},
-
-	getDropPosition : function FSW_getDropPosition(aEvent)
-	{
-		var outerPadding = 100;
-		var oX = this.window.screenX - outerPadding;
-		var oY = this.window.screenY - outerPadding;
-		var x = aEvent.screenX - oX;
-		var y = aEvent.screenY - oY;
-		var width = this.width + (outerPadding * 2);
-		var height = this.height + (outerPadding * 2);
-
-		// out of area
-		if (x < 0 || x > width || y < 0 || y > height)
-			return this.kPOSITION_OUTSIDE;
-
-		// too inside
-		var xUnit = width * 0.3;
-		var yUnit = height * 0.3;
-		if (
-			xUnit < x && width - xUnit > x &&
-			yUnit < y && height - yUnit > y
-			)
-			return this.kPOSITION_INSIDE;
-
-		var isTopLeft    = x <= width - (y * width / height);
-		var isBottomLeft = x <= y * width / height;
-
-		return (isTopLeft && isBottomLeft) ? this.kPOSITION_LEFT :
-			(isTopLeft && !isBottomLeft) ? this.kPOSITION_TOP :
-			(!isTopLeft && isBottomLeft) ? this.kPOSITION_BOTTOM :
-			this.kPOSITION_RIGHT ;
-	},
-
-
 	moveTo : function FSW_moveTo(aX, aY)
 	{
 		if (this.positionSynching) return;
@@ -380,7 +245,148 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	// event handling
+
+	startListen : function FSW_startListen()
+	{
+		if (this._listening) return;
+		this.window.addEventListener('DOMAttrModified', this, false);
+		this.window.addEventListener('resize', this, false);
+		this._listening = true;
+	},
+	_listening : false,
+
+	endListen : function FSW_endListen()
+	{
+		if (!this._listening) return;
+		this.window.removeEventListener('DOMAttrModified', this, false);
+		this.window.removeEventListener('resize', this, false);
+		this._listening = false;
+	},
+
+	handleEvent : function FSW_handleEvent(aEvent) 
+	{
+		switch (aEvent.type)
+		{
+			case 'load':
+				this.window.removeEventListener('load', this, false);
+				this._initAfterLoad();
+				return;
+
+			case 'unload':
+				return this.destroy();
+
+
+			case 'DOMAttrModified':
+				if (
+					aEvent.target == this.documentElement &&
+					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
+					)
+					this.onMove(aEvent);
+				return;
+
+			case 'resize':
+				return this.onResize(aEvent);
+
+
+			case 'dragend':
+				if (
+					aEvent.target.localName == 'tab' &&
+					aEvent.target.className.indexOf('tabbrowser-tab') > -1
+					)
+					this._onTabDragEnd(aEvent);
+				return;
+		}
+	},
+
+
+	onMove : function FSW_onMove(aEvent)
+	{
+		if (
+			this.lastScreenX === null ||
+			this.lastScreenY === null ||
+			this.positionSynching
+			)
+			return;
+
+		this.positionSynching = true;
+
+		var w = this.window;
+		var x = w.screenX;
+		var y = w.screenY;
+
+		var root = this.root;
+		if (root)
+			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
+
+		this.lastScreenX = x;
+		this.lastScreenY = y;
+		this.positionSynching = false;
+	},
+
+	onResize : function FSW_onResize(aEvent)
+	{
+	},
+
+
+	_onTabDragEnd : function FSW_onTabDragEnd(aEvent)
+	{
+		var position = this._getDropPosition(aEvent);
+		if (position & this.kPOSITION_INVALID)
+			return;
+
+		var tab = this._getTabFromEvent(aEvent);
+		tab.setAttribute(this.kATTACHED_POSITION, position);
+	},
+
+	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
+	{
+		var node = aEvent.originalTarget;
+		var d = node.ownerDocument;
+		return d.evaluate(
+				'ancestor-or-self::*[local-name()="tab" and contains(concat(" ", @class, " "), " tabbrowser-tab ")][1]',
+				node,
+				null,
+				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
+				null
+			).singleNodeValue;
+	},
+
+	_getDropPosition : function FSW_getDropPosition(aEvent)
+	{
+		var outerPadding = 100;
+		var oX = this.window.screenX - outerPadding;
+		var oY = this.window.screenY - outerPadding;
+		var x = aEvent.screenX - oX;
+		var y = aEvent.screenY - oY;
+		var width = this.width + (outerPadding * 2);
+		var height = this.height + (outerPadding * 2);
+
+		// out of area
+		if (x < 0 || x > width || y < 0 || y > height)
+			return this.kPOSITION_OUTSIDE;
+
+		// too inside
+		var xUnit = width * 0.3;
+		var yUnit = height * 0.3;
+		if (
+			xUnit < x && width - xUnit > x &&
+			yUnit < y && height - yUnit > y
+			)
+			return this.kPOSITION_INSIDE;
+
+		var isTopLeft    = x <= width - (y * width / height);
+		var isBottomLeft = x <= y * width / height;
+
+		return (isTopLeft && isBottomLeft) ? this.kPOSITION_LEFT :
+			(isTopLeft && !isBottomLeft) ? this.kPOSITION_TOP :
+			(!isTopLeft && isBottomLeft) ? this.kPOSITION_BOTTOM :
+			this.kPOSITION_RIGHT ;
+	},
+
+
 	// compatibility for old versions
+
 	get activeBrowser()
 	{
 		return this.window && this.window.gBrowser;
