@@ -45,6 +45,11 @@ FoxSplitterWindow.prototype = {
 		Deferred.next(function() {
 			self.lastScreenX = self.window.screenX;
 			self.lastScreenY = self.window.screenY;
+
+			// workaround to fix misrendering by resizing on DOMContentLoaded
+			self.resizeBy(0, -1);
+			self.resizeBy(0, 1);
+
 			self.startListen();
 		});
 	},
