@@ -43,7 +43,7 @@ FoxSplitterGroup.prototype = {
 	},
 	get bottomMember()
 	{
-		return this._getMemberAt(this.kPOSITION_TOP);
+		return this._getMemberAt(this.kPOSITION_BOTTOM);
 	},
 	get leftMember()
 	{
@@ -52,7 +52,7 @@ FoxSplitterGroup.prototype = {
 	_getMemberAt : function FSG_getMemberAt(aPosition)
 	{
 		var members = this.members.filter(function(aMember) {
-				aMember.position == aPosition;
+				return aMember.position == aPosition;
 			});
 		return members.length ? members[0] : null ;
 	},
@@ -141,7 +141,8 @@ FoxSplitterGroup.prototype = {
 		var index = this.members.indexOf(aFSWindow);
 		if (index > -1) {
 			this.members.splice(index, 1);
-			aFSWindow.parent = null;
+			if (aFSWindow.parent == this)
+				aFSWindow.parent = null;
 		}
 		if (this.members.length == 1) {
 			if (this.parent) {
