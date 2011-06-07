@@ -20,6 +20,9 @@ FoxSplitterGroup.prototype = {
 		this.members.forEach(function(aMember) {
 			this.unregister(aMember);
 		}, this);
+
+		if (this.parent)
+			this.parent.unregister(this);
 	},
 
 	register : function FSG_register(aFSWindow)
@@ -37,8 +40,13 @@ FoxSplitterGroup.prototype = {
 			this.members.splice(index, 1);
 			aFSWindow.parent = null;
 		}
-		if (!this.members.length)
+		if (this.members.length == 1) {
+			if (this.parent) {
+				this.parent.register(this.members[0]);
+				this.unregister(this.member[0]);
+			}
 			this.destroy();
+		}
 	},
 
 	onMove : function FSG_onMove(aFSWindow, aDX, aDY)

@@ -98,7 +98,12 @@ FoxSplitterWindow.prototype = {
 				return this.destroy();
 
 			case 'DOMAttrModified':
-				return this.onMove(aEvent);
+				if (
+					aEvent.target == this.window.document.documentElement &&
+					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
+					)
+					this.onMove(aEvent);
+				return;
 
 			case 'resize':
 				return this.onResize(aEvent);
@@ -108,17 +113,14 @@ FoxSplitterWindow.prototype = {
 
 	onMove : function FSW_onMove(aEvent)
 	{
-		var root = this.window.document.documentElement;
 		if (
-			aEvent.target != root ||
-			(aEvent.attrName != 'screenX' && aEvent.attrName != 'screenY') ||
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
-			this.syncMoving
+			this.positionSynching
 			)
 			return;
 
-		this.syncMoving = true;
+		this.positionSynching = true;
 
 		var w = this.window;
 		var x = w.screenX;
@@ -130,17 +132,17 @@ FoxSplitterWindow.prototype = {
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
-		this.syncMoving = false;
+		this.positionSynching = false;
 	},
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
-		if (this.syncMoving) return;
-		this.syncMoving = true;
+		if (this.positionSynching) return;
+		this.positionSynching = true;
 		this.window.moveBy(aDX, aDY);
-		this.lastScreenX = this.window.screenX;
-		this.lastScreenY = this.window.screenY;
-		this.syncMoving = false;
+		this.lastScreenX += aDX;
+		this.lastScreenY += aDY;
+		this.positionSynching = false;
 	},
 
 
