@@ -1,3 +1,5 @@
+load('base');
+
 var EXPORTED_SYMBOLS = ['FoxSplitterGroup'];
  
 function FoxSplitterGroup() 
@@ -5,7 +7,38 @@ function FoxSplitterGroup()
 	this.init();
 }
 FoxSplitterGroup.prototype = {
+	__proto__ : FoxSplitterBase.prototype,
+
 	isGroup : true,
+
+	get width()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_RIGHT;
+			});
+		return members.length ? members[0].screenX - this.screenX + members[0].width : 0 ;
+	},
+	get height()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_BOTTOM;
+			});
+		return members.length ? members[0].screenY - this.screenY + members[0].height : 0 ;
+	},
+	get screenX()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_LEFT;
+			});
+		return members.length ? members[0].screenX : 0 ;
+	},
+	get screenY()
+	{
+		var members = this.members.filter(function(aMember) {
+				aMember.position == this.kPOSITION_TOP;
+			});
+		return members.length ? members[0].screenY : 0 ;
+	},
 
 	init : function FSG_init() 
 	{
@@ -42,6 +75,7 @@ FoxSplitterGroup.prototype = {
 		}
 		if (this.members.length == 1) {
 			if (this.parent) {
+				// swap existing relations
 				let lastMember = this.members[0];
 				lastMember.position = this.position;
 				this.parent.register(lastMember);
@@ -49,6 +83,22 @@ FoxSplitterGroup.prototype = {
 			}
 			this.destroy();
 		}
+	},
+
+	moveTo : function FSG_moveTo(aX, aY)
+	{
+	},
+
+	moveBy : function FSG_moveBy(aDX, aDY)
+	{
+	},
+
+	resizeTo : function FSG_resizeTo(aW, aH)
+	{
+	},
+
+	resizeBy : function FSG_resizeBy(aDW, aDH)
+	{
 	},
 
 	onMove : function FSG_onMove(aFSWindow, aDX, aDY)

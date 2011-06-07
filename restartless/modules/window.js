@@ -1,44 +1,85 @@
+load('base');
 load('group');
 load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
  
-function FoxSplitterWindow(aWindow, aInitJustNow) 
+function FoxSplitterWindow(aWindow, aOnInit) 
 {
-	this.init(aWindow, aInitJustNow);
+	this.init(aWindow, aOnInit);
 }
 FoxSplitterWindow.prototype = {
+	__proto__ : FoxSplitterBase.prototype,
 	kATTACHED_POSITION : 'foxsplitter-attached-position',
-	kPOSITION_TOP    : (1 << 0),
-	kPOSITION_RIGHT  : (1 << 1),
-	kPOSITION_BOTTOM : (1 << 2),
-	kPOSITION_LEFT   : (1 << 3),
-	kPOSITION_HORIZONTAL : (1 << 1) | (1 << 3),
-	kPOSITION_VERTICAL   : (1 << 0) | (1 << 2),
-	kPOSITION_OUTSIDE : (1 << 4),
-	kPOSITION_INSIDE  : (1 << 5),
-	kPOSITION_INVALID : (1 << 4) | (1 << 5),
 
-	isGroup : false,
 	lastScreenX : null,
 	lastScreenY : null,
 
-	init : function FSW_init(aWindow, aInitJustNow) 
+	get width()
 	{
-		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
-		this.parent = null;
+		return this.window.outerWidth;
+	},
+	get height()
+	{
+		return this.window.outerHeight;
+	},
+	get screenX()
+	{
+		return this.window.screenX;
+	},
+	get screenY()
+	{
+		return this.window.screenY;
+	},
 
+	get position()
+	{
+		return (
+			this._position ||
+			(this._position = parseInt(this.documentElement.getAttribute(this.kATTACHED_POSITION)))
+		);
+	},
+	set position(aValue)
+	{
+		this.documentElement.setAttribute(this.kATTACHED_POSITION, aValue);
+		return this._position = aValue;
+	},
+
+	get id()
+	{
+		return (
+			this._id ||
+			(this._id = this.documentElement.getAttribute(this.kID))
+		);
+	},
+	set id(aValue)
+	{
+		this.documentElement.setAttribute(this.kID, aValue);
+		return this._id = aValue;
+	},
+
+	get documentElement()
+	{
+		return this.window.document.documentElement;
+	},
+
+
+	init : function FSW_init(aWindow, aOnInit) 
+	{
 		this.window = aWindow;
 
-		if (!aInitJustNow)
+		this.id = this.id || (Date.now() + '-' + parseInt(Math.random() * 65000));
+		this.parent = null;
+
+		if (!aOnInit)
 			aWindow.addEventListener('load', this, false);
 
 		aWindow.addEventListener('unload', this, false);
 		aWindow.addEventListener('dragend', this, true);
 
-		this._initParent();
+		this._initParent(aOnInit);
 
-		if (aInitJustNow)
+		if (aOnInit)
 			this._initAfterLoad();
 	},
 
@@ -74,7 +115,7 @@ FoxSplitterWindow.prototype = {
 		this._listening = false;
 	},
 
-	_initParent : function FSW_initParent()
+	_initParent : function FSW_initParent(aOnInit)
 	{
 		var arguments = this.window.arguments;
 		var parentDoc = (
@@ -89,49 +130,50 @@ FoxSplitterWindow.prototype = {
 		if (!parentWin)
 			return;
 
-
 		var parentGroup = new FoxSplitterGroup();
 		parentGroup.register(this);
 
 		var parentService = parentWin.FoxSplitter;
 		var grandParentGroup = parentService.parent;
 		if (grandParentGroup) {
+			// swap existing relations
 			parentGroup.position = parentService.position;
 			grandParentGroup.register(parentGroup);
 			grandParentGroup.unregister(parentService);
 		}
 		parentGroup.register(parentService);
 
-		this._initPositionAndSize(parentService, parseInt(arguments[0].getAttribute(this.kATTACHED_POSITION)));
+		var position = parseInt(arguments[0].getAttribute(this.kATTACHED_POSITION));
+		if (!aOnInit)
+			this._initPositionAndSize(parentService, position);
 	},
 
 	_initPositionAndSize : function FSW_initPositionAndSize(aParentFS, aPosition)
 	{
-		var w = aParentFS.window;
 		var x, y, width, height;
 		if (aPosition & this.kPOSITION_HORIZONTAL) {
-			y = w.screenY;
-			width = w.outerWidth * 0.5;
-			height = w.outerHeight;
+			y = aParentFS.screenY;
+			width = aParentFS.width * 0.5;
+			height = aParentFS.height;
 			if (aPosition == this.kPOSITION_LEFT) {
-				x = w.screenX;
+				x = aParentFS.screenX;
 				aParentFS.moveBy(width, 0);
 			}
 			else {
-				x = w.screenX + width;
+				x = aParentFS.screenX + width;
 			}
 			aParentFS.resizeBy(-width, 0);
 		}
 		else {
-			x = w.screenX;
-			width = w.outerWidth;
-			height = w.outerHeight * 0.5;
+			x = aParentFS.screenX;
+			width = aParentFS.width;
+			height = aParentFS.height * 0.5;
 			if (aPosition == this.kPOSITION_TOP) {
-				y = w.screenY;
+				y = aParentFS.screenY;
 				aParentFS.moveBy(0, height);
 			}
 			else {
-				y = w.screenY + height;
+				y = aParentFS.screenY + height;
 			}
 			aParentFS.resizeBy(0, -height);
 		}
@@ -142,33 +184,12 @@ FoxSplitterWindow.prototype = {
 		aParentFS.position = this.opposite[aPosition];
 	},
 
-	get root()
-	{
-		var parent = this;
-		while (parent.parent)
-		{
-			parent = parent.parent;
-		}
-		return (parent && parent != this) ? parent : null ;
-	},
 
-	get sibling()
-	{
-		var parent = this.parent;
-		if (!parent || parent.members.length < 2)
-			return null;
-
-		var otherMembers = parent.members.filter(function(aMember) {
-				return aMember != this;
-			}, this);
-		return otherMembers[0];
-	},
-
-
-	destroy : function FSW_destroy() 
+	destroy : function FSW_destroy(aOnQuit) 
 	{
 		if (this.parent) {
-			this._expandSibling();
+			if (!aOnQuit)
+				this._expandSibling();
 			this.parent.unregister(this);
 		}
 
@@ -189,13 +210,13 @@ FoxSplitterWindow.prototype = {
 
 		if (sibling.position & this.kPOSITION_HORIZONTAL) {
 			if (sibling.position == this.kPOSITION_RIGHT)
-				sibling.moveBy(-this.window.outerWidth, 0);
-			sibling.resizeBy(this.window.outerWidth, 0);
+				sibling.moveBy(-this.width, 0);
+			sibling.resizeBy(this.width, 0);
 		}
 		else {
 			if (sibling.position == this.kPOSITION_BOTTOM)
-				sibling.moveBy(0, -this.window.outerHeight);
-			sibling.resizeBy(0, this.window.outerHeight);
+				sibling.moveBy(0, -this.height);
+			sibling.resizeBy(0, this.height);
 		}
 	},
 
@@ -215,7 +236,7 @@ FoxSplitterWindow.prototype = {
 
 			case 'DOMAttrModified':
 				if (
-					aEvent.target == this.window.document.documentElement &&
+					aEvent.target == this.documentElement &&
 					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
 					)
 					this.onMove(aEvent);
@@ -238,7 +259,6 @@ FoxSplitterWindow.prototype = {
 
 	onMove : function FSW_onMove(aEvent)
 	{
-dump('onMove '+this.lastScreenX+' / '+this.lastScreenY+' / '+this.positionSynching+'\n');
 		if (
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
@@ -253,7 +273,6 @@ dump('onMove '+this.lastScreenX+' / '+this.lastScreenY+' / '+this.positionSynchi
 		var y = w.screenY;
 
 		var root = this.root;
-dump('root '+root+'\n');
 		if (root)
 			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
 
@@ -298,8 +317,8 @@ dump('root '+root+'\n');
 		var oY = this.window.screenY - outerPadding;
 		var x = aEvent.screenX - oX;
 		var y = aEvent.screenY - oY;
-		var width = this.window.outerWidth + (outerPadding * 2);
-		var height = this.window.outerHeight + (outerPadding * 2);
+		var width = this.width + (outerPadding * 2);
+		var height = this.height + (outerPadding * 2);
 
 		// out of area
 		if (x < 0 || x > width || y < 0 || y > height)
@@ -391,19 +410,3 @@ dump('root '+root+'\n');
 		};
 	}
 };
-
-var prototype = FoxSplitterWindow.prototype;
-prototype.positionName = {};
-prototype.positionName[prototype.kPOSITION_TOP]     = 'top';
-prototype.positionName[prototype.kPOSITION_RIGHT]   = 'right';
-prototype.positionName[prototype.kPOSITION_BOTTOM]  = 'bottom';
-prototype.positionName[prototype.kPOSITION_LEFT]    = 'left';
-prototype.positionName[prototype.kPOSITION_INSIDE]  = 'in';
-prototype.positionName[prototype.kPOSITION_OUTSIDE] = 'out';
-prototype.opposite = {};
-prototype.opposite[prototype.kPOSITION_TOP]     = prototype.kPOSITION_BOTTOM;
-prototype.opposite[prototype.kPOSITION_RIGHT]   = prototype.kPOSITION_LEFT;
-prototype.opposite[prototype.kPOSITION_BOTTOM]  = prototype.kPOSITION_TOP;
-prototype.opposite[prototype.kPOSITION_LEFT]    = prototype.kPOSITION_RIGHT;
-prototype.opposite[prototype.kPOSITION_INSIDE]  = prototype.kPOSITION_OUTSIDE;
-prototype.opposite[prototype.kPOSITION_OUTSIDE] = prototype.kPOSITION_INSIDE;

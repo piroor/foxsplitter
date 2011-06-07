@@ -21,7 +21,7 @@ WindowManager.addHandler(handleWindow);
 function shutdown()
 {
 	WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
-		aWindow.FoxSplitter.destroy();
+		aWindow.FoxSplitter.destroy(true);
 		delete aWindow.FoxSplitter;
 		delete aWindow.SplitBrowser;
 	});
