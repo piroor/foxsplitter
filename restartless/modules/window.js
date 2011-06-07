@@ -69,6 +69,9 @@ FoxSplitterWindow.prototype = {
 	{
 		this.window = aWindow;
 
+		this.positionUpdating = 0;
+		this.sizeUpdating     = 0;
+
 		this.id = this.id || (Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
 
@@ -139,7 +142,7 @@ FoxSplitterWindow.prototype = {
 		var x, y, width, height;
 		if (aPosition & this.kPOSITION_HORIZONTAL) {
 			y = aParentFS.screenY;
-			width = aParentFS.width * 0.5;
+			width = Math.round(aParentFS.width * 0.5);
 			height = aParentFS.height;
 			if (aPosition == this.kPOSITION_LEFT) {
 				x = aParentFS.screenX;
@@ -153,7 +156,7 @@ FoxSplitterWindow.prototype = {
 		else {
 			x = aParentFS.screenX;
 			width = aParentFS.width;
-			height = aParentFS.height * 0.5;
+			height = Math.round(aParentFS.height * 0.5);
 			if (aPosition == this.kPOSITION_TOP) {
 				y = aParentFS.screenY;
 				aParentFS.moveBy(0, height);
@@ -163,8 +166,8 @@ FoxSplitterWindow.prototype = {
 			}
 			aParentFS.resizeBy(0, -height);
 		}
-		this.window.moveTo(x, y);
-		this.window.resizeTo(width, height);
+		this.moveTo(x, y);
+		this.resizeTo(width, height);
 
 		this.position = aPosition;
 		aParentFS.position = this.opposite[aPosition];
@@ -209,38 +212,50 @@ FoxSplitterWindow.prototype = {
 
 	moveTo : function FSW_moveTo(aX, aY)
 	{
-		if (this.positionSynching) return;
-		this.positionSynching = true;
+		this.positionUpdating++;
 		this.window.moveTo(aX, aY);
-		this.lastScreenX += (this.lastScreenX - aX);
-		this.lastScreenY += (this.lastScreenY - aY);
-		this.positionSynching = false;
+		this.lastScreenX = aX;
+		this.lastScreenY = aY;
+		var self = this;
+		Deferred.next(function() {
+			self.positionUpdating--;
+		});
 	},
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
-		if (this.positionSynching) return;
-		this.positionSynching = true;
+		this.positionUpdating++;
 		this.window.moveBy(aDX, aDY);
 		this.lastScreenX += aDX;
 		this.lastScreenY += aDY;
-		this.positionSynching = false;
+		var self = this;
+		Deferred.next(function() {
+			self.positionUpdating--;
+		});
 	},
 
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
-		if (this.sizeSynching) return;
-		this.sizeSynching = true;
+		this.sizeUpdating++;
 		this.window.resizeTo(aW, aH);
-		this.sizeSynching = false;
+		this.lastWidth  = aW;
+		this.lastHeight = aH;
+		var self = this;
+		Deferred.next(function() {
+			self.sizeUpdating--;
+		});
 	},
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
-		if (this.sizeSynching) return;
-		this.sizeSynching = true;
+		this.sizeUpdating++;
 		this.window.resizeBy(aDW, aDH);
-		this.sizeSynching = false;
+		this.lastWidth  += aDW;
+		this.lastHeight += aDH;
+		var self = this;
+		Deferred.next(function() {
+			self.sizeUpdating--;
+		});
 	},
 
 
@@ -281,11 +296,13 @@ FoxSplitterWindow.prototype = {
 					aEvent.target == this.documentElement &&
 					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
 					)
-					this.onMove(aEvent);
+					this.onMove();
 				return;
 
 			case 'resize':
-				return this.onResize(aEvent);
+				if (aEvent.target == this.window)
+					this.onResize();
+				return;
 
 
 			case 'dragend':
@@ -299,32 +316,97 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	onMove : function FSW_onMove(aEvent)
+	onMove : function FSW_onMove()
 	{
 		if (
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
-			this.positionSynching
+			this.positionUpdating
 			)
 			return;
 
-		this.positionSynching = true;
+		this.positionUpdating++;
 
-		var w = this.window;
-		var x = w.screenX;
-		var y = w.screenY;
-
+		var x = this.screenX;
+		var y = this.screenY;
 		var root = this.root;
 		if (root)
 			root.onMove(this, x - this.lastScreenX, y - this.lastScreenY);
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
-		this.positionSynching = false;
+		this.positionUpdating--;
 	},
 
-	onResize : function FSW_onResize(aEvent)
+	onResize : function FSW_onResize()
 	{
+		if (this.sizeUpdating) return;
+		this.positionUpdating++;
+		this.sizeUpdating++;
+
+		var x = this.screenX;
+		var y = this.screenY;
+		var width  = this.width;
+		var height = this.height;
+
+		if (y != this.lastScreenY)
+			this.onResizeTop(this.lastScreenY - y);
+		if (x == this.lastScreenX && width != this.lastWidth)
+			this.onResizeRight(width - this.lastWidth);
+		if (y == this.lastScreenY && height != this.lastHeight)
+			this.onResizeBottom(height - this.lastHeight);
+		if (x != this.lastScreenX)
+			this.onResizeLeft(this.lastScreenX - x);
+
+		this.lastScreenX = x;
+		this.lastScreenY = y;
+		this.lastWidth = width;
+		this.lastHeight = height;
+
+		this.positionUpdating--;
+		this.sizeUpdating--;
+	},
+
+	onResizeTop : function FSW_onResizeTop(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling && sibling.position == this.kPOSITION_TOP) {
+			sibling.resizeBy(0, -aDelta);
+		}
+		else {
+		}
+	},
+
+	onResizeRight : function FSW_onResizeRight(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling && sibling.position == this.kPOSITION_RIGHT) {
+			sibling.moveBy(aDelta, 0);
+			sibling.resizeBy(-aDelta, 0);
+		}
+		else {
+		}
+	},
+
+	onResizeBottom : function FSW_onResizeBottom(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling && sibling.position == this.kPOSITION_BOTTOM) {
+			sibling.moveBy(0, aDelta);
+			sibling.resizeBy(0, -aDelta);
+		}
+		else {
+		}
+	},
+
+	onResizeLeft : function FSW_onResizeLeft(aDelta)
+	{
+		var sibling = this.sibling;
+		if (sibling && sibling.position == this.kPOSITION_LEFT) {
+			sibling.resizeBy(-aDelta, 0);
+		}
+		else {
+		}
 	},
 
 
