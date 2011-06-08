@@ -1,3 +1,5 @@
+load('lib/jsdeferred');
+
 var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
  
 function FoxSplitterBase() 
@@ -55,7 +57,16 @@ FoxSplitterBase.prototype = {
 				splitterResizing = true;
 				sibling.resizeBy(0, -aDelta);
 			}
-			else if (sibling.position & this.kPOSITION_HORIZONTAL) {
+			else if (sibling.position == this.kPOSITION_BOTTOM) {
+				let halfDelta = Math.round(aDelta / 2);
+				let self = this;
+				Deferred.next(function() {
+					self.resizeBy(0, -halfDelta);
+					sibling.moveBy(0, -halfDelta);
+					sibling.resizeBy(0, halfDelta);
+				});
+			}
+			else { // horizontal slbling
 				sibling.moveBy(0, -aDelta);
 				sibling.resizeBy(0, aDelta);
 			}
@@ -76,7 +87,16 @@ FoxSplitterBase.prototype = {
 				sibling.moveBy(aDelta, 0);
 				sibling.resizeBy(-aDelta, 0);
 			}
-			else if (sibling.position & this.kPOSITION_VERTICAL) {
+			else if (sibling.position == this.kPOSITION_LEFT) {
+				let halfDelta = Math.round(aDelta / 2);
+				let self = this;
+				Deferred.next(function() {
+					self.moveBy(halfDelta, 0);
+					self.resizeBy(-halfDelta, 0);
+					sibling.resizeBy(halfDelta, 0);
+				});
+			}
+			else { // vertical slbling
 				sibling.resizeBy(aDelta, 0);
 			}
 		}
@@ -96,7 +116,16 @@ FoxSplitterBase.prototype = {
 				sibling.moveBy(0, aDelta);
 				sibling.resizeBy(0, -aDelta);
 			}
-			else if (sibling.position & this.kPOSITION_HORIZONTAL) {
+			else if (sibling.position == this.kPOSITION_TOP) {
+				let halfDelta = Math.round(aDelta / 2);
+				let self = this;
+				Deferred.next(function() {
+					self.moveBy(0, halfDelta);
+					self.resizeBy(0, -halfDelta);
+					sibling.resizeBy(0, halfDelta);
+				});
+			}
+			else { // horizontal slbling
 				sibling.resizeBy(0, aDelta);
 			}
 		}
@@ -115,7 +144,16 @@ FoxSplitterBase.prototype = {
 				splitterResizing = true;
 				sibling.resizeBy(-aDelta, 0);
 			}
-			else if (sibling.position & this.kPOSITION_VERTICAL) {
+			else if (sibling.position == this.kPOSITION_RIGHT) {
+				let halfDelta = Math.round(aDelta / 2);
+				let self = this;
+				Deferred.next(function() {
+					self.resizeBy(-halfDelta, 0);
+					sibling.moveBy(-halfDelta, 0);
+					sibling.resizeBy(halfDelta, 0);
+				});
+			}
+			else { // vertical sibling
 				sibling.moveBy(-aDelta, 0);
 				sibling.resizeBy(aDelta, 0);
 			}
