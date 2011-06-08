@@ -203,10 +203,10 @@ FoxSplitterGroup.prototype = {
 		if (this.maximized)
 			return;
 
-		this.normalX = this.screenX;
-		this.normalY = this.screenY;
-		this.normalWidth = this.width;
-		this.normalHeight = this.height;
+		this._normalX = this.screenX;
+		this._normalY = this.screenY;
+		this._normalWidth = this.width;
+		this._normalHeight = this.height;
 	},
 
 	maximizeTo : function FSG_maximizeTo(aX, aY, aWidth, aHeight)
@@ -219,15 +219,15 @@ FoxSplitterGroup.prototype = {
 
 	restore : function FSG_restore()
 	{
-		if (!this.maximized || !('normalX' in this))
+		if (!this.maximized || !('_normalX' in this))
 			return;
 
-		this.moveTo(this.normalX, this.normalY);
-		this.resizeTo(this.normalWidth, this.normalHeight);
-		delete this.normalX;
-		delete this.normalY;
-		delete this.normalWidth;
-		delete this.normalHeight;
+		this.moveTo(this._normalX, this._normalY);
+		this.resizeTo(this._normalWidth, this._normalHeight);
+		delete this._normalX;
+		delete this._normalY;
+		delete this._normalWidth;
+		delete this._normalHeight;
 
 		this.maximized = false;
 	}
