@@ -113,7 +113,10 @@ FoxSplitterGroup.prototype = {
 		if (aDW) {
 			let right = this.rightMember;
 			if (right) {
-				right.resizeBy(aDW, 0);
+				let halfDW = Math.round(aDW / 2);
+				this.leftMember.resizeBy(halfDW, 0);
+				right.moveBy(halfDW, 0);
+				right.resizeBy(aDW - halfDW, 0);
 			}
 			else {
 				this.members.forEach(function(aMember) {
@@ -124,7 +127,10 @@ FoxSplitterGroup.prototype = {
 		if (aDH) {
 			let bottom = this.bottomMember;
 			if (bottom) {
-				bottom.resizeBy(0, aDH);
+				let halfDH = Math.round(aDH / 2);
+				this.topMember.resizeBy(0, halfDH);
+				bottom.moveBy(0, halfDH);
+				bottom.resizeBy(0, aDH - halfDH);
 			}
 			else {
 				this.members.forEach(function(aMember) {
