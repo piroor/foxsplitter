@@ -122,60 +122,67 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		var baseFSWindow = FoxSplitterWindow.instancesById[sourceTab.getAttribute(this.kATTACHED_BASE)];
-		if (!baseFSWindow)
+		var position = parseInt(sourceTab.getAttribute(this.kATTACHED_POSITION));
+		this.attachTo(baseFSWindow, position, aOnInit);
+	},
+
+
+	attachTo : function FSW_attach(aBaseFSWindow, aPosition, aSilent)
+	{
+		if (!aBaseFSWindow || !(aPosition & this.kPOSITION_VALID))
 			return;
 
 		var newGroup = new FoxSplitterGroup();
 		newGroup.register(this);
 
-		var existingGroup = baseFSWindow.parent;
+		var existingGroup = aBaseFSWindow.parent;
 		if (existingGroup) {
 			// swap existing relations
-			newGroup.position = baseFSWindow.position;
+			newGroup.position = aBaseFSWindow.position;
 			existingGroup.register(newGroup);
-			existingGroup.unregister(baseFSWindow);
+			existingGroup.unregister(aBaseFSWindow);
 		}
-		newGroup.register(baseFSWindow);
+		newGroup.register(aBaseFSWindow);
 
-		var position = parseInt(sourceTab.getAttribute(this.kATTACHED_POSITION));
-		if (!aOnInit)
-			this._initPositionAndSize(baseFSWindow, position);
+		this.position = aPosition;
+		aBaseFSWindow.position = this.opposite[aPosition];
+
+		if (!aSilent)
+			this._initPositionAndSize();
 	},
 
-	_initPositionAndSize : function FSW_initPositionAndSize(aParentFS, aPosition)
+	_initPositionAndSize : function FSW_initPositionAndSize()
 	{
+		var base = this.sibling;
 		var x, y, width, height;
-		if (aPosition & this.kPOSITION_HORIZONTAL) {
-			y = aParentFS.screenY;
-			width = Math.round(aParentFS.width * 0.5);
-			height = aParentFS.height;
-			if (aPosition == this.kPOSITION_LEFT) {
-				x = aParentFS.screenX;
-				aParentFS.moveBy(width, 0);
+		if (this.position & this.kPOSITION_HORIZONTAL) {
+			y = base.screenY;
+			width = Math.round(base.width * 0.5);
+			height = base.height;
+			if (this.position == this.kPOSITION_LEFT) {
+				x = base.screenX;
+				base.moveBy(width, 0);
 			}
 			else {
-				x = aParentFS.screenX + width;
+				x = base.screenX + width;
 			}
-			aParentFS.resizeBy(-width, 0);
+			base.resizeBy(-width, 0);
 		}
 		else {
-			x = aParentFS.screenX;
-			width = aParentFS.width;
-			height = Math.round(aParentFS.height * 0.5);
-			if (aPosition == this.kPOSITION_TOP) {
-				y = aParentFS.screenY;
-				aParentFS.moveBy(0, height);
+			x = base.screenX;
+			width = base.width;
+			height = Math.round(base.height * 0.5);
+			if (this.position == this.kPOSITION_TOP) {
+				y = base.screenY;
+				base.moveBy(0, height);
 			}
 			else {
-				y = aParentFS.screenY + height;
+				y = base.screenY + height;
 			}
-			aParentFS.resizeBy(0, -height);
+			base.resizeBy(0, -height);
 		}
 		this.moveTo(x, y);
 		this.resizeTo(width, height);
-
-		this.position = aPosition;
-		aParentFS.position = this.opposite[aPosition];
 	},
 
 
