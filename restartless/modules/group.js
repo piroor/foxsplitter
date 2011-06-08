@@ -195,6 +195,41 @@ FoxSplitterGroup.prototype = {
 			}
 			this.destroy();
 		}
+	},
+
+
+	readyToMaximize : function FSG_readyToMaximize()
+	{
+		if (this.maximized)
+			return;
+
+		this.normalX = this.screenX;
+		this.normalY = this.screenY;
+		this.normalWidth = this.width;
+		this.normalHeight = this.height;
+	},
+
+	maximizeTo : function FSG_maximizeTo(aX, aY, aWidth, aHeight)
+	{
+		this.moveTo(aX, aY);
+		this.resizeTo(aWidth, aHeight);
+
+		this.maximized = true;
+	},
+
+	restore : function FSG_restore()
+	{
+		if (!this.maximized || !('normalX' in this))
+			return;
+
+		this.moveTo(this.normalX, this.normalY);
+		this.resizeTo(this.normalWidth, this.normalHeight);
+		delete this.normalX;
+		delete this.normalY;
+		delete this.normalWidth;
+		delete this.normalHeight;
+
+		this.maximized = false;
 	}
 };
   

@@ -452,12 +452,8 @@ FoxSplitterWindow.prototype = {
 		this.positioning++;
 
 		var root = this.root;
-		if (!root.maximized) {
-			root.normalX = root.screenX;
-			root.normalY = root.screenY;
-			root.normalWidth = root.width;
-			root.normalHeight = root.height;
-		}
+		root.readyToMaximize();
+
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
 		Deferred
@@ -473,19 +469,10 @@ FoxSplitterWindow.prototype = {
 				self.positioning--;
 			})
 			.next(function() {
-				if (root.maximized) {
-					root.moveTo(root.normalX, root.normalY);
-					root.resizeTo(root.normalWidth, root.normalHeight);
-					delete root.normalX;
-					delete root.normalY;
-					delete root.normalWidth;
-					delete root.normalHeight;
-				}
-				else {
-					root.moveTo(maximizedX, maximizedY);
-					root.resizeTo(maximizedWidth, maximizedHeight);
-				}
-				root.maximized = !root.maximized;
+				if (root.maximized)
+					root.restore();
+				else
+					root.maximizeTo(maximizedX, maximizedY, maximizedWidth, maximizedHeight);
 			});
 	},
 
