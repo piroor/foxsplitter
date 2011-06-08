@@ -75,9 +75,6 @@ FoxSplitterGroup.prototype = {
 		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 
-		this.positionUpdating = 0;
-		this.sizeUpdating     = 0;
-
 		this.members = [];
 	},
  
@@ -135,6 +132,13 @@ FoxSplitterGroup.prototype = {
 				});
 			}
 		}
+	},
+
+	raise : function FSG_raise()
+	{
+		this.members.forEach(function(aMember) {
+			aMember.raise();
+		});
 	},
 
 

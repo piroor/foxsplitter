@@ -69,8 +69,9 @@ FoxSplitterWindow.prototype = {
 	{
 		this.window = aWindow;
 
-		this.positionUpdating = 0;
-		this.sizeUpdating     = 0;
+		this.positioning = 0;
+		this.resizing    = 0;
+		this.raising     = 0;
 
 		this.id = this.id || (Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
@@ -81,7 +82,6 @@ FoxSplitterWindow.prototype = {
 			aWindow.addEventListener('load', this, false);
 
 		aWindow.addEventListener('unload', this, false);
-		aWindow.addEventListener('dragend', this, true);
 
 		this._initGroup(aOnInit);
 
@@ -198,8 +198,6 @@ FoxSplitterWindow.prototype = {
 
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
-		w.removeEventListener('dragend', this, true);
-
 		this.endListen();
 
 		this.window = null;
@@ -231,49 +229,74 @@ FoxSplitterWindow.prototype = {
 
 	moveTo : function FSW_moveTo(aX, aY)
 	{
-		this.positionUpdating++;
+		this.positioning++;
 		this.window.moveTo(aX, aY);
 		this.lastScreenX = aX;
 		this.lastScreenY = aY;
 		var self = this;
 		Deferred.next(function() {
-			self.positionUpdating--;
+			self.positioning--;
 		});
 	},
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
-		this.positionUpdating++;
+		this.positioning++;
 		this.window.moveBy(aDX, aDY);
 		this.lastScreenX += aDX;
 		this.lastScreenY += aDY;
 		var self = this;
 		Deferred.next(function() {
-			self.positionUpdating--;
+			self.positioning--;
 		});
 	},
 
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
-		this.sizeUpdating++;
+		this.resizing++;
 		this.window.resizeTo(aW, aH);
 		this.lastWidth  = aW;
 		this.lastHeight = aH;
 		var self = this;
 		Deferred.next(function() {
-			self.sizeUpdating--;
+			self.resizing--;
 		});
 	},
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
-		this.sizeUpdating++;
+		this.resizing++;
 		this.window.resizeBy(aDW, aDH);
 		this.lastWidth  += aDW;
 		this.lastHeight += aDH;
 		var self = this;
 		Deferred.next(function() {
-			self.sizeUpdating--;
+			self.resizing--;
+		});
+	},
+
+	raise : function FSW_raise()
+	{
+		this.raising++;
+
+		var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
+
+		var focusedWindow = {};
+		var focusedElement = fm.getFocusedElementForWindow(this.window, true, focusedWindow);
+		var reason = fm.getLastFocusMethod(focusedWindow.value);
+		var flags = Ci.nsIFocusManager.FLAG_RAISE |
+					Ci.nsIFocusManager.FLAG_NOSCROLL |
+					Ci.nsIFocusManager.FLAG_NOSWITCHFRAME |
+					reason;
+
+		focusedWindow.value.focus();
+
+		if (focusedElement)
+			fm.setFocus(focusedElement, flags);
+
+		var self = this;
+		Deferred.next(function() {
+			self.raising--;
 		});
 	},
 
@@ -285,6 +308,8 @@ FoxSplitterWindow.prototype = {
 		if (this._listening) return;
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
+		this.window.addEventListener('activate', this, true);
+		this.window.addEventListener('dragend', this, true);
 		this._listening = true;
 	},
 	_listening : false,
@@ -294,6 +319,8 @@ FoxSplitterWindow.prototype = {
 		if (!this._listening) return;
 		this.window.removeEventListener('DOMAttrModified', this, false);
 		this.window.removeEventListener('resize', this, false);
+		this.window.removeEventListener('activate', this, true);
+		this.window.removeEventListener('dragend', this, true);
 		this._listening = false;
 	},
 
@@ -311,26 +338,19 @@ FoxSplitterWindow.prototype = {
 
 
 			case 'DOMAttrModified':
-				if (
-					aEvent.target == this.documentElement &&
-					(aEvent.attrName == 'screenX' || aEvent.attrName == 'screenY')
-					)
-					this.onMove();
-				return;
+				return this._onDOMAttrModified(aEvent);
 
 			case 'resize':
 				if (aEvent.target == this.window)
 					this.onResize();
 				return;
 
+			case 'activate':
+				return this.onRaised();
+
 
 			case 'dragend':
-				if (
-					aEvent.target.localName == 'tab' &&
-					aEvent.target.className.indexOf('tabbrowser-tab') > -1
-					)
-					this._onTabDragEnd(aEvent);
-				return;
+				return this._onDragEnd(aEvent);
 		}
 	},
 
@@ -340,11 +360,11 @@ FoxSplitterWindow.prototype = {
 		if (
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
-			this.positionUpdating
+			this.positioning
 			)
 			return;
 
-		this.positionUpdating++;
+		this.positioning++;
 
 		var x = this.screenX;
 		var y = this.screenY;
@@ -354,14 +374,27 @@ FoxSplitterWindow.prototype = {
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
-		this.positionUpdating--;
+		this.positioning--;
+	},
+
+	_onDOMAttrModified : function FSW_onDOMAttrModified(aEvent)
+	{
+		if (aEvent.target != this.documentElement)
+			return;
+
+		switch (aEvent.attrName)
+		{
+			case 'screenX':
+			case 'screenY':
+				return this.onMove();
+		}
 	},
 
 	onResize : function FSW_onResize()
 	{
-		if (this.sizeUpdating) return;
-		this.positionUpdating++;
-		this.sizeUpdating++;
+		if (this.resizing) return;
+		this.positioning++;
+		this.resizing++;
 
 		var x = this.screenX;
 		var y = this.screenY;
@@ -382,18 +415,30 @@ FoxSplitterWindow.prototype = {
 		this.lastWidth = width;
 		this.lastHeight = height;
 
-		this.positionUpdating--;
-		this.sizeUpdating--;
+		this.positioning--;
+		this.resizing--;
+	},
+
+	onRaised : function FSW_onRaised()
+	{
+		if (!this.parent || this.raising)
+			return;
+
+		this.root.raise();
+		this.raise();
 	},
 
 
-	_onTabDragEnd : function FSW_onTabDragEnd(aEvent)
+	_onDragEnd : function FSW_onDragEnd(aEvent)
 	{
+		var tab = this._getTabFromEvent(aEvent);
+		if (!tab)
+			return;
+
 		var dropInfo = this._getDropInfo(aEvent);
 		if (dropInfo.position & this.kPOSITION_INVALID)
 			return;
 
-		var tab = this._getTabFromEvent(aEvent);
 		tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
 		tab.setAttribute(this.kATTACHED_BASE, dropInfo.base.id);
 	},
