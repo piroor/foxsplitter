@@ -177,22 +177,8 @@ FoxSplitterGroup.prototype = {
 				this.parent.register(lastMember);
 				this.unregister(lastMember);
 			}
-			if (this.maximized || this.fullscreen) {
-				let x = this.normalX;
-				let y = this.normalY;
-				let width = this.normalWidth;
-				let height = this.normalHeight;
-				let maximized = this.maximized;
-				Deferred
-					.next(function() {
-						lastMember.moveTo(x, y);
-						lastMember.resizeTo(width, height);
-					})
-					.next(function() {
-						if (maximized)
-							lastMember.window.maximize();
-					});
-			}
+			if (this.maximized)
+				this.setMaximizedState(lastMember);
 			this.destroy();
 		}
 	},
@@ -207,14 +193,16 @@ FoxSplitterGroup.prototype = {
 		this._normalY = this.screenY;
 		this._normalWidth = this.width;
 		this._normalHeight = this.height;
+		dump([this._normalX, this._normalY, this._normalWidth, this._normalHeight]+'\n');
 	},
 
-	maximizeTo : function FSG_maximizeTo(aX, aY, aWidth, aHeight)
+	maximizeTo : function FSG_maximizeTo(aOptions)
 	{
-		this.moveTo(aX, aY);
-		this.resizeTo(aWidth, aHeight);
+		this.moveTo(aOptions.x, aOptions.y);
+		this.resizeTo(aOptions.width, aOptions.height);
 
 		this.maximized = true;
+		this.fullscreen = aOptions.fullScreen;
 	},
 
 	restore : function FSG_restore()
@@ -230,6 +218,30 @@ FoxSplitterGroup.prototype = {
 		delete this._normalHeight;
 
 		this.maximized = false;
+		this.fullscreen = false;
+	},
+
+	setMaximizedState : function FSG_setMaximizedState(aFSWindow)
+	{
+		if (!this.maximized || !('_normalX' in this))
+			return;
+
+		var x = this._normalX;
+		var y = this._normalY;
+		var width = this._normalWidth;
+		var height = this._normalHeight;
+		var fullscreen = this.fullscreen;
+		Deferred
+			.next(function() {
+				aFSWindow.moveTo(x, y);
+				aFSWindow.resizeTo(width, height);
+			})
+			.next(function() {
+				if (fullscreen)
+					aFSWindow.window.fullScreen = true;
+				else
+					aFSWindow.window.maximize();
+			});
 	}
 };
   

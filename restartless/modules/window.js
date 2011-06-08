@@ -436,14 +436,14 @@ FoxSplitterWindow.prototype = {
 		switch (aMode)
 		{
 			case 'maximized':
-				return this._onMaximized();
+				return this._onMaximized(false);
 
 			case 'fullscreen':
-				return;
+				return this._onMaximized(true);
 		}
 	},
 
-	_onMaximized : function FSW_onMaximized()
+	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
 		if (!this.parent)
 			return;
@@ -463,7 +463,10 @@ FoxSplitterWindow.prototype = {
 				maximizedWidth = self.width;
 				maximizedHeight = self.height;
 
-				self.window.restore();
+				if (aFullScreen)
+					self.window.fullScreen = false;
+				else
+					self.window.restore();
 
 				self.resizing--;
 				self.positioning--;
@@ -472,7 +475,13 @@ FoxSplitterWindow.prototype = {
 				if (root.maximized)
 					root.restore();
 				else
-					root.maximizeTo(maximizedX, maximizedY, maximizedWidth, maximizedHeight);
+					root.maximizeTo({
+						x          : maximizedX,
+						y          : maximizedY,
+						width      : maximizedWidth,
+						height     : maximizedHeight,
+						fullScreen : aFullScreen
+					});
 			});
 	},
 
