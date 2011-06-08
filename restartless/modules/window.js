@@ -102,6 +102,9 @@ FoxSplitterWindow.prototype = {
 			self.resizeBy(0, -1);
 			self.resizeBy(0, 1);
 
+			if (self.parent)
+				self.root.reserveResetPositionAndSize(); // for safety
+
 			self.startListen();
 		});
 	},
@@ -354,6 +357,21 @@ FoxSplitterWindow.prototype = {
 		}
 	},
 
+	_onDOMAttrModified : function FSW_onDOMAttrModified(aEvent)
+	{
+		if (aEvent.target != this.documentElement)
+			return;
+
+		switch (aEvent.attrName)
+		{
+			case 'screenX':
+			case 'screenY':
+				return this.onMove();
+
+			case 'sizemode':
+				return this.onSizeModeChange(aEvent.newValue);
+		}
+	},
 
 	onMove : function FSW_onMove()
 	{
@@ -369,28 +387,14 @@ FoxSplitterWindow.prototype = {
 		var x = this.screenX;
 		var y = this.screenY;
 		var root = this.root;
-		if (root)
+		if (root) {
 			root.moveBy(x - this.lastScreenX, y - this.lastScreenY, this);
+			root.reserveResetPositionAndSize(); // for safety
+		}
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
 		this.positioning--;
-	},
-
-	_onDOMAttrModified : function FSW_onDOMAttrModified(aEvent)
-	{
-		if (aEvent.target != this.documentElement)
-			return;
-
-		switch (aEvent.attrName)
-		{
-			case 'screenX':
-			case 'screenY':
-				return this.onMove();
-
-			case 'sizemode':
-				return this.onSizeModeChange(aEvent.newValue);
-		}
 	},
 
 	onResize : function FSW_onResize()
@@ -420,6 +424,9 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning--;
 		this.resizing--;
+
+		if (this.parent)
+			this.root.reserveResetPositionAndSize(); // for safety
 	},
 
 	onRaised : function FSW_onRaised()
@@ -437,7 +444,6 @@ FoxSplitterWindow.prototype = {
 		{
 			case 'maximized':
 				return this._onMaximized(false);
-
 			case 'fullscreen':
 				return this._onMaximized(true);
 		}

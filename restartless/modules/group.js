@@ -50,6 +50,10 @@ FoxSplitterGroup.prototype = {
 	{
 		return this._getMemberAt(this.kPOSITION_LEFT);
 	},
+	get baseMember()
+	{
+		return this.topMember || this.leftMember;
+	},
 	_getMemberAt : function FSG_getMemberAt(aPosition)
 	{
 		var members = this.members.filter(function(aMember) {
@@ -181,6 +185,49 @@ FoxSplitterGroup.prototype = {
 				this.setMaximizedState(lastMember);
 			this.destroy();
 		}
+	},
+
+
+	reserveResetPositionAndSize : function FSG_reserveResetPositionAndSize()
+	{
+		if (this._reservedResetPositionAndSize) {
+			this._reservedResetPositionAndSize.cancel();
+			delete this._reservedResetPositionAndSize;
+		}
+		var self = this;
+		this._reservedResetPositionAndSize =
+			Deferred
+				.wait(0.5)
+				.next(function() {
+					delete self._reservedResetPositionAndSize;
+					self.resetPositionAndSize();
+				});
+	},
+
+	// reposition/resize grouped windows based on their relations
+	resetPositionAndSize : function FSG_resetPositionAndSize()
+	{
+		var base = this.baseMember;
+		var another = base.sibling;
+
+		if (base.isGroup)
+			base.cleanupPositionAndSize();
+		if (another.isGroup)
+			another.cleanupPositionAndSize();
+
+		var expectedX = base.position & this.kPOSITION_VERTICAL ?
+						base.screenX : base.screenX + base.width;
+		var expectedY = base.position & this.kPOSITION_HORIZONTAL ?
+						base.screenY : base.screenY + base.height;
+		if (another.screenX != expectedX || another.screenY != expectedY)
+			another.moveTo(expectedX, expectedY);
+
+		var expectedWidth = base.position & this.kPOSITION_VERTICAL ?
+							base.width : another.width ;
+		var expectedHeight = base.position & this.kPOSITION_HORIZONTAL ?
+							base.height : another.height ;
+		if (another.width != expectedWidth || another.height != expectedHeight)
+			another.resizeTo(expectedWidth, expectedHeight);
 	},
 
 
