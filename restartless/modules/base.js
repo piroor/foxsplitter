@@ -8,6 +8,7 @@ function FoxSplitterBase()
 FoxSplitterBase.prototype = {
 	kATTACHED_POSITION : 'foxsplitter-attached-position',
 	kATTACHED_BASE     : 'foxsplitter-attached-base',
+	kACTIVE            : 'foxsplitter-window-active',
 
 	kPOSITION_TOP    : (1 << 0),
 	kPOSITION_RIGHT  : (1 << 1),

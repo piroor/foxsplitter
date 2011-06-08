@@ -77,7 +77,7 @@ FoxSplitterGroup.prototype = {
 
 	init : function FSG_init() 
 	{
-		this.id = Date.now() + '-' + parseInt(Math.random() * 65000);
+		this.id = 'group-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 
 		this.members = [];

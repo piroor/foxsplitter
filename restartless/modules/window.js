@@ -59,6 +59,25 @@ FoxSplitterWindow.prototype = {
 		return this._id = aValue;
 	},
 
+	get active()
+	{
+		return this._active;
+	},
+	set active(aValue)
+	{
+		aValue = !!aValue;
+		if (aValue && this.parent) {
+			this.root.allWindows.forEach(function(aFSWindow) {
+				aFSWindow.active = false;
+			});
+		}
+
+		this.documentElement.setAttribute(this.kACTIVE, aValue);
+//		this._updateChromeHidden();
+
+		return this._active = aValue;
+	},
+
 	get documentElement()
 	{
 		return this.window.document.documentElement;
@@ -73,10 +92,12 @@ FoxSplitterWindow.prototype = {
 		this.resizing    = 0;
 		this.raising     = 0;
 
-		this.id = this.id || (Date.now() + '-' + parseInt(Math.random() * 65000));
+		this.id = this.id || ('window-' + Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
 		FoxSplitterWindow.instances.push(this);
 		FoxSplitterWindow.instancesById[this.id] = this;
+
+//		this._installStyleSheet();
 
 		if (!aOnInit)
 			aWindow.addEventListener('load', this, false);
@@ -87,6 +108,30 @@ FoxSplitterWindow.prototype = {
 
 		if (aOnInit)
 			this._initAfterLoad();
+	},
+
+	_installStyleSheet : function FSW_installStyleSheet()
+	{
+		if (this._styleSheet)
+			return;
+		var styles = [
+				':root['+this.kACTIVE+'="false"] toolbox,',
+				':root['+this.kACTIVE+'="false"] .treestyletab-tabbar,',
+				':root['+this.kACTIVE+'="false"] .treestyletab-tabbar-ready {',
+				'  visibility: collapse !important;',
+				'}'
+			].join('\n');
+		this._styleSheet = this.window.document.createProcessingInstruction('xml-stylesheet',
+			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
+		this.window.document.insertBefore(this._styleSheet, this.documentElement);
+	},
+
+	_uninstallStyleSheet : function FSW_uninstallStyleSheet()
+	{
+		if (!this._styleSheet)
+			return;
+		this.window.document.removeChild(this._styleSheet);
+		delete this._styleSheet;
 	},
 
 	_initAfterLoad : function FSW_initAfterLoad()
@@ -129,6 +174,14 @@ FoxSplitterWindow.prototype = {
 		this.attachTo(baseFSWindow, position, aOnInit);
 	},
 
+	_updateChromeHidden : function FSW_updateChromeHidden()
+	{
+		if (this.active)
+			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
+		else
+			this.documentElement.removeAttribute('chromehidden');
+	},
+
 
 	attachTo : function FSW_attach(aBaseFSWindow, aPosition, aSilent)
 	{
@@ -149,6 +202,10 @@ FoxSplitterWindow.prototype = {
 
 		this.position = aPosition;
 		aBaseFSWindow.position = this.opposite[aPosition];
+
+		Deferred.next(function() {
+			aBaseFSWindow.active = true; // always attach new window as a background window
+		});
 
 		if (!aSilent)
 			this._initPositionAndSize();
@@ -202,6 +259,8 @@ FoxSplitterWindow.prototype = {
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
 		this.endListen();
+
+//		this._uninstallStyleSheet();
 
 		this.window = null;
 
@@ -431,7 +490,11 @@ FoxSplitterWindow.prototype = {
 
 	onRaised : function FSW_onRaised()
 	{
-		if (!this.parent || this.raising)
+		if (this.raising)
+			return;
+
+		this.active = true;
+		if (!this.parent)
 			return;
 
 		this.root.raise();
