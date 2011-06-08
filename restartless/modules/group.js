@@ -113,6 +113,7 @@ FoxSplitterGroup.prototype = {
 		if (aDW) {
 			let right = this.rightMember;
 			if (right) {
+				// expand both members!
 				let halfDW = Math.round(aDW / 2);
 				this.leftMember.resizeBy(halfDW, 0);
 				right.moveBy(halfDW, 0);
@@ -127,6 +128,7 @@ FoxSplitterGroup.prototype = {
 		if (aDH) {
 			let bottom = this.bottomMember;
 			if (bottom) {
+				// expand both members!
 				let halfDH = Math.round(aDH / 2);
 				this.topMember.resizeBy(0, halfDH);
 				bottom.moveBy(0, halfDH);
