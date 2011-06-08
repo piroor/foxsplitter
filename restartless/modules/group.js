@@ -1,4 +1,5 @@
 load('base');
+load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterGroup'];
  
@@ -169,12 +170,28 @@ FoxSplitterGroup.prototype = {
 				aFSWindow.parent = null;
 		}
 		if (this.members.length == 1) {
+			let lastMember = this.members[0];
 			if (this.parent) {
 				// swap existing relations
-				let lastMember = this.members[0];
 				lastMember.position = this.position;
 				this.parent.register(lastMember);
 				this.unregister(lastMember);
+			}
+			if (this.maximized || this.fullscreen) {
+				let x = this.normalX;
+				let y = this.normalY;
+				let width = this.normalWidth;
+				let height = this.normalHeight;
+				let maximized = this.maximized;
+				Deferred
+					.next(function() {
+						lastMember.moveTo(x, y);
+						lastMember.resizeTo(width, height);
+					})
+					.next(function() {
+						if (maximized)
+							lastMember.window.maximize();
+					});
 			}
 			this.destroy();
 		}
