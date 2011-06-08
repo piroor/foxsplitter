@@ -13,22 +13,22 @@ FoxSplitterGroup.prototype = {
 
 	get screenX()
 	{
-		var member = this.leftMember;
+		var member = this.leftMember || this.topMember;
 		return member ? member.screenX : 0 ;
 	},
 	get screenY()
 	{
-		var member = this.topMember;
+		var member = this.topMember || this.leftMember;
 		return member ? member.screenY : 0 ;
 	},
 	get width()
 	{
-		var member = this.rightMember;
+		var member = this.rightMember || this.bottomMember;
 		return member ? member.screenX - this.screenX + member.width : 0 ;
 	},
 	get height()
 	{
-		var member = this.bottomMember;
+		var member = this.bottomMember || this.rightMember;
 		return member ? member.screenY - this.screenY + member.height : 0 ;
 	},
 

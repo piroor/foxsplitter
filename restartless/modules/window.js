@@ -387,6 +387,9 @@ FoxSplitterWindow.prototype = {
 			case 'screenX':
 			case 'screenY':
 				return this.onMove();
+
+			case 'sizemode':
+				return this.onSizeModeChange(aEvent.newValue);
 		}
 	},
 
@@ -426,6 +429,64 @@ FoxSplitterWindow.prototype = {
 
 		this.root.raise();
 		this.raise();
+	},
+
+	onSizeModeChange : function FSW_onSizeModeChange(aMode)
+	{
+		switch (aMode)
+		{
+			case 'maximized':
+				return this._onMaximized();
+
+			case 'fullscreen':
+				return;
+		}
+	},
+
+	_onMaximized : function FSW_onMaximized()
+	{
+		if (!this.parent)
+			return;
+
+		this.resizing++;
+		this.positioning++;
+
+		var root = this.root;
+		if (!root.maximized) {
+			root.normalX = root.screenX;
+			root.normalY = root.screenY;
+			root.normalWidth = root.width;
+			root.normalHeight = root.height;
+		}
+		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
+		var self = this;
+		Deferred
+			.next(function() {
+				maximizedX = self.screenX;
+				maximizedY = self.screenY;
+				maximizedWidth = self.width;
+				maximizedHeight = self.height;
+
+				self.window.restore();
+
+				self.resizing--;
+				self.positioning--;
+			})
+			.next(function() {
+				if (root.maximized) {
+					root.moveTo(root.normalX, root.normalY);
+					root.resizeTo(root.normalWidth, root.normalHeight);
+					delete root.normalX;
+					delete root.normalY;
+					delete root.normalWidth;
+					delete root.normalHeight;
+				}
+				else {
+					root.moveTo(maximizedX, maximizedY);
+					root.resizeTo(maximizedWidth, maximizedHeight);
+				}
+				root.maximized = !root.maximized;
+			});
 	},
 
 
