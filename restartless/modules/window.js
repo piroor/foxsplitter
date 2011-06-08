@@ -176,7 +176,7 @@ FoxSplitterWindow.prototype = {
 
 	_updateChromeHidden : function FSW_updateChromeHidden()
 	{
-		if (this.active)
+		if (!this.active && this.parent)
 			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
 		else
 			this.documentElement.removeAttribute('chromehidden');
