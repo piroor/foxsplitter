@@ -248,6 +248,8 @@ FoxSplitterWindow.prototype = {
 		if (!aBaseFSWindow || !(aPosition & this.kPOSITION_VALID))
 			return;
 
+		this.detach();
+
 		var newGroup = new FoxSplitterGroup();
 		newGroup.register(this);
 
@@ -303,6 +305,15 @@ FoxSplitterWindow.prototype = {
 		}
 		this.moveTo(x, y);
 		this.resizeTo(width, height);
+	},
+
+	detach : function FSW_detach()
+	{
+		if (!this.parent)
+			return;
+
+		this._expandSibling();
+		this.parent.unregister(this);
 	},
 
 
@@ -661,25 +672,23 @@ FoxSplitterWindow.prototype = {
 
 	_onDragEnd : function FSW_onDragEnd(aEvent)
 	{
-		var shouldAttach = !!this._dropIndicator;
+		var tab = this._getTabFromEvent(aEvent);
+		var dropInfo = tab && this._getDropInfo(aEvent);
+		var shouldAttach = (
+				dropInfo &&
+				dropInfo.base &&
+				!!dropInfo.base._dropIndicator &&
+				dropInfo.position & this.kPOSITION_VALID
+			);
 
 		this.hideDropIndicator();
-
+		this.window.removeEventListener('dragend', this, true);
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.hideDropIndicator();
 			aFSWindow.endListenDragEvents();
 		});
-		this.window.removeEventListener('dragend', this, true);
 
 		if (!shouldAttach)
-			return;
-
-		var tab = this._getTabFromEvent(aEvent);
-		if (!tab)
-			return;
-
-		var dropInfo = this._getDropInfo(aEvent);
-		if (dropInfo.position & this.kPOSITION_INVALID)
 			return;
 
 		tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
