@@ -344,7 +344,6 @@ FoxSplitterWindow.prototype = {
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
 		this.endListen();
-		this.endListenDragEvents();
 
 		this._uninstallStyleSheet();
 
@@ -457,20 +456,13 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
-		this.window.addEventListener('dragstart', this, true);
-		this._listening = true;
-	},
-	_listening : false,
-
-	startListenDragEvents : function FSW_startListenDragEvents()
-	{
-		if (this._listeningDragEvents) return;
 		this.window.addEventListener('dragover', this, false);
 		this.window.addEventListener('dragleave', this, true);
 		this.window.addEventListener('drop', this, true);
-		this._listeningDragEvents = true;
+		this.window.addEventListener('dragend', this, true);
+		this._listening = true;
 	},
-	_listeningDragEvents : false,
+	_listening : false,
 
 	endListen : function FSW_endListen()
 	{
@@ -478,17 +470,11 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('DOMAttrModified', this, false);
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
-		this.window.removeEventListener('dragstart', this, true);
-		this._listening = false;
-	},
-
-	endListenDragEvents : function FSW_endListen()
-	{
-		if (!this._listeningDragEvents) return;
 		this.window.removeEventListener('dragover', this, false);
 		this.window.removeEventListener('dragleave', this, true);
 		this.window.removeEventListener('drop', this, true);
-		this._listeningDragEvents = false;
+		this.window.removeEventListener('dragend', this, true);
+		this._listening = false;
 	},
 
 	handleEvent : function FSW_handleEvent(aEvent) 
@@ -515,9 +501,6 @@ FoxSplitterWindow.prototype = {
 			case 'activate':
 				return this.onRaised();
 
-
-			case 'dragstart':
-				return this._onDragStart(aEvent);
 
 			case 'dragover':
 				return this._onDragOver(aEvent);
@@ -665,24 +648,14 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	_onDragStart : function FSW_onDragStart(aEvent)
-	{
-		var tab = this._getTabFromEvent(aEvent);
-		if (!tab)
-			return;
-
-		this.window.addEventListener('dragend', this, true);
-		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
-			aFSWindow.startListenDragEvents();
-		});
-	},
-
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
+		var tabs = this._getDraggedTabsFromEvent(aEvent);
+		if (!tabs.length)
+			return;
+
 		var position = this._getDropPosition(aEvent);
-
 		this._updateDropIndicator(position);
-
 		if (position & this.kPOSITION_INVALID)
 			return;
 
@@ -704,7 +677,6 @@ FoxSplitterWindow.prototype = {
 
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.hideDropIndicator();
-			aFSWindow.endListenDragEvents();
 		});
 
 		if (!shouldAttach)
@@ -743,11 +715,9 @@ FoxSplitterWindow.prototype = {
 		if (!this._window)
 			return;
 
-		this.window.removeEventListener('dragend', this, true);
 		Deferred.next(function() {
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
-				aFSWindow.endListenDragEvents();
 			});
 		});
 	},
