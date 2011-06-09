@@ -80,6 +80,8 @@ FoxSplitterGroup.prototype = {
 		this.id = 'group-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 
+		this.resetting = 0;
+
 		this.members = [];
 	},
  
@@ -207,6 +209,11 @@ FoxSplitterGroup.prototype = {
 	// reposition/resize grouped windows based on their relations
 	resetPositionAndSize : function FSG_resetPositionAndSize(aBaseMember)
 	{
+		if (this.resetting)
+			return;
+
+		this.resetting++;
+
 		var base = aBaseMember || this.startMember;
 		var another = base.sibling;
 
@@ -218,15 +225,14 @@ FoxSplitterGroup.prototype = {
 		if (another.isGroup)
 			another.resetPositionAndSize();
 
-		var baseIsStart = base == this.startMember;
 		var expectedX = base.position & this.kPOSITION_VERTICAL ?
 						base.screenX :
-					baseIsStart ?
+					base.position & this.kPOSITION_LEFT ?
 						base.screenX + base.width :
 						base.screenX - another.width ;
 		var expectedY = base.position & this.kPOSITION_HORIZONTAL ?
 						base.screenY :
-					baseIsStart ?
+					base.position & this.kPOSITION_TOP ?
 						base.screenY + base.height :
 						base.screenY - another.height ;
 		if (another.screenX != expectedX || another.screenY != expectedY)
@@ -238,6 +244,11 @@ FoxSplitterGroup.prototype = {
 							base.height : another.height ;
 		if (another.width != expectedWidth || another.height != expectedHeight)
 			another.resizeTo(expectedWidth, expectedHeight);
+
+		if (this.parent)
+			this.parent.resetPositionAndSize(this);
+
+		this.resetting--;
 	},
 
 
