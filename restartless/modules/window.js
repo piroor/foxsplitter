@@ -147,7 +147,13 @@ FoxSplitterWindow.prototype = {
 
 	get documentElement()
 	{
-		return this.window.document.documentElement;
+		return this.document.documentElement;
+	},
+	get document() {
+		return this.window.document;
+	},
+	get browser() {
+		return this._window && this.window.gBrowser;
 	},
 
 
@@ -184,16 +190,16 @@ FoxSplitterWindow.prototype = {
 		var styles = this.kBASE_STYLESHEET
 						.replace(/kACTIVE/g, this.kACTIVE)
 						.replace(/kDROP_INDICATOR/g, this.kDROP_INDICATOR);
-		this._styleSheet = this.window.document.createProcessingInstruction('xml-stylesheet',
+		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
-		this.window.document.insertBefore(this._styleSheet, this.documentElement);
+		this.document.insertBefore(this._styleSheet, this.documentElement);
 	},
 
 	_uninstallStyleSheet : function FSW_uninstallStyleSheet()
 	{
 		if (!this._styleSheet)
 			return;
-		this.window.document.removeChild(this._styleSheet);
+		this.document.removeChild(this._styleSheet);
 		delete this._styleSheet;
 	},
 
@@ -691,11 +697,20 @@ FoxSplitterWindow.prototype = {
 		if (!shouldAttach)
 			return;
 
-		tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
-		tab.setAttribute(this.kATTACHED_BASE, dropInfo.base.id);
-		this.window.gBrowser.replaceTabWithWindow(tab);
-
-		aEvent.stopPropagation();
+		var tabs = this.browser.visibleTabs || this.browser.mTabContainer.childNodes;
+		if (tabs.length == 1) {
+			if (dropInfo.base != this) {
+				this.detach();
+				this.attachTo(dropInfo.base, dropInfo.position);
+				aEvent.stopPropagation();
+			}
+		}
+		else {
+			tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
+			tab.setAttribute(this.kATTACHED_BASE, dropInfo.base.id);
+			this.browser.replaceTabWithWindow(tab);
+			aEvent.stopPropagation();
+		}
 	},
 
 	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
@@ -796,9 +811,9 @@ FoxSplitterWindow.prototype = {
 		var size = 10;
 
 		if (!this._dropIndicator) {
-			this._dropIndicator = this.window.document.createElement('panel');
+			this._dropIndicator = this.document.createElement('panel');
 			this._dropIndicator.setAttribute('class', this.kDROP_INDICATOR+' '+this.positionName[aPosition]);
-			let label = this._dropIndicator.appendChild(this.window.document.createElement('label'));
+			let label = this._dropIndicator.appendChild(this.document.createElement('label'));
 			label.style.fontSize = Math.round(size * 0.8)+'px';
 			this.documentElement.appendChild(this._dropIndicator);
 		}
@@ -888,7 +903,7 @@ FoxSplitterWindow.prototype = {
 
 	get activeBrowser()
 	{
-		return this._window && this.window.gBrowser;
+		return this.browser;
 	},
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
