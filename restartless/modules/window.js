@@ -145,7 +145,7 @@ FoxSplitterWindow.prototype = {
 			self.resizeBy(0, 1);
 
 			if (self.parent)
-				self.root.reserveResetPositionAndSize(); // for safety
+				self.parent.reserveResetPositionAndSize(); // for safety
 
 			self.startListen();
 		});
@@ -438,51 +438,44 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
-		this.positioning++;
-
 		var x = this.screenX;
 		var y = this.screenY;
 		var root = this.root;
 		if (root) {
 			root.moveBy(x - this.lastScreenX, y - this.lastScreenY, this);
-			root.reserveResetPositionAndSize(); // for safety
+			root.reserveResetPositionAndSize(this); // for safety
 		}
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
-		this.positioning--;
 	},
 
 	onResize : function FSW_onResize()
 	{
 		if (this.resizing) return;
-		this.positioning++;
-		this.resizing++;
 
 		var x = this.screenX;
 		var y = this.screenY;
 		var width  = this.width;
 		var height = this.height;
 
-		if (y != this.lastScreenY)
-			this.onResizeTop(this.lastScreenY - y);
-		if (x == this.lastScreenX && width != this.lastWidth)
-			this.onResizeRight(width - this.lastWidth);
-		if (y == this.lastScreenY && height != this.lastHeight)
-			this.onResizeBottom(height - this.lastHeight);
 		if (x != this.lastScreenX)
 			this.onResizeLeft(this.lastScreenX - x);
+		else if (width != this.lastWidth)
+			this.onResizeRight(width - this.lastWidth);
+
+		if (y != this.lastScreenY)
+			this.onResizeTop(this.lastScreenY - y);
+		else if (height != this.lastHeight)
+			this.onResizeBottom(height - this.lastHeight);
 
 		this.lastScreenX = x;
 		this.lastScreenY = y;
 		this.lastWidth = width;
 		this.lastHeight = height;
 
-		this.positioning--;
-		this.resizing--;
-
 		if (this.parent)
-			this.root.reserveResetPositionAndSize(); // for safety
+			this.root.reserveResetPositionAndSize(this); // for safety
 	},
 
 	onRaised : function FSW_onRaised()
