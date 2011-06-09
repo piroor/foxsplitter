@@ -10,7 +10,7 @@ function handleWindow(aWindow, aInitialization)
 		return;
 
 	aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
-	aWindow.SplitBrowser = aWindow.FoxSplitter;
+	// aWindow.SplitBrowser = aWindow.FoxSplitter;
 }
 
 WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
@@ -23,7 +23,7 @@ function shutdown()
 	WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
 		aWindow.FoxSplitter.destroy(true);
 		delete aWindow.FoxSplitter;
-		delete aWindow.SplitBrowser;
+		// delete aWindow.SplitBrowser;
 	});
 
 	WindowManager = void(0);
