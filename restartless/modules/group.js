@@ -210,10 +210,13 @@ FoxSplitterGroup.prototype = {
 		var base = this.baseMember;
 		var another = base.sibling;
 
+		base.updateLastPositionAndSize();
+		another.updateLastPositionAndSize();
+
 		if (base.isGroup)
-			base.cleanupPositionAndSize();
+			base.resetPositionAndSize();
 		if (another.isGroup)
-			another.cleanupPositionAndSize();
+			another.resetPositionAndSize();
 
 		var expectedX = base.position & this.kPOSITION_VERTICAL ?
 						base.screenX : base.screenX + base.width;

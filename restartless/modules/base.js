@@ -162,6 +162,14 @@ FoxSplitterBase.prototype = {
 		var parent = this.parent;
 		if (!splitterResizing && parent)
 			parent.onResizeLeft(aDelta);
+	},
+
+	updateLastPositionAndSize : function FSB_updateLastPositionAndSize()
+	{
+		this.lastScreenX = this.screenX;
+		this.lastScreenY = this.screenY;
+		this.lastWidth   = this.width;
+		this.lastHeight  = this.height;
 	}
 };
 

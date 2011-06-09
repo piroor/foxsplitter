@@ -138,10 +138,7 @@ FoxSplitterWindow.prototype = {
 	{
 		var self = this;
 		Deferred.next(function() {
-			self.lastScreenX = self.screenX;
-			self.lastScreenY = self.screenY;
-			self.lastWidth   = self.width;
-			self.lastHeight  = self.height;
+			self.updateLastPositionAndSize();
 
 			// workaround to fix misrendering by resizing on DOMContentLoaded
 			self.resizeBy(0, -1);
@@ -293,10 +290,10 @@ FoxSplitterWindow.prototype = {
 	{
 		this.positioning++;
 		this.window.moveTo(aX, aY);
-		this.lastScreenX = aX;
-		this.lastScreenY = aY;
+		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.positioning--;
 		});
 	},
@@ -305,10 +302,10 @@ FoxSplitterWindow.prototype = {
 	{
 		this.positioning++;
 		this.window.moveBy(aDX, aDY);
-		this.lastScreenX += aDX;
-		this.lastScreenY += aDY;
+		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.positioning--;
 		});
 	},
@@ -317,10 +314,10 @@ FoxSplitterWindow.prototype = {
 	{
 		this.resizing++;
 		this.window.resizeTo(aW, aH);
-		this.lastWidth  = aW;
-		this.lastHeight = aH;
+		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.resizing--;
 		});
 	},
@@ -329,10 +326,10 @@ FoxSplitterWindow.prototype = {
 	{
 		this.resizing++;
 		this.window.resizeBy(aDW, aDH);
-		this.lastWidth  += aDW;
-		this.lastHeight += aDH;
+		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.resizing--;
 		});
 	},
