@@ -11,6 +11,52 @@ function FoxSplitterWindow(aWindow, aOnInit)
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
 
+	kDROP_INDICATOR : 'foxsplitter-drop-indicator',
+
+	kBASE_STYLESHEET : <![CDATA[
+/*
+		:root[kACTIVE="false"] toolbox,
+		:root[kACTIVE="false"] .treestyletab-tabbar,
+		:root[kACTIVE="false"] .treestyletab-tabbar-ready {
+			visibility: collapse !important;
+		}
+*/
+		.kDROP_INDICATOR {
+			background: rgba(0, 0, 0, 0.75);
+			border: 0 solid rgba(255, 255, 255, 0.75);
+			border-radius: 0;
+			line-height: 0;
+			margin: 0;
+			padding: 0;
+			-moz-appearance: none;
+			-moz-border-radius: 0;
+			-moz-box-align: center;
+			-moz-box-pack: center;
+		}
+
+		.kDROP_INDICATOR.top {
+			border-top-width: 1px;
+		}
+		.kDROP_INDICATOR.right {
+			border-right-width: 1px;
+		}
+		.kDROP_INDICATOR.bottom {
+			border-bottom-width: 1px;
+		}
+		.kDROP_INDICATOR.left {
+			border-left-width: 1px;
+		}
+
+		.kDROP_INDICATOR label {
+			color: white;
+			line-height: 0;
+			margin: 0;
+			min-height: 0;
+			min-width: 0;
+			padding: 0;
+		}
+	]]>.toString(),
+
 	lastScreenX : null,
 	lastScreenY : null,
 	lastWidth   : null,
@@ -97,7 +143,7 @@ FoxSplitterWindow.prototype = {
 		FoxSplitterWindow.instances.push(this);
 		FoxSplitterWindow.instancesById[this.id] = this;
 
-//		this._installStyleSheet();
+		this._installStyleSheet();
 
 		if (!aOnInit)
 			aWindow.addEventListener('load', this, false);
@@ -114,13 +160,9 @@ FoxSplitterWindow.prototype = {
 	{
 		if (this._styleSheet)
 			return;
-		var styles = [
-				':root['+this.kACTIVE+'="false"] toolbox,',
-				':root['+this.kACTIVE+'="false"] .treestyletab-tabbar,',
-				':root['+this.kACTIVE+'="false"] .treestyletab-tabbar-ready {',
-				'  visibility: collapse !important;',
-				'}'
-			].join('\n');
+		var styles = this.kBASE_STYLESHEET
+						.replace(/kACTIVE/g, this.kACTIVE)
+						.replace(/kDROP_INDICATOR/g, this.kDROP_INDICATOR);
 		this._styleSheet = this.window.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
 		this.window.document.insertBefore(this._styleSheet, this.documentElement);
@@ -245,6 +287,8 @@ FoxSplitterWindow.prototype = {
 
 	destroy : function FSW_destroy(aOnQuit) 
 	{
+		this.hideDropIndicator();
+
 		var id = this.id;
 
 		if (this.parent) {
@@ -256,8 +300,9 @@ FoxSplitterWindow.prototype = {
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
 		this.endListen();
+		this.endListenDragEvents();
 
-//		this._uninstallStyleSheet();
+		this._uninstallStyleSheet();
 
 		this.window = null;
 
@@ -368,10 +413,19 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
-		this.window.addEventListener('dragend', this, true);
+		this.window.addEventListener('dragstart', this, true);
 		this._listening = true;
 	},
 	_listening : false,
+
+	startListenDragEvents : function FSW_startListenDragEvents()
+	{
+		if (this._listeningDragEvents) return;
+		this.window.addEventListener('dragover', this, false);
+		this.window.addEventListener('dragleave', this, true);
+		this._listeningDragEvents = true;
+	},
+	_listeningDragEvents : false,
 
 	endListen : function FSW_endListen()
 	{
@@ -379,8 +433,16 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('DOMAttrModified', this, false);
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
-		this.window.removeEventListener('dragend', this, true);
+		this.window.removeEventListener('dragstart', this, true);
 		this._listening = false;
+	},
+
+	endListenDragEvents : function FSW_endListen()
+	{
+		if (!this._listeningDragEvents) return;
+		this.window.removeEventListener('dragover', this, false);
+		this.window.removeEventListener('dragleave', this, true);
+		this._listeningDragEvents = false;
 	},
 
 	handleEvent : function FSW_handleEvent(aEvent) 
@@ -407,6 +469,15 @@ FoxSplitterWindow.prototype = {
 			case 'activate':
 				return this.onRaised();
 
+
+			case 'dragstart':
+				return this._onDragStart(aEvent);
+
+			case 'dragover':
+				return this._onDragOver(aEvent);
+
+			case 'dragleave':
+				return this._onDragLeave(aEvent);
 
 			case 'dragend':
 				return this._onDragEnd(aEvent);
@@ -545,8 +616,45 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	_onDragStart : function FSW_onDragStart(aEvent)
+	{
+		var tab = this._getTabFromEvent(aEvent);
+		if (!tab)
+			return;
+
+		this._updateDropIndicator(aEvent);
+
+		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+			aFSWindow.startListenDragEvents();
+		});
+		this.window.addEventListener('dragend', this, true);
+	},
+
+	_onDragOver : function FSW_onDragOver(aEvent)
+	{
+		this._updateDropIndicator(aEvent);
+	},
+
+	_onDragLeave : function FSW_onDragLeave(aEvent)
+	{
+		this._reserveHideDropIndicator();
+	},
+
 	_onDragEnd : function FSW_onDragEnd(aEvent)
 	{
+		var shouldAttach = !!this._dropIndicator;
+
+		this.hideDropIndicator();
+
+		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+			aFSWindow.hideDropIndicator();
+			aFSWindow.endListenDragEvents();
+		});
+		this.window.removeEventListener('dragend', this, true);
+
+		if (!shouldAttach)
+			return;
+
 		var tab = this._getTabFromEvent(aEvent);
 		if (!tab)
 			return;
@@ -557,6 +665,9 @@ FoxSplitterWindow.prototype = {
 
 		tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
 		tab.setAttribute(this.kATTACHED_BASE, dropInfo.base.id);
+		this.window.gBrowser.replaceTabWithWindow(tab);
+
+		aEvent.stopPropagation();
 	},
 
 	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
@@ -596,23 +707,25 @@ FoxSplitterWindow.prototype = {
 		};
 	},
 
+	_outerPadding : 0,
+	_innerPaddingFactor : 0.3,
+
 	_getDropPosition : function FSW_getDropPosition(aScreenX, aScreenY)
 	{
-		var outerPadding = 100;
-		var oX = this.window.screenX - outerPadding;
-		var oY = this.window.screenY - outerPadding;
+		var oX = this.screenX - this._outerPadding;
+		var oY = this.screenY - this._outerPadding;
 		var x = aScreenX - oX;
 		var y = aScreenY - oY;
-		var width = this.width + (outerPadding * 2);
-		var height = this.height + (outerPadding * 2);
+		var width = this.width + (this._outerPadding * 2);
+		var height = this.height + (this._outerPadding * 2);
 
 		// out of area
 		if (x < 0 || x > width || y < 0 || y > height)
 			return this.kPOSITION_OUTSIDE;
 
 		// too inside
-		var xUnit = width * 0.3;
-		var yUnit = height * 0.3;
+		var xUnit = width * this._innerPaddingFactor;
+		var yUnit = height * this._innerPaddingFactor;
 		if (
 			xUnit < x && width - xUnit > x &&
 			yUnit < y && height - yUnit > y
@@ -626,6 +739,120 @@ FoxSplitterWindow.prototype = {
 			(isTopLeft && !isBottomLeft) ? this.kPOSITION_TOP :
 			(!isTopLeft && isBottomLeft) ? this.kPOSITION_BOTTOM :
 			this.kPOSITION_RIGHT ;
+	},
+
+	_updateDropIndicator : function FSW_updateDropIndicator(aEvent)
+	{
+		var dropInfo = this._getDropInfo(aEvent);
+		if (dropInfo.position & this.kPOSITION_INVALID) {
+			this._reserveHideDropIndicator();
+			return;
+		}
+
+		this._cancelReserveHideDropIndicator();
+
+		if (this._lastDropPosition != dropInfo.position) {
+			let self = this;
+			this.hideDropIndicator()
+				.next(function() {
+					self._showDropIndicatorAt(dropInfo.position);
+				});
+		}
+		else {
+			this._showDropIndicatorAt(dropInfo.position);
+		}
+	},
+
+	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition)
+	{
+		var size = 10;
+
+		if (!this._dropIndicator) {
+			this._dropIndicator = this.window.document.createElement('panel');
+			this._dropIndicator.setAttribute('class', this.kDROP_INDICATOR+' '+this.positionName[aPosition]);
+			let label = this._dropIndicator.appendChild(this.window.document.createElement('label'));
+			label.style.fontSize = Math.round(size * 0.8)+'px';
+			this.documentElement.appendChild(this._dropIndicator);
+		}
+
+		var x = this.screenX;
+		var y = this.screenY;
+		var width  = aPosition & this.kPOSITION_HORIZONTAL ? size : this.width ;
+		var height = aPosition & this.kPOSITION_VERTICAL ? size : this.height ;
+		switch (aPosition)
+		{
+			case this.kPOSITION_TOP:
+				y = this.screenY - size;
+				this._dropIndicator.firstChild.setAttribute('value', '\u25B2');
+				break;
+			case this.kPOSITION_RIGHT:
+				x = this.screenX + this.width;
+				this._dropIndicator.firstChild.setAttribute('value', '\u25B6');
+				break;
+			case this.kPOSITION_BOTTOM:
+				y = this.screenY + this.height;
+				this._dropIndicator.firstChild.setAttribute('value', '\u25BC');
+				break;
+			case this.kPOSITION_LEFT:
+				x = this.screenX - size;
+				this._dropIndicator.firstChild.setAttribute('value', '\u25C0');
+				break;
+		}
+
+		this._dropIndicator.width = width;
+		this._dropIndicator.height = height;
+		this._dropIndicator.openPopupAtScreen(x, y, false, null);
+
+		this._lastDropPosition = aPosition;
+	},
+
+	hideDropIndicator : function FSW_hideDropIndicator()
+	{
+		var deferred = new Deferred();
+		if (!this._dropIndicator) {
+			Deferred.next(function() {
+				deferred.call();
+			});
+			return deferred;
+		}
+
+		var panel = this._dropIndicator;
+		delete this._dropIndicator;
+		delete this._lastDropPosition;
+
+		if (panel.state == 'closed') {
+			panel.parentNode.removeChild(panel);
+			Deferred.next(function() {
+				deferred.call();
+			});
+		}
+		else {
+			panel.addEventListener('popuphidden', function() {
+				panel.removeEventListener('popuphidden', arguments.callee, false);
+				panel.parentNode.removeChild(panel);
+				deferred.call();
+			}, false);
+			panel.hidePopup();
+		}
+		return deferred;
+	},
+
+	_reserveHideDropIndicator : function FSW_reserveHideDropIndicator()
+	{
+		this._cancelReserveHideDropIndicator();
+		var self = this;
+		this._reservedHideDropInidicator = Deferred.next(function() {
+			self.hideDropIndicator();
+			delete self._reservedHideDropInidicator;
+		});
+	},
+
+	_cancelReserveHideDropIndicator : function FSW_cancelReserveHideDropIndicator()
+	{
+		if (!this._reservedHideDropInidicator)
+			return;
+		this._reservedHideDropInidicator.cancel();
+		delete this._reservedHideDropInidicator;
 	},
 
 
