@@ -67,6 +67,7 @@ FoxSplitterWindow.prototype = {
 	lastHeight  : null,
 
 	dropZoneSize : 64,
+	handleDragWithShiftKey : false,
 
 	get screenX()
 	{
@@ -650,6 +651,9 @@ FoxSplitterWindow.prototype = {
 
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
+		if (aEvent.shiftKey != this.handleDragWithShiftKey)
+			return;
+
 		var tabs = this._getDraggedTabsFromEvent(aEvent);
 		if (!tabs.length)
 			return;
@@ -671,6 +675,9 @@ FoxSplitterWindow.prototype = {
 
 	_onDrop : function FSW_onDrop(aEvent)
 	{
+		if (aEvent.shiftKey != this.handleDragWithShiftKey)
+			return;
+
 		var tabs = this._getDraggedTabsFromEvent(aEvent);
 		var position = tabs.length ? this._getDropPosition(aEvent) : this.kPOSITION_OUTSIDE ;
 		var shouldAttach = position & this.kPOSITION_VALID;
