@@ -449,6 +449,20 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	openIn : function FSW_openIn(aURI, aPosition)
+	{
+		var deferred = new Deferred();
+		var window = this.window.openDialog('chrome://browser/content/browser.xul', '_blank', 'chrome,dialog=no,all', aURI);
+		var self = this;
+		window.addEventListener('load', function() {
+			window.removeEventListener('load', arguments.callee, false);
+			window.FoxSplitter.attachTo(self, aPosition);
+			deferred.call(window);
+		}, false);
+		return deferred;
+	},
+
+
 	// event handling
 
 	startListen : function FSW_startListen()
@@ -654,8 +668,8 @@ FoxSplitterWindow.prototype = {
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return;
 
-		var tabs = this._getDraggedTabsFromEvent(aEvent);
-		if (!tabs.length)
+		var tabs = this._getDraggedTabs(aEvent);
+		if (!tabs.length && !this._getDraggedLink(aEvent))
 			return;
 
 		var position = this._getDropPosition(aEvent);
@@ -663,8 +677,10 @@ FoxSplitterWindow.prototype = {
 		if (position & this.kPOSITION_INVALID)
 			return;
 
-		aEvent.dataTransfer.effectAllowed = 'copyMove';
-		aEvent.dataTransfer.dropEffect = aEvent.ctrlKey || aEvent.metaKey ? 'copy' : 'move' ;
+		aEvent.dataTransfer.effectAllowed = 'all';
+		aEvent.dataTransfer.dropEffect = tabs.length ?
+				(aEvent.ctrlKey || aEvent.metaKey ? 'copy' : 'move' ) :
+				'link' ;
 		aEvent.preventDefault();
 	},
 
@@ -678,8 +694,9 @@ FoxSplitterWindow.prototype = {
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return;
 
-		var tabs = this._getDraggedTabsFromEvent(aEvent);
-		var position = tabs.length ? this._getDropPosition(aEvent) : this.kPOSITION_OUTSIDE ;
+		var tabs = this._getDraggedTabs(aEvent);
+		var link = this._getDraggedLink(aEvent);
+		var position = tabs.length || link ? this._getDropPosition(aEvent) : this.kPOSITION_OUTSIDE ;
 		var shouldAttach = position & this.kPOSITION_VALID;
 
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
@@ -689,29 +706,35 @@ FoxSplitterWindow.prototype = {
 		if (!shouldAttach)
 			return;
 
-		var duplicated = false;
-		var browser = this._getTabBrowserFromTab(tabs[0]);
-		if (aEvent.ctrlKey || aEvent.metaKey) {
-			tabs = tabs.map(function(aTab) {
-				return browser.duplicateTab(aTab);
-			});
-		}
+		if (tabs.length) {
+			let browser = this._getTabBrowserFromTab(tabs[0]);
+			if (aEvent.ctrlKey || aEvent.metaKey) {
+				tabs = tabs.map(function(aTab) {
+					return browser.duplicateTab(aTab);
+				});
+			}
 
-		var allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-		if (allTabs.length == tabs.length) {
-			let sourceFSWindow = tabs[0].ownerDocument.defaultView.FoxSplitter;
-			if (sourceFSWindow != this) {
-				sourceFSWindow.detach();
-				sourceFSWindow.attachTo(this, position);
+			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
+			if (allTabs.length == tabs.length) {
+				let sourceFSWindow = tabs[0].ownerDocument.defaultView.FoxSplitter;
+				if (sourceFSWindow != this) {
+					sourceFSWindow.detach();
+					sourceFSWindow.attachTo(this, position);
+					aEvent.stopPropagation();
+					aEvent.preventDefault();
+				}
+			}
+			else {
+				let tab = tabs.shift();
+				tab.setAttribute(this.kATTACHED_POSITION, position);
+				tab.setAttribute(this.kATTACHED_BASE, this.id);
+				browser.replaceTabWithWindow(tab);
 				aEvent.stopPropagation();
 				aEvent.preventDefault();
 			}
 		}
-		else {
-			let tab = tabs.shift();
-			tab.setAttribute(this.kATTACHED_POSITION, position);
-			tab.setAttribute(this.kATTACHED_BASE, this.id);
-			browser.replaceTabWithWindow(tab);
+		else { // links
+			this.openIn(link, position);
 			aEvent.stopPropagation();
 			aEvent.preventDefault();
 		}
@@ -742,7 +765,7 @@ FoxSplitterWindow.prototype = {
 			).singleNodeValue;
 	},
 
-	_getDraggedTabsFromEvent : function FSW_getDraggedTabsFromEvent(aEvent)
+	_getDraggedTabs : function FSW_getDraggedTabs(aEvent)
 	{
 		var dt = aEvent.dataTransfer;
 		var tabs = [];
@@ -755,6 +778,51 @@ FoxSplitterWindow.prototype = {
 			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
 		}
 		return tabs.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
+	},
+
+	_getDraggedLink : function FSW_getDraggedLink(aEvent)
+	{
+		var dt = aEvent.dataTransfer;
+		var url;
+		var types = [
+				'text/x-moz-url',
+				'text/uri-list',
+				'text/plain',
+				'text/x-moz-text-internal',
+				'application/x-moz-file'
+			];
+		for (let i = 0; i < types.length; i++) {
+			let dataType = types[i];
+			let isURLList = dataType == 'text/uri-list';
+			let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
+			if (urlData) {
+				url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+				break;
+			}
+		}
+		return url;
+	},
+	retrieveURLFromData : function FSW_retrieveURLFromData(aData, aType)
+	{
+		switch (aType)
+		{
+			case 'text/unicode':
+			case 'text/plain':
+			case 'text/x-moz-text-internal':
+				return aData.replace(/^\s+|\s+$/g, '');
+
+			case 'text/x-moz-url':
+				return ((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
+							.split('\n')[0];
+
+			case 'application/x-moz-file':
+				let fileHandler = Cc['@mozilla.org/network/io-service;1']
+									.getService(Ci.nsIIOService)
+									.getProtocolHandler('file')
+									.QueryInterface(Ci.nsIFileProtocolHandler);
+				return fileHandler.getURLSpecFromFile(aData);
+		}
+		return null;
 	},
 
 	_getTabBrowserFromTab : function FSW_getTabBrowserFromTab(aTab)
