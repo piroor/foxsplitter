@@ -449,10 +449,15 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openIn : function FSW_openIn(aURI, aPosition)
+	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition)
 	{
 		var deferred = new Deferred();
-		var window = this.window.openDialog('chrome://browser/content/browser.xul', '_blank', 'chrome,dialog=no,all', aURI);
+		var window = this.window.openDialog(
+				'chrome://browser/content/browser.xul',
+				'_blank',
+				'chrome,dialog=no,all',
+				aURIOrTab
+			);
 		var self = this;
 		window.addEventListener('load', function() {
 			window.removeEventListener('load', arguments.callee, false);
@@ -460,6 +465,45 @@ FoxSplitterWindow.prototype = {
 			deferred.call(window);
 		}, false);
 		return deferred;
+	},
+
+	duplicateTabsIn : function FSW_duplicateTabsIn(aTabs, aPosition)
+	{
+		return this.openLinkIn('about:blank', aPosition)
+				.next(function(aWindow) {
+					let firstTab = aWindow.gBrowser.selectedTab;
+					aTabs.forEach(function(aTab) {
+						aWindow.gBrowser.duplicateTab(aTab);
+					});
+					aWindow.gBrowser.removeTab(firstTab);
+					return aWindow;
+				});
+	},
+	duplicateTabIn : function FSW_duplicateTabIn(aTab, aPosition)
+	{
+		return this.duplicateTabsIn([aTab], aPosition);
+	},
+
+	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition)
+	{
+		aTabs = aTabs.slice(0);
+		var tab = aTabs.shift();
+		tab.setAttribute(this.kATTACHED_POSITION, aPosition);
+		tab.setAttribute(this.kATTACHED_BASE, this.id);
+		return this.openLinkIn(tab, aPosition)
+				.next(function(aWindow) {
+					aTabs.forEach(function(aTab) {
+						var tab = aWindow.gBrowser.addTab();
+						tab.stop();
+						tab.docShell;
+						aWindow.gBrowser.swapBrowsersAndCloseOther(tab, aTab);
+					});
+					return aWindow;
+				});
+	},
+	moveTabTo : function FSW_moveTabTo(aTab, aPosition)
+	{
+		return this.moveTabsTo([aTab], aPosition);
 	},
 
 
@@ -709,39 +753,18 @@ FoxSplitterWindow.prototype = {
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-			if (aEvent.ctrlKey || aEvent.metaKey) { // duplicate
-				this.openIn('about:blank', position)
-					.next(function(aWindow) {
-						let firstTab = aWindow.gBrowser.selectedTab;
-						tabs.forEach(function(aTab) {
-							aWindow.gBrowser.duplicateTab(aTab);
-						});
-						aWindow.gBrowser.removeTab(firstTab);
-					});
-				aEvent.stopPropagation();
-				aEvent.preventDefault();
-			}
-			else if (allTabs.length == tabs.length) {
-				let sourceFSWindow = tabs[0].ownerDocument.defaultView.FoxSplitter;
-				sourceFSWindow.detach();
-				sourceFSWindow.attachTo(this, position);
-				aEvent.stopPropagation();
-				aEvent.preventDefault();
-			}
-			else {
-				let tab = tabs.shift();
-				tab.setAttribute(this.kATTACHED_POSITION, position);
-				tab.setAttribute(this.kATTACHED_BASE, this.id);
-				browser.replaceTabWithWindow(tab);
-				aEvent.stopPropagation();
-				aEvent.preventDefault();
-			}
+			if (aEvent.ctrlKey || aEvent.metaKey)
+				this.duplicateTabsIn(tabs, position);
+			else if (allTabs.length == tabs.length)
+				tabs[0].ownerDocument.defaultView.FoxSplitter.attachTo(this, position);
+			else
+				this.moveTabsTo(tabs, position);
 		}
-		else { // links
-			this.openIn(link, position);
-			aEvent.stopPropagation();
-			aEvent.preventDefault();
+		else {
+			this.openLinkIn(link, position);
 		}
+		aEvent.stopPropagation();
+		aEvent.preventDefault();
 	},
 
 	_onDragEnd : function FSW_onDragEnd(aEvent)
@@ -800,13 +823,13 @@ FoxSplitterWindow.prototype = {
 			let isURLList = dataType == 'text/uri-list';
 			let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
 			if (urlData) {
-				url = this.retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+				url = this._retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
 				break;
 			}
 		}
 		return url;
 	},
-	retrieveURLFromData : function FSW_retrieveURLFromData(aData, aType)
+	_retrieveURLFromData : function FSW_retrieveURLFromData(aData, aType)
 	{
 		switch (aType)
 		{
