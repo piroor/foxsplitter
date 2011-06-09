@@ -29,11 +29,13 @@ FoxSplitterWindow.prototype = {
 			border-radius: 0;
 			line-height: 0;
 			margin: 0;
+			opacity: 0;
 			padding: 0;
 			-moz-appearance: none;
 			-moz-border-radius: 0;
 			-moz-box-align: center;
 			-moz-box-pack: center;
+			-moz-transition: opacity 0.25s ease-in;
 		}
 
 		.kDROP_INDICATOR.top {
@@ -835,14 +837,17 @@ FoxSplitterWindow.prototype = {
 
 	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition)
 	{
-		var size = 10;
+		var deferred = new Deferred();
 
-		if (!this._dropIndicator) {
-			this._dropIndicator = this.document.createElement('panel');
-			this._dropIndicator.setAttribute('class', this.kDROP_INDICATOR+' '+this.positionName[aPosition]);
-			let label = this._dropIndicator.appendChild(this.document.createElement('label'));
+		var size = 10;
+		var indicator = this._dropIndicator;
+
+		if (!indicator) {
+			indicator = this._dropIndicator = this.document.createElement('panel');
+			indicator.setAttribute('class', this.kDROP_INDICATOR+' '+this.positionName[aPosition]);
+			let label = indicator.appendChild(this.document.createElement('label'));
 			label.style.fontSize = Math.round(size * 0.8)+'px';
-			this.documentElement.appendChild(this._dropIndicator);
+			this.documentElement.appendChild(indicator);
 		}
 
 		var x = this.screenX;
@@ -853,27 +858,35 @@ FoxSplitterWindow.prototype = {
 		{
 			case this.kPOSITION_TOP:
 				y = this.screenY - size;
-				this._dropIndicator.firstChild.setAttribute('value', '\u25B2');
+				indicator.firstChild.setAttribute('value', '\u25B2');
 				break;
 			case this.kPOSITION_RIGHT:
 				x = this.screenX + this.width;
-				this._dropIndicator.firstChild.setAttribute('value', '\u25B6');
+				indicator.firstChild.setAttribute('value', '\u25B6');
 				break;
 			case this.kPOSITION_BOTTOM:
 				y = this.screenY + this.height;
-				this._dropIndicator.firstChild.setAttribute('value', '\u25BC');
+				indicator.firstChild.setAttribute('value', '\u25BC');
 				break;
 			case this.kPOSITION_LEFT:
 				x = this.screenX - size;
-				this._dropIndicator.firstChild.setAttribute('value', '\u25C0');
+				indicator.firstChild.setAttribute('value', '\u25C0');
 				break;
 		}
 
-		this._dropIndicator.width = width;
-		this._dropIndicator.height = height;
-		this._dropIndicator.openPopupAtScreen(x, y, false, null);
+		indicator.width = width;
+		indicator.height = height;
+		indicator.addEventListener('popupshown', function() {
+			indicator.removeEventListener('popupshown', arguments.callee, false);
+			indicator.style.opacity = 1;
+			deferred.call();
+		}, false);
+
+		indicator.openPopupAtScreen(x, y, false, null);
 
 		this._lastDropPosition = aPosition;
+
+		return deferred;
 	},
 
 	hideDropIndicator : function FSW_hideDropIndicator()
@@ -881,30 +894,55 @@ FoxSplitterWindow.prototype = {
 		this._cancelReserveHideDropIndicator();
 
 		var deferred = new Deferred();
-		if (!this._dropIndicator) {
+		var indicator = this._dropIndicator;
+		if (!indicator) {
 			Deferred.next(function() {
 				deferred.call();
 			});
 			return deferred;
 		}
 
-		var panel = this._dropIndicator;
-		delete this._dropIndicator;
-		delete this._lastDropPosition;
+		indicator.style.opacity = 0;
 
-		if (panel.state == 'closed') {
-			panel.parentNode.removeChild(panel);
+		if (this.window.getComputedStyle(indicator, null).getPropertyValue('opacity') == '0') {
 			Deferred.next(function() {
 				deferred.call();
 			});
 		}
 		else {
-			panel.addEventListener('popuphidden', function() {
-				panel.removeEventListener('popuphidden', arguments.callee, false);
-				panel.parentNode.removeChild(panel);
+			indicator.addEventListener('transitionend', function() {
+				indicator.removeEventListener('transitionend', arguments.callee, false);
 				deferred.call();
 			}, false);
-			panel.hidePopup();
+		}
+
+		var self = this;
+		return deferred
+				.next(function() {
+					return self._hideDropIndicatorPostProcess();
+				});
+	},
+	_hideDropIndicatorPostProcess : function FSW_hideDropIndicatorPostProcess()
+	{
+		var deferred = new Deferred();
+
+		var indicator = this._dropIndicator;
+		delete this._dropIndicator;
+		delete this._lastDropPosition;
+
+		if (indicator.state == 'closed') {
+			indicator.parentNode.removeChild(indicator);
+			Deferred.next(function() {
+				deferred.call();
+			});
+		}
+		else {
+			indicator.addEventListener('popuphidden', function() {
+				indicator.removeEventListener('popuphidden', arguments.callee, false);
+				indicator.parentNode.removeChild(indicator);
+				deferred.call();
+			}, false);
+			indicator.hidePopup();
 		}
 		return deferred;
 	},
