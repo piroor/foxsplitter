@@ -79,6 +79,27 @@ FoxSplitterWindow.prototype = {
 		return this.window.outerHeight;
 	},
 
+	get window()
+	{
+		if (!this._window) {
+			let stack = Components.stack;
+			let stacks = [stack];
+			while (stack.caller)
+			{
+				stacks.push(stack.caller);
+				stack = stack.caller;
+			}
+			let message = 'illegal access to "window":\n'+stacks.join('\n');
+			dump(message+'\n');
+			throw new Error(message);
+		}
+		return this._window;
+	},
+	set window(aValue)
+	{
+		return this._window = aValue;
+	},
+
 	get position()
 	{
 		return (
@@ -622,12 +643,10 @@ FoxSplitterWindow.prototype = {
 		if (!tab)
 			return;
 
-		this._updateDropIndicator(aEvent);
-
+		this.window.addEventListener('dragend', this, true);
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.startListenDragEvents();
 		});
-		this.window.addEventListener('dragend', this, true);
 	},
 
 	_onDragOver : function FSW_onDragOver(aEvent)
@@ -860,9 +879,9 @@ FoxSplitterWindow.prototype = {
 
 	get activeBrowser()
 	{
-		return this.window && this.window.gBrowser;
+		return this._window && this.window.gBrowser;
 	},
-	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame()
+	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
 		if (aFrame) {
 			let docShell = aFrame.top
