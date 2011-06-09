@@ -3,6 +3,8 @@ load('group');
 load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
+
+const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
  
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -61,6 +63,8 @@ FoxSplitterWindow.prototype = {
 	lastScreenY : null,
 	lastWidth   : null,
 	lastHeight  : null,
+
+	dropZoneSize : 64,
 
 	get screenX()
 	{
@@ -461,6 +465,7 @@ FoxSplitterWindow.prototype = {
 		if (this._listeningDragEvents) return;
 		this.window.addEventListener('dragover', this, false);
 		this.window.addEventListener('dragleave', this, true);
+		this.window.addEventListener('drop', this, true);
 		this._listeningDragEvents = true;
 	},
 	_listeningDragEvents : false,
@@ -480,6 +485,7 @@ FoxSplitterWindow.prototype = {
 		if (!this._listeningDragEvents) return;
 		this.window.removeEventListener('dragover', this, false);
 		this.window.removeEventListener('dragleave', this, true);
+		this.window.removeEventListener('drop', this, true);
 		this._listeningDragEvents = false;
 	},
 
@@ -516,6 +522,9 @@ FoxSplitterWindow.prototype = {
 
 			case 'dragleave':
 				return this._onDragLeave(aEvent);
+
+			case 'drop':
+				return this._onDrop(aEvent);
 
 			case 'dragend':
 				return this._onDragEnd(aEvent);
@@ -668,7 +677,16 @@ FoxSplitterWindow.prototype = {
 
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
-		this._updateDropIndicator(aEvent);
+		var position = this._getDropPosition(aEvent);
+
+		this._updateDropIndicator(position);
+
+		if (position & this.kPOSITION_INVALID)
+			return;
+
+		aEvent.dataTransfer.effectAllowed = 'copyMove';
+		aEvent.dataTransfer.dropEffect = aEvent.ctrlKey || aEvent.metaKey ? 'copy' : 'move' ;
+		aEvent.preventDefault();
 	},
 
 	_onDragLeave : function FSW_onDragLeave(aEvent)
@@ -676,19 +694,12 @@ FoxSplitterWindow.prototype = {
 		this._reserveHideDropIndicator();
 	},
 
-	_onDragEnd : function FSW_onDragEnd(aEvent)
+	_onDrop : function FSW_onDrop(aEvent)
 	{
-		var tab = this._getTabFromEvent(aEvent);
-		var dropInfo = tab && this._getDropInfo(aEvent);
-		var shouldAttach = (
-				dropInfo &&
-				dropInfo.base &&
-				!!dropInfo.base._dropIndicator &&
-				dropInfo.position & this.kPOSITION_VALID
-			);
+		var tabs = this._getDraggedTabsFromEvent(aEvent);
+		var position = tabs.length ? this._getDropPosition(aEvent) : this.kPOSITION_OUTSIDE ;
+		var shouldAttach = position & this.kPOSITION_VALID;
 
-		this.hideDropIndicator();
-		this.window.removeEventListener('dragend', this, true);
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.hideDropIndicator();
 			aFSWindow.endListenDragEvents();
@@ -697,20 +708,46 @@ FoxSplitterWindow.prototype = {
 		if (!shouldAttach)
 			return;
 
-		var tabs = this.browser.visibleTabs || this.browser.mTabContainer.childNodes;
-		if (tabs.length == 1) {
-			if (dropInfo.base != this) {
-				this.detach();
-				this.attachTo(dropInfo.base, dropInfo.position);
+		var duplicated = false;
+		var browser = this._getTabBrowserFromTab(tabs[0]);
+		if (aEvent.ctrlKey || aEvent.metaKey) {
+			tabs = tabs.map(function(aTab) {
+				return browser.duplicateTab(aTab);
+			});
+		}
+
+		var allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
+		if (allTabs.length == tabs.length) {
+			let sourceFSWindow = tabs[0].ownerDocument.defaultView.FoxSplitter;
+			if (sourceFSWindow != this) {
+				sourceFSWindow.detach();
+				sourceFSWindow.attachTo(this, position);
 				aEvent.stopPropagation();
+				aEvent.preventDefault();
 			}
 		}
 		else {
-			tab.setAttribute(this.kATTACHED_POSITION, dropInfo.position);
-			tab.setAttribute(this.kATTACHED_BASE, dropInfo.base.id);
-			this.browser.replaceTabWithWindow(tab);
+			let tab = tabs.shift();
+			tab.setAttribute(this.kATTACHED_POSITION, position);
+			tab.setAttribute(this.kATTACHED_BASE, this.id);
+			browser.replaceTabWithWindow(tab);
 			aEvent.stopPropagation();
+			aEvent.preventDefault();
 		}
+	},
+
+	_onDragEnd : function FSW_onDragEnd(aEvent)
+	{
+		if (!this._window)
+			return;
+
+		this.window.removeEventListener('dragend', this, true);
+		Deferred.next(function() {
+			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+				aFSWindow.hideDropIndicator();
+				aFSWindow.endListenDragEvents();
+			});
+		});
 	},
 
 	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
@@ -726,52 +763,43 @@ FoxSplitterWindow.prototype = {
 			).singleNodeValue;
 	},
 
-	_getDropInfo : function FSW_getDropInfo(aEvent)
+	_getDraggedTabsFromEvent : function FSW_getDraggedTabsFromEvent(aEvent)
 	{
-		var base = this;
-		var position = this.kPOSITION_OUTSIDE;
-		if (this.parent) {
-			this.root.allWindows.some(function(aFSWindow) {
-				position = aFSWindow._getDropPosition(aEvent.screenX, aEvent.screenY);
-				if (position & this.kPOSITION_VALID) {
-					base = aFSWindow;
-					return true;
-				}
-				return false;
-			}, this);
-		}
-		else {
-			position = this._getDropPosition(aEvent.screenX, aEvent.screenY);
-		}
+		var dt = aEvent.dataTransfer;
+		var tabs = [];
+		if (dt.mozItemCount < 1 ||
+			!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
+			return tabs;
 
-		return {
-			base     : base,
-			position : position
-		};
+		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
+		{
+			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
+		}
+		return tabs.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
 	},
 
-	_outerPadding : 0,
-	_innerPaddingFactor : 0.3,
-
-	_getDropPosition : function FSW_getDropPosition(aScreenX, aScreenY)
+	_getTabBrowserFromTab : function FSW_getTabBrowserFromTab(aTab)
 	{
-		var oX = this.screenX - this._outerPadding;
-		var oY = this.screenY - this._outerPadding;
-		var x = aScreenX - oX;
-		var y = aScreenY - oY;
-		var width = this.width + (this._outerPadding * 2);
-		var height = this.height + (this._outerPadding * 2);
+		return aTab.ownerDocument.defaultView.FoxSplitter.browser;
+	},
+
+	_getDropPosition : function FSW_getDropPosition(aEvent)
+	{
+		var oX = this.screenX;
+		var oY = this.screenY;
+		var x = aEvent.screenX - oX;
+		var y = aEvent.screenY - oY;
+		var width = this.width;
+		var height = this.height;
 
 		// out of area
 		if (x < 0 || x > width || y < 0 || y > height)
 			return this.kPOSITION_OUTSIDE;
 
 		// too inside
-		var xUnit = width * this._innerPaddingFactor;
-		var yUnit = height * this._innerPaddingFactor;
 		if (
-			xUnit < x && width - xUnit > x &&
-			yUnit < y && height - yUnit > y
+			this.dropZoneSize < x && width - this.dropZoneSize > x &&
+			this.dropZoneSize < y && height - this.dropZoneSize > y
 			)
 			return this.kPOSITION_INSIDE;
 
@@ -784,25 +812,24 @@ FoxSplitterWindow.prototype = {
 			this.kPOSITION_RIGHT ;
 	},
 
-	_updateDropIndicator : function FSW_updateDropIndicator(aEvent)
+	_updateDropIndicator : function FSW_updateDropIndicator(aPosition)
 	{
-		var dropInfo = this._getDropInfo(aEvent);
-		if (dropInfo.position & this.kPOSITION_INVALID) {
+		if (aPosition & this.kPOSITION_INVALID) {
 			this._reserveHideDropIndicator();
 			return;
 		}
 
 		this._cancelReserveHideDropIndicator();
 
-		if (this._lastDropPosition != dropInfo.position) {
+		if (this._lastDropPosition != aPosition) {
 			let self = this;
 			this.hideDropIndicator()
 				.next(function() {
-					self._showDropIndicatorAt(dropInfo.position);
+					self._showDropIndicatorAt(aPosition);
 				});
 		}
 		else {
-			this._showDropIndicatorAt(dropInfo.position);
+			this._showDropIndicatorAt(aPosition);
 		}
 	},
 
@@ -851,6 +878,8 @@ FoxSplitterWindow.prototype = {
 
 	hideDropIndicator : function FSW_hideDropIndicator()
 	{
+		this._cancelReserveHideDropIndicator();
+
 		var deferred = new Deferred();
 		if (!this._dropIndicator) {
 			Deferred.next(function() {
