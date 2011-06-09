@@ -708,21 +708,25 @@ FoxSplitterWindow.prototype = {
 
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
-			if (aEvent.ctrlKey || aEvent.metaKey) {
-				tabs = tabs.map(function(aTab) {
-					return browser.duplicateTab(aTab);
-				});
-			}
-
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-			if (allTabs.length == tabs.length) {
+			if (aEvent.ctrlKey || aEvent.metaKey) { // duplicate
+				this.openIn('about:blank', position)
+					.next(function(aWindow) {
+						let firstTab = aWindow.gBrowser.selectedTab;
+						tabs.forEach(function(aTab) {
+							aWindow.gBrowser.duplicateTab(aTab);
+						});
+						aWindow.gBrowser.removeTab(firstTab);
+					});
+				aEvent.stopPropagation();
+				aEvent.preventDefault();
+			}
+			else if (allTabs.length == tabs.length) {
 				let sourceFSWindow = tabs[0].ownerDocument.defaultView.FoxSplitter;
-				if (sourceFSWindow != this) {
-					sourceFSWindow.detach();
-					sourceFSWindow.attachTo(this, position);
-					aEvent.stopPropagation();
-					aEvent.preventDefault();
-				}
+				sourceFSWindow.detach();
+				sourceFSWindow.attachTo(this, position);
+				aEvent.stopPropagation();
+				aEvent.preventDefault();
 			}
 			else {
 				let tab = tabs.shift();
