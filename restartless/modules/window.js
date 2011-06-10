@@ -809,6 +809,8 @@ FoxSplitterWindow.prototype = {
 	{
 		var node = aEvent.originalTarget;
 		var d = node.ownerDocument;
+		if (!d)
+			return null;
 		return d.evaluate(
 				'ancestor-or-self::*[local-name()="tab" and contains(concat(" ", @class, " "), " tabbrowser-tab ")][1]',
 				node,
@@ -822,6 +824,8 @@ FoxSplitterWindow.prototype = {
 	{
 		var node = aEvent.originalTarget;
 		var d = node.ownerDocument;
+		if (!d)
+			return false;
 		return d.evaluate(
 				'ancestor-or-self::*[local-name()="tabs" and contains(concat(" ", @class, " "), " tabbrowser-tabs ")][1]',
 				node,
