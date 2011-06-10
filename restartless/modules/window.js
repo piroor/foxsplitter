@@ -734,14 +734,12 @@ FoxSplitterWindow.prototype = {
 		dragInfo.tabs = this._getDraggedTabs(aEvent);
 		dragInfo.links = this._getDraggedLinks(aEvent);
 		dragInfo.canDrop = (
-			(
-				dragInfo.tabs.length &&
+			dragInfo.tabs.length ?
 				(
 					this.handleDragWithShiftKey ||
 					!this._isEventFiredOnTabbar(aEvent)
-				)
-			) ||
-			dragInfo.links.length
+				) :
+				dragInfo.links.length
 		);
 
 		if (dragInfo.canDrop)
