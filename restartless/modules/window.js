@@ -572,9 +572,7 @@ FoxSplitterWindow.prototype = {
 	tileTabs : function FSW_tileTabs(aTabs, aMode)
 	{
 		var isAllTabs = aTabs.length == this.visibleTabs.length;
-		var browser = this.browser;
-
-		var selectedTab = browser.selectedTab;
+		var selectedTab = this.browser.selectedTab;
 		var beforeTabs = aTabs.filter(function(aTab) {
 				return aTab._tPos < selectedTab._tPos;
 			});
@@ -585,9 +583,9 @@ FoxSplitterWindow.prototype = {
 			});
 
 		var self = this;
+		var totalWidth = this.width;
+		var totalHeight = this.height;
 		if (aMode == this.TILE_MODE_X_AXIS || aMode == this.TILE_MODE_Y_AXIS) {
-			let totalWidth = this.width;
-			let totalHeight = this.height;
 			let isHorizontal = aMode == this.TILE_MODE_X_AXIS;
 			let beforePosition = isHorizontal ? this.POSITION_LEFT : this.POSITION_TOP ;
 			let afterPosition = isHorizontal ? this.POSITION_RIGHT : this.POSITION_BOTTOM ;
