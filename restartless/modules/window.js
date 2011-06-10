@@ -878,9 +878,6 @@ FoxSplitterWindow.prototype = {
 			let dataType = types[i];
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 			{
-				tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
-
-
 				let urlData = dt.mozGetDataAt(dataType, i);
 				if (urlData) {
 					urls = urls.concat(this._retrieveURLsFromData(urlData, dataType));
