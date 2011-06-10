@@ -25,6 +25,12 @@ FoxSplitterBase.prototype = {
 	POSITION_INSIDE  : (1 << 5),
 
 
+	// compatible to old implementation
+	TILE_MODE_GRID   : 0,
+	TILE_MODE_X_AXIS : (1 << 0),
+	TILE_MODE_Y_AXIS : (1 << 1),
+
+
 	isGroup : false,
 
 	get root()

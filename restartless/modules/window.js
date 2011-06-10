@@ -170,6 +170,10 @@ FoxSplitterWindow.prototype = {
 	get browser() {
 		return this._window && this.window.gBrowser;
 	},
+	get visibleTabs() {
+		return this.browser.visibleTabs ||
+				Array.slice(this.browser.mTabContainer.childNodes);
+	},
 
 
 	init : function FSW_init(aWindow, aOnInit) 
@@ -484,9 +488,10 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openLinksIn : function FSW_openLinkIn(aURIs, aPosition)
+	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
 	{
-		var positionAndSize = this._calculatePositionAndSize(this, aPosition);
+		var base = aBase || this;
+		var positionAndSize = this._calculatePositionAndSize(base, aPosition);
 		var options = [
 				'chrome,dialog=no,all',
 				'screenX='+positionAndSize.x,
@@ -498,16 +503,16 @@ FoxSplitterWindow.prototype = {
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 		var deferred = new Deferred();
-		var window = this.window.openDialog(
+		var window = base.window.openDialog(
 				'chrome://browser/content/browser.xul',
 				'_blank',
 				options,
 				first
 			);
 		var self = this;
-		window.addEventListener('load', function() {
-			window.removeEventListener('load', arguments.callee, false);
-			window.FoxSplitter.attachTo(self, aPosition);
+		window.addEventListener('DOMContentLoaded', function() {
+			window.removeEventListener('DOMContentLoaded', arguments.callee, false);
+			window.FoxSplitter.attachTo(base, aPosition);
 			deferred.call(window);
 		}, false);
 		return deferred
@@ -519,14 +524,14 @@ FoxSplitterWindow.prototype = {
 				});
 	},
 
-	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition)
+	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition, aBase)
 	{
-		return this.openLinksIn([aURIOrTab], aPosition);
+		return this.openLinksIn([aURIOrTab], aPosition, aBase);
 	},
 
-	duplicateTabsIn : function FSW_duplicateTabsIn(aTabs, aPosition)
+	duplicateTabsIn : function FSW_duplicateTabsIn(aTabs, aPosition, aBase)
 	{
-		return this.openLinkIn('about:blank', aPosition)
+		return this.openLinkIn('about:blank', aPosition, aBase)
 				.next(function(aWindow) {
 					let firstTab = aWindow.gBrowser.selectedTab;
 					aTabs.forEach(function(aTab) {
@@ -536,18 +541,18 @@ FoxSplitterWindow.prototype = {
 					return aWindow;
 				});
 	},
-	duplicateTabIn : function FSW_duplicateTabIn(aTab, aPosition)
+	duplicateTabIn : function FSW_duplicateTabIn(aTab, aPosition, aBase)
 	{
-		return this.duplicateTabsIn([aTab], aPosition);
+		return this.duplicateTabsIn([aTab], aPosition, aBase);
 	},
 
-	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition)
+	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition, aBase)
 	{
 		aTabs = aTabs.slice(0);
 		var tab = aTabs.shift();
 		tab.setAttribute(this.ATTACHED_POSITION, aPosition);
-		tab.setAttribute(this.ATTACHED_BASE, this.id);
-		return this.openLinkIn(tab, aPosition)
+		tab.setAttribute(this.ATTACHED_BASE, (aBase || this).id);
+		return this.openLinkIn(tab, aPosition, aBase)
 				.next(function(aWindow) {
 					aTabs.forEach(function(aTab) {
 						var tab = aWindow.gBrowser.addTab();
@@ -558,9 +563,99 @@ FoxSplitterWindow.prototype = {
 					return aWindow;
 				});
 	},
-	moveTabTo : function FSW_moveTabTo(aTab, aPosition)
+	moveTabTo : function FSW_moveTabTo(aTab, aPosition, aBase)
 	{
-		return this.moveTabsTo([aTab], aPosition);
+		return this.moveTabsTo([aTab], aPosition, aBase);
+	},
+
+
+	tileTabs : function FSW_tileTabs(aTabs, aMode)
+	{
+		var isAllTabs = aTabs.length == this.visibleTabs.length;
+		var browser = this.browser;
+
+		var selectedTab = browser.selectedTab;
+		var beforeTabs = aTabs.filter(function(aTab) {
+				return aTab._tPos < selectedTab._tPos;
+			});
+		var afterTabs = aTabs.filter(function(aTab) {
+				if (aTab.selected && isAllTabs)
+					return false;
+				return aTab._tPos >= selectedTab._tPos;
+			});
+
+		var self = this;
+		if (aMode == this.TILE_MODE_X_AXIS || aMode == this.TILE_MODE_Y_AXIS) {
+			let totalWidth = this.width;
+			let totalHeight = this.height;
+			let isHorizontal = aMode == this.TILE_MODE_X_AXIS;
+			let beforePosition = isHorizontal ? this.POSITION_LEFT : this.POSITION_TOP ;
+			let afterPosition = isHorizontal ? this.POSITION_RIGHT : this.POSITION_BOTTOM ;
+			beforeTabs = beforeTabs.map(function(aTab) {
+				return this.moveTabTo(aTab, beforePosition);
+			}, this);
+			// process from the most far window!
+			afterTabs = afterTabs.reverse().map(function(aTab) {
+				return this.moveTabTo(aTab, afterPosition);
+			}, this).reverse();
+			let deferreds = beforeTabs
+							.concat([
+								Deferred.next(function() {
+									return self.window;
+								})
+							])
+							.concat(afterTabs);
+			let count = deferreds.length;
+			let width = isHorizontal ? Math.round(totalWidth / count) : totalWidth ;
+			let height = isHorizontal ? totalHeight : Math.round(totalHeight / count) ;
+			let lastWidth = isHorizontal ? totalWidth - (width * (count - 1)) : totalWidth ;
+			let lastHeight = isHorizontal ? totalHeight : totalHeight - (height * (count - 1)) ;
+			return Deferred
+					.parallel(deferreds)
+					.next(function(aWindows) {
+						/**
+						 * JSDeferred doesn't return results as an array
+						 * if parallel() received an array from another namespace.
+						 * So, we manuall make it an array.
+						 */
+						aWindows.length = count;
+						var FSWindows = Array.map(aWindows, function(aWindow) {
+								return aWindow.FoxSplitter;
+							});
+						var nextX = FSWindows[0].screenX;
+						var nextY = FSWindows[0].screenY;
+						FSWindows.forEach(function(aFSWindow, aIndex) {
+							if (aIndex != 0)
+								aFSWindow.moveTo(nextX, nextY);
+
+							if (aIndex == count - 1)
+								aFSWindow.resizeTo(lastWidth, lastHeight);
+							else
+								aFSWindow.resizeTo(width, height);
+
+							if (isHorizontal)
+								nextX += width;
+							else
+								nextY += height;
+						});
+						return FSWindows;
+					});
+		}
+		else {
+		}
+	},
+
+	tileAllTabs : function FSW_tileAllTabs(aMode)
+	{
+		return this.tileTabs(this.visibleTabs, aMode);
+	},
+
+	tileSelectedTabs : function FSW_tileSelectedTabs(aMode)
+	{
+		var tabs = this.visibleTabs.filter(function(aTab) {
+				return aTab.getAttribute('multiselected') == 'true';
+			});
+		return this.tileTabs(tabs, aMode);
 	},
 
 
@@ -1147,6 +1242,10 @@ FoxSplitterWindow.prototype = {
 
 
 	// compatibility for old versions
+
+	LAYOUT_GRID      : FoxSplitterBase.prototype.TILE_MODE_GRID,
+	LAYOUT_ON_X_AXIS : FoxSplitterBase.prototype.TILE_MODE_X_AXIS,
+	LAYOUT_ON_Y_AXIS : FoxSplitterBase.prototype.TILE_MODE_Y_AXIS,
 
 	get activeBrowser()
 	{
