@@ -449,14 +449,16 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition)
+	openLinksIn : function FSW_openLinkIn(aURIs, aPosition)
 	{
+		aURIs = aURIs.slice(0);
+		var first = aURIs.shift(); // only the first element can be tab
 		var deferred = new Deferred();
 		var window = this.window.openDialog(
 				'chrome://browser/content/browser.xul',
 				'_blank',
 				'chrome,dialog=no,all',
-				aURIOrTab
+				first
 			);
 		var self = this;
 		window.addEventListener('load', function() {
@@ -464,7 +466,18 @@ FoxSplitterWindow.prototype = {
 			window.FoxSplitter.attachTo(self, aPosition);
 			deferred.call(window);
 		}, false);
-		return deferred;
+		return deferred
+				.next(function(aWindow) {
+					aURIs.forEach(function(aURI) {
+						aWindow.gBrowser.addTab(aURI);
+					});
+					return aWindow;
+				});
+	},
+
+	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition)
+	{
+		return this.openLinksIn([aURIOrTab], aPosition);
 	},
 
 	duplicateTabsIn : function FSW_duplicateTabsIn(aTabs, aPosition)
@@ -719,7 +732,7 @@ FoxSplitterWindow.prototype = {
 			return dragInfo;
 
 		dragInfo.tabs = this._getDraggedTabs(aEvent);
-		dragInfo.link = this._getDraggedLink(aEvent);
+		dragInfo.links = this._getDraggedLinks(aEvent);
 		dragInfo.canDrop = (
 			(
 				dragInfo.tabs.length &&
@@ -728,7 +741,7 @@ FoxSplitterWindow.prototype = {
 					!this._isEventFiredOnTabbar(aEvent)
 				)
 			) ||
-			dragInfo.link
+			dragInfo.links.length
 		);
 
 		if (dragInfo.canDrop)
@@ -766,7 +779,7 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		var tabs = dragInfo.tabs;
-		var link = dragInfo.link;
+		var links = dragInfo.links;
 		var position = dragInfo.position;
 
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
@@ -787,7 +800,7 @@ FoxSplitterWindow.prototype = {
 				this.moveTabsTo(tabs, position);
 		}
 		else {
-			this.openLinkIn(link, position);
+			this.openLinksIn(links, position);
 		}
 		aEvent.stopPropagation();
 		aEvent.preventDefault();
@@ -850,49 +863,54 @@ FoxSplitterWindow.prototype = {
 		return tabs.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
 	},
 
-	_getDraggedLink : function FSW_getDraggedLink(aEvent)
+	_getDraggedLinks : function FSW_getDraggedLinks(aEvent)
 	{
 		var dt = aEvent.dataTransfer;
-		var url;
+		var urls = [];
 		var types = [
-				'text/x-moz-url',
 				'text/uri-list',
-				'text/plain',
 				'text/x-moz-text-internal',
+				'text/x-moz-url',
+				'text/plain',
 				'application/x-moz-file'
 			];
 		for (let i = 0; i < types.length; i++) {
 			let dataType = types[i];
-			let isURLList = dataType == 'text/uri-list';
-			let urlData = dt.mozGetDataAt(isURLList ? 'URL' : dataType , 0);
+			let urlData = dt.mozGetDataAt(dataType, 0);
 			if (urlData) {
-				url = this._retrieveURLFromData(urlData, isURLList ? 'text/plain' : dataType);
+				urls = this._retrieveURLsFromData(urlData, dataType);
 				break;
 			}
 		}
-		return url;
+		return urls;
 	},
-	_retrieveURLFromData : function FSW_retrieveURLFromData(aData, aType)
+	_retrieveURLsFromData : function FSW_retrieveURLsFromData(aData, aType)
 	{
 		switch (aType)
 		{
+			case 'text/uri-list':
+				return aData.replace(/\r/g, '\n')
+							.replace(/^\#.+$/gim, '')
+							.replace(/\n\n+/g, '\n')
+							.split('\n');
+
 			case 'text/unicode':
 			case 'text/plain':
 			case 'text/x-moz-text-internal':
-				return aData.replace(/^\s+|\s+$/g, '');
+				return [aData.replace(/^\s+|\s+$/g, '')];
 
 			case 'text/x-moz-url':
-				return ((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
-							.split('\n')[0];
+				return [((aData instanceof Ci.nsISupportsString) ? aData.toString() : aData)
+							.split('\n')[0]];
 
 			case 'application/x-moz-file':
 				let fileHandler = Cc['@mozilla.org/network/io-service;1']
 									.getService(Ci.nsIIOService)
 									.getProtocolHandler('file')
 									.QueryInterface(Ci.nsIFileProtocolHandler);
-				return fileHandler.getURLSpecFromFile(aData);
+				return [fileHandler.getURLSpecFromFile(aData)];
 		}
-		return null;
+		return [];
 	},
 
 	_getTabBrowserFromTab : function FSW_getTabBrowserFromTab(aTab)
