@@ -707,22 +707,48 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	_getDragInfo : function FSW_getDragInfo(aEvent)
+	{
+		var dragInfo = {
+				tabs : [],
+				link : null,
+				canDrop : false,
+				position : this.kPOSITION_OUTSIDE
+			};
+		if (aEvent.shiftKey != this.handleDragWithShiftKey)
+			return dragInfo;
+
+		dragInfo.tabs = this._getDraggedTabs(aEvent);
+		dragInfo.link = this._getDraggedLink(aEvent);
+		dragInfo.canDrop = (
+			(
+				dragInfo.tabs.length &&
+				(
+					this.handleDragWithShiftKey ||
+					!this._isEventFiredOnTabbar(aEvent)
+				)
+			) ||
+			dragInfo.link
+		);
+
+		if (dragInfo.canDrop)
+			dragInfo.position = this._getDropPosition(aEvent);
+
+		return dragInfo;
+	},
+
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
-		if (aEvent.shiftKey != this.handleDragWithShiftKey)
+		var dragInfo = this._getDragInfo(aEvent);
+		if (!dragInfo.canDrop)
 			return;
 
-		var tabs = this._getDraggedTabs(aEvent);
-		if (!tabs.length && !this._getDraggedLink(aEvent))
-			return;
-
-		var position = this._getDropPosition(aEvent);
-		this._updateDropIndicator(position);
-		if (position & this.kPOSITION_INVALID)
+		this._updateDropIndicator(dragInfo.position);
+		if (dragInfo.position & this.kPOSITION_INVALID)
 			return;
 
 		aEvent.dataTransfer.effectAllowed = 'all';
-		aEvent.dataTransfer.dropEffect = tabs.length ?
+		aEvent.dataTransfer.dropEffect = dragInfo.tabs.length ?
 				(aEvent.ctrlKey || aEvent.metaKey ? 'copy' : 'move' ) :
 				'link' ;
 		aEvent.preventDefault();
@@ -735,19 +761,19 @@ FoxSplitterWindow.prototype = {
 
 	_onDrop : function FSW_onDrop(aEvent)
 	{
-		if (aEvent.shiftKey != this.handleDragWithShiftKey)
+		var dragInfo = this._getDragInfo(aEvent);
+		if (!dragInfo.canDrop)
 			return;
 
-		var tabs = this._getDraggedTabs(aEvent);
-		var link = this._getDraggedLink(aEvent);
-		var position = tabs.length || link ? this._getDropPosition(aEvent) : this.kPOSITION_OUTSIDE ;
-		var shouldAttach = position & this.kPOSITION_VALID;
+		var tabs = dragInfo.tabs;
+		var link = dragInfo.link;
+		var position = dragInfo.position;
 
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.hideDropIndicator();
 		});
 
-		if (!shouldAttach)
+		if (!(position & this.kPOSITION_VALID))
 			return;
 
 		if (tabs.length) {
@@ -790,6 +816,19 @@ FoxSplitterWindow.prototype = {
 				Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
 				null
 			).singleNodeValue;
+	},
+
+	_isEventFiredOnTabbar : function FSW_isEventFiredOnTabbar(aEvent)
+	{
+		var node = aEvent.originalTarget;
+		var d = node.ownerDocument;
+		return d.evaluate(
+				'ancestor-or-self::*[local-name()="tabs" and contains(concat(" ", @class, " "), " tabbrowser-tabs ")][1]',
+				node,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue;
 	},
 
 	_getDraggedTabs : function FSW_getDraggedTabs(aEvent)
