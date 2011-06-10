@@ -876,11 +876,18 @@ FoxSplitterWindow.prototype = {
 			];
 		for (let i = 0; i < types.length; i++) {
 			let dataType = types[i];
-			let urlData = dt.mozGetDataAt(dataType, 0);
-			if (urlData) {
-				urls = this._retrieveURLsFromData(urlData, dataType);
-				break;
+			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
+			{
+				tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
+
+
+				let urlData = dt.mozGetDataAt(dataType, i);
+				if (urlData) {
+					urls = urls.concat(this._retrieveURLsFromData(urlData, dataType));
+				}
 			}
+			if (urls.length)
+				break;
 		}
 		return urls;
 	},
