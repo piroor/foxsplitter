@@ -8,7 +8,7 @@ function FoxSplitterBase()
 FoxSplitterBase.prototype = {
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	ATTACHED_BASE     : 'foxsplitter-attached-base',
-	kACTIVE            : 'foxsplitter-window-active',
+	ACTIVE            : 'foxsplitter-window-active',
 
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),

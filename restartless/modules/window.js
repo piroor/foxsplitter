@@ -13,31 +13,31 @@ function FoxSplitterWindow(aWindow, aOnInit)
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
 
-	kDROP_INDICATOR : 'foxsplitter-drop-indicator',
+	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 
 	// opacity=0 panel isn't shown on Linux
-	kMIN_OPACITY : (
+	MIN_OPACITY : (
 		Cc['@mozilla.org/xre/app-info;1']
 			.getService(Ci.nsIXULAppInfo)
 			.QueryInterface(Ci.nsIXULRuntime)
 			.OS == 'Linux' ? '0.01' : '0'
 	),
 
-	kBASE_STYLESHEET : <![CDATA[
+	BASE_STYLESHEET : <![CDATA[
 /*
-		:root[kACTIVE="false"] toolbox,
-		:root[kACTIVE="false"] .treestyletab-tabbar,
-		:root[kACTIVE="false"] .treestyletab-tabbar-ready {
+		:root[ACTIVE="false"] toolbox,
+		:root[ACTIVE="false"] .treestyletab-tabbar,
+		:root[ACTIVE="false"] .treestyletab-tabbar-ready {
 			visibility: collapse !important;
 		}
 */
-		.kDROP_INDICATOR {
+		.DROP_INDICATOR {
 			background: rgba(0, 0, 0, 0.75);
 			border: 0 solid rgba(255, 255, 255, 0.75);
 			border-radius: 0;
 			line-height: 0;
 			margin: 0;
-			opacity: kMIN_OPACITY;
+			opacity: MIN_OPACITY;
 			padding: 0;
 			-moz-appearance: none;
 			-moz-border-radius: 0;
@@ -46,20 +46,20 @@ FoxSplitterWindow.prototype = {
 			-moz-transition: opacity 0.25s ease-in;
 		}
 
-		.kDROP_INDICATOR.top {
+		.DROP_INDICATOR.top {
 			border-top-width: 1px;
 		}
-		.kDROP_INDICATOR.right {
+		.DROP_INDICATOR.right {
 			border-right-width: 1px;
 		}
-		.kDROP_INDICATOR.bottom {
+		.DROP_INDICATOR.bottom {
 			border-bottom-width: 1px;
 		}
-		.kDROP_INDICATOR.left {
+		.DROP_INDICATOR.left {
 			border-left-width: 1px;
 		}
 
-		.kDROP_INDICATOR label {
+		.DROP_INDICATOR label {
 			color: white;
 			line-height: 0;
 			margin: 0;
@@ -154,7 +154,7 @@ FoxSplitterWindow.prototype = {
 			});
 		}
 
-		this.documentElement.setAttribute(this.kACTIVE, aValue);
+		this.documentElement.setAttribute(this.ACTIVE, aValue);
 //		this._updateChromeHidden();
 
 		return this._active = aValue;
@@ -202,10 +202,10 @@ FoxSplitterWindow.prototype = {
 	{
 		if (this._styleSheet)
 			return;
-		var styles = this.kBASE_STYLESHEET
-						.replace(/kACTIVE/g, this.kACTIVE)
-						.replace(/kDROP_INDICATOR/g, this.kDROP_INDICATOR)
-						.replace(/kMIN_OPACITY/g, this.kMIN_OPACITY);
+		var styles = this.BASE_STYLESHEET
+						.replace(/ACTIVE/g, this.ACTIVE)
+						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
+						.replace(/MIN_OPACITY/g, this.MIN_OPACITY);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
 		this.document.insertBefore(this._styleSheet, this.documentElement);
@@ -562,6 +562,7 @@ FoxSplitterWindow.prototype = {
 	{
 		return this.moveTabsTo([aTab], aPosition);
 	},
+
 
 
 	// event handling
@@ -1023,7 +1024,7 @@ FoxSplitterWindow.prototype = {
 
 		if (!indicator) {
 			indicator = this._dropIndicator = this.document.createElement('panel');
-			indicator.setAttribute('class', this.kDROP_INDICATOR+' '+this.positionName[aPosition]);
+			indicator.setAttribute('class', this.DROP_INDICATOR+' '+this.positionName[aPosition]);
 			let label = indicator.appendChild(this.document.createElement('label'));
 			label.style.fontSize = Math.round(size * 0.8)+'px';
 			this.documentElement.appendChild(indicator);
