@@ -306,9 +306,9 @@ FoxSplitterWindow.prototype = {
 			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
 
 		if (this.screenX != positionAndSize.x || this.screenY != positionAndSize.y)
-			base.moveTo(positionAndSize.x, positionAndSize.y);
+			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
-			base.resizeTo(positionAndSize.width, positionAndSize.height);
+			this.resizeTo(positionAndSize.width, positionAndSize.height);
 	},
 
 	_calculatePositionAndSize : function FSW_calculatePositionAndSize(aBaseFSWidnow, aPosition)
