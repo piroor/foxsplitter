@@ -577,8 +577,15 @@ FoxSplitterWindow.prototype = {
 	tileTabs : function FSW_tileTabs(aTabs, aMode)
 	{
 		var isAllTabs = aTabs.length == this.visibleTabs.length;
+		if (isAllTabs && aTabs.length == 1) {
+			return Deferred.next(function() {
+				return [];
+			});
+		}
+
 		var selectedTab = this.browser.selectedTab;
-		var count = aTabs.length + (isAllTabs ? 0 : 1 );
+		var tilesCount = aTabs.length + (isAllTabs ? 0 : 1 );
+
 		var beforeTabs = aTabs.filter(function(aTab) {
 				return aTab._tPos < selectedTab._tPos;
 			});
@@ -588,180 +595,139 @@ FoxSplitterWindow.prototype = {
 				return aTab._tPos >= selectedTab._tPos;
 			});
 
-		var self = this;
 		var baseX = this.screenX;
 		var baseY = this.screenY;
 		var totalWidth = this.width;
 		var totalHeight = this.height;
-		if (aMode == this.TILE_MODE_X_AXIS || aMode == this.TILE_MODE_Y_AXIS) {
-			let isXAxis = aMode == this.TILE_MODE_X_AXIS;
-			let beforePosition = isXAxis ? this.POSITION_LEFT : this.POSITION_TOP ;
-			let afterPosition = isXAxis ? this.POSITION_RIGHT : this.POSITION_BOTTOM ;
 
-			beforeTabs = beforeTabs.map(function(aTab) {
-				return this.moveTabTo(aTab, beforePosition);
-			}, this);
-			// process from the most far window!
-			afterTabs = afterTabs.reverse().map(function(aTab) {
-				return this.moveTabTo(aTab, afterPosition);
-			}, this).reverse();
-			let deferreds = beforeTabs
-							.concat([
-								Deferred.next(function() {
-									return self.window;
-								})
-							])
-							.concat(afterTabs);
+		var maxRows, maxCols, lastMaxCols;
+		switch (aMode)
+		{
+			case this.TILE_MODE_GRID:
+			default:
+				maxRows = Math.floor(Math.sqrt(tilesCount));
+				maxCols = Math.floor(tilesCount / maxRows);
+				lastMaxCols = maxCols + tilesCount - (maxCols * maxRows);
+				break;
 
-			let width = isXAxis ? Math.round(totalWidth / count) : totalWidth ;
-			let height = isXAxis ? totalHeight : Math.round(totalHeight / count) ;
-			let lastWidth = isXAxis ? totalWidth - (width * (count - 1)) : totalWidth ;
-			let lastHeight = isXAxis ? totalHeight : totalHeight - (height * (count - 1)) ;
-			return Deferred
-					.parallel(deferreds)
-					.next(function(aWindows) {
-						/**
-						 * JSDeferred doesn't return results as an array
-						 * if parallel() received an array from another namespace.
-						 * So, we manuall make it an array.
-						 */
-						aWindows.length = count;
-						var FSWindows = Array.map(aWindows, function(aWindow) {
-								return aWindow.FoxSplitter;
-							});
-						var nextX = FSWindows[0].screenX;
-						var nextY = FSWindows[0].screenY;
-						FSWindows.forEach(function(aFSWindow, aIndex) {
-							if (aIndex != 0)
-								aFSWindow.moveTo(nextX, nextY);
+			case this.TILE_MODE_X_AXIS:
+				maxRows = 1;
+				maxCols = tilesCount;
+				lastMaxCols = tilesCount;
 
-							if (aIndex == count - 1)
-								aFSWindow.resizeTo(lastWidth, lastHeight);
-							else
-								aFSWindow.resizeTo(width, height);
-
-							if (isXAxis)
-								nextX += width;
-							else
-								nextY += height;
-						});
-						return FSWindows.map(function(aFSWindow) {
-							return aFSWindow.window;
-						});
-					});
+			case this.TILE_MODE_Y_AXIS:
+				maxRows = tilesCount;
+				maxCols = 1;
+				lastMaxCols = 1;
 		}
-		else {
-			let maxRows = Math.floor(Math.sqrt(count));
-			let maxCols = Math.floor(count / maxRows);
-			let lastMaxCols = maxCols + count - (maxCols * maxRows);
 
-			let width              = Math.round(totalWidth / maxCols);
-			let lastWidth          = totalWidth - (width * (maxCols - 1)) ;
-			let widthInLastRow     = Math.round(totalWidth / lastMaxCols);
-			let lastWidthInLastRow = totalWidth - (widthInLastRow * (lastMaxCols - 1)) ;
-			let height             = Math.round(totalHeight / maxRows);
-			let lastHeight         = totalHeight - (height * (maxRows - 1)) ;
+		var width              = Math.round(totalWidth / maxCols);
+		var lastWidth          = totalWidth - (width * (maxCols - 1)) ;
+		var widthInLastRow     = Math.round(totalWidth / lastMaxCols);
+		var lastWidthInLastRow = totalWidth - (widthInLastRow * (lastMaxCols - 1)) ;
+		var height             = Math.round(totalHeight / maxRows);
+		var lastHeight         = totalHeight - (height * (maxRows - 1)) ;
 
-			let col = 0;
-			let row = 0;
-			let deferreds = [];
-			let tiles = beforeTabs.concat([null]).concat(afterTabs)
-						.map(function(aTab) {
-							let isLastRow = (row == maxRows - 1);
-							let currentMaxCols = isLastRow ? lastMaxCols : maxCols ;
-							let offsetWidth = isLastRow ? widthInLastRow : width ;
-							let tile = {
-									col       : col,
-									row       : row,
-									first     : col == 0,
-									last      : (col == currentMaxCols- 1 ),
-									direction : ((aTab && aTab._tPos < selectedTab._tPos) ? -1 : aTab ? 1 : 0 ),
-									width     : ((col == currentMaxCols - 1) ?
-													(isLastRow ? lastWidthInLastRow : lastWidth ) :
-													offsetWidth
-												),
-									height    : isLastRow ? lastHeight : height
-								};
-							tile.x = baseX + (offsetWidth * col);
-							tile.y = baseY + (height * row);
-							if (aTab) {
-								deferreds.push(this.openLinkAt(aTab, tile));
-							}
-							else {
-								this.moveTo(tile.x, tile.y);
-								this.resizeTo(tile.width, tile.height);
-								deferreds.push(Deferred.next(function() {
-									return self.window;
-								}));
-							}
-							col++;
-							if (col == currentMaxCols) {
-								col = 0;
-								row++;
-							}
-							return tile;
-						}, this);
+		var col = 0;
+		var row = 0;
+		var deferreds = [];
+		var self = this;
+		var tiles = beforeTabs.concat([null]).concat(afterTabs)
+					.map(function(aTab) {
+						let isLastRow = (row == maxRows - 1);
+						let currentMaxCols = isLastRow ? lastMaxCols : maxCols ;
+						let offsetWidth = isLastRow ? widthInLastRow : width ;
+						let tile = {
+								col       : col,
+								row       : row,
+								first     : col == 0,
+								last      : (col == currentMaxCols- 1 ),
+								direction : ((aTab && aTab._tPos < selectedTab._tPos) ? -1 : aTab ? 1 : 0 ),
+								width     : ((col == currentMaxCols - 1) ?
+												(isLastRow ? lastWidthInLastRow : lastWidth ) :
+												offsetWidth
+											),
+								height    : isLastRow ? lastHeight : height
+							};
+						tile.x = baseX + (offsetWidth * col);
+						tile.y = baseY + (height * row);
+						if (aTab) {
+							deferreds.push(this.openLinkAt(aTab, tile));
+						}
+						else {
+							this.moveTo(tile.x, tile.y);
+							this.resizeTo(tile.width, tile.height);
+							deferreds.push(Deferred.next(function() {
+								return self.window;
+							}));
+						}
+						col++;
+						if (col == currentMaxCols) {
+							col = 0;
+							row++;
+						}
+						return tile;
+					}, this);
 
-			return Deferred
-					.parallel(deferreds)
-					.next(function(aWindows) {
-						var beforeXTiles = [];
-						var beforeYTiles = [];
-						var afterXTiles  = [];
-						var afterYTiles  = [];
-						var rows = [];
+		return Deferred
+				.parallel(deferreds)
+				.next(function(aWindows) {
+					var beforeXTiles = [];
+					var beforeYTiles = [];
+					var afterXTiles  = [];
+					var afterYTiles  = [];
+					var rows = [];
 
-						/**
-						 * JSDeferred doesn't return results as an array
-						 * if parallel() received an array from another namespace.
-						 * So, we manuall make it an array.
-						 */
-						aWindows.length = count;
-						Array.forEach(aWindows, function(aWindow, aIndex) {
-							var tile = tiles[aIndex];
-							tile.FSWindow = aWindow.FoxSplitter;
-							if (tile.direction == -1) {
-								if (tile.last)
-									beforeYTiles.unshift(tile);
-								else
-									beforeXTiles.unshift(tile);
-							}
-							else if (tile.direction == 1) {
-								if (tile.first)
-									afterYTiles.push(tile);
-								else
-									afterXTiles.push(tile);
-							}
-							let row = rows[tile.row] || [];
-							row[tile.col] = tile;
-							rows[tile.row] = row;
-						});
-
-						beforeYTiles.forEach(function(aTile, aIndex) {
-							var base = !aIndex ? self : beforeYTiles[aIndex-1];
-							aTile.FSWindow.attachTo(base, self.POSITION_TOP, true);
-						});
-						beforeXTiles.forEach(function(aTile) {
-							var row = rows[aTile.row]
-							aTile.FSWindow.attachTo(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
-						});
-
-						afterYTiles.forEach(function(aTile, aIndex) {
-							var base = !aIndex ? self : afterYTiles[aIndex-1];
-							aTile.FSWindow.attachTo(base, self.POSITION_BOTTOM, true);
-						});
-						afterXTiles.forEach(function(aTile) {
-							var row = rows[aTile.row]
-							aTile.FSWindow.attachTo(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
-						});
-
-						self.parent.resetPositionAndSize(self); // for safety
-
-						return tiles.map(function(aTile) {
-							return aTile.FSWindow.window;
-						})
+					/**
+					 * JSDeferred doesn't return results as an array
+					 * if parallel() received an array from another namespace.
+					 * So, we manuall make it an array.
+					 */
+					aWindows.length = tilesCount;
+					Array.forEach(aWindows, function(aWindow, aIndex) {
+						var tile = tiles[aIndex];
+						tile.FSWindow = aWindow.FoxSplitter;
+						if (tile.direction == -1) {
+							if (tile.last)
+								beforeYTiles.unshift(tile);
+							else
+								beforeXTiles.unshift(tile);
+						}
+						else if (tile.direction == 1) {
+							if (tile.first)
+								afterYTiles.push(tile);
+							else
+								afterXTiles.push(tile);
+						}
+						let row = rows[tile.row] || [];
+						row[tile.col] = tile;
+						rows[tile.row] = row;
 					});
-		}
+
+					beforeYTiles.forEach(function(aTile, aIndex) {
+						var base = !aIndex ? self : beforeYTiles[aIndex-1];
+						aTile.FSWindow.attachTo(base, self.POSITION_TOP, true);
+					});
+					beforeXTiles.forEach(function(aTile) {
+						var row = rows[aTile.row]
+						aTile.FSWindow.attachTo(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
+					});
+
+					afterYTiles.forEach(function(aTile, aIndex) {
+						var base = !aIndex ? self : afterYTiles[aIndex-1];
+						aTile.FSWindow.attachTo(base, self.POSITION_BOTTOM, true);
+					});
+					afterXTiles.forEach(function(aTile) {
+						var row = rows[aTile.row]
+						aTile.FSWindow.attachTo(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
+					});
+
+					self.parent.resetPositionAndSize(self); // for safety
+
+					return tiles.map(function(aTile) {
+						return aTile.FSWindow.window;
+					})
+				});
 	},
 
 	tileAllTabs : function FSW_tileAllTabs(aMode)
