@@ -15,6 +15,14 @@ FoxSplitterWindow.prototype = {
 
 	kDROP_INDICATOR : 'foxsplitter-drop-indicator',
 
+	// opacity=0 panel isn't shown on Linux
+	kMIN_OPACITY : (
+		Cc['@mozilla.org/xre/app-info;1']
+			.getService(Ci.nsIXULAppInfo)
+			.QueryInterface(Ci.nsIXULRuntime)
+			.OS == 'Linux' ? '0.01' : '0'
+	),
+
 	kBASE_STYLESHEET : <![CDATA[
 /*
 		:root[kACTIVE="false"] toolbox,
@@ -29,7 +37,7 @@ FoxSplitterWindow.prototype = {
 			border-radius: 0;
 			line-height: 0;
 			margin: 0;
-			opacity: 0;
+			opacity: kMIN_OPACITY;
 			padding: 0;
 			-moz-appearance: none;
 			-moz-border-radius: 0;
@@ -196,7 +204,8 @@ FoxSplitterWindow.prototype = {
 			return;
 		var styles = this.kBASE_STYLESHEET
 						.replace(/kACTIVE/g, this.kACTIVE)
-						.replace(/kDROP_INDICATOR/g, this.kDROP_INDICATOR);
+						.replace(/kDROP_INDICATOR/g, this.kDROP_INDICATOR)
+						.replace(/kMIN_OPACITY/g, this.kMIN_OPACITY);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
 		this.document.insertBefore(this._styleSheet, this.documentElement);
