@@ -20,6 +20,7 @@ FoxSplitterBase.prototype = {
 	POSITION_VERTICAL   : (1 << 2) | (1 << 3),
 
 	POSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
+	POSITION_INVALID : 0,
 
 	POSITION_OUTSIDE : (1 << 4),
 	POSITION_INSIDE  : (1 << 5),

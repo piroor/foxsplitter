@@ -488,35 +488,40 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
+	openLinkAt : function FSW_openLinksAt(aURIOrTab, aPositionAndSize)
 	{
-		var base = aBase || this;
-		var positionAndSize = this._calculatePositionAndSize(base, aPosition);
 		var options = [
 				'chrome,dialog=no,all',
-				'screenX='+positionAndSize.x,
-				'screenY='+positionAndSize.y,
-				'outerWidth='+positionAndSize.width,
-				'outerHeight='+positionAndSize.height
+				'screenX='+aPositionAndSize.x,
+				'screenY='+aPositionAndSize.y,
+				'outerWidth='+aPositionAndSize.width,
+				'outerHeight='+aPositionAndSize.height
 			].join(',');
-
-		aURIs = aURIs.slice(0);
-		var first = aURIs.shift(); // only the first element can be tab
 		var deferred = new Deferred();
-		var window = base.window.openDialog(
+		var window = this.window.openDialog(
 				'chrome://browser/content/browser.xul',
 				'_blank',
 				options,
-				first
+				aURIOrTab
 			);
 		var self = this;
 		window.addEventListener('DOMContentLoaded', function() {
 			window.removeEventListener('DOMContentLoaded', arguments.callee, false);
-			window.FoxSplitter.attachTo(base, aPosition);
 			deferred.call(window);
 		}, false);
-		return deferred
+		return deferred;
+	},
+
+	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
+	{
+		aURIs = aURIs.slice(0);
+		var first = aURIs.shift(); // only the first element can be tab
+
+		var base = aBase || this;
+		var positionAndSize = this._calculatePositionAndSize(base, aPosition);
+		return this.openLinkAt(first, positionAndSize)
 				.next(function(aWindow) {
+					aWindow.FoxSplitter.attachTo(base, aPosition);
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
@@ -573,6 +578,7 @@ FoxSplitterWindow.prototype = {
 	{
 		var isAllTabs = aTabs.length == this.visibleTabs.length;
 		var selectedTab = this.browser.selectedTab;
+		var count = aTabs.length + (isAllTabs ? 0 : 1 );
 		var beforeTabs = aTabs.filter(function(aTab) {
 				return aTab._tPos < selectedTab._tPos;
 			});
@@ -583,12 +589,15 @@ FoxSplitterWindow.prototype = {
 			});
 
 		var self = this;
+		var baseX = this.screenX;
+		var baseY = this.screenY;
 		var totalWidth = this.width;
 		var totalHeight = this.height;
 		if (aMode == this.TILE_MODE_X_AXIS || aMode == this.TILE_MODE_Y_AXIS) {
-			let isHorizontal = aMode == this.TILE_MODE_X_AXIS;
-			let beforePosition = isHorizontal ? this.POSITION_LEFT : this.POSITION_TOP ;
-			let afterPosition = isHorizontal ? this.POSITION_RIGHT : this.POSITION_BOTTOM ;
+			let isXAxis = aMode == this.TILE_MODE_X_AXIS;
+			let beforePosition = isXAxis ? this.POSITION_LEFT : this.POSITION_TOP ;
+			let afterPosition = isXAxis ? this.POSITION_RIGHT : this.POSITION_BOTTOM ;
+
 			beforeTabs = beforeTabs.map(function(aTab) {
 				return this.moveTabTo(aTab, beforePosition);
 			}, this);
@@ -603,11 +612,11 @@ FoxSplitterWindow.prototype = {
 								})
 							])
 							.concat(afterTabs);
-			let count = deferreds.length;
-			let width = isHorizontal ? Math.round(totalWidth / count) : totalWidth ;
-			let height = isHorizontal ? totalHeight : Math.round(totalHeight / count) ;
-			let lastWidth = isHorizontal ? totalWidth - (width * (count - 1)) : totalWidth ;
-			let lastHeight = isHorizontal ? totalHeight : totalHeight - (height * (count - 1)) ;
+
+			let width = isXAxis ? Math.round(totalWidth / count) : totalWidth ;
+			let height = isXAxis ? totalHeight : Math.round(totalHeight / count) ;
+			let lastWidth = isXAxis ? totalWidth - (width * (count - 1)) : totalWidth ;
+			let lastHeight = isXAxis ? totalHeight : totalHeight - (height * (count - 1)) ;
 			return Deferred
 					.parallel(deferreds)
 					.next(function(aWindows) {
@@ -631,15 +640,127 @@ FoxSplitterWindow.prototype = {
 							else
 								aFSWindow.resizeTo(width, height);
 
-							if (isHorizontal)
+							if (isXAxis)
 								nextX += width;
 							else
 								nextY += height;
 						});
-						return FSWindows;
+						return FSWindows.map(function(aFSWindow) {
+							return aFSWindow.window;
+						});
 					});
 		}
 		else {
+			let maxRows = Math.floor(Math.sqrt(count));
+			let maxCols = Math.floor(count / maxRows);
+			let lastMaxCols = maxCols + count - (maxCols * maxRows);
+
+			let width              = Math.round(totalWidth / maxCols);
+			let lastWidth          = totalWidth - (width * (maxCols - 1)) ;
+			let widthInLastRow     = Math.round(totalWidth / lastMaxCols);
+			let lastWidthInLastRow = totalWidth - (widthInLastRow * (lastMaxCols - 1)) ;
+			let height             = Math.round(totalHeight / maxRows);
+			let lastHeight         = totalHeight - (height * (maxRows - 1)) ;
+
+			let col = 0;
+			let row = 0;
+			let deferreds = [];
+			let tiles = beforeTabs.concat([null]).concat(afterTabs)
+						.map(function(aTab) {
+							let isLastRow = (row == maxRows - 1);
+							let currentMaxCols = isLastRow ? lastMaxCols : maxCols ;
+							let offsetWidth = isLastRow ? widthInLastRow : width ;
+							let tile = {
+									col       : col,
+									row       : row,
+									first     : col == 0,
+									last      : (col == currentMaxCols- 1 ),
+									direction : ((aTab && aTab._tPos < selectedTab._tPos) ? -1 : aTab ? 1 : 0 ),
+									width     : ((col == currentMaxCols - 1) ?
+													(isLastRow ? lastWidthInLastRow : lastWidth ) :
+													offsetWidth
+												),
+									height    : isLastRow ? lastHeight : height
+								};
+							tile.x = baseX + (offsetWidth * col);
+							tile.y = baseY + (height * row);
+							if (aTab) {
+								deferreds.push(this.openLinkAt(aTab, tile));
+							}
+							else {
+								this.moveTo(tile.x, tile.y);
+								this.resizeTo(tile.width, tile.height);
+								deferreds.push(Deferred.next(function() {
+									return self.window;
+								}));
+							}
+							col++;
+							if (col == currentMaxCols) {
+								col = 0;
+								row++;
+							}
+							return tile;
+						}, this);
+
+			return Deferred
+					.parallel(deferreds)
+					.next(function(aWindows) {
+						var beforeXTiles = [];
+						var beforeYTiles = [];
+						var afterXTiles  = [];
+						var afterYTiles  = [];
+						var rows = [];
+
+						/**
+						 * JSDeferred doesn't return results as an array
+						 * if parallel() received an array from another namespace.
+						 * So, we manuall make it an array.
+						 */
+						aWindows.length = count;
+						Array.forEach(aWindows, function(aWindow, aIndex) {
+							var tile = tiles[aIndex];
+							tile.FSWindow = aWindow.FoxSplitter;
+							if (tile.direction == -1) {
+								if (tile.last)
+									beforeYTiles.unshift(tile);
+								else
+									beforeXTiles.unshift(tile);
+							}
+							else if (tile.direction == 1) {
+								if (tile.first)
+									afterYTiles.push(tile);
+								else
+									afterXTiles.push(tile);
+							}
+							let row = rows[tile.row] || [];
+							row[tile.col] = tile;
+							rows[tile.row] = row;
+						});
+
+						beforeYTiles.forEach(function(aTile, aIndex) {
+							var base = !aIndex ? self : beforeYTiles[aIndex-1];
+							aTile.FSWindow.attachTo(base, self.POSITION_TOP, true);
+						});
+						beforeXTiles.forEach(function(aTile) {
+							var row = rows[aTile.row]
+							aTile.FSWindow.attachTo(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
+						});
+
+						afterYTiles.forEach(function(aTile, aIndex) {
+							var base = !aIndex ? self : afterYTiles[aIndex-1];
+							aTile.FSWindow.attachTo(base, self.POSITION_BOTTOM, true);
+						});
+						afterXTiles.forEach(function(aTile) {
+							var row = rows[aTile.row]
+							aTile.FSWindow.attachTo(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
+						});
+
+						self.parent.resetPositionAndSize(self); // for safety
+
+						return tiles.map(function(aTile) {
+							return aTile.FSWindow.window;
+						})
+					});
 		}
 	},
 
