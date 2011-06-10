@@ -298,35 +298,61 @@ FoxSplitterWindow.prototype = {
 	_initPositionAndSize : function FSW_initPositionAndSize()
 	{
 		var base = this.sibling;
+		var positionAndSize = this._calculatePositionAndSize(base, this.position);
+
+		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
+			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
+		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
+			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
+
+		if (this.screenX != positionAndSize.x || this.screenY != positionAndSize.y)
+			base.moveTo(positionAndSize.x, positionAndSize.y);
+		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
+			base.resizeTo(positionAndSize.width, positionAndSize.height);
+	},
+
+	_calculatePositionAndSize : function FSW_calculatePositionAndSize(aBaseFSWidnow, aPosition)
+	{
 		var x, y, width, height;
-		if (this.position & this.kPOSITION_HORIZONTAL) {
-			y = base.screenY;
-			width = Math.round(base.width * 0.5);
-			height = base.height;
-			if (this.position == this.kPOSITION_LEFT) {
-				x = base.screenX;
-				base.moveBy(width, 0);
+		var base = {
+				deltaX      : 0,
+				deltaY      : 0,
+				deltaWidth  : 0,
+				deltaHeight : 0
+			};
+		if (aPosition & this.kPOSITION_HORIZONTAL) {
+			y = aBaseFSWidnow.screenY;
+			width = Math.round(aBaseFSWidnow.width * 0.5);
+			height = aBaseFSWidnow.height;
+			if (aPosition == this.kPOSITION_LEFT) {
+				x = aBaseFSWidnow.screenX;
+				base.deltaX = width;
 			}
 			else {
-				x = base.screenX + width;
+				x = aBaseFSWidnow.screenX + width;
 			}
-			base.resizeBy(-width, 0);
+			base.deltaWidth = -width;
 		}
 		else {
-			x = base.screenX;
-			width = base.width;
-			height = Math.round(base.height * 0.5);
-			if (this.position == this.kPOSITION_TOP) {
-				y = base.screenY;
-				base.moveBy(0, height);
+			x = aBaseFSWidnow.screenX;
+			width = aBaseFSWidnow.width;
+			height = Math.round(aBaseFSWidnow.height * 0.5);
+			if (aPosition == this.kPOSITION_TOP) {
+				y = aBaseFSWidnow.screenY;
+				base.deltaY = height;
 			}
 			else {
-				y = base.screenY + height;
+				y = aBaseFSWidnow.screenY + height;
 			}
-			base.resizeBy(0, -height);
+			base.deltaHeight = -height;
 		}
-		this.moveTo(x, y);
-		this.resizeTo(width, height);
+		return {
+			x      : x,
+			y      : y,
+			width  : width,
+			height : height,
+			base   : base
+		};
 	},
 
 	detach : function FSW_detach()
@@ -460,13 +486,22 @@ FoxSplitterWindow.prototype = {
 
 	openLinksIn : function FSW_openLinkIn(aURIs, aPosition)
 	{
+		var positionAndSize = this._calculatePositionAndSize(this, aPosition);
+		var options = [
+				'chrome,dialog=no,all',
+				'screenX='+positionAndSize.x,
+				'screenY='+positionAndSize.y,
+				'outerWidth='+positionAndSize.width,
+				'outerHeight='+positionAndSize.height
+			].join(',');
+
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 		var deferred = new Deferred();
 		var window = this.window.openDialog(
 				'chrome://browser/content/browser.xul',
 				'_blank',
-				'chrome,dialog=no,all',
+				options,
 				first
 			);
 		var self = this;
