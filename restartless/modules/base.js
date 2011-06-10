@@ -6,23 +6,24 @@ function FoxSplitterBase()
 {
 }
 FoxSplitterBase.prototype = {
-	kATTACHED_POSITION : 'foxsplitter-attached-position',
-	kATTACHED_BASE     : 'foxsplitter-attached-base',
+	ATTACHED_POSITION : 'foxsplitter-attached-position',
+	ATTACHED_BASE     : 'foxsplitter-attached-base',
 	kACTIVE            : 'foxsplitter-window-active',
 
-	kPOSITION_TOP    : (1 << 0),
-	kPOSITION_RIGHT  : (1 << 1),
-	kPOSITION_BOTTOM : (1 << 2),
-	kPOSITION_LEFT   : (1 << 3),
+	// compatible to old implementation
+	POSITION_TOP    : (1 << 2),
+	POSITION_RIGHT  : (1 << 1),
+	POSITION_BOTTOM : (1 << 3),
+	POSITION_LEFT   : (1 << 0),
 
-	kPOSITION_HORIZONTAL : (1 << 1) | (1 << 3),
-	kPOSITION_VERTICAL   : (1 << 0) | (1 << 2),
+	POSITION_HORIZONTAL : (1 << 0) | (1 << 1),
+	POSITION_VERTICAL   : (1 << 2) | (1 << 3),
 
-	kPOSITION_OUTSIDE : (1 << 4),
-	kPOSITION_INSIDE  : (1 << 5),
+	POSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
 
-	kPOSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
-	kPOSITION_INVALID : (1 << 4) | (1 << 5),
+	POSITION_OUTSIDE : (1 << 4),
+	POSITION_INSIDE  : (1 << 5),
+
 
 	isGroup : false,
 
@@ -94,11 +95,11 @@ FoxSplitterBase.prototype = {
 		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
-			if (sibling.position == this.kPOSITION_TOP) {
+			if (sibling.position == this.POSITION_TOP) {
 				splitterResizing = true;
 				sibling.resizeBy(0, -aDelta);
 			}
-			else if (sibling.position == this.kPOSITION_BOTTOM) {
+			else if (sibling.position == this.POSITION_BOTTOM) {
 				let halfDelta = Math.round(aDelta / 2);
 				this.reserveResizeBy(0, -halfDelta);
 				sibling.reserveResizeBy(0, aDelta - halfDelta);
@@ -121,12 +122,12 @@ FoxSplitterBase.prototype = {
 		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
-			if (sibling.position == this.kPOSITION_RIGHT) {
+			if (sibling.position == this.POSITION_RIGHT) {
 				splitterResizing = true;
 				sibling.moveBy(aDelta, 0);
 				sibling.resizeBy(-aDelta, 0);
 			}
-			else if (sibling.position == this.kPOSITION_LEFT) {
+			else if (sibling.position == this.POSITION_LEFT) {
 				let halfDelta = Math.round(aDelta / 2);
 				// resize before move, to prevent unexpected resizing fired by window move
 				this.reserveResizeBy(-(aDelta - halfDelta), 0);
@@ -149,12 +150,12 @@ FoxSplitterBase.prototype = {
 		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
-			if (sibling.position == this.kPOSITION_BOTTOM) {
+			if (sibling.position == this.POSITION_BOTTOM) {
 				splitterResizing = true;
 				sibling.moveBy(0, aDelta);
 				sibling.resizeBy(0, -aDelta);
 			}
-			else if (sibling.position == this.kPOSITION_TOP) {
+			else if (sibling.position == this.POSITION_TOP) {
 				let halfDelta = Math.round(aDelta / 2);
 				// resize before move, to prevent unexpected resizing fired by window move
 				this.reserveResizeBy(0, -(aDelta - halfDelta));
@@ -177,11 +178,11 @@ FoxSplitterBase.prototype = {
 		var splitterResizing = false;
 		var sibling = this.sibling;
 		if (sibling) {
-			if (sibling.position == this.kPOSITION_LEFT) {
+			if (sibling.position == this.POSITION_LEFT) {
 				splitterResizing = true;
 				sibling.resizeBy(-aDelta, 0);
 			}
-			else if (sibling.position == this.kPOSITION_RIGHT) {
+			else if (sibling.position == this.POSITION_RIGHT) {
 				let halfDelta = Math.round(aDelta / 2);
 				this.reserveResizeBy(-halfDelta, 0);
 				sibling.reserveMoveBy(-halfDelta, 0);
@@ -209,16 +210,16 @@ FoxSplitterBase.prototype = {
 
 var prototype = FoxSplitterBase.prototype;
 prototype.positionName = {};
-prototype.positionName[prototype.kPOSITION_TOP]     = 'top';
-prototype.positionName[prototype.kPOSITION_RIGHT]   = 'right';
-prototype.positionName[prototype.kPOSITION_BOTTOM]  = 'bottom';
-prototype.positionName[prototype.kPOSITION_LEFT]    = 'left';
-prototype.positionName[prototype.kPOSITION_INSIDE]  = 'in';
-prototype.positionName[prototype.kPOSITION_OUTSIDE] = 'out';
+prototype.positionName[prototype.POSITION_TOP]     = 'top';
+prototype.positionName[prototype.POSITION_RIGHT]   = 'right';
+prototype.positionName[prototype.POSITION_BOTTOM]  = 'bottom';
+prototype.positionName[prototype.POSITION_LEFT]    = 'left';
+prototype.positionName[prototype.POSITION_INSIDE]  = 'in';
+prototype.positionName[prototype.POSITION_OUTSIDE] = 'out';
 prototype.opposite = {};
-prototype.opposite[prototype.kPOSITION_TOP]     = prototype.kPOSITION_BOTTOM;
-prototype.opposite[prototype.kPOSITION_RIGHT]   = prototype.kPOSITION_LEFT;
-prototype.opposite[prototype.kPOSITION_BOTTOM]  = prototype.kPOSITION_TOP;
-prototype.opposite[prototype.kPOSITION_LEFT]    = prototype.kPOSITION_RIGHT;
-prototype.opposite[prototype.kPOSITION_INSIDE]  = prototype.kPOSITION_OUTSIDE;
-prototype.opposite[prototype.kPOSITION_OUTSIDE] = prototype.kPOSITION_INSIDE;
+prototype.opposite[prototype.POSITION_TOP]     = prototype.POSITION_BOTTOM;
+prototype.opposite[prototype.POSITION_RIGHT]   = prototype.POSITION_LEFT;
+prototype.opposite[prototype.POSITION_BOTTOM]  = prototype.POSITION_TOP;
+prototype.opposite[prototype.POSITION_LEFT]    = prototype.POSITION_RIGHT;
+prototype.opposite[prototype.POSITION_INSIDE]  = prototype.POSITION_OUTSIDE;
+prototype.opposite[prototype.POSITION_OUTSIDE] = prototype.POSITION_INSIDE;

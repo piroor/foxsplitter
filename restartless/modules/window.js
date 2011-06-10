@@ -119,12 +119,12 @@ FoxSplitterWindow.prototype = {
 	{
 		return (
 			this._position ||
-			(this._position = parseInt(this.documentElement.getAttribute(this.kATTACHED_POSITION)))
+			(this._position = parseInt(this.documentElement.getAttribute(this.ATTACHED_POSITION)))
 		);
 	},
 	set position(aValue)
 	{
-		this.documentElement.setAttribute(this.kATTACHED_POSITION, aValue);
+		this.documentElement.setAttribute(this.ATTACHED_POSITION, aValue);
 		return this._position = aValue;
 	},
 
@@ -244,15 +244,15 @@ FoxSplitterWindow.prototype = {
 				arguments.length > 0 &&
 				arguments[0] instanceof Ci.nsIDOMElement &&
 				arguments[0].localName == 'tab' &&
-				arguments[0].hasAttribute(this.kATTACHED_POSITION) &&
-				arguments[0].hasAttribute(this.kATTACHED_BASE)
+				arguments[0].hasAttribute(this.ATTACHED_POSITION) &&
+				arguments[0].hasAttribute(this.ATTACHED_BASE)
 			) ? arguments[0] : null ;
 
 		if (!sourceTab)
 			return;
 
-		var baseFSWindow = FoxSplitterWindow.instancesById[sourceTab.getAttribute(this.kATTACHED_BASE)];
-		var position = parseInt(sourceTab.getAttribute(this.kATTACHED_POSITION));
+		var baseFSWindow = FoxSplitterWindow.instancesById[sourceTab.getAttribute(this.ATTACHED_BASE)];
+		var position = parseInt(sourceTab.getAttribute(this.ATTACHED_POSITION));
 		this.attachTo(baseFSWindow, position, aOnInit);
 	},
 
@@ -267,7 +267,7 @@ FoxSplitterWindow.prototype = {
 
 	attachTo : function FSW_attach(aBaseFSWindow, aPosition, aSilent)
 	{
-		if (!aBaseFSWindow || !(aPosition & this.kPOSITION_VALID))
+		if (!aBaseFSWindow || !(aPosition & this.POSITION_VALID))
 			return;
 
 		this.detach();
@@ -320,11 +320,11 @@ FoxSplitterWindow.prototype = {
 				deltaWidth  : 0,
 				deltaHeight : 0
 			};
-		if (aPosition & this.kPOSITION_HORIZONTAL) {
+		if (aPosition & this.POSITION_HORIZONTAL) {
 			y = aBaseFSWidnow.screenY;
 			width = Math.round(aBaseFSWidnow.width * 0.5);
 			height = aBaseFSWidnow.height;
-			if (aPosition == this.kPOSITION_LEFT) {
+			if (aPosition == this.POSITION_LEFT) {
 				x = aBaseFSWidnow.screenX;
 				base.deltaX = width;
 			}
@@ -337,7 +337,7 @@ FoxSplitterWindow.prototype = {
 			x = aBaseFSWidnow.screenX;
 			width = aBaseFSWidnow.width;
 			height = Math.round(aBaseFSWidnow.height * 0.5);
-			if (aPosition == this.kPOSITION_TOP) {
+			if (aPosition == this.POSITION_TOP) {
 				y = aBaseFSWidnow.screenY;
 				base.deltaY = height;
 			}
@@ -397,13 +397,13 @@ FoxSplitterWindow.prototype = {
 		if (!sibling)
 			return;
 
-		if (sibling.position & this.kPOSITION_HORIZONTAL) {
-			if (sibling.position == this.kPOSITION_RIGHT)
+		if (sibling.position & this.POSITION_HORIZONTAL) {
+			if (sibling.position == this.POSITION_RIGHT)
 				sibling.moveBy(-this.width, 0);
 			sibling.resizeBy(this.width, 0);
 		}
 		else {
-			if (sibling.position == this.kPOSITION_BOTTOM)
+			if (sibling.position == this.POSITION_BOTTOM)
 				sibling.moveBy(0, -this.height);
 			sibling.resizeBy(0, this.height);
 		}
@@ -545,8 +545,8 @@ FoxSplitterWindow.prototype = {
 	{
 		aTabs = aTabs.slice(0);
 		var tab = aTabs.shift();
-		tab.setAttribute(this.kATTACHED_POSITION, aPosition);
-		tab.setAttribute(this.kATTACHED_BASE, this.id);
+		tab.setAttribute(this.ATTACHED_POSITION, aPosition);
+		tab.setAttribute(this.ATTACHED_BASE, this.id);
 		return this.openLinkIn(tab, aPosition)
 				.next(function(aWindow) {
 					aTabs.forEach(function(aTab) {
@@ -770,7 +770,7 @@ FoxSplitterWindow.prototype = {
 				tabs : [],
 				link : null,
 				canDrop : false,
-				position : this.kPOSITION_OUTSIDE
+				position : this.POSITION_OUTSIDE
 			};
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return dragInfo;
@@ -799,7 +799,7 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		this._updateDropIndicator(dragInfo.position);
-		if (dragInfo.position & this.kPOSITION_INVALID)
+		if (!(dragInfo.position & this.POSITION_VALID))
 			return;
 
 		aEvent.dataTransfer.effectAllowed = 'all';
@@ -828,7 +828,7 @@ FoxSplitterWindow.prototype = {
 			aFSWindow.hideDropIndicator();
 		});
 
-		if (!(position & this.kPOSITION_VALID))
+		if (!(position & this.POSITION_VALID))
 			return;
 
 		if (tabs.length) {
@@ -975,27 +975,27 @@ FoxSplitterWindow.prototype = {
 
 		// out of area
 		if (x < 0 || x > width || y < 0 || y > height)
-			return this.kPOSITION_OUTSIDE;
+			return this.POSITION_OUTSIDE;
 
 		// too inside
 		if (
 			this.dropZoneSize < x && width - this.dropZoneSize > x &&
 			this.dropZoneSize < y && height - this.dropZoneSize > y
 			)
-			return this.kPOSITION_INSIDE;
+			return this.POSITION_INSIDE;
 
 		var isTopLeft    = x <= width - (y * width / height);
 		var isBottomLeft = x <= y * width / height;
 
-		return (isTopLeft && isBottomLeft) ? this.kPOSITION_LEFT :
-			(isTopLeft && !isBottomLeft) ? this.kPOSITION_TOP :
-			(!isTopLeft && isBottomLeft) ? this.kPOSITION_BOTTOM :
-			this.kPOSITION_RIGHT ;
+		return (isTopLeft && isBottomLeft) ? this.POSITION_LEFT :
+			(isTopLeft && !isBottomLeft) ? this.POSITION_TOP :
+			(!isTopLeft && isBottomLeft) ? this.POSITION_BOTTOM :
+			this.POSITION_RIGHT ;
 	},
 
 	_updateDropIndicator : function FSW_updateDropIndicator(aPosition)
 	{
-		if (aPosition & this.kPOSITION_INVALID) {
+		if (!(aPosition & this.POSITION_VALID)) {
 			this._reserveHideDropIndicator();
 			return;
 		}
@@ -1031,23 +1031,23 @@ FoxSplitterWindow.prototype = {
 
 		var x = this.screenX;
 		var y = this.screenY;
-		var width  = aPosition & this.kPOSITION_HORIZONTAL ? size : this.width ;
-		var height = aPosition & this.kPOSITION_VERTICAL ? size : this.height ;
+		var width  = aPosition & this.POSITION_HORIZONTAL ? size : this.width ;
+		var height = aPosition & this.POSITION_VERTICAL ? size : this.height ;
 		switch (aPosition)
 		{
-			case this.kPOSITION_TOP:
+			case this.POSITION_TOP:
 				y = this.screenY - size;
 				indicator.firstChild.setAttribute('value', '\u25B2');
 				break;
-			case this.kPOSITION_RIGHT:
+			case this.POSITION_RIGHT:
 				x = this.screenX + this.width;
 				indicator.firstChild.setAttribute('value', '\u25B6');
 				break;
-			case this.kPOSITION_BOTTOM:
+			case this.POSITION_BOTTOM:
 				y = this.screenY + this.height;
 				indicator.firstChild.setAttribute('value', '\u25BC');
 				break;
-			case this.kPOSITION_LEFT:
+			case this.POSITION_LEFT:
 				x = this.screenX - size;
 				indicator.firstChild.setAttribute('value', '\u25C0');
 				break;

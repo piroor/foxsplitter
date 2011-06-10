@@ -36,19 +36,19 @@ FoxSplitterGroup.prototype = {
 
 	get topMember()
 	{
-		return this._getMemberAt(this.kPOSITION_TOP);
+		return this._getMemberAt(this.POSITION_TOP);
 	},
 	get rightMember()
 	{
-		return this._getMemberAt(this.kPOSITION_RIGHT);
+		return this._getMemberAt(this.POSITION_RIGHT);
 	},
 	get bottomMember()
 	{
-		return this._getMemberAt(this.kPOSITION_BOTTOM);
+		return this._getMemberAt(this.POSITION_BOTTOM);
 	},
 	get leftMember()
 	{
-		return this._getMemberAt(this.kPOSITION_LEFT);
+		return this._getMemberAt(this.POSITION_LEFT);
 	},
 	get startMember()
 	{
@@ -225,22 +225,22 @@ FoxSplitterGroup.prototype = {
 		if (another.isGroup)
 			another.resetPositionAndSize();
 
-		var expectedX = base.position & this.kPOSITION_VERTICAL ?
+		var expectedX = base.position & this.POSITION_VERTICAL ?
 						base.screenX :
-					base.position & this.kPOSITION_LEFT ?
+					base.position & this.POSITION_LEFT ?
 						base.screenX + base.width :
 						base.screenX - another.width ;
-		var expectedY = base.position & this.kPOSITION_HORIZONTAL ?
+		var expectedY = base.position & this.POSITION_HORIZONTAL ?
 						base.screenY :
-					base.position & this.kPOSITION_TOP ?
+					base.position & this.POSITION_TOP ?
 						base.screenY + base.height :
 						base.screenY - another.height ;
 		if (another.screenX != expectedX || another.screenY != expectedY)
 			another.moveTo(expectedX, expectedY);
 
-		var expectedWidth = base.position & this.kPOSITION_VERTICAL ?
+		var expectedWidth = base.position & this.POSITION_VERTICAL ?
 							base.width : another.width ;
-		var expectedHeight = base.position & this.kPOSITION_HORIZONTAL ?
+		var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
 							base.height : another.height ;
 		if (another.width != expectedWidth || another.height != expectedHeight)
 			another.resizeTo(expectedWidth, expectedHeight);
