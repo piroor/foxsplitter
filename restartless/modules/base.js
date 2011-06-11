@@ -360,6 +360,12 @@ FoxSplitterBase.prototype = {
 	{
 		dump(aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
 		throw aError;
+	},
+
+	dumpError : function FSB_dumpError(aError, aMessage)
+	{
+		var message = aMessage ? aMessage+'\n' : '' ;
+		dump(message+aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
 	}
 };
 

@@ -96,16 +96,9 @@ FoxSplitterWindow.prototype = {
 	get window()
 	{
 		if (!this._window) {
-			let stack = Components.stack;
-			let stacks = [stack];
-			while (stack.caller)
-			{
-				stacks.push(stack.caller);
-				stack = stack.caller;
-			}
-			let message = 'illegal access to "window":\n'+stacks.join('\n');
-			dump(message+'\n');
-			throw new Error(message);
+			let error = new Error('illegal access to "window"');
+			this.dumpError(error);
+			throw error;
 		}
 		return this._window;
 	},
@@ -406,7 +399,7 @@ FoxSplitterWindow.prototype = {
 				fm.setFocus(focusedElement, flags);
 		}
 		catch(e) {
-			dump('FoxSplitter: FAILED TO RAISE A WINDOW!\n'+e+'\n');
+			this.dumpError(e, 'FoxSplitter: FAILED TO RAISE A WINDOW!');
 		}
 
 		var self = this;
@@ -869,7 +862,7 @@ FoxSplitterWindow.prototype = {
 			}
 		}
 		catch(e) {
-			dump('FoxSplitter: FAILED TO MINIMIZE/RESTORE WINDOWS!\n'+e+'\n');
+			this.dumpError(e, 'FoxSplitter: FAILED TO MINIMIZE/RESTORE WINDOWS!');
 		}
 
 		this.windowStateUpdating--;
@@ -972,7 +965,7 @@ FoxSplitterWindow.prototype = {
 			root.readyToMaximize();
 		}
 		catch(e) {
-			dump('FoxSplitter: FAILED TO MAXIMIZE!\n'+e+'\n');
+			this.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
 			this.resizing--;
 			this.positioning--;
 			return;
@@ -993,7 +986,7 @@ FoxSplitterWindow.prototype = {
 					self.window.restore();
 			})
 			.error(function(aError) {
-				dump('FoxSplitter: FAILED TO MAXIMIZE!\n'+aError+'\n');
+				self.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
 			})
 			.next(function() {
 				self.resizing--;

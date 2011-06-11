@@ -273,7 +273,7 @@ FoxSplitterGroup.prototype = {
 				this.parent.resetPositionAndSize(this);
 		}
 		catch(e) {
-			dump('FoxSplitter: FAILED TO RESET POSITION AND SIZE!\n'+e+'\n');
+			this.dumpError(e, 'FoxSplitter: FAILED TO RESET POSITION AND SIZE!');
 		}
 
 		this.resetting--;
@@ -298,7 +298,6 @@ FoxSplitterGroup.prototype = {
 		this._normalY = this.y;
 		this._normalWidth = this.width;
 		this._normalHeight = this.height;
-		dump([this._normalX, this._normalY, this._normalWidth, this._normalHeight]+'\n');
 	},
 
 	maximizeTo : function FSG_maximizeTo(aOptions)
