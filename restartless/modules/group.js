@@ -12,25 +12,25 @@ FoxSplitterGroup.prototype = {
 
 	isGroup : true,
 
-	get screenX()
+	get x()
 	{
 		var member = this.leftMember || this.topMember;
-		return member ? member.screenX : 0 ;
+		return member ? member.x : 0 ;
 	},
-	get screenY()
+	get y()
 	{
 		var member = this.topMember || this.leftMember;
-		return member ? member.screenY : 0 ;
+		return member ? member.y : 0 ;
 	},
 	get width()
 	{
 		var member = this.rightMember || this.bottomMember;
-		return member ? member.screenX - this.screenX + member.width : 0 ;
+		return member ? member.x - this.x + member.width : 0 ;
 	},
 	get height()
 	{
 		var member = this.bottomMember || this.rightMember;
-		return member ? member.screenY - this.screenY + member.height : 0 ;
+		return member ? member.y - this.y + member.height : 0 ;
 	},
 
 
@@ -77,8 +77,7 @@ FoxSplitterGroup.prototype = {
 
 	_sortWindows : function FSG_sortWindows(aA, aB)
 	{
-		return aA.screenX - aB.screenX ||
-				aA.screenY - aB.screenY ;
+		return aA.x - aB.x || aA.y - aB.y ;
 	},
 
 	get hasMinimizedWindow()
@@ -88,12 +87,6 @@ FoxSplitterGroup.prototype = {
 					aMember.hasMinimizedWindow :
 					aMember.windowState == aMember.window.STATE_MINIMIZED ;
 		});
-	},
-
-	_sortWindows : function FSG_sortWindows(aA, aB)
-	{
-		return aA.screenX - aB.screenX ||
-				aA.screenY - aB.screenY ;
 	},
 
 
@@ -121,7 +114,7 @@ FoxSplitterGroup.prototype = {
 
 	moveTo : function FSG_moveTo(aX, aY, aSource)
 	{
-		this.moveBy(aX - this.screenX, aY - this.screenY, aSource);
+		this.moveBy(aX - this.x, aY - this.y, aSource);
 	},
 
 	moveBy : function FSG_moveBy(aDX, aDY, aSource)
@@ -256,16 +249,16 @@ FoxSplitterGroup.prototype = {
 				another.resetPositionAndSize();
 
 			var expectedX = base.position & this.POSITION_VERTICAL ?
-							base.screenX :
+							base.x :
 						base.position & this.POSITION_LEFT ?
-							base.screenX + base.width :
-							base.screenX - another.width ;
+							base.x + base.width :
+							base.x - another.width ;
 			var expectedY = base.position & this.POSITION_HORIZONTAL ?
-							base.screenY :
+							base.y :
 						base.position & this.POSITION_TOP ?
-							base.screenY + base.height :
-							base.screenY - another.height ;
-			if (another.screenX != expectedX || another.screenY != expectedY)
+							base.y + base.height :
+							base.y - another.height ;
+			if (another.x != expectedX || another.y != expectedY)
 				another.moveTo(expectedX, expectedY);
 
 			var expectedWidth = base.position & this.POSITION_VERTICAL ?
@@ -300,8 +293,8 @@ FoxSplitterGroup.prototype = {
 		if (this.maximized)
 			return;
 
-		this._normalX = this.screenX;
-		this._normalY = this.screenY;
+		this._normalX = this.x;
+		this._normalY = this.y;
 		this._normalWidth = this.width;
 		this._normalHeight = this.height;
 		dump([this._normalX, this._normalY, this._normalWidth, this._normalHeight]+'\n');

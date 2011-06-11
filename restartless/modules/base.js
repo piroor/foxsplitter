@@ -208,10 +208,10 @@ FoxSplitterBase.prototype = {
 
 	updateLastPositionAndSize : function FSB_updateLastPositionAndSize()
 	{
-		this.lastScreenX = this.screenX;
-		this.lastScreenY = this.screenY;
-		this.lastWidth   = this.width;
-		this.lastHeight  = this.height;
+		this.lastX      = this.x;
+		this.lastY      = this.y;
+		this.lastWidth  = this.width;
+		this.lastHeight = this.height;
 	}
 };
 

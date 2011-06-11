@@ -69,19 +69,19 @@ FoxSplitterWindow.prototype = {
 		}
 	]]>.toString(),
 
-	lastScreenX : null,
-	lastScreenY : null,
+	lastX : null,
+	lastY : null,
 	lastWidth   : null,
 	lastHeight  : null,
 
 	dropZoneSize : 64,
 	handleDragWithShiftKey : false,
 
-	get screenX()
+	get x()
 	{
 		return this.window.screenX;
 	},
-	get screenY()
+	get y()
 	{
 		return this.window.screenY;
 	},
@@ -166,8 +166,8 @@ FoxSplitterWindow.prototype = {
 /*
 		if (// on Windows, minimized window is possibly normal and out of screen
 			state == this.window.STATE_NORMAL && 
-			this.screenX == -32000 &&
-			this.screenY == -32000
+			this.x == -32000 &&
+			this.y == -32000
 			)
 			state = this.window.STATE_MINIMIZED;
 */
@@ -329,7 +329,7 @@ FoxSplitterWindow.prototype = {
 		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
 			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
 
-		if (this.screenX != positionAndSize.x || this.screenY != positionAndSize.y)
+		if (this.x != positionAndSize.x || this.y != positionAndSize.y)
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
 			this.resizeTo(positionAndSize.width, positionAndSize.height);
@@ -345,28 +345,28 @@ FoxSplitterWindow.prototype = {
 				deltaHeight : 0
 			};
 		if (aPosition & this.POSITION_HORIZONTAL) {
-			y = aBaseFSWidnow.screenY;
+			y = aBaseFSWidnow.y;
 			width = Math.round(aBaseFSWidnow.width * 0.5);
 			height = aBaseFSWidnow.height;
 			if (aPosition == this.POSITION_LEFT) {
-				x = aBaseFSWidnow.screenX;
+				x = aBaseFSWidnow.x;
 				base.deltaX = width;
 			}
 			else {
-				x = aBaseFSWidnow.screenX + width;
+				x = aBaseFSWidnow.x + width;
 			}
 			base.deltaWidth = -width;
 		}
 		else {
-			x = aBaseFSWidnow.screenX;
+			x = aBaseFSWidnow.x;
 			width = aBaseFSWidnow.width;
 			height = Math.round(aBaseFSWidnow.height * 0.5);
 			if (aPosition == this.POSITION_TOP) {
-				y = aBaseFSWidnow.screenY;
+				y = aBaseFSWidnow.y;
 				base.deltaY = height;
 			}
 			else {
-				y = aBaseFSWidnow.screenY + height;
+				y = aBaseFSWidnow.y + height;
 			}
 			base.deltaHeight = -height;
 		}
@@ -631,8 +631,8 @@ FoxSplitterWindow.prototype = {
 				return aTab._tPos >= selectedTab._tPos;
 			});
 
-		var baseX = this.screenX;
-		var baseY = this.screenY;
+		var baseX = this.x;
+		var baseY = this.y;
 		var totalWidth = this.width;
 		var totalHeight = this.height;
 
@@ -889,7 +889,7 @@ FoxSplitterWindow.prototype = {
 		}
 		else if (
 			!this.positioning &&
-			(this.screenX != this.lastScreenX || this.screenY != this.lastScreenY)
+			(this.x != this.lastX || this.y != this.lastY)
 			) {
 			this.onMove();
 		}
@@ -940,23 +940,23 @@ FoxSplitterWindow.prototype = {
 	onMove : function FSW_onMove()
 	{
 		if (
-			this.lastScreenX === null ||
-			this.lastScreenY === null ||
+			this.lastX === null ||
+			this.lastY === null ||
 			this.positioning ||
 			this.minimized
 			)
 			return;
 
-		var x = this.screenX;
-		var y = this.screenY;
+		var x = this.x;
+		var y = this.y;
 		var root = this.root;
 		if (root) {
-			root.moveBy(x - this.lastScreenX, y - this.lastScreenY, this);
+			root.moveBy(x - this.lastX, y - this.lastY, this);
 			this.parent.reserveResetPositionAndSize(this); // for safety
 		}
 
-		this.lastScreenX = x;
-		this.lastScreenY = y;
+		this.lastX = x;
+		this.lastY = y;
 	},
 
 	onResize : function FSW_onResize()
@@ -964,24 +964,24 @@ FoxSplitterWindow.prototype = {
 		if (this.resizing || this.minimized)
 			return;
 
-		var x = this.screenX;
-		var y = this.screenY;
+		var x = this.x;
+		var y = this.y;
 		var width  = this.width;
 		var height = this.height;
 
-		if (x != this.lastScreenX)
-			this.onResizeLeft(this.lastScreenX - x);
+		if (x != this.lastX)
+			this.onResizeLeft(this.lastX - x);
 		else if (width != this.lastWidth)
 			this.onResizeRight(width - this.lastWidth);
 
-		if (y != this.lastScreenY)
-			this.onResizeTop(this.lastScreenY - y);
+		if (y != this.lastY)
+			this.onResizeTop(this.lastY - y);
 		else if (height != this.lastHeight)
 			this.onResizeBottom(height - this.lastHeight);
 
-		this.lastScreenX = x;
-		this.lastScreenY = y;
-		this.lastWidth = width;
+		this.lastX      = x;
+		this.lastY      = y;
+		this.lastWidth  = width;
 		this.lastHeight = height;
 
 		if (this.parent)
@@ -1043,8 +1043,8 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		Deferred
 			.next(function() {
-				maximizedX = self.screenX;
-				maximizedY = self.screenY;
+				maximizedX = self.x;
+				maximizedY = self.y;
 				maximizedWidth = self.width;
 				maximizedHeight = self.height;
 
@@ -1277,8 +1277,8 @@ FoxSplitterWindow.prototype = {
 
 	_getDropPosition : function FSW_getDropPosition(aEvent)
 	{
-		var oX = this.screenX;
-		var oY = this.screenY;
+		var oX = this.x;
+		var oY = this.y;
 		var x = aEvent.screenX - oX;
 		var y = aEvent.screenY - oY;
 		var width = this.width;
@@ -1340,26 +1340,26 @@ FoxSplitterWindow.prototype = {
 			this.documentElement.appendChild(indicator);
 		}
 
-		var x = this.screenX;
-		var y = this.screenY;
+		var x = this.x;
+		var y = this.y;
 		var width  = aPosition & this.POSITION_HORIZONTAL ? size : this.width ;
 		var height = aPosition & this.POSITION_VERTICAL ? size : this.height ;
 		switch (aPosition)
 		{
 			case this.POSITION_TOP:
-				y = this.screenY - size;
+				y = this.y - size;
 				indicator.firstChild.setAttribute('value', '\u25B2');
 				break;
 			case this.POSITION_RIGHT:
-				x = this.screenX + this.width;
+				x = this.x + this.width;
 				indicator.firstChild.setAttribute('value', '\u25B6');
 				break;
 			case this.POSITION_BOTTOM:
-				y = this.screenY + this.height;
+				y = this.y + this.height;
 				indicator.firstChild.setAttribute('value', '\u25BC');
 				break;
 			case this.POSITION_LEFT:
-				x = this.screenX - size;
+				x = this.x - size;
 				indicator.firstChild.setAttribute('value', '\u25C0');
 				break;
 		}
