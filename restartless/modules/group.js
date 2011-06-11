@@ -72,10 +72,13 @@ FoxSplitterGroup.prototype = {
 		});
 		return members.filter(function(aMember) {
 			return !aMember.isGroup;
-		}).sort(function(aA, aB) {
-			return aA.screenX - aB.screenX ||
-					aA.screenY - aB.screenY ;
-		});
+		}).sort(this._sortWindows);
+	},
+
+	_sortWindows : function FSG_sortWindows(aA, aB)
+	{
+		return aA.screenX - aB.screenX ||
+				aA.screenY - aB.screenY ;
 	},
 
 
