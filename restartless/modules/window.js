@@ -445,7 +445,9 @@ FoxSplitterWindow.prototype = {
 
 		return this.openLinkAt(first, positionAndSize)
 				.next(function(aWindow) {
-					aWindow.FoxSplitter.attachTo(base, aPosition);
+					// If the first item is a tab, it has been already attached.
+					if (!(first instanceof Ci.nsIDOMElement))
+						aWindow.FoxSplitter.attachTo(base, aPosition);
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
