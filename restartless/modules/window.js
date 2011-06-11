@@ -801,7 +801,7 @@ FoxSplitterWindow.prototype = {
 				 * after windows should be imported as rightmost tabs.
 				 */
 				this.importTab(aTab, aIndex < current ? offset++ : -1 );
-			});
+			}, this);
 		}, this);
 		/**
 		 * swapBrowsersAndCloseOther() focuses to the imported tab,
