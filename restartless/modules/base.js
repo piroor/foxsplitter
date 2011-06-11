@@ -61,6 +61,140 @@ FoxSplitterBase.prototype = {
 	},
 
 
+	createGroup : function FSB_createGroup()
+	{
+		if (!this.groupClass)
+			throw new Error('no constructor for groups');
+
+		return new this.groupClass();
+	},
+
+	attachTo : function FSB_attach(aBaseFSWindow, aPosition, aSilent)
+	{
+		if (!aBaseFSWindow || !(aPosition & this.POSITION_VALID))
+			return;
+
+		var newGroup = this.createGroup();
+		var existingGroup;
+
+		existingGroup = aBaseFSWindow.parent;
+		if (existingGroup) {
+			// swap existing relations
+			newGroup.position = aBaseFSWindow.position;
+			existingGroup.register(newGroup);
+			existingGroup.unregister(aBaseFSWindow);
+		}
+		newGroup.register(aBaseFSWindow);
+
+		existingGroup = this.parent;
+		if (existingGroup) {
+			// swap existing relations
+			newGroup.position = this.position;
+			existingGroup.register(newGroup);
+			existingGroup.unregister(this);
+		}
+		newGroup.register(this);
+
+		this.position = aPosition;
+		aBaseFSWindow.position = this.opposite[aPosition];
+
+		Deferred.next(function() {
+			aBaseFSWindow.active = true; // always attach new window as a background window
+		});
+
+		if (!aSilent)
+			this._initPositionAndSize();
+	},
+
+	_initPositionAndSize : function FSB_initPositionAndSize()
+	{
+		var base = this.sibling;
+		var positionAndSize = this._calculatePositionAndSize(base, this.position);
+
+		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
+			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
+		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
+			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
+
+		if (this.x != positionAndSize.x || this.y != positionAndSize.y)
+			this.moveTo(positionAndSize.x, positionAndSize.y);
+		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
+			this.resizeTo(positionAndSize.width, positionAndSize.height);
+	},
+
+	_calculatePositionAndSize : function FSB_calculatePositionAndSize(aBaseFSWidnow, aPosition)
+	{
+		var x, y, width, height;
+		var base = {
+				deltaX      : 0,
+				deltaY      : 0,
+				deltaWidth  : 0,
+				deltaHeight : 0
+			};
+		if (aPosition & this.POSITION_HORIZONTAL) {
+			y = aBaseFSWidnow.y;
+			width = Math.round(aBaseFSWidnow.width * 0.5);
+			height = aBaseFSWidnow.height;
+			if (aPosition == this.POSITION_LEFT) {
+				x = aBaseFSWidnow.x;
+				base.deltaX = width;
+			}
+			else {
+				x = aBaseFSWidnow.x + width;
+			}
+			base.deltaWidth = -width;
+		}
+		else {
+			x = aBaseFSWidnow.x;
+			width = aBaseFSWidnow.width;
+			height = Math.round(aBaseFSWidnow.height * 0.5);
+			if (aPosition == this.POSITION_TOP) {
+				y = aBaseFSWidnow.y;
+				base.deltaY = height;
+			}
+			else {
+				y = aBaseFSWidnow.y + height;
+			}
+			base.deltaHeight = -height;
+		}
+		return {
+			x      : x,
+			y      : y,
+			width  : width,
+			height : height,
+			base   : base
+		};
+	},
+
+
+	detach : function FSB_detach()
+	{
+		if (!this.parent)
+			return;
+
+		this._expandSibling();
+		this.parent.unregister(this);
+	},
+
+	_expandSibling : function FSB_expandSibling()
+	{
+		var sibling = this.sibling;
+		if (!sibling)
+			return;
+
+		if (sibling.position & this.POSITION_HORIZONTAL) {
+			if (sibling.position == this.POSITION_RIGHT)
+				sibling.moveBy(-this.width, 0);
+			sibling.resizeBy(this.width, 0);
+		}
+		else {
+			if (sibling.position == this.POSITION_BOTTOM)
+				sibling.moveBy(0, -this.height);
+			sibling.resizeBy(0, this.height);
+		}
+	},
+
+
 	reserveMoveBy : function FSB_reserveMoveBy(aDX, aDY)
 	{
 		if (this._reservedMoveBy) {

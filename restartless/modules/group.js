@@ -395,4 +395,11 @@ FoxSplitterGroup.prototype = {
 		this.minimized = false;
 	}
 };
-  
+
+FoxSplitterBase.prototype.groupClass = FoxSplitterGroup;
+
+
+function shutdown()
+{
+	FoxSplitterBase.prototype.groupClass = null;
+}

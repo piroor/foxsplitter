@@ -288,106 +288,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	attachTo : function FSW_attach(aBaseFSWindow, aPosition, aSilent)
-	{
-		if (!aBaseFSWindow || !(aPosition & this.POSITION_VALID))
-			return;
-
-		this.detach();
-
-		var newGroup = new FoxSplitterGroup();
-		newGroup.register(this);
-
-		var existingGroup = aBaseFSWindow.parent;
-		if (existingGroup) {
-			// swap existing relations
-			newGroup.position = aBaseFSWindow.position;
-			existingGroup.register(newGroup);
-			existingGroup.unregister(aBaseFSWindow);
-		}
-		newGroup.register(aBaseFSWindow);
-
-		this.position = aPosition;
-		aBaseFSWindow.position = this.opposite[aPosition];
-
-		Deferred.next(function() {
-			aBaseFSWindow.active = true; // always attach new window as a background window
-		});
-
-		if (!aSilent)
-			this._initPositionAndSize();
-	},
-
-	_initPositionAndSize : function FSW_initPositionAndSize()
-	{
-		var base = this.sibling;
-		var positionAndSize = this._calculatePositionAndSize(base, this.position);
-
-		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
-			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
-		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
-			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
-
-		if (this.x != positionAndSize.x || this.y != positionAndSize.y)
-			this.moveTo(positionAndSize.x, positionAndSize.y);
-		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
-			this.resizeTo(positionAndSize.width, positionAndSize.height);
-	},
-
-	_calculatePositionAndSize : function FSW_calculatePositionAndSize(aBaseFSWidnow, aPosition)
-	{
-		var x, y, width, height;
-		var base = {
-				deltaX      : 0,
-				deltaY      : 0,
-				deltaWidth  : 0,
-				deltaHeight : 0
-			};
-		if (aPosition & this.POSITION_HORIZONTAL) {
-			y = aBaseFSWidnow.y;
-			width = Math.round(aBaseFSWidnow.width * 0.5);
-			height = aBaseFSWidnow.height;
-			if (aPosition == this.POSITION_LEFT) {
-				x = aBaseFSWidnow.x;
-				base.deltaX = width;
-			}
-			else {
-				x = aBaseFSWidnow.x + width;
-			}
-			base.deltaWidth = -width;
-		}
-		else {
-			x = aBaseFSWidnow.x;
-			width = aBaseFSWidnow.width;
-			height = Math.round(aBaseFSWidnow.height * 0.5);
-			if (aPosition == this.POSITION_TOP) {
-				y = aBaseFSWidnow.y;
-				base.deltaY = height;
-			}
-			else {
-				y = aBaseFSWidnow.y + height;
-			}
-			base.deltaHeight = -height;
-		}
-		return {
-			x      : x,
-			y      : y,
-			width  : width,
-			height : height,
-			base   : base
-		};
-	},
-
-	detach : function FSW_detach()
-	{
-		if (!this.parent)
-			return;
-
-		this._expandSibling();
-		this.parent.unregister(this);
-	},
-
-
 	destroy : function FSW_destroy(aOnQuit) 
 	{
 		this.hideDropIndicator();
@@ -413,24 +313,6 @@ FoxSplitterWindow.prototype = {
 			return aFSWindow != this;
 		}, this);
 		delete FoxSplitterWindow.instancesById[id];
-	},
-
-	_expandSibling : function FSW_expandSibling()
-	{
-		var sibling = this.sibling;
-		if (!sibling)
-			return;
-
-		if (sibling.position & this.POSITION_HORIZONTAL) {
-			if (sibling.position == this.POSITION_RIGHT)
-				sibling.moveBy(-this.width, 0);
-			sibling.resizeBy(this.width, 0);
-		}
-		else {
-			if (sibling.position == this.POSITION_BOTTOM)
-				sibling.moveBy(0, -this.height);
-			sibling.resizeBy(0, this.height);
-		}
 	},
 
 
@@ -1123,7 +1005,8 @@ FoxSplitterWindow.prototype = {
 				links    : [],
 				canDrop  : false,
 				position : this.POSITION_OUTSIDE,
-				allTabs  : false
+				allTabs  : false,
+				target   : this
 			};
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return dragInfo;
@@ -1157,6 +1040,23 @@ FoxSplitterWindow.prototype = {
 		if (dragInfo.canDrop)
 			dragInfo.position = position;
 
+		if (this.parent) {
+			if (position & this.POSITION_HORIZONTAL &&
+				this.position & this.POSITION_VERTICAL) {
+				let area = this.parent.height / 3;
+				let y = aEvent.screenY - this.parent.y;
+				if (y > area && y < area * 2)
+					dragInfo.target = this.parent;
+			}
+			else if (position & this.POSITION_VERTICAL &&
+					this.position & this.POSITION_HORIZONTAL) {
+				let area = this.parent.width / 3;
+				let x = aEvent.screenX - this.parent.x;
+				if (x > area && x < area * 2)
+					dragInfo.target = this.parent;
+			}
+		}
+
 		return dragInfo;
 	},
 
@@ -1166,7 +1066,7 @@ FoxSplitterWindow.prototype = {
 		if (!dragInfo.canDrop)
 			return;
 
-		this._updateDropIndicator(dragInfo.position);
+		this._updateDropIndicator(dragInfo.position, dragInfo.target);
 		if (!(dragInfo.position & this.POSITION_VALID))
 			return;
 
@@ -1191,6 +1091,7 @@ FoxSplitterWindow.prototype = {
 		var tabs = dragInfo.tabs;
 		var links = dragInfo.links;
 		var position = dragInfo.position;
+		var target = dragInfo.target;
 
 		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 			aFSWindow.hideDropIndicator();
@@ -1199,21 +1100,41 @@ FoxSplitterWindow.prototype = {
 		if (!(position & this.POSITION_VALID))
 			return;
 
+		aEvent.stopPropagation();
+		aEvent.preventDefault();
+
+		var deferred;
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-			if (this.isAccelKeyPressed(aEvent))
-				this.duplicateTabsIn(tabs, position);
-			else if (allTabs.length == tabs.length)
-				tabs[0].ownerDocument.defaultView.FoxSplitter.attachTo(this, position);
-			else
-				this.moveTabsTo(tabs, position);
+			if (this.isAccelKeyPressed(aEvent)) {
+				deferred = this.duplicateTabsIn(tabs, position);
+			}
+			else if (allTabs.length == tabs.length) {
+				let window = tabs[0].ownerDocument.defaultView;
+				window.FoxSplitter.detach();
+				window.FoxSplitter.attachTo(this, position);
+				deferred = Deferred.next(function() {
+					return window;
+				});
+			}
+			else {
+				deferred = this.moveTabsTo(tabs, position);
+			}
 		}
 		else {
-			this.openLinksIn(links, position);
+			deferred = this.openLinksIn(links, position);
 		}
-		aEvent.stopPropagation();
-		aEvent.preventDefault();
+
+		if (target != this)
+			deferred.next(function(aWindow) {
+				var FSWindow = aWindow.FoxSplitter;
+				var position = FSWindow.opposite[FSWindow.position];
+				FSWindow.detach();
+				FSWindow.moveTo(target.x, target.y);
+				FSWindow.resizeTo(target.width, target.height);
+				target.attachTo(FSWindow, position);
+			});
 	},
 
 	_onDragEnd : function FSW_onDragEnd(aEvent)
@@ -1361,7 +1282,7 @@ FoxSplitterWindow.prototype = {
 			this.POSITION_RIGHT ;
 	},
 
-	_updateDropIndicator : function FSW_updateDropIndicator(aPosition)
+	_updateDropIndicator : function FSW_updateDropIndicator(aPosition, aTarget)
 	{
 		if (!(aPosition & this.POSITION_VALID)) {
 			this._reserveHideDropIndicator();
@@ -1374,15 +1295,15 @@ FoxSplitterWindow.prototype = {
 			let self = this;
 			this.hideDropIndicator()
 				.next(function() {
-					self._showDropIndicatorAt(aPosition);
+					self._showDropIndicatorAt(aPosition, aTarget);
 				});
 		}
 		else {
-			this._showDropIndicatorAt(aPosition);
+			this._showDropIndicatorAt(aPosition, aTarget);
 		}
 	},
 
-	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition)
+	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition, aTarget)
 	{
 		var deferred = new Deferred();
 
@@ -1397,10 +1318,12 @@ FoxSplitterWindow.prototype = {
 			this.documentElement.appendChild(indicator);
 		}
 
-		var x = this.x;
-		var y = this.y;
-		var width  = aPosition & this.POSITION_HORIZONTAL ? size : this.width ;
-		var height = aPosition & this.POSITION_VERTICAL ? size : this.height ;
+		var target = aTarget || this;
+
+		var x = target.x;
+		var y = target.y;
+		var width  = aPosition & this.POSITION_HORIZONTAL ? size : target.width ;
+		var height = aPosition & this.POSITION_VERTICAL ? size : target.height ;
 		switch (aPosition)
 		{
 			case this.POSITION_TOP:
