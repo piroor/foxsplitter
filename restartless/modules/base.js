@@ -98,11 +98,6 @@ FoxSplitterBase.prototype = {
 		this.position = aPosition;
 		aBaseFSWindow.position = this.opposite[aPosition];
 
-		Deferred.next(function() {
-			aBaseFSWindow.active = true; // always attach new window as a background window
-		})
-		.error(this.defaultHandleError);
-
 		if (!aSilent)
 			this._initPositionAndSize();
 	},

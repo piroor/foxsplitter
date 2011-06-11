@@ -152,11 +152,12 @@ FoxSplitterWindow.prototype = {
 				aFSWindow.active = false;
 			});
 		}
+		this._active = aValue;
 
 		this.documentElement.setAttribute(this.ACTIVE, aValue);
 //		this._updateChromeHidden();
 
-		return this._active = aValue;
+		return this._active;
 	},
 
 	get windowState()
@@ -278,11 +279,16 @@ FoxSplitterWindow.prototype = {
 		var baseFSWindow = FoxSplitterWindow.instancesById[sourceTab.getAttribute(this.ATTACHED_BASE)];
 		var position = parseInt(sourceTab.getAttribute(this.ATTACHED_POSITION));
 		this.attachTo(baseFSWindow, position, aOnInit);
+
+		Deferred.next(function() {
+			baseFSWindow.active = true; // always attach new window as a background window
+		})
+		.error(this.defaultHandleError);
 	},
 
 	_updateChromeHidden : function FSW_updateChromeHidden()
 	{
-		if (!this.active && this.parent)
+		if ((!this.active || this.hover) && this.parent)
 			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
 		else
 			this.documentElement.removeAttribute('chromehidden');
@@ -925,10 +931,10 @@ FoxSplitterWindow.prototype = {
 		if (this.raising || this.minimized)
 			return;
 
-		if (!this.parent || this.root.hasMinimizedWindow) {
-			this.active = true;
+		var shouldNotRaised = !this.parent || this.root.hasMinimizedWindow;
+		this.active = true;
+		if (!shouldNotRaised)
 			return;
-		}
 
 		var self = this;
 		Deferred.next(function() {
