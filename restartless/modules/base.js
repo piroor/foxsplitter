@@ -100,7 +100,8 @@ FoxSplitterBase.prototype = {
 
 		Deferred.next(function() {
 			aBaseFSWindow.active = true; // always attach new window as a background window
-		});
+		})
+		.error(this.defaultHandleError);
 
 		if (!aSilent)
 			this._initPositionAndSize();
@@ -211,7 +212,8 @@ FoxSplitterBase.prototype = {
 			delete self._reservedMoveDeltaX;
 			delete self._reservedMoveDeltaY
 			delete self._reservedMoveBy;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	reserveResizeBy : function FSB_reserveResizeBy(aDW, aDH)
@@ -230,7 +232,8 @@ FoxSplitterBase.prototype = {
 			delete self._reservedResizeDeltaWidth;
 			delete self._reservedResizeDeltaHeight
 			delete self._reservedResizeBy;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 
@@ -356,6 +359,12 @@ FoxSplitterBase.prototype = {
 	isAccelKeyPressed : function FSB_isAccelKeyPressed(aEvent)
 	{
 		return XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey ;
+	},
+
+	defaultHandleError : function FSB_defaultHandleError(aError)
+	{
+		dump(aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
+		throw aError;
 	}
 };
 

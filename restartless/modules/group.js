@@ -223,7 +223,8 @@ FoxSplitterGroup.prototype = {
 				.next(function() {
 					delete self._reservedResetPositionAndSize;
 					self.resetPositionAndSize(aBaseMember);
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 
 	// reposition/resize grouped windows based on their relations
@@ -345,7 +346,8 @@ FoxSplitterGroup.prototype = {
 					aFSWindow.window.fullScreen = true;
 				else
 					aFSWindow.window.maximize();
-			});
+			})
+			.error(this.defaultHandleError);
 	},
 
 
@@ -374,7 +376,8 @@ FoxSplitterGroup.prototype = {
 			Deferred.next(function() {
 				if (!focused.minimized)
 					focused.window.minimize();
-			});
+			})
+			.error(this.defaultHandleError);
 	},
 
 	_restoreFromMinimized : function FSG_restoreFromMinimized(aTriggerFSWindow)

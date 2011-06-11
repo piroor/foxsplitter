@@ -256,7 +256,8 @@ FoxSplitterWindow.prototype = {
 				self.parent.reserveResetPositionAndSize(); // for safety
 
 			self.startListen();
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	_initGroup : function FSW_initGroup(aOnInit)
@@ -327,7 +328,8 @@ FoxSplitterWindow.prototype = {
 		Deferred.next(function() {
 			self.updateLastPositionAndSize();
 			self.positioning--;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	moveBy : function FSW_moveBy(aDX, aDY)
@@ -341,7 +343,8 @@ FoxSplitterWindow.prototype = {
 		Deferred.next(function() {
 			self.updateLastPositionAndSize();
 			self.positioning--;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	resizeTo : function FSW_resizeTo(aW, aH)
@@ -355,7 +358,8 @@ FoxSplitterWindow.prototype = {
 		Deferred.next(function() {
 			self.updateLastPositionAndSize();
 			self.resizing--;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
@@ -369,7 +373,8 @@ FoxSplitterWindow.prototype = {
 		Deferred.next(function() {
 			self.updateLastPositionAndSize();
 			self.resizing--;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	raise : function FSW_raise()
@@ -401,7 +406,8 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		Deferred.next(function() {
 			self.raising--;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 
@@ -426,7 +432,8 @@ FoxSplitterWindow.prototype = {
 			window.removeEventListener('load', arguments.callee, false);
 			deferred.call(window);
 		}, false);
-		return deferred;
+		return deferred
+				.error(this.defaultHandleError);
 	},
 
 	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
@@ -647,7 +654,8 @@ FoxSplitterWindow.prototype = {
 					return tiles.map(function(aTile) {
 						return aTile.FSWindow.window;
 					})
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 
 	tileAllTabs : function FSW_tileAllTabs(aMode)
@@ -843,7 +851,8 @@ FoxSplitterWindow.prototype = {
 					let self = this;
 					Deferred.next(function() {
 						self.root.minimize(this);
-					});
+					})
+					.error(this.defaultHandleError);
 					break;
 
 				default:
@@ -923,13 +932,14 @@ FoxSplitterWindow.prototype = {
 
 		var self = this;
 		Deferred.next(function() {
-			if (self.root.hasMinimizedWindow) {
+			if (!self.parent || self.root.hasMinimizedWindow) {
 				// _onWindowStateChange() should handle this event instead of this method.
 				return;
 			}
 			self.root.raise();
 			self.raise();
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
@@ -994,7 +1004,8 @@ FoxSplitterWindow.prototype = {
 						height     : maximizedHeight,
 						fullScreen : aFullScreen
 					});
-			});
+			})
+			.error(this.defaultHandleError);
 	},
 
 
@@ -1134,7 +1145,8 @@ FoxSplitterWindow.prototype = {
 				FSWindow.moveTo(target.x, target.y);
 				FSWindow.resizeTo(target.width, target.height);
 				target.attachTo(FSWindow, position);
-			});
+			})
+			.error(this.defaultHandleError);
 	},
 
 	_onDragEnd : function FSW_onDragEnd(aEvent)
@@ -1146,7 +1158,8 @@ FoxSplitterWindow.prototype = {
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
@@ -1356,7 +1369,8 @@ FoxSplitterWindow.prototype = {
 
 		this._lastDropPosition = aPosition;
 
-		return deferred;
+		return deferred
+				.error(this.defaultHandleError);
 	},
 
 	hideDropIndicator : function FSW_hideDropIndicator()
@@ -1390,31 +1404,40 @@ FoxSplitterWindow.prototype = {
 		return deferred
 				.next(function() {
 					return self._hideDropIndicatorPostProcess();
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 	_hideDropIndicatorPostProcess : function FSW_hideDropIndicatorPostProcess()
 	{
 		var deferred = new Deferred();
 
 		var indicator = this._dropIndicator;
-		delete this._dropIndicator;
 		delete this._lastDropPosition;
 
-		if (indicator.state == 'closed') {
-			indicator.parentNode.removeChild(indicator);
+		if (indicator) {
+			delete this._dropIndicator;
+			if (indicator.state == 'closed') {
+				indicator.parentNode.removeChild(indicator);
+				Deferred.next(function() {
+					deferred.call();
+				});
+			}
+			else {
+				indicator.addEventListener('popuphidden', function() {
+					indicator.removeEventListener('popuphidden', arguments.callee, false);
+					indicator.parentNode.removeChild(indicator);
+					deferred.call();
+				}, false);
+				indicator.hidePopup();
+			}
+		}
+		else {
 			Deferred.next(function() {
 				deferred.call();
 			});
 		}
-		else {
-			indicator.addEventListener('popuphidden', function() {
-				indicator.removeEventListener('popuphidden', arguments.callee, false);
-				indicator.parentNode.removeChild(indicator);
-				deferred.call();
-			}, false);
-			indicator.hidePopup();
-		}
-		return deferred;
+		return deferred
+				.error(this.defaultHandleError);
 	},
 
 	_reserveHideDropIndicator : function FSW_reserveHideDropIndicator()
@@ -1424,7 +1447,8 @@ FoxSplitterWindow.prototype = {
 		this._reservedHideDropInidicator = Deferred.next(function() {
 			self.hideDropIndicator();
 			delete self._reservedHideDropInidicator;
-		});
+		})
+		.error(this.defaultHandleError);
 	},
 
 	_cancelReserveHideDropIndicator : function FSW_cancelReserveHideDropIndicator()
