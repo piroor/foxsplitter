@@ -926,7 +926,7 @@ FoxSplitterWindow.prototype = {
 
 		var shouldNotRaised = !this.parent || this.root.hasMinimizedWindow;
 		this.active = true;
-		if (!shouldNotRaised)
+		if (shouldNotRaised)
 			return;
 
 		var self = this;
