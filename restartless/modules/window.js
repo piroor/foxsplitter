@@ -437,6 +437,8 @@ FoxSplitterWindow.prototype = {
 
 	moveTo : function FSW_moveTo(aX, aY)
 	{
+		if (this.minimized) return;
+
 		this.positioning++;
 		this.window.moveTo(aX, aY);
 		this.updateLastPositionAndSize();
@@ -449,6 +451,8 @@ FoxSplitterWindow.prototype = {
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
+		if (this.minimized) return;
+
 		this.positioning++;
 		this.window.moveBy(aDX, aDY);
 		this.updateLastPositionAndSize();
@@ -461,6 +465,8 @@ FoxSplitterWindow.prototype = {
 
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
+		if (this.minimized) return;
+
 		this.resizing++;
 		this.window.resizeTo(aW, aH);
 		this.updateLastPositionAndSize();
@@ -473,6 +479,8 @@ FoxSplitterWindow.prototype = {
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
+		if (this.minimized) return;
+
 		this.resizing++;
 		this.window.resizeBy(aDW, aDH);
 		this.updateLastPositionAndSize();
@@ -485,6 +493,8 @@ FoxSplitterWindow.prototype = {
 
 	raise : function FSW_raise()
 	{
+		if (this.minimized) return;
+
 		this.raising++;
 
 		try {
