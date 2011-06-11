@@ -782,6 +782,41 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	gatherWindows : function FSW_gatherWindows()
+	{
+		if (!this.parent)
+			return;
+
+		var FSWindows = this.root.allWindows;
+		var current = FSWindows.indexOf(this);
+		var browser = this.browser;
+		var offset = 0;
+		var selectedTab = browser.selectedTab;
+		FSWindows.forEach(function(aFSWindow, aIndex) {
+			if (aIndex == current)
+				return;
+
+			Array.forEach(aFSWindow.browser.mTabContainer.childNodes, function(aTab) {
+				var newTab = browser.addTab('about:blank');
+				newTab.linkedBrowser.stop();
+				newTab.linkedBrowser.docShell;
+				/**
+				 * before windows should be imported as leftmost tabs.
+				 * after windows should be imported as rightmost tabs.
+				 */
+				if (aIndex < current)
+					browser.moveTabTo(newTab, offset++);
+				browser.swapBrowsersAndCloseOther(newTab, aTab);
+			});
+		}, this);
+		/**
+		 * swapBrowsersAndCloseOther() focuses to the imported tab,
+		 * so we have to focus to the original selected tab again.
+		 */
+		browser.selectedTab = selectedTab;
+	},
+
+
 
 	// event handling
 
