@@ -5,6 +5,10 @@ load('lib/jsdeferred');
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
 const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
+
+const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+					.getService(Ci.nsIXULAppInfo)
+					.QueryInterface(Ci.nsIXULRuntime);
  
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -16,12 +20,7 @@ FoxSplitterWindow.prototype = {
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 
 	// opacity=0 panel isn't shown on Linux
-	MIN_OPACITY : (
-		Cc['@mozilla.org/xre/app-info;1']
-			.getService(Ci.nsIXULAppInfo)
-			.QueryInterface(Ci.nsIXULRuntime)
-			.OS == 'Linux' ? '0.01' : '0'
-	),
+	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
 
 	BASE_STYLESHEET : <![CDATA[
 /*
@@ -1107,8 +1106,7 @@ FoxSplitterWindow.prototype = {
 		);
 
 		var position = this._getDropPosition(aEvent);
-		if (dragInfo.allTabs && dragInfo.canDrop &&
-			!aEvent.ctrlKey && !aEvent.metaKey)
+		if (dragInfo.allTabs && dragInfo.canDrop && !this.isAccelKeyPressed(aEvent))
 			dragInfo.canDrop = (
 				this != sourceFSWindow &&
 				(
@@ -1135,7 +1133,7 @@ FoxSplitterWindow.prototype = {
 
 		aEvent.dataTransfer.effectAllowed = 'all';
 		aEvent.dataTransfer.dropEffect = dragInfo.tabs.length ?
-				(aEvent.ctrlKey || aEvent.metaKey ? 'copy' : 'move' ) :
+				(this.isAccelKeyPressed(aEvent) ? 'copy' : 'move' ) :
 				'link' ;
 		aEvent.preventDefault();
 	},
@@ -1165,7 +1163,7 @@ FoxSplitterWindow.prototype = {
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-			if (aEvent.ctrlKey || aEvent.metaKey)
+			if (this.isAccelKeyPressed(aEvent))
 				this.duplicateTabsIn(tabs, position);
 			else if (allTabs.length == tabs.length)
 				tabs[0].ownerDocument.defaultView.FoxSplitter.attachTo(this, position);

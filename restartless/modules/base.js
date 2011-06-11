@@ -1,6 +1,10 @@
 load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
+
+const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+					.getService(Ci.nsIXULAppInfo)
+					.QueryInterface(Ci.nsIXULRuntime);
  
 function FoxSplitterBase() 
 {
@@ -212,6 +216,12 @@ FoxSplitterBase.prototype = {
 		this.lastY      = this.y;
 		this.lastWidth  = this.width;
 		this.lastHeight = this.height;
+	},
+
+
+	isAccelKeyPressed : function FSB_isAccelKeyPressed(aEvent)
+	{
+		return XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey ;
 	}
 };
 
