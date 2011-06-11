@@ -58,7 +58,7 @@ FoxSplitterGroup.prototype = {
 	{
 		var member = null;
 		this.members.some(function(aMember) {
-			return aMember.position == aPosition ? member : null ;
+			return member = aMember.position == aPosition ? aMember : null ;
 		});
 		return member;
 	},
