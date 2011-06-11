@@ -541,8 +541,8 @@ FoxSplitterWindow.prototype = {
 				aURIOrTab
 			);
 		var self = this;
-		window.addEventListener('DOMContentLoaded', function() {
-			window.removeEventListener('DOMContentLoaded', arguments.callee, false);
+		window.addEventListener('load', function() {
+			window.removeEventListener('load', arguments.callee, false);
 			deferred.call(window);
 		}, false);
 		return deferred;
@@ -555,6 +555,7 @@ FoxSplitterWindow.prototype = {
 
 		var base = aBase || this;
 		var positionAndSize = this._calculatePositionAndSize(base, aPosition);
+
 		return this.openLinkAt(first, positionAndSize)
 				.next(function(aWindow) {
 					aWindow.FoxSplitter.attachTo(base, aPosition);
@@ -590,9 +591,11 @@ FoxSplitterWindow.prototype = {
 	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition, aBase)
 	{
 		aTabs = aTabs.slice(0);
+
 		var tab = aTabs.shift();
 		tab.setAttribute(this.ATTACHED_POSITION, aPosition);
 		tab.setAttribute(this.ATTACHED_BASE, (aBase || this).id);
+
 		return this.openLinkIn(tab, aPosition, aBase)
 				.next(function(aWindow) {
 					aTabs.forEach(function(aTab) {
@@ -1078,16 +1081,22 @@ FoxSplitterWindow.prototype = {
 	_getDragInfo : function FSW_getDragInfo(aEvent)
 	{
 		var dragInfo = {
-				tabs : [],
-				link : null,
-				canDrop : false,
-				position : this.POSITION_OUTSIDE
+				tabs     : [],
+				links    : [],
+				canDrop  : false,
+				position : this.POSITION_OUTSIDE,
+				allTabs  : false
 			};
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return dragInfo;
 
-		dragInfo.tabs = this._getDraggedTabs(aEvent);
+		dragInfo.tabs  = this._getDraggedTabs(aEvent);
 		dragInfo.links = this._getDraggedLinks(aEvent);
+
+		var sourceFSWindow = dragInfo.tabs.length && dragInfo.tabs[0].ownerDocument.defaultView.FoxSplitter;
+		if (sourceFSWindow && sourceFSWindow.visibleTabs.length == dragInfo.tabs.length)
+			dragInfo.allTabs = true;
+
 		dragInfo.canDrop = (
 			dragInfo.tabs.length ?
 				(
@@ -1097,8 +1106,19 @@ FoxSplitterWindow.prototype = {
 				dragInfo.links.length
 		);
 
+		var position = this._getDropPosition(aEvent);
+		if (dragInfo.allTabs && dragInfo.canDrop &&
+			!aEvent.ctrlKey && !aEvent.metaKey)
+			dragInfo.canDrop = (
+				this != sourceFSWindow &&
+				(
+					this != sourceFSWindow.sibling ||
+					position != sourceFSWindow.position
+				)
+			);
+
 		if (dragInfo.canDrop)
-			dragInfo.position = this._getDropPosition(aEvent);
+			dragInfo.position = position;
 
 		return dragInfo;
 	},
