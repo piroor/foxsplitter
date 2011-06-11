@@ -56,10 +56,11 @@ FoxSplitterGroup.prototype = {
 	},
 	_getMemberAt : function FSG_getMemberAt(aPosition)
 	{
-		var members = this.members.filter(function(aMember) {
-				return aMember.position == aPosition;
-			});
-		return members.length ? members[0] : null ;
+		var member = null;
+		this.members.some(function(aMember) {
+			return aMember.position == aPosition ? member : null ;
+		});
+		return member;
 	},
 
 	get allWindows()
