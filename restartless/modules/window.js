@@ -160,6 +160,20 @@ FoxSplitterWindow.prototype = {
 		return this._active = aValue;
 	},
 
+	get windowState()
+	{
+		var state = this.window.windowState;
+/*
+		if (// on Windows, minimized window is possibly normal and out of screen
+			state == this.window.STATE_NORMAL && 
+			this.screenX == -32000 &&
+			this.screenY == -32000
+			)
+			state = this.window.STATE_MINIMIZED;
+*/
+		return state;
+	},
+
 	get documentElement()
 	{
 		return this.document.documentElement;
@@ -183,6 +197,7 @@ FoxSplitterWindow.prototype = {
 		this.positioning = 0;
 		this.resizing    = 0;
 		this.raising     = 0;
+		this.windowStateUpdating = 0;
 
 		this.id = this.id || ('window-' + Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
@@ -372,6 +387,7 @@ FoxSplitterWindow.prototype = {
 	destroy : function FSW_destroy(aOnQuit) 
 	{
 		this.hideDropIndicator();
+		this.unwatchWindowState();
 
 		var id = this.id;
 
@@ -466,20 +482,25 @@ FoxSplitterWindow.prototype = {
 	{
 		this.raising++;
 
-		var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
+		try {
+			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 
-		var focusedWindow = {};
-		var focusedElement = fm.getFocusedElementForWindow(this.window, true, focusedWindow);
-		var reason = fm.getLastFocusMethod(focusedWindow.value);
-		var flags = Ci.nsIFocusManager.FLAG_RAISE |
-					Ci.nsIFocusManager.FLAG_NOSCROLL |
-					Ci.nsIFocusManager.FLAG_NOSWITCHFRAME |
-					reason;
+			var focusedWindow = {};
+			var focusedElement = fm.getFocusedElementForWindow(this.window, true, focusedWindow);
+			var reason = fm.getLastFocusMethod(focusedWindow.value);
+			var flags = Ci.nsIFocusManager.FLAG_RAISE |
+						Ci.nsIFocusManager.FLAG_NOSCROLL |
+						Ci.nsIFocusManager.FLAG_NOSWITCHFRAME |
+						reason;
 
-		focusedWindow.value.focus();
+			focusedWindow.value.focus();
 
-		if (focusedElement)
-			fm.setFocus(focusedElement, flags);
+			if (focusedElement)
+				fm.setFocus(focusedElement, flags);
+		}
+		catch(e) {
+			dump('FoxSplitter: FAILED TO RAISE A WINDOW!\n'+e+'\n');
+		}
 
 		var self = this;
 		Deferred.next(function() {
@@ -774,6 +795,23 @@ FoxSplitterWindow.prototype = {
 		this._listening = false;
 	},
 
+	watchWindowState : function FSW_watchWindowState()
+	{
+		if (this._watchingWindowStateTimer) return;
+		this.lastWindowState = this.windowState;
+		this._watchingWindowStateTimer = this.window.setInterval(function(aSelf) {
+			aSelf._checkWindowState();
+		}, 500, this);
+	},
+	_watchingWindowStateTimer : null,
+
+	unwatchWindowState : function FSW_unwatchWindowState()
+	{
+		if (!this._watchingWindowStateTimer) return;
+		this.window.clearInterval(this._watchingWindowStateTimer);
+		this._watchingWindowStateTimer = null;
+	},
+
 	handleEvent : function FSW_handleEvent(aEvent) 
 	{
 		switch (aEvent.type)
@@ -829,6 +867,54 @@ FoxSplitterWindow.prototype = {
 		}
 	},
 
+	_checkWindowState : function FSW_checkWindowState()
+	{
+		if (this.lastWindowState != this.windowState) {
+			this._onWindowStateChange();
+		}
+		else if (
+			!this.positioning &&
+			(this.screenX != this.lastScreenX || this.screenY != this.lastScreenY)
+			) {
+			this.onMove();
+		}
+	},
+
+	_onWindowStateChange : function FSW_onWindowStateChange()
+	{
+		var state = this.windowState;
+		var lastState = this.lastWindowState;
+		if (state == lastState)
+			return;
+
+		this.lastWindowState = state;
+
+		if (!this.parent || this.windowStateUpdating)
+			return;
+
+		this.windowStateUpdating++;
+
+		try {
+			switch (state)
+			{
+				case this.window.STATE_MINIMIZED:
+					this.root.minimize();
+					break;
+
+				default:
+					if (lastState == this.window.STATE_MINIMIZED) {
+						this.root.restore();
+					}
+					break;
+			}
+		}
+		catch(e) {
+			dump('FoxSplitter: FAILED TO MINIMIZE/RESTORE WINDOWS!\n'+e+'\n');
+		}
+
+		this.windowStateUpdating--;
+	},
+
 	onMove : function FSW_onMove()
 	{
 		if (
@@ -852,7 +938,8 @@ FoxSplitterWindow.prototype = {
 
 	onResize : function FSW_onResize()
 	{
-		if (this.resizing) return;
+		if (this.resizing)
+			return;
 
 		var x = this.screenX;
 		var y = this.screenY;
@@ -880,15 +967,23 @@ FoxSplitterWindow.prototype = {
 
 	onRaised : function FSW_onRaised()
 	{
-		if (this.raising)
+		if (this.raising || this.windowState == this.window.STATE_MINIMIZED)
 			return;
 
-		this.active = true;
-		if (!this.parent)
+		if (!this.parent || this.root.hasMinimizedWindow) {
+			this.active = true;
 			return;
+		}
 
-		this.root.raise();
-		this.raise();
+		var self = this;
+		Deferred.next(function() {
+			if (self.root.hasMinimizedWindow) {
+				// _onWindowStateChange() should handle this event instead of this method.
+				return;
+			}
+			self.root.raise();
+			self.raise();
+		});
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
@@ -911,7 +1006,15 @@ FoxSplitterWindow.prototype = {
 		this.positioning++;
 
 		var root = this.root;
-		root.readyToMaximize();
+		try {
+			root.readyToMaximize();
+		}
+		catch(e) {
+			dump('FoxSplitter: FAILED TO MAXIMIZE!\n'+e+'\n');
+			this.resizing--;
+			this.positioning--;
+			return;
+		}
 
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
@@ -926,7 +1029,11 @@ FoxSplitterWindow.prototype = {
 					self.window.fullScreen = false;
 				else
 					self.window.restore();
-
+			})
+			.error(function(aError) {
+				dump('FoxSplitter: FAILED TO MAXIMIZE!\n'+aError+'\n');
+			})
+			.next(function() {
 				self.resizing--;
 				self.positioning--;
 			})

@@ -81,6 +81,21 @@ FoxSplitterGroup.prototype = {
 				aA.screenY - aB.screenY ;
 	},
 
+	get hasMinimizedWindow()
+	{
+		return this.members.some(function(aMember) {
+			return aMember.isGroup ?
+					aMember.hasMinimizedWindow :
+					aMember.windowState == aMember.window.STATE_MINIMIZED ;
+		});
+	},
+
+	_sortWindows : function FSG_sortWindows(aA, aB)
+	{
+		return aA.screenX - aB.screenX ||
+				aA.screenY - aB.screenY ;
+	},
+
 
 	init : function FSG_init() 
 	{
@@ -166,21 +181,26 @@ FoxSplitterGroup.prototype = {
 
 	// group specific features
 
-	register : function FSG_register(aFSWindow)
+	register : function FSG_register(aMember)
 	{
-		if (this.members.indexOf(aFSWindow) < 0) {
-			this.members.push(aFSWindow);
-			aFSWindow.parent = this;
+		if (this.members.indexOf(aMember) < 0) {
+			this.members.push(aMember);
+			aMember.parent = this;
+			if (!aMember.isGroup)
+				aMember.watchWindowState();
 		}
 	},
 
-	unregister : function FSG_unregister(aFSWindow)
+	unregister : function FSG_unregister(aMember)
 	{
-		var index = this.members.indexOf(aFSWindow);
+		var index = this.members.indexOf(aMember);
 		if (index > -1) {
 			this.members.splice(index, 1);
-			if (aFSWindow.parent == this)
-				aFSWindow.parent = null;
+			if (aMember.parent == this) {
+				aMember.parent = null;
+				if (!aMember.isGroup)
+					aMember.unwatchWindowState();
+			}
 		}
 		if (this.members.length == 1) {
 			let lastMember = this.members[0];
@@ -221,41 +241,55 @@ FoxSplitterGroup.prototype = {
 
 		this.resetting++;
 
-		var base = aBaseMember || this.startMember;
-		var another = base.sibling;
+		try {
+			var base = aBaseMember || this.startMember;
+			var another = base.sibling;
 
-		base.updateLastPositionAndSize();
-		another.updateLastPositionAndSize();
+			base.updateLastPositionAndSize();
+			another.updateLastPositionAndSize();
 
-		if (base.isGroup)
-			base.resetPositionAndSize();
-		if (another.isGroup)
-			another.resetPositionAndSize();
+			if (base.isGroup)
+				base.resetPositionAndSize();
+			if (another.isGroup)
+				another.resetPositionAndSize();
 
-		var expectedX = base.position & this.POSITION_VERTICAL ?
-						base.screenX :
-					base.position & this.POSITION_LEFT ?
-						base.screenX + base.width :
-						base.screenX - another.width ;
-		var expectedY = base.position & this.POSITION_HORIZONTAL ?
-						base.screenY :
-					base.position & this.POSITION_TOP ?
-						base.screenY + base.height :
-						base.screenY - another.height ;
-		if (another.screenX != expectedX || another.screenY != expectedY)
-			another.moveTo(expectedX, expectedY);
+			var expectedX = base.position & this.POSITION_VERTICAL ?
+							base.screenX :
+						base.position & this.POSITION_LEFT ?
+							base.screenX + base.width :
+							base.screenX - another.width ;
+			var expectedY = base.position & this.POSITION_HORIZONTAL ?
+							base.screenY :
+						base.position & this.POSITION_TOP ?
+							base.screenY + base.height :
+							base.screenY - another.height ;
+			if (another.screenX != expectedX || another.screenY != expectedY)
+				another.moveTo(expectedX, expectedY);
 
-		var expectedWidth = base.position & this.POSITION_VERTICAL ?
-							base.width : another.width ;
-		var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
-							base.height : another.height ;
-		if (another.width != expectedWidth || another.height != expectedHeight)
-			another.resizeTo(expectedWidth, expectedHeight);
+			var expectedWidth = base.position & this.POSITION_VERTICAL ?
+								base.width : another.width ;
+			var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
+								base.height : another.height ;
+			if (another.width != expectedWidth || another.height != expectedHeight)
+				another.resizeTo(expectedWidth, expectedHeight);
 
-		if (this.parent)
-			this.parent.resetPositionAndSize(this);
+			if (this.parent)
+				this.parent.resetPositionAndSize(this);
+		}
+		catch(e) {
+			dump('FoxSplitter: FAILED TO RESET POSITION AND SIZE!\n'+e+'\n');
+		}
 
 		this.resetting--;
+	},
+
+
+	restore : function FSG_restore(aOptions)
+	{
+		if (this.maximized)
+			return this._restoreFromMaximized();
+		else if (this.minimized)
+			return this._restoreFromMinimized();
 	},
 
 
@@ -280,7 +314,7 @@ FoxSplitterGroup.prototype = {
 		this.fullscreen = aOptions.fullScreen;
 	},
 
-	restore : function FSG_restore()
+	_restoreFromMaximized : function FSG_restoreFromMaximized()
 	{
 		if (!this.maximized || !('_normalX' in this))
 			return;
@@ -317,6 +351,47 @@ FoxSplitterGroup.prototype = {
 				else
 					aFSWindow.window.maximize();
 			});
+	},
+
+
+	minimize : function FSG_minimize()
+	{
+		this.minimized = true;
+
+		var focused = null;
+		this.allWindows.some(function(aFSWindow) {
+			if (aFSWindow.active)
+				return focused = aFSWindow;
+			return false;
+		});
+
+		this.allWindows.forEach(function(aFSWindow) {
+			if (aFSWindow != focused)
+				aFSWindow.window.minimize();
+		});
+
+		/**
+		 * The active window must be minimized with delay, because
+		 * this process possibly focuses to a minimized window in this group
+		 * even if it has been already minimized in the same event loop.
+		 */
+		if (focused)
+			Deferred.next(function() {
+				focused.window.minimize();
+			});
+	},
+
+	_restoreFromMinimized : function FSG_restoreFromMinimized()
+	{
+		if (!this.minimized)
+			return;
+
+		this.allWindows.forEach(function(aFSWindow) {
+			aFSWindow.window.restore();
+		});
+		this.resetPositionAndSize();
+
+		this.minimized = false;
 	}
 };
   
