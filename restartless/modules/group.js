@@ -77,7 +77,7 @@ FoxSplitterGroup.prototype = {
 
 	_sortWindows : function FSG_sortWindows(aA, aB)
 	{
-		return aA.x - aB.x || aA.y - aB.y ;
+		return aA.y - aB.y || aA.x - aB.x;
 	},
 
 	get hasMinimizedWindow()
