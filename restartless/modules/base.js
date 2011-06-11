@@ -48,6 +48,20 @@ FoxSplitterBase.prototype = {
 		return (parent && parent != this) ? parent : null ;
 	},
 
+	get sameAxisRoot()
+	{
+		var parent = this;
+		var isHorizontal = this.position & this.POSITION_HORIZONTAL;
+		while (
+				parent.parent &&
+				(parent.position & this.POSITION_HORIZONTAL) == isHorizontal
+			)
+		{
+			parent = parent.parent;
+		}
+		return (parent && parent != this) ? parent : this.parent ;
+	},
+
 	get sibling()
 	{
 		var parent = this.parent;
