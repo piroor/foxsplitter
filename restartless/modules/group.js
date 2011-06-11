@@ -236,17 +236,19 @@ FoxSplitterGroup.prototype = {
 	// reposition/resize grouped windows based on their relations
 	resetPositionAndSize : function FSG_resetPositionAndSize(aBaseMember)
 	{
-		if (this.resetting)
+		if (this.resetting || this.hasMinimizedWindow)
 			return;
 
 		this.resetting++;
 
 		try {
-			var base = aBaseMember || this.startMember;
+			var base = aBaseMember;
+			if (!base || base.parent != this)
+				base = this.startMember;
 			var another = base.sibling;
 
-			base.updateLastPositionAndSize();
-			another.updateLastPositionAndSize();
+			base.updateLastPositionAndSize(aBaseMember);
+			another.updateLastPositionAndSize(aBaseMember);
 
 			if (base.isGroup)
 				base.resetPositionAndSize();
@@ -284,12 +286,12 @@ FoxSplitterGroup.prototype = {
 	},
 
 
-	restore : function FSG_restore(aOptions)
+	restore : function FSG_restore(aTriggerFSWindow)
 	{
 		if (this.maximized)
-			return this._restoreFromMaximized();
+			return this._restoreFromMaximized(aTriggerFSWindow);
 		else if (this.minimized)
-			return this._restoreFromMinimized();
+			return this._restoreFromMinimized(aTriggerFSWindow);
 	},
 
 
@@ -354,7 +356,7 @@ FoxSplitterGroup.prototype = {
 	},
 
 
-	minimize : function FSG_minimize()
+	minimize : function FSG_minimize(aTriggerFSWindow)
 	{
 		this.minimized = true;
 
@@ -366,7 +368,7 @@ FoxSplitterGroup.prototype = {
 		});
 
 		this.allWindows.forEach(function(aFSWindow) {
-			if (aFSWindow != focused)
+			if (aFSWindow != focused && !aFSWindow.minimized)
 				aFSWindow.window.minimize();
 		});
 
@@ -377,19 +379,25 @@ FoxSplitterGroup.prototype = {
 		 */
 		if (focused)
 			Deferred.next(function() {
-				focused.window.minimize();
+				if (!focused.minimized)
+					focused.window.minimize();
 			});
 	},
 
-	_restoreFromMinimized : function FSG_restoreFromMinimized()
+	_restoreFromMinimized : function FSG_restoreFromMinimized(aTriggerFSWindow)
 	{
 		if (!this.minimized)
 			return;
 
 		this.allWindows.forEach(function(aFSWindow) {
-			aFSWindow.window.restore();
+			if (aFSWindow.minimized)
+				aFSWindow.window.restore();
 		});
-		this.resetPositionAndSize();
+
+		if (aTriggerFSWindow && aTriggerFSWindow.parent)
+			aTriggerFSWindow.parent.reserveResetPositionAndSize(aTriggerFSWindow);
+		else
+			this.reserveResetPositionAndSize();
 
 		this.minimized = false;
 	}

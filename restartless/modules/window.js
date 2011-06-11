@@ -174,6 +174,11 @@ FoxSplitterWindow.prototype = {
 		return state;
 	},
 
+	get minimized()
+	{
+		return this.windowState == this.window.STATE_MINIMIZED;
+	},
+
 	get documentElement()
 	{
 		return this.document.documentElement;
@@ -898,12 +903,19 @@ FoxSplitterWindow.prototype = {
 			switch (state)
 			{
 				case this.window.STATE_MINIMIZED:
-					this.root.minimize();
+					/**
+					 * When the active window is minimized, another member can be focused.
+					 * So we have to minimize other windows with a delay.
+					 */
+					let self = this;
+					Deferred.next(function() {
+						self.root.minimize(this);
+					});
 					break;
 
 				default:
 					if (lastState == this.window.STATE_MINIMIZED) {
-						this.root.restore();
+						this.root.restore(this);
 					}
 					break;
 			}
@@ -920,7 +932,8 @@ FoxSplitterWindow.prototype = {
 		if (
 			this.lastScreenX === null ||
 			this.lastScreenY === null ||
-			this.positioning
+			this.positioning ||
+			this.minimized
 			)
 			return;
 
@@ -929,7 +942,7 @@ FoxSplitterWindow.prototype = {
 		var root = this.root;
 		if (root) {
 			root.moveBy(x - this.lastScreenX, y - this.lastScreenY, this);
-			root.reserveResetPositionAndSize(this); // for safety
+			this.parent.reserveResetPositionAndSize(this); // for safety
 		}
 
 		this.lastScreenX = x;
@@ -938,7 +951,7 @@ FoxSplitterWindow.prototype = {
 
 	onResize : function FSW_onResize()
 	{
-		if (this.resizing)
+		if (this.resizing || this.minimized)
 			return;
 
 		var x = this.screenX;
@@ -962,12 +975,12 @@ FoxSplitterWindow.prototype = {
 		this.lastHeight = height;
 
 		if (this.parent)
-			this.root.reserveResetPositionAndSize(this); // for safety
+			this.parent.reserveResetPositionAndSize(this); // for safety
 	},
 
 	onRaised : function FSW_onRaised()
 	{
-		if (this.raising || this.windowState == this.window.STATE_MINIMIZED)
+		if (this.raising || this.minimized)
 			return;
 
 		if (!this.parent || this.root.hasMinimizedWindow) {
