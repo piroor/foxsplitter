@@ -147,20 +147,8 @@ FoxSplitterWindow.prototype = {
 			}, this);
 		}
 		this.documentElement.setAttribute(this.ACTIVE, this._active);
-//		this._updateChromeHidden();
+		this._updateChromeHidden();
 		return this._active;
-	},
-
-	get hover()
-	{
-		return this._hover;
-	},
-	set hover(aValue)
-	{
-		this._hover = !!aValue;
-		this.documentElement.setAttribute(this.HOVER, this._hover);
-//		this._updateChromeHidden();
-		return this._hover;
 	},
 
 	get windowState()
@@ -264,11 +252,23 @@ FoxSplitterWindow.prototype = {
 
 	_updateChromeHidden : function FSW_updateChromeHidden()
 	{
-		if (this.active || this.hover || !this.parent)
-			this.documentElement.removeAttribute('chromehidden');
+		var hiddenItems = [
+				'menubar',
+//				'toolbar',
+//				'location',
+				'directories',
+//				'status',
+				'extrachrome'
+			].join(' ');
+		if (this._originalChromeHidden === null)
+			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
+
+		if (this.active || !this.parent)
+			this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
 		else
-			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
+			this.documentElement.setAttribute('chromehidden', hiddenItems);
 	},
+	_originalChromeHidden : null,
 
 
 	destroy : function FSW_destroy(aOnQuit) 
