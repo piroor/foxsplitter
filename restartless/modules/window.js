@@ -139,18 +139,28 @@ FoxSplitterWindow.prototype = {
 	},
 	set active(aValue)
 	{
-		aValue = !!aValue;
+		this._active = !!aValue;
 		if (aValue && this.parent) {
 			this.root.allWindows.forEach(function(aFSWindow) {
-				aFSWindow.active = false;
-			});
+				if (aFSWindow != this)
+					aFSWindow.active = false;
+			}, this);
 		}
-		this._active = aValue;
-
-		this.documentElement.setAttribute(this.ACTIVE, aValue);
-//		this._updateChromeHidden();
-
+		this.documentElement.setAttribute(this.ACTIVE, this._active);
+		this._updateChromeHidden();
 		return this._active;
+	},
+
+	get hover()
+	{
+		return this._hover;
+	},
+	set hover(aValue)
+	{
+		this._hover = !!aValue;
+		this.documentElement.setAttribute(this.HOVER, this._hover);
+		this._updateChromeHidden();
+		return this._hover;
 	},
 
 	get windowState()
@@ -254,10 +264,10 @@ FoxSplitterWindow.prototype = {
 
 	_updateChromeHidden : function FSW_updateChromeHidden()
 	{
-		if ((!this.active || this.hover) && this.parent)
-			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
-		else
+		if (this.active || this.hover || !this.parent)
 			this.documentElement.removeAttribute('chromehidden');
+		else
+			this.documentElement.setAttribute('chromehidden', 'menubar toolbar location directories status extrachrome');
 	},
 
 
@@ -1094,13 +1104,27 @@ FoxSplitterWindow.prototype = {
 		}
 
 		this._cancelReserveHideAllDropIndicator();
-		this._reserveUpdateDropIndicator(dragInfo.position, dragInfo.target);
+		this._reserveHandleDragOver(dragInfo);
 
 		aEvent.dataTransfer.effectAllowed = 'all';
 		aEvent.dataTransfer.dropEffect = dragInfo.tabs.length ?
 				(this.isAccelKeyPressed(aEvent) ? 'copy' : 'move' ) :
 				'link' ;
 		aEvent.preventDefault();
+	},
+	_reserveHandleDragOver : function FSW_reserveHandleDragOver(aDragInfo)
+	{
+		if (this._reservedHandleDragOver)
+			return;
+
+		var self = this;
+		this._reservedHandleDragOver = Deferred.wait(0.25);
+		this._reservedHandleDragOver
+			.next(function() {
+				delete self._reservedHandleDragOver;
+				self._updateDropIndicator(aDragInfo.position, aDragInfo.target);
+			})
+			.error(this.defaultHandleError);
 	},
 
 	_onDragLeave : function FSW_onDragLeave(aEvent)
@@ -1310,19 +1334,6 @@ FoxSplitterWindow.prototype = {
 			this.POSITION_RIGHT ;
 	},
 
-	_reserveUpdateDropIndicator : function FSW_reserveUpdateDropIndicator(aPosition, aTarget)
-	{
-		var self = this;
-		this._reservedUpdateDropIndicator =
-			Deferred
-				.wait(0.25)
-				.next(function() {
-					delete self._reservedUpdateDropIndicator;
-					self._updateDropIndicator(aPosition, aTarget);
-				})
-				.error(this.defaultHandleError);
-	},
-
 	_updateDropIndicator : function FSW_updateDropIndicator(aPosition, aTarget)
 	{
 		if (!(aPosition & this.POSITION_VALID)) {
@@ -1339,7 +1350,7 @@ FoxSplitterWindow.prototype = {
 					self._showDropIndicatorAt(aPosition, aTarget);
 				});
 		}
-		else {
+		else if (!this._dropIndicator || this._dropIndicator.state != 'open') {
 			this._showDropIndicatorAt(aPosition, aTarget);
 		}
 	},
@@ -1404,9 +1415,10 @@ FoxSplitterWindow.prototype = {
 	hideDropIndicator : function FSW_hideDropIndicator()
 	{
 		this._cancelReserveHideAllDropIndicator();
-		if (this._reservedUpdateDropIndicator) {
-			this._reservedUpdateDropIndicator.cancel();
-			delete this._reservedUpdateDropIndicator;
+
+		if (this._reservedHandleDragOver) {
+			this._reservedHandleDragOver.cancel();
+			delete this._reservedHandleDragOver;
 		}
 
 		var deferred = new Deferred();
@@ -1481,8 +1493,8 @@ FoxSplitterWindow.prototype = {
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
-		})
-		.error(this.defaultHandleError);
+		});
+		this._reservedHideAllDropIndicator.error(this.defaultHandleError);
 	},
 
 	_cancelReserveHideAllDropIndicator : function FSW_cancelReserveHideAllDropIndicator()

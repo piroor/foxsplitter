@@ -11,8 +11,8 @@ function FoxSplitterBase()
 }
 FoxSplitterBase.prototype = {
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
-	ATTACHED_BASE     : 'foxsplitter-attached-base',
-	ACTIVE            : 'foxsplitter-window-active',
+	ACTIVE            : 'foxsplitter-active',
+	HOVER             : 'foxsplitter-hover',
 
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),
@@ -221,8 +221,8 @@ FoxSplitterBase.prototype = {
 			delete self._reservedMoveDeltaX;
 			delete self._reservedMoveDeltaY
 			delete self._reservedMoveBy;
-		})
-		.error(this.defaultHandleError);
+		});
+		this._reservedMoveBy.error(this.defaultHandleError);
 	},
 
 	reserveResizeBy : function FSB_reserveResizeBy(aDW, aDH)
@@ -241,8 +241,8 @@ FoxSplitterBase.prototype = {
 			delete self._reservedResizeDeltaWidth;
 			delete self._reservedResizeDeltaHeight
 			delete self._reservedResizeBy;
-		})
-		.error(this.defaultHandleError);
+		});
+		this._reservedResizeBy.error(this.defaultHandleError);
 	},
 
 

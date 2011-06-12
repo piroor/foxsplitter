@@ -217,14 +217,13 @@ FoxSplitterGroup.prototype = {
 			delete this._reservedResetPositionAndSize;
 		}
 		var self = this;
-		this._reservedResetPositionAndSize =
-			Deferred
-				.wait(0.5)
-				.next(function() {
-					delete self._reservedResetPositionAndSize;
-					self.resetPositionAndSize(aBaseMember);
-				})
-				.error(this.defaultHandleError);
+		this._reservedResetPositionAndSize = Deferred.wait(0.5);
+		this._reservedResetPositionAndSize
+			.next(function() {
+				delete self._reservedResetPositionAndSize;
+				self.resetPositionAndSize(aBaseMember);
+			})
+			.error(this.defaultHandleError);
 	},
 
 	// reposition/resize grouped windows based on their relations
