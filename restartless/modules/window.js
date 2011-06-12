@@ -1135,7 +1135,7 @@ FoxSplitterWindow.prototype = {
 
 	_onDragLeave : function FSW_onDragLeave(aEvent)
 	{
-		this._reserveHideDropIndicator();
+		this._reserveHideAllDropIndicator();
 	},
 
 	_onDrop : function FSW_onDrop(aEvent)
@@ -1343,11 +1343,11 @@ FoxSplitterWindow.prototype = {
 	_updateDropIndicator : function FSW_updateDropIndicator(aPosition, aTarget)
 	{
 		if (!(aPosition & this.POSITION_VALID)) {
-			this._reserveHideDropIndicator();
+			this._reserveHideAllDropIndicator();
 			return;
 		}
 
-		this._cancelReserveHideDropIndicator();
+		this._cancelReserveHideAllDropIndicator();
 
 		if (this._lastDropPosition != aPosition) {
 			let self = this;
@@ -1420,7 +1420,7 @@ FoxSplitterWindow.prototype = {
 
 	hideDropIndicator : function FSW_hideDropIndicator()
 	{
-		this._cancelReserveHideDropIndicator();
+		this._cancelReserveHideAllDropIndicator();
 
 		var deferred = new Deferred();
 		var indicator = this._dropIndicator;
@@ -1485,23 +1485,25 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	_reserveHideDropIndicator : function FSW_reserveHideDropIndicator()
+	_reserveHideAllDropIndicator : function FSW_reserveHideAllDropIndicator()
 	{
-		this._cancelReserveHideDropIndicator();
+		this._cancelReserveHideAllDropIndicator();
 		var self = this;
-		this._reservedHideDropInidicator = Deferred.next(function() {
-			self.hideDropIndicator();
-			delete self._reservedHideDropInidicator;
+		this._reservedHideAllDropIndicator = Deferred.next(function() {
+			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+				aFSWindow.hideDropIndicator();
+			});
+			delete self._reservedHideAllDropIndicator;
 		})
 		.error(this.defaultHandleError);
 	},
 
-	_cancelReserveHideDropIndicator : function FSW_cancelReserveHideDropIndicator()
+	_cancelReserveHideAllDropIndicator : function FSW_cancelReserveHideAllDropIndicator()
 	{
-		if (!this._reservedHideDropInidicator)
+		if (!this._reservedHideAllDropIndicator)
 			return;
-		this._reservedHideDropInidicator.cancel();
-		delete this._reservedHideDropInidicator;
+		this._reservedHideAllDropIndicator.cancel();
+		delete this._reservedHideAllDropIndicator;
 	},
 
 
