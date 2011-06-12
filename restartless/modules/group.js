@@ -229,7 +229,11 @@ FoxSplitterGroup.prototype = {
 	// reposition/resize grouped windows based on their relations
 	resetPositionAndSize : function FSG_resetPositionAndSize(aBaseMember)
 	{
-		if (this.resetting || this.hasMinimizedWindow)
+		if (
+			this.resetting ||
+			this.hasMinimizedWindow ||
+			this.members.length < 2
+			)
 			return;
 
 		this.resetting++;
