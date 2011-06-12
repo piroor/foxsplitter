@@ -1119,12 +1119,14 @@ FoxSplitterWindow.prototype = {
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
 		var dragInfo = this._getDragInfo(aEvent);
-		if (!dragInfo.canDrop)
+		if (!dragInfo.canDrop ||
+			!(dragInfo.position & this.POSITION_VALID)) {
+			this._reserveHideAllDropIndicator();
 			return;
+		}
 
-		this._updateDropIndicator(dragInfo.position, dragInfo.target);
-		if (!(dragInfo.position & this.POSITION_VALID))
-			return;
+		this._cancelReserveHideAllDropIndicator();
+		this._reserveUpdateDropIndicator(dragInfo.position, dragInfo.target);
 
 		aEvent.dataTransfer.effectAllowed = 'all';
 		aEvent.dataTransfer.dropEffect = dragInfo.tabs.length ?
@@ -1340,6 +1342,19 @@ FoxSplitterWindow.prototype = {
 			this.POSITION_RIGHT ;
 	},
 
+	_reserveUpdateDropIndicator : function FSW_reserveUpdateDropIndicator(aPosition, aTarget)
+	{
+		var self = this;
+		this._reservedUpdateDropIndicator =
+			Deferred
+				.wait(0.25)
+				.next(function() {
+					delete self._reservedUpdateDropIndicator;
+					self._updateDropIndicator(aPosition, aTarget);
+				})
+				.error(this.defaultHandleError);
+	},
+
 	_updateDropIndicator : function FSW_updateDropIndicator(aPosition, aTarget)
 	{
 		if (!(aPosition & this.POSITION_VALID)) {
@@ -1421,6 +1436,10 @@ FoxSplitterWindow.prototype = {
 	hideDropIndicator : function FSW_hideDropIndicator()
 	{
 		this._cancelReserveHideAllDropIndicator();
+		if (this._reservedUpdateDropIndicator) {
+			this._reservedUpdateDropIndicator.cancel();
+			delete this._reservedUpdateDropIndicator;
+		}
 
 		var deferred = new Deferred();
 		var indicator = this._dropIndicator;
@@ -1490,10 +1509,10 @@ FoxSplitterWindow.prototype = {
 		this._cancelReserveHideAllDropIndicator();
 		var self = this;
 		this._reservedHideAllDropIndicator = Deferred.next(function() {
+			self._reservedHideAllDropIndicator = null;
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
-			delete self._reservedHideAllDropIndicator;
 		})
 		.error(this.defaultHandleError);
 	},
@@ -1503,7 +1522,16 @@ FoxSplitterWindow.prototype = {
 		if (!this._reservedHideAllDropIndicator)
 			return;
 		this._reservedHideAllDropIndicator.cancel();
-		delete this._reservedHideAllDropIndicator;
+		this._reservedHideAllDropIndicator = null;
+	},
+
+	get _reservedHideAllDropIndicator()
+	{
+		return FoxSplitterWindow._reservedHideAllDropIndicator;
+	},
+	set _reservedHideAllDropIndicator(aValue)
+	{
+		return FoxSplitterWindow._reservedHideAllDropIndicator = aValue;
 	},
 
 
