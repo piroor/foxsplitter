@@ -1030,7 +1030,7 @@ FoxSplitterWindow.prototype = {
 		if (sourceFSWindow && sourceFSWindow.visibleTabs.length == dragInfo.tabs.length)
 			dragInfo.allTabs = true;
 
-		dragInfo.canDrop = (
+		dragInfo.canDrop = !!(
 			dragInfo.tabs.length ?
 				(
 					this.handleDragWithShiftKey ||
@@ -1038,23 +1038,11 @@ FoxSplitterWindow.prototype = {
 				) :
 				dragInfo.links.length
 		);
-
-		var position = this._getDropPosition(aEvent);
-		if (dragInfo.allTabs && dragInfo.canDrop && !this.isAccelKeyPressed(aEvent))
-			dragInfo.canDrop = (
-				this != sourceFSWindow &&
-				(
-					this != sourceFSWindow.sibling ||
-					position != sourceFSWindow.position
-				)
-			);
-
-		if (dragInfo.canDrop)
-			dragInfo.position = position;
+		dragInfo.position = this._getDropPosition(aEvent);
 
 		/**
 		 * If this window has a parent, then the dragged tab can be
-		 * attached to FoxSplitterGroup itself (not FoxSplitterWindow).
+		 * attached to a FoxSplitterGroup itself (not a FoxSplitterWindow).
 		 */
 		if (this.parent) {
 			let parent = this.sameAxisRoot;
@@ -1080,7 +1068,7 @@ FoxSplitterWindow.prototype = {
 			 * if both (A) and (B) are true.
 			 */
 			if (!dragInfo.allTabs || parent != this.parent) {
-				if (position & this.POSITION_HORIZONTAL &&
+				if (dragInfo.position & this.POSITION_HORIZONTAL &&
 					this.position & this.POSITION_VERTICAL) {
 					let parentY = parent.y;
 					let area = this.height / 3;
@@ -1094,7 +1082,7 @@ FoxSplitterWindow.prototype = {
 						)
 						dragInfo.target = parent;
 				}
-				else if (position & this.POSITION_VERTICAL &&
+				else if (dragInfo.position & this.POSITION_VERTICAL &&
 						this.position & this.POSITION_HORIZONTAL) {
 					let parentX = parent.x;
 					let area = this.width / 3;
@@ -1110,6 +1098,20 @@ FoxSplitterWindow.prototype = {
 				}
 			}
 		}
+
+		// window move?
+		if (dragInfo.canDrop && dragInfo.allTabs && !this.isAccelKeyPressed(aEvent))
+			dragInfo.canDrop = (
+				// Ignore dropping on the dragged window itself.
+				dragInfo.target != sourceFSWindow &&
+				(// Ignore dropping to the position between this and the dragged window.
+					dragInfo.target != sourceFSWindow.sibling ||
+					dragInfo.position != sourceFSWindow.position
+				)
+			);
+
+		if (!dragInfo.canDrop)
+			dragInfo.position = this.POSITION_OUTSIDE;
 
 		return dragInfo;
 	},
