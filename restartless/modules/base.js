@@ -121,6 +121,9 @@ FoxSplitterBase.prototype = {
 				self.active = self.active; // update status of grouped windows
 			});
 		}
+
+		if (this.onAttached)
+			this.onAttached();
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -191,6 +194,9 @@ FoxSplitterBase.prototype = {
 
 		this._expandSibling();
 		this.parent.unregister(this);
+
+		if (this.onDetached)
+			this.onDetached();
 	},
 
 	_expandSibling : function FSB_expandSibling()

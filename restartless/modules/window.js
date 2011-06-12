@@ -68,13 +68,15 @@ FoxSplitterWindow.prototype = {
 		}
 	]]>.toString(),
 
-	lastX : null,
-	lastY : null,
-	lastWidth   : null,
-	lastHeight  : null,
+	lastX      : null,
+	lastY      : null,
+	lastWidth  : null,
+	lastHeight : null,
 
-	dropZoneSize : 64,
-	handleDragWithShiftKey : false,
+	dropZoneSize                  : 64,
+	handleDragWithShiftKey        : false,
+	shouldAutoHideTabs            : true,
+	shouldAutoSmallizeToolbarMode : true,
 
 	get x()
 	{
@@ -181,8 +183,11 @@ FoxSplitterWindow.prototype = {
 		return this._window && this.window.gBrowser;
 	},
 	get visibleTabs() {
-		return this.browser.visibleTabs ||
-				Array.slice(this.browser.mTabContainer.childNodes);
+		return !this._window ? [] :
+			(this.browser.visibleTabs || Array.slice(this.browser.mTabContainer.childNodes));
+	},
+	get toolbars() {
+		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
 	},
 
 
@@ -911,6 +916,8 @@ FoxSplitterWindow.prototype = {
 		if (this.raising || this.minimized)
 			return;
 
+		this.active = true;
+
 		this.raising++;
 
 		if (this._reservedHandleRaised)
@@ -934,18 +941,8 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleRaised : function FSW_handleRaised()
 	{
-		if (
-			!this.parent &&
-			this.browser
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
-					treeStyleTab.toggleAutoHide();
-				delete this._autoHideWasEnabled;
-			}
-		}
+		if (!this.parent)
+			this.onDetached();
 
 		if (!this.parent || this.root.hasMinimizedWindow) {
 			// _onWindowStateChange() should handle this event instead of this method.
@@ -979,20 +976,10 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleLowered : function FSW_handleLowered()
 	{
-		if (
-			this.parent &&
-			this.browser &&
-			!this.raising
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (!('_autoHideWasEnabled' in this))
-					this._autoHideWasEnabled = enabled;
-				if (treeStyleTab.toggleAutoHide && !enabled)
-					treeStyleTab.toggleAutoHide();
-			}
-		}
+		if (!this.parent || this.raising)
+			return;
+
+		this.onAttached();
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
@@ -1059,6 +1046,79 @@ FoxSplitterWindow.prototype = {
 					});
 			})
 			.error(this.defaultHandleError);
+	},
+
+	// called by the parent group
+	onAttached : function FSW_onAttached()
+	{
+		this._initToolbarState();
+
+		if (this.shouldAutoHideTabs && this.browser) {
+			let treeStyleTab = this.browser.treeStyleTab;
+			if (treeStyleTab && treeStyleTab.autoHide) {
+				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+				if (!('_autoHideWasEnabled' in this))
+					this._autoHideWasEnabled = enabled;
+				if (treeStyleTab.toggleAutoHide && !enabled)
+					treeStyleTab.toggleAutoHide();
+			}
+		}
+	},
+	_initToolbarState : function FSW_initToolbarState()
+	{
+		if (!this.shouldAutoSmallizeToolbarMode || this._originalToolbarState)
+			return;
+
+		var state = {};
+		this.toolbars.forEach(function(aToolbar, aIndex) {
+			let key = aToolbar.id ? 'id:'+aToolbar.id : 'index:'+aIndex;
+			state[key] = {
+				mode     : aToolbar.getAttribute('mode'),
+				iconsize : aToolbar.getAttribute('iconsize')
+			};
+			aToolbar.setAttribute('mode', 'icons');
+			aToolbar.setAttribute('iconsize', 'small');
+		}, this);
+		this._originalToolbarState = state;
+	},
+
+	// called by the parent group
+	onDetached : function FSW_onDetached()
+	{
+		this._restoreToolbarState();
+
+		if (this.shouldAutoHideTabs && this.browser) {
+			let treeStyleTab = this.browser.treeStyleTab;
+			if (treeStyleTab && treeStyleTab.autoHide) {
+				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
+					treeStyleTab.toggleAutoHide();
+				delete this._autoHideWasEnabled;
+			}
+		}
+	},
+	_restoreToolbarState : function FSW_restoreToolbarState()
+	{
+		if (!this.shouldAutoSmallizeToolbarMode)
+			return;
+
+		var state = this._originalToolbarState;
+		delete this._originalToolbarState;
+		if (state && this._window) {
+			this.toolbars.forEach(function(aToolbar, aIndex) {
+				let key = aToolbar.id ? 'id:'+aToolbar.id : 'index:'+aIndex;
+
+				if (state[key].mode)
+					aToolbar.setAttribute('mode', state[key].mode);
+				else
+					aToolbar.removeAttribute('mode');
+
+				if (state[key].iconsize)
+					aToolbar.setAttribute('iconsize', state[key].iconsize);
+				else
+					aToolbar.removeAttribute('iconsize');
+			}, this);
+		}
 	},
 
 
