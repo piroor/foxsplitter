@@ -195,6 +195,8 @@ FoxSplitterWindow.prototype = {
 		this.raising     = 0;
 		this.windowStateUpdating = 0;
 
+		this.active = true;
+
 		this.id = this.id || ('window-' + Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
 		FoxSplitterWindow.instances.push(this);

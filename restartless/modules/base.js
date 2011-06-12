@@ -115,8 +115,12 @@ FoxSplitterBase.prototype = {
 		if (!aSilent)
 			this._initPositionAndSize();
 
-		if (this.window)
-			this.active = this.active; // update status of grouped windows
+		if (this.window) {
+			let self = this;
+			Deferred.next(function() {
+				self.active = self.active; // update status of grouped windows
+			});
+		}
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
