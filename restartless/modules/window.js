@@ -147,7 +147,7 @@ FoxSplitterWindow.prototype = {
 			}, this);
 		}
 		this.documentElement.setAttribute(this.ACTIVE, this._active);
-		this._updateChromeHidden();
+//		this._updateChromeHidden();
 		return this._active;
 	},
 
@@ -159,7 +159,7 @@ FoxSplitterWindow.prototype = {
 	{
 		this._hover = !!aValue;
 		this.documentElement.setAttribute(this.HOVER, this._hover);
-		this._updateChromeHidden();
+//		this._updateChromeHidden();
 		return this._hover;
 	},
 
