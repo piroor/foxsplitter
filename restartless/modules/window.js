@@ -209,8 +209,6 @@ FoxSplitterWindow.prototype = {
 
 		aWindow.addEventListener('unload', this, false);
 
-		this._initGroup(aOnInit);
-
 		if (aOnInit)
 			this._initAfterLoad();
 	},
@@ -250,31 +248,6 @@ FoxSplitterWindow.prototype = {
 				self.parent.reserveResetPositionAndSize(); // for safety
 
 			self.startListen();
-		})
-		.error(this.defaultHandleError);
-	},
-
-	_initGroup : function FSW_initGroup(aOnInit)
-	{
-		var arguments = this.window.arguments;
-		var sourceTab = (
-				arguments &&
-				arguments.length > 0 &&
-				arguments[0] instanceof Ci.nsIDOMElement &&
-				arguments[0].localName == 'tab' &&
-				arguments[0].hasAttribute(this.ATTACHED_POSITION) &&
-				arguments[0].hasAttribute(this.ATTACHED_BASE)
-			) ? arguments[0] : null ;
-
-		if (!sourceTab)
-			return;
-
-		var baseFSWindow = FoxSplitterWindow.instancesById[sourceTab.getAttribute(this.ATTACHED_BASE)];
-		var position = parseInt(sourceTab.getAttribute(this.ATTACHED_POSITION));
-		this.attachTo(baseFSWindow, position, aOnInit);
-
-		Deferred.next(function() {
-			baseFSWindow.active = true; // always attach new window as a background window
 		})
 		.error(this.defaultHandleError);
 	},
@@ -445,9 +418,7 @@ FoxSplitterWindow.prototype = {
 
 		return this.openLinkAt(first, positionAndSize)
 				.next(function(aWindow) {
-					// If the first item is a tab, it has been already attached.
-					if (!(first instanceof Ci.nsIDOMElement))
-						aWindow.FoxSplitter.attachTo(base, aPosition);
+					aWindow.FoxSplitter.attachTo(base, aPosition);
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
@@ -481,11 +452,8 @@ FoxSplitterWindow.prototype = {
 	{
 		aTabs = aTabs.slice(0);
 
-		var tab = aTabs.shift();
-		tab.setAttribute(this.ATTACHED_POSITION, aPosition);
-		tab.setAttribute(this.ATTACHED_BASE, (aBase || this).id);
-
-		return this.openLinkIn(tab, aPosition, aBase)
+		var first = aTabs.shift();
+		return this.openLinkIn(first, aPosition, aBase)
 				.next(function(aWindow) {
 					aTabs.forEach(function(aTab) {
 						var tab = aWindow.gBrowser.addTab();
