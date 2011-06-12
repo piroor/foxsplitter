@@ -701,6 +701,7 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
+		this.window.addEventListener('deactivate', this, true);
 		this.window.addEventListener('dragover', this, false);
 		this.window.addEventListener('dragleave', this, true);
 		this.window.addEventListener('drop', this, true);
@@ -715,6 +716,7 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('DOMAttrModified', this, false);
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
+		this.window.removeEventListener('deactivate', this, true);
 		this.window.removeEventListener('dragover', this, false);
 		this.window.removeEventListener('dragleave', this, true);
 		this.window.removeEventListener('drop', this, true);
@@ -762,6 +764,9 @@ FoxSplitterWindow.prototype = {
 
 			case 'activate':
 				return this.onRaised();
+
+			case 'deactivate':
+				return this.onLowered();
 
 
 			case 'dragover':
@@ -906,21 +911,88 @@ FoxSplitterWindow.prototype = {
 		if (this.raising || this.minimized)
 			return;
 
-		var shouldNotRaised = !this.parent || this.root.hasMinimizedWindow;
-		this.active = true;
-		if (shouldNotRaised)
-			return;
+		this.raising++;
+
+		if (this._reservedHandleRaised)
+			this._reservedHandleRaised.cancel();
 
 		var self = this;
-		Deferred.next(function() {
-			if (!self.parent || self.root.hasMinimizedWindow) {
-				// _onWindowStateChange() should handle this event instead of this method.
-				return;
+		this._reservedHandleRaised = Deferred.next(function() {
+			delete self._reservedHandleRaised;
+			self._handleRaised();
+		});
+		this._reservedHandleRaised
+			.error(this.defaultHandleError)
+			.next(function() {
+				self.raising--;
+			});
+
+		if (this._reservedHandleLowered) {
+			this._reservedHandleLowered.cancel();
+			delete this._reservedHandleLowered;
+		}
+	},
+	_handleRaised : function FSW_handleRaised()
+	{
+		if (
+			!this.parent &&
+			this.browser
+			) {
+			let treeStyleTab = this.browser.treeStyleTab;
+			if (treeStyleTab && treeStyleTab.autoHide) {
+				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
+					treeStyleTab.toggleAutoHide();
+				delete this._autoHideWasEnabled;
 			}
-			self.root.raise();
-			self.raise();
-		})
-		.error(this.defaultHandleError);
+		}
+
+		if (!this.parent || this.root.hasMinimizedWindow) {
+			// _onWindowStateChange() should handle this event instead of this method.
+			return;
+		}
+
+		this.root.raise();
+		this.raise();
+	},
+
+	onLowered : function FSW_onLowered()
+	{
+		if (this.raising || this.minimized)
+			return;
+
+		if (this._reservedHandleRaised) {
+			this._reservedHandleRaised.cancel();
+			delete this._reservedHandleRaised;
+		}
+
+		if (this._reservedHandleLowered)
+			this._reservedHandleLowered.cancel();
+
+		var self = this;
+		this._reservedHandleLowered = Deferred.next(function() {
+			delete self._reservedHandleLowered;
+			self._handleLowered();
+		});
+		this._reservedHandleLowered
+			.error(this.defaultHandleError);
+	},
+	_handleLowered : function FSW_handleLowered()
+	{
+		if (
+			this.parent &&
+			this.browser &&
+			!this.raising
+			) {
+			let treeStyleTab = this.browser.treeStyleTab;
+			if (treeStyleTab && treeStyleTab.autoHide) {
+				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+				if (!('_autoHideWasEnabled' in this))
+					this._autoHideWasEnabled = enabled;
+				if (treeStyleTab.toggleAutoHide && !enabled)
+					treeStyleTab.toggleAutoHide();
+			}
+		}
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
