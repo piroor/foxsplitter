@@ -725,6 +725,7 @@ FoxSplitterWindow.prototype = {
 		var current = FSWindows.indexOf(this);
 		var offset = 0;
 		var selectedTab = this.browser.selectedTab;
+		var deferreds = [];
 		FSWindows.forEach(function(aFSWindow, aIndex) {
 			if (aIndex == current)
 				return;
@@ -734,20 +735,36 @@ FoxSplitterWindow.prototype = {
 				 * before windows should be imported as leftmost tabs.
 				 * after windows should be imported as rightmost tabs.
 				 */
-				this.importTab(aTab, aIndex < current ? offset++ : -1 );
+				deferreds.push(this.importTab(aTab, aIndex < current ? offset++ : -1 ));
 			}, this);
 		}, this);
+
 		/**
 		 * swapBrowsersAndCloseOther() focuses to the imported tab,
 		 * so we have to focus to the original selected tab again.
 		 */
-		this.browser.selectedTab = selectedTab;
+		if (deferreds.length) {
+			let self = this;
+			Deferred
+				.parallel(deferreds)
+				.next(function(aImportedTabs) {
+					self.browser.selectedTab = selectedTab;
+				})
+				.error(this.defaultHandleError);
+		}
+		else {
+			this.browser.selectedTab = selectedTab;
+		}
 	},
 
 	importTab : function FSW_importTab(aTab, aPosition)
 	{
 		if (!this._window)
-			return null;
+			return Deferred.next(function() {
+				return null;
+			});
+
+		var deferred = new Deferred();
 
 		var newTab = this.browser.addTab('about:blank');
 		newTab.linkedBrowser.stop();
@@ -755,7 +772,13 @@ FoxSplitterWindow.prototype = {
 		if (aPosition > -1)
 			this.browser.moveTabTo(newTab, aPosition);
 		this.browser.swapBrowsersAndCloseOther(newTab, aTab);
-		return newTab;
+
+		Deferred.next(function() {
+			return newTab;
+		});
+
+		return deferred
+				.error(this.defaultHandleError);
 	},
 
 	canClose : function FSW_canClose()
