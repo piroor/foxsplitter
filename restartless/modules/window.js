@@ -72,11 +72,20 @@ FoxSplitterWindow.prototype = {
 	lastY      : null,
 	lastWidth  : null,
 	lastHeight : null,
+	syncScroll : false,
 
-	dropZoneSize                  : 64,
-	handleDragWithShiftKey        : false,
-	shouldAutoHideTabs            : true,
-	shouldAutoSmallizeToolbarMode : true,
+	get dropZoneSize() { return FoxSplitterWindow.dropZoneSize; },
+	set dropZoneSize(aValue) { return FoxSplitterWindow.dropZoneSize = aValue; },
+	get handleDragWithShiftKey() { return FoxSplitterWindow.handleDragWithShiftKey; },
+	set handleDragWithShiftKey(aValue) { return FoxSplitterWindow.handleDragWithShiftKey = aValue; },
+	get shouldAutoHideTabs() { return FoxSplitterWindow.shouldAutoHideTabs; },
+	set shouldAutoHideTabs(aValue) { return FoxSplitterWindow.shouldAutoHideTabs = aValue; },
+	get shouldAutoSmallizeToolbarMode() { return FoxSplitterWindow.shouldAutoSmallizeToolbarMode; },
+	set shouldAutoSmallizeToolbarMode(aValue) { return FoxSplitterWindow.shouldAutoSmallizeToolbarMode = aValue; },
+	get syncScrollX() { return FoxSplitterWindow.syncScrollX; },
+	set syncScrollX(aValue) { return FoxSplitterWindow.syncScrollX = aValue; },
+	get syncScrollY() { return FoxSplitterWindow.syncScrollY; },
+	set syncScrollY(aValue) { return FoxSplitterWindow.syncScrollY = aValue; },
 
 	get x()
 	{
@@ -198,6 +207,7 @@ FoxSplitterWindow.prototype = {
 		this.positioning = 0;
 		this.resizing    = 0;
 		this.raising     = 0;
+		this.scrolling   = 0;
 		this.windowStateUpdating = 0;
 
 		this.active = true;
@@ -707,6 +717,7 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
 		this.window.addEventListener('deactivate', this, true);
+		this.window.addEventListener('scroll', this, true);
 		this.window.addEventListener('dragover', this, false);
 		this.window.addEventListener('dragleave', this, true);
 		this.window.addEventListener('drop', this, true);
@@ -722,6 +733,7 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
 		this.window.removeEventListener('deactivate', this, true);
+		this.window.removeEventListener('scroll', this, true);
 		this.window.removeEventListener('dragover', this, false);
 		this.window.removeEventListener('dragleave', this, true);
 		this.window.removeEventListener('drop', this, true);
@@ -772,6 +784,9 @@ FoxSplitterWindow.prototype = {
 
 			case 'deactivate':
 				return this.onLowered();
+
+			case 'scroll':
+				return this.onScroll(aEvent);
 
 
 			case 'dragover':
@@ -980,6 +995,53 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		this.onAttached();
+	},
+
+	onScroll : function FSW_onScroll(aEvent)
+	{
+		if (this.scrolling || !this.syncScroll)
+			return;
+
+		var scrolledFrame = aEvent.originalTarget.defaultView;
+		if (
+			// ignore scrolling in Firefox UI
+			scrolledFrame.top == this.window ||
+			// ignore scrolling in background tabs
+			scrolledFrame.top != this.browser.contentWindow
+			)
+			return;
+
+		this.scrolling++;
+
+		try {
+			var xFactor = scrolledFrame.scrollX / scrolledFrame.scrollMaxX;
+			var yFactor = scrolledFrame.scrollY / scrolledFrame.scrollMaxY;
+			this.root.allWindows.forEach(function(aFSWindow) {
+				if (aFSWindow.syncScroll)
+					this._setScrollPosition(xFactor, yFactor);
+			}, this);
+		}
+		catch(e) {
+			this.dumpError(e, 'FoxSplitter: FAILED TO SYNC SCROLL!');
+		}
+
+		this.scrolling--;
+	},
+
+	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor)
+	{
+		if (this.scrolling)
+			return;
+
+		this.scrolling++;
+
+		var frame = this.browser.contentWindow;
+		frame.scrollTo(
+			(this.syncScrollX ? (aXFactor * frame.scrollMaxX) : frame.scrollX ),
+			(this.syncScrollY ? (aYFactor * frame.scrollMaxY) : frame.scrollY )
+		);
+
+		this.scrolling--;
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
@@ -1687,3 +1749,11 @@ FoxSplitterWindow.prototype = {
 
 FoxSplitterWindow.instances = [];
 FoxSplitterWindow.instancesById = {};
+
+FoxSplitterWindow.dropZoneSize = 64;
+FoxSplitterWindow.handleDragWithShiftKey = false;
+FoxSplitterWindow.shouldAutoHideTabs = true;
+FoxSplitterWindow.shouldAutoSmallizeToolbarMode = true;
+FoxSplitterWindow.syncScrollX = true;
+FoxSplitterWindow.syncScrollY = true;
+
