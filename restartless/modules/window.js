@@ -26,6 +26,9 @@ FoxSplitterWindow.prototype = {
 
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
+	// too small window isn't shown on Linux
+	MIN_WIDTH : 16,
+	MIN_HEIGHT : 16,
 
 	BASE_STYLESHEET : <![CDATA[
 /*
@@ -359,7 +362,10 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		this.resizing++;
-		this.window.resizeTo(aW, aH);
+		this.window.resizeTo(
+			Math.max(this.MIN_WIDTH, aW),
+			Math.max(this.MIN_HEIGHT, aH)
+		);
 		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
@@ -375,7 +381,10 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		this.resizing++;
-		this.window.resizeBy(aDW, aDH);
+		this.window.resizeBy(
+			Math.max(-this.window.innerWidth+this.MIN_WIDTH, aDW),
+			Math.max(-this.window.innerHeight+this.MIN_HEIGHT, aDH)
+		);
 		this.updateLastPositionAndSize();
 		var self = this;
 		Deferred.next(function() {
