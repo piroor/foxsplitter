@@ -17,6 +17,11 @@ function FoxSplitterWindow(aWindow, aOnInit)
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
 
+	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
+	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,
+	STATE_NORMAL     : Ci.nsIDOMChromeWindow.STATE_NORMAL,
+	STATE_FULLSCREEN : Ci.nsIDOMChromeWindow.STATE_FULLSCREEN,
+
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 
 	// opacity=0 panel isn't shown on Linux
@@ -167,18 +172,18 @@ FoxSplitterWindow.prototype = {
 		var state = this._window ? this.window.windowState : -1 ;
 /*
 		if (// on Windows, minimized window is possibly normal and out of screen
-			state == this.window.STATE_NORMAL && 
+			state == this.STATE_NORMAL && 
 			this.x == -32000 &&
 			this.y == -32000
 			)
-			state = this.window.STATE_MINIMIZED;
+			state = this.STATE_MINIMIZED;
 */
 		return state;
 	},
 
 	get minimized()
 	{
-		return this.windowState == this.window.STATE_MINIMIZED;
+		return this.windowState == this.STATE_MINIMIZED;
 	},
 
 	get documentElement()
@@ -872,7 +877,7 @@ FoxSplitterWindow.prototype = {
 		try {
 			switch (state)
 			{
-				case this.window.STATE_MINIMIZED:
+				case this.STATE_MINIMIZED:
 					/**
 					 * When the active window is minimized, another member can be focused.
 					 * So we have to minimize other windows with a delay.
@@ -885,7 +890,7 @@ FoxSplitterWindow.prototype = {
 					break;
 
 				default:
-					if (lastState == this.window.STATE_MINIMIZED) {
+					if (lastState == this.STATE_MINIMIZED) {
 						this.root.restore(this);
 					}
 					break;
@@ -1176,7 +1181,7 @@ FoxSplitterWindow.prototype = {
 	},
 	set _autoHideWasEnabled(aValue)
 	{
-		return FoxSplitterWindow._autoHideWasEnabled = !!aValue;
+		return FoxSplitterWindow._autoHideWasEnabled = aValue;
 	},
 	_initToolbarState : function FSW_initToolbarState()
 	{
