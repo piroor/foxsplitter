@@ -10,7 +10,7 @@
  */
 
 /** You must change ADDON_ID for your addon. */
-const ADDON_ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
+const ADDON_ID = 'foxsplitter@piro.sakura.ne.jp';
 /** You must change CLASS_ID for your addon. If must be an UUID. */
 const CLASS_ID = '{8a77f430-9052-11e0-91e4-0800200c9a66}';
 

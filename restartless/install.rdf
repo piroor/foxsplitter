@@ -3,7 +3,7 @@
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
-                   em:id="{29c4afe1-db19-4298-8785-fcc94d1d6c1d}"
+                   em:id="foxsplitter@piro.sakura.ne.jp"
                    em:name="Fox Splitter"
                    em:version="1.0.2011000000"
                    em:creator="SHIMODA Hiroshi"
