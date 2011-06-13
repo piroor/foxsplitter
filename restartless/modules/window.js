@@ -164,7 +164,7 @@ FoxSplitterWindow.prototype = {
 
 	get windowState()
 	{
-		var state = this.window.windowState;
+		var state = this._window ? this.window.windowState : -1 ;
 /*
 		if (// on Windows, minimized window is possibly normal and out of screen
 			state == this.window.STATE_NORMAL && 
@@ -277,7 +277,7 @@ FoxSplitterWindow.prototype = {
 //				'status',
 				'extrachrome'
 			].join(' ');
-		if (this._originalChromeHidden === null)
+		if (this._originalChromeHidden === undefined)
 			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
 
 		if (this.active || !this.parent)
@@ -285,7 +285,7 @@ FoxSplitterWindow.prototype = {
 		else
 			this.documentElement.setAttribute('chromehidden', hiddenItems);
 	},
-	_originalChromeHidden : null,
+	_originalChromeHidden : undefined,
 
 
 	destroy : function FSW_destroy(aOnQuit) 
@@ -378,17 +378,24 @@ FoxSplitterWindow.prototype = {
 
 	raise : function FSW_raise()
 	{
-		if (this.raising || this.minimized)
-			return;
+		var deferred = new Deferred();
+		if (this.raising || this.minimized) {
+			Deferred.next(function() {
+				deferred.call();
+			});
+			return deferred;
+		}
 
 		this.raising++;
 
+		try {
 		var self = this;
 		var handleEvent = function() {
 				self.window.removeEventListener('activate', handleEvent, true);
 				self.window.removeEventListener('deactivate', handleEvent, true);
 				if (timer) timer.cancel();
 				self.raising--;
+				deferred.call();
 			};
 
 		this.window.addEventListener('activate', handleEvent, true);
@@ -402,7 +409,7 @@ FoxSplitterWindow.prototype = {
 			})
 			.error(this.defaultHandleError);
 
-		try {
+
 			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 
 			var focusedWindow = {};
@@ -421,6 +428,8 @@ FoxSplitterWindow.prototype = {
 		catch(e) {
 			this.dumpError(e, 'FoxSplitter: FAILED TO RAISE A WINDOW!');
 		}
+
+		return deferred;
 	},
 
 
@@ -763,13 +772,13 @@ FoxSplitterWindow.prototype = {
 			aSelf._checkWindowState();
 		}, 500, this);
 	},
-	_watchingWindowStateTimer : null,
+	_watchingWindowStateTimer : undefined,
 
 	unwatchWindowState : function FSW_unwatchWindowState()
 	{
 		if (!this._watchingWindowStateTimer) return;
 		this.window.clearInterval(this._watchingWindowStateTimer);
-		this._watchingWindowStateTimer = null;
+		this._watchingWindowStateTimer = undefined;
 	},
 
 	handleEvent : function FSW_handleEvent(aEvent) 
@@ -969,7 +978,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleRaised : function FSW_handleRaised()
 	{
-		if (this.raising || this.minimized)
+		if (this.minimized)
 			return;
 
 		if (!this.parent)
@@ -1147,16 +1156,27 @@ FoxSplitterWindow.prototype = {
 	{
 		this._initToolbarState();
 
-		if (this.shouldAutoHideTabs && this.browser) {
+		if (
+			this.shouldAutoHideTabs &&
+			this.browser &&
+			this._autoHideWasEnabled === undefined
+			) {
 			let treeStyleTab = this.browser.treeStyleTab;
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (!('_autoHideWasEnabled' in this))
-					this._autoHideWasEnabled = enabled;
+				this._autoHideWasEnabled = enabled;
 				if (treeStyleTab.toggleAutoHide && !enabled)
 					treeStyleTab.toggleAutoHide();
 			}
 		}
+	},
+	get _autoHideWasEnabled()
+	{
+		return FoxSplitterWindow._autoHideWasEnabled;
+	},
+	set _autoHideWasEnabled(aValue)
+	{
+		return FoxSplitterWindow._autoHideWasEnabled = !!aValue;
 	},
 	_initToolbarState : function FSW_initToolbarState()
 	{
@@ -1181,14 +1201,18 @@ FoxSplitterWindow.prototype = {
 	{
 		this._restoreToolbarState();
 
-		if (this.shouldAutoHideTabs && this.browser) {
+		if (
+			this.shouldAutoHideTabs &&
+			this.browser &&
+			this._autoHideWasEnabled !== undefined
+			) {
 			let treeStyleTab = this.browser.treeStyleTab;
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
 					treeStyleTab.toggleAutoHide();
-				delete this._autoHideWasEnabled;
 			}
+			this._autoHideWasEnabled = undefined;
 		}
 	},
 	_restoreToolbarState : function FSW_restoreToolbarState()
@@ -1717,7 +1741,7 @@ FoxSplitterWindow.prototype = {
 		this._cancelReserveHideAllDropIndicator();
 		var self = this;
 		this._reservedHideAllDropIndicator = Deferred.next(function() {
-			self._reservedHideAllDropIndicator = null;
+			self._reservedHideAllDropIndicator = undefined;
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
@@ -1730,7 +1754,7 @@ FoxSplitterWindow.prototype = {
 		if (!this._reservedHideAllDropIndicator)
 			return;
 		this._reservedHideAllDropIndicator.cancel();
-		this._reservedHideAllDropIndicator = null;
+		this._reservedHideAllDropIndicator = undefined;
 	},
 
 	get _reservedHideAllDropIndicator()

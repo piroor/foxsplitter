@@ -166,12 +166,24 @@ FoxSplitterGroup.prototype = {
 
 	raise : function FSG_raise(aFinallyRaised)
 	{
+		var deferreds = [];
 		this.members.forEach(function(aMember) {
-			if (aFinallyRaised != aMember)
-				aMember.raise(aFinallyRaised);
+			if (aFinallyRaised == aMember)
+				return;
+			var deferred = aMember.raise(aFinallyRaised);
+			if (deferred)
+				deferreds.push(deferred);
 		});
-		if (aFinallyRaised)
-			aFinallyRaised.raise();
+		if (aFinallyRaised) {
+			if (deferreds.length)
+				Deferred
+					.parallel(deferreds)
+					.next(function() {
+						aFinallyRaised.raise();
+					});
+			else
+				aFinallyRaised.raise();
+		}
 	},
 
 
