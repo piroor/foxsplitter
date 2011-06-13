@@ -735,22 +735,58 @@ FoxSplitterWindow.prototype = {
 		var FSWindows = this.root.allWindows;
 		var current = FSWindows.indexOf(this);
 		var offset = 0;
-		var selectedTab = this.browser.selectedTab;
 		var deferreds = [];
 		FSWindows.forEach(function(aFSWindow, aIndex) {
 			if (aIndex == current)
 				return;
 
-			// importTab() removes tab so we have to clone an array before do it.
-			Array.slice(aFSWindow.browser.mTabContainer.childNodes)
-				.forEach(function(aTab) {
-					/**
-					 * before windows should be imported as leftmost tabs.
-					 * after windows should be imported as rightmost tabs.
-					 */
-					deferreds.push(this.importTab(aTab, aIndex < current ? offset++ : -1 ));
-				}, this);
+			var count = aFSWindow.browser.mTabContainer.childNodes.length;
+			deferreds.push(this.importTabsFrom(aFSWindow.window, offset));
+			offset += count;
 		}, this);
+
+		if (deferreds.length) {
+			let self = this;
+			return Deferred
+					.parallel(deferreds)
+					.error(this.defaultHandleError);
+		}
+
+		return Deferred.next(function() {
+			return [];
+		});
+	},
+
+	importTabsFrom : function FSW_importTabsFrom(aWindow, aOffset)
+	{
+		if (!this.parent || !this._window || !aWindow.FoxSplitter)
+			return Deferred.next(function() {
+				return [];
+			});
+
+		var FSWindows = this.root.allWindows;
+		var current = FSWindows.indexOf(this);
+		var importSource = FSWindows.indexOf(aWindow.FoxSplitter);
+		var allTabsCount = this.browser.mTabContainer.childNodes.length;
+		var offset = importSource > -1 && current > importSource ?
+						allTabsCount :
+						0 ;
+		if (aOffset)
+			offset += aOffset;
+
+		offset = Math.min(allTabsCount, offset);
+
+		var selectedTab = this.browser.selectedTab;
+		var deferreds = [];
+		// importTab() removes tab so we have to clone an array before do it.
+		Array.slice(aWindow.FoxSplitter.browser.mTabContainer.childNodes)
+			.forEach(function(aTab) {
+				/**
+				 * before windows should be imported as leftmost tabs.
+				 * after windows should be imported as rightmost tabs.
+				 */
+				deferreds.push(this.importTab(aTab, offset++));
+			}, this);
 
 		if (deferreds.length) {
 			let self = this;
