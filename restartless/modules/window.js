@@ -397,28 +397,35 @@ FoxSplitterWindow.prototype = {
 
 		this.raising++;
 
-		try {
 		var self = this;
-		var handleEvent = function() {
-				self.window.removeEventListener('activate', handleEvent, true);
-				self.window.removeEventListener('deactivate', handleEvent, true);
-				if (timer) timer.cancel();
+		if (XULAppInfo.OS == 'Linux') {
+			let handleEvent = function() {
+					self.window.removeEventListener('activate', handleEvent, true);
+					self.window.removeEventListener('deactivate', handleEvent, true);
+					if (timer) timer.cancel();
+					self.raising--;
+					deferred.call();
+				};
+
+			this.window.addEventListener('activate', handleEvent, true);
+			this.window.addEventListener('deactivate', handleEvent, true);
+
+			let timer = Deferred.wait(0.5);
+			timer
+				.next(function() {
+					timer = null;
+					handleEvent();
+				})
+				.error(this.defaultHandleError);
+		}
+		else {
+			Deferred.next(function() {
 				self.raising--;
 				deferred.call();
-			};
+			});
+		}
 
-		this.window.addEventListener('activate', handleEvent, true);
-		this.window.addEventListener('deactivate', handleEvent, true);
-
-		var timer = Deferred.wait(0.5);
-		timer
-			.next(function() {
-				timer = null;
-				handleEvent();
-			})
-			.error(this.defaultHandleError);
-
-
+		try {
 			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
 
 			var focusedWindow = {};
