@@ -728,7 +728,9 @@ FoxSplitterWindow.prototype = {
 	gatherWindows : function FSW_gatherWindows()
 	{
 		if (!this.parent || !this._window)
-			return;
+			return Deferred.next(function() {
+				return [];
+			});
 
 		var FSWindows = this.root.allWindows;
 		var current = FSWindows.indexOf(this);
@@ -739,31 +741,37 @@ FoxSplitterWindow.prototype = {
 			if (aIndex == current)
 				return;
 
-			Array.forEach(aFSWindow.browser.mTabContainer.childNodes, function(aTab) {
-				/**
-				 * before windows should be imported as leftmost tabs.
-				 * after windows should be imported as rightmost tabs.
-				 */
-				deferreds.push(this.importTab(aTab, aIndex < current ? offset++ : -1 ));
-			}, this);
+			// importTab() removes tab so we have to clone an array before do it.
+			Array.slice(aFSWindow.browser.mTabContainer.childNodes)
+				.forEach(function(aTab) {
+					/**
+					 * before windows should be imported as leftmost tabs.
+					 * after windows should be imported as rightmost tabs.
+					 */
+					deferreds.push(this.importTab(aTab, aIndex < current ? offset++ : -1 ));
+				}, this);
 		}, this);
 
-		/**
-		 * swapBrowsersAndCloseOther() focuses to the imported tab,
-		 * so we have to focus to the original selected tab again.
-		 */
 		if (deferreds.length) {
 			let self = this;
-			Deferred
-				.parallel(deferreds)
-				.next(function(aImportedTabs) {
-					self.browser.selectedTab = selectedTab;
-				})
-				.error(this.defaultHandleError);
+			return Deferred
+					.parallel(deferreds)
+					.next(function(aImportedTabs) {
+						/**
+						 * swapBrowsersAndCloseOther() focuses to the imported tab,
+						 * so we have to focus to the original selected tab again.
+						 */
+						self.browser.selectedTab = selectedTab;
+						return aImportedTabs.filter(function(aTab) {
+							return aTab;
+						});
+					})
+					.error(this.defaultHandleError);
 		}
-		else {
-			this.browser.selectedTab = selectedTab;
-		}
+
+		return Deferred.next(function() {
+			return [];
+		});
 	},
 
 	importTab : function FSW_importTab(aTab, aPosition)
@@ -773,22 +781,90 @@ FoxSplitterWindow.prototype = {
 				return null;
 			});
 
-		var deferred = new Deferred();
-
 		var newTab = this.browser.addTab('about:blank');
 		newTab.linkedBrowser.stop();
 		newTab.linkedBrowser.docShell;
 		if (aPosition > -1)
 			this.browser.moveTabTo(newTab, aPosition);
+
+		var groupInfo = this._getGroupInfo(aTab);
+		if (aTab.hidden) aTab.hidden = false; // we cannot import hidden tab!
 		this.browser.swapBrowsersAndCloseOther(newTab, aTab);
 
+		var deferred = new Deferred();
+		var self = this;
 		Deferred.next(function() {
-			return newTab;
+			if (groupInfo)
+				self._moveImportedTabToNamedGroup(newTab, groupInfo)
+					.next(function() {
+						deferred.call(newTab);
+					});
+			else
+				deferred.call(newTab);
 		});
 
 		return deferred
 				.error(this.defaultHandleError);
 	},
+
+	_getExistingGroups : function FSW_getExistingGroups()
+	{
+		var deferred = new Deferred();
+		var self = this;
+		Deferred.next(function() {
+			self.window.TabView._initFrame(function() {
+				deferred.call(self.window.TabView._window.GroupItems.groupItems);
+			});
+		});
+		return deferred;
+	},
+
+	_getGroupInfo : function FSW_getGroupInfo(aTab)
+	{
+		var item = aTab._tabViewTabItem;
+		if (!item)
+			return null;
+
+		var parent = item.parent;
+		if (!parent)
+			return null;
+
+		var groupInfo = {
+				id     : parent.id,
+				title  : parent.getTitle(),
+				window : aTab.ownerDocument.defaultView.FoxSplitter.id
+			};
+		if (!groupInfo.title)
+			groupInfo.title = this._generateTemporaryNameForAnonymousGroup(groupInfo);
+		return groupInfo;
+	},
+
+	_generateTemporaryNameForAnonymousGroup : function FSW_generateTemporaryNameForAnonymousGroup(aGroupInfo)
+	{
+		// XXX need to be localized!
+		return 'imported anonymous group '+aGroupInfo.id+' from window '+aGroupInfo.window;
+	},
+
+	_moveImportedTabToNamedGroup : function FSW_moveImportedTabToNamedGroup(aTab, aTargetGroupInfo)
+	{
+		var self = this;
+		return this._getExistingGroups()
+				.next(function(aGroups) {
+					var targetGroup;
+					aGroups.some(function(aGroup) {
+						if (aGroup.getTitle() != aTargetGroupInfo.title)
+							return false;
+						return targetGroup = aGroup;
+					});
+					var groupId = targetGroup ? targetGroup.id : null ;
+					self.window.TabView.moveTabTo(aTab, groupId);
+					// newly created group has no title yet!
+					if (!groupId && aTab._tabViewTabItem && aTargetGroupInfo.title)
+						aTab._tabViewTabItem.parent.setTitle(aTargetGroupInfo.title);
+				})
+				.error(this.defaultHandleError);
+	},
+
 
 	canClose : function FSW_canClose()
 	{
