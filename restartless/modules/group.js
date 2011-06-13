@@ -164,11 +164,14 @@ FoxSplitterGroup.prototype = {
 		}
 	},
 
-	raise : function FSG_raise()
+	raise : function FSG_raise(aFinallyRaised)
 	{
 		this.members.forEach(function(aMember) {
-			aMember.raise();
+			if (aFinallyRaised != aMember)
+				aMember.raise(aFinallyRaised);
 		});
+		if (aFinallyRaised)
+			aFinallyRaised.raise();
 	},
 
 

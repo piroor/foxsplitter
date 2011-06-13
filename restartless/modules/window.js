@@ -378,9 +378,29 @@ FoxSplitterWindow.prototype = {
 
 	raise : function FSW_raise()
 	{
-		if (this.minimized) return;
+		if (this.raising || this.minimized)
+			return;
 
 		this.raising++;
+
+		var self = this;
+		var handleEvent = function() {
+				self.window.removeEventListener('activate', handleEvent, true);
+				self.window.removeEventListener('deactivate', handleEvent, true);
+				if (timer) timer.cancel();
+				self.raising--;
+			};
+
+		this.window.addEventListener('activate', handleEvent, true);
+		this.window.addEventListener('deactivate', handleEvent, true);
+
+		var timer = Deferred.wait(0.5);
+		timer
+			.next(function() {
+				timer = null;
+				handleEvent();
+			})
+			.error(this.defaultHandleError);
 
 		try {
 			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
@@ -401,12 +421,6 @@ FoxSplitterWindow.prototype = {
 		catch(e) {
 			this.dumpError(e, 'FoxSplitter: FAILED TO RAISE A WINDOW!');
 		}
-
-		var self = this;
-		Deferred.next(function() {
-			self.raising--;
-		})
-		.error(this.defaultHandleError);
 	},
 
 
@@ -780,10 +794,10 @@ FoxSplitterWindow.prototype = {
 				return;
 
 			case 'activate':
-				return this.onRaised();
+				return this.onActivate();
 
 			case 'deactivate':
-				return this.onLowered();
+				return this.onDeactivate();
 
 			case 'scroll':
 				return this.onScroll(aEvent);
@@ -926,13 +940,12 @@ FoxSplitterWindow.prototype = {
 			this.parent.reserveResetPositionAndSize(this); // for safety
 	},
 
-	onRaised : function FSW_onRaised()
+	onActivate : function FSW_onActivate()
 	{
 		if (this.raising || this.minimized)
 			return;
 
 		this.active = true;
-
 		this.raising++;
 
 		if (this._reservedHandleRaised)
@@ -956,6 +969,9 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleRaised : function FSW_handleRaised()
 	{
+		if (this.raising || this.minimized)
+			return;
+
 		if (!this.parent)
 			this.onDetached();
 
@@ -964,11 +980,10 @@ FoxSplitterWindow.prototype = {
 			return;
 		}
 
-		this.root.raise();
-		this.raise();
+		this.root.raise(this);
 	},
 
-	onLowered : function FSW_onLowered()
+	onDeactivate : function FSW_onDeactivate()
 	{
 		if (this.raising || this.minimized)
 			return;
