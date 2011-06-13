@@ -193,17 +193,26 @@ FoxSplitterWindow.prototype = {
 	{
 		return this.document.documentElement;
 	},
-	get document() {
+	get document()
+	{
 		return this.window.document;
 	},
-	get browser() {
+	get browser()
+	{
 		return this._window && this.window.gBrowser;
 	},
-	get visibleTabs() {
+	get visibleTabs()
+	{
 		return !this._window ? [] :
-			(this.browser.visibleTabs || Array.slice(this.browser.mTabContainer.childNodes));
+			(this.browser.visibleTabs || this.allTabs);
 	},
-	get toolbars() {
+	get allTabs()
+	{
+		return !this.browser ? [] :
+			Array.slice(this.browser.mTabContainer.childNodes);
+	},
+	get toolbars()
+	{
 		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
 	},
 
@@ -304,8 +313,10 @@ FoxSplitterWindow.prototype = {
 		var id = this.id;
 
 		if (this.parent) {
-			if (!aOnQuit)
+			if (!aOnQuit) {
+				this._exportHiddenTabs();
 				this._expandSibling();
+			}
 			this.parent.unregister(this);
 		}
 
@@ -321,6 +332,18 @@ FoxSplitterWindow.prototype = {
 			return aFSWindow != this;
 		}, this);
 		delete FoxSplitterWindow.instancesById[id];
+	},
+
+	_exportHiddenTabs : function FSW_exportHiddenTabs()
+	{
+		if (!this.parent || !this.sibling)
+			return;
+
+		var target = this.sibling;
+		this.allTabs.forEach(function(aTab) {
+			if (aTab.hidden)
+				target.importTab(aTab);
+		}, this);
 	},
 
 
@@ -740,7 +763,7 @@ FoxSplitterWindow.prototype = {
 			if (aIndex == current)
 				return;
 
-			var count = aFSWindow.browser.mTabContainer.childNodes.length;
+			var count = aFSWindow.allTabs.length;
 			deferreds.push(this.importTabsFrom(aFSWindow.window, offset));
 			offset += count;
 		}, this);
@@ -767,7 +790,7 @@ FoxSplitterWindow.prototype = {
 		var FSWindows = this.root.allWindows;
 		var current = FSWindows.indexOf(this);
 		var importSource = FSWindows.indexOf(aWindow.FoxSplitter);
-		var allTabsCount = this.browser.mTabContainer.childNodes.length;
+		var allTabsCount = this.allTabs.length;
 		var offset = importSource > -1 && current > importSource ?
 						allTabsCount :
 						0 ;
@@ -779,14 +802,13 @@ FoxSplitterWindow.prototype = {
 		var selectedTab = this.browser.selectedTab;
 		var deferreds = [];
 		// importTab() removes tab so we have to clone an array before do it.
-		Array.slice(aWindow.FoxSplitter.browser.mTabContainer.childNodes)
-			.forEach(function(aTab) {
-				/**
-				 * before windows should be imported as leftmost tabs.
-				 * after windows should be imported as rightmost tabs.
-				 */
-				deferreds.push(this.importTab(aTab, offset++));
-			}, this);
+		aWindow.FoxSplitter.allTabs.forEach(function(aTab) {
+			/**
+			 * before windows should be imported as leftmost tabs.
+			 * after windows should be imported as rightmost tabs.
+			 */
+			deferreds.push(this.importTab(aTab, offset++));
+		}, this);
 
 		if (deferreds.length) {
 			let self = this;
@@ -820,7 +842,7 @@ FoxSplitterWindow.prototype = {
 		var newTab = this.browser.addTab('about:blank');
 		newTab.linkedBrowser.stop();
 		newTab.linkedBrowser.docShell;
-		if (aPosition > -1)
+		if (aPosition !== undefined && aPosition > -1)
 			this.browser.moveTabTo(newTab, aPosition);
 
 		var groupInfo = this._getGroupInfo(aTab);
