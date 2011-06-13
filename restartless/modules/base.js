@@ -122,8 +122,8 @@ FoxSplitterBase.prototype = {
 			});
 		}
 
-		if (this.onAttached)
-			this.onAttached();
+		if (!this.isGroup)
+			this.setGroupedAppearance();
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -195,8 +195,8 @@ FoxSplitterBase.prototype = {
 		this._expandSibling();
 		this.parent.unregister(this);
 
-		if (this.onDetached)
-			this.onDetached();
+		if (!this.isGroup)
+			this.clearGroupedAppearance();
 	},
 
 	_expandSibling : function FSB_expandSibling()

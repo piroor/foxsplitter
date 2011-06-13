@@ -268,6 +268,11 @@ FoxSplitterWindow.prototype = {
 
 	_initAfterLoad : function FSW_initAfterLoad()
 	{
+		// for _preDestroy()
+		Cc['@mozilla.org/embedcomp/window-watcher;1']
+			.getService(Ci.nsIWindowWatcher)
+			.registerNotification(this);
+
 		var self = this;
 		Deferred.next(function() {
 			self.updateLastPositionAndSize();
@@ -305,18 +310,42 @@ FoxSplitterWindow.prototype = {
 	_originalChromeHidden : undefined,
 
 
+	/**
+	 * This process must be done at the timing between "close/DOMWindowClose"
+	 * and "unload".
+	 * On "close" (and "DOMWindowClose"), we cannot know whether the window
+	 * is really closed or not. However, on "unload" it's too late to do
+	 * this process.
+	 * The nsWindowWatcher notifies "domwindowclosed" event before "unload"
+	 * so it is the best timing.
+	 */
+	_preDestroy : function FSW_preDestroy(aOnQuit) 
+	{
+		this._preDestroyDone = true;
+
+		Cc['@mozilla.org/embedcomp/window-watcher;1']
+			.getService(Ci.nsIWindowWatcher)
+			.unregisterNotification(this);
+
+		if (this.parent && !aOnQuit)
+			this._exportHiddenTabs();
+	},
+	_preDestroyDone : false,
+
 	destroy : function FSW_destroy(aOnQuit) 
 	{
+		if (!this._preDestroyDone)
+			this._preDestroy(aOnQuit);
+
 		this.hideDropIndicator();
 		this.unwatchWindowState();
+		this.clearGroupedAppearance();
 
 		var id = this.id;
 
 		if (this.parent) {
-			if (!aOnQuit) {
-				this._exportHiddenTabs();
+			if (!aOnQuit)
 				this._expandSibling();
-			}
 			this.parent.unregister(this);
 		}
 
@@ -1051,6 +1080,17 @@ FoxSplitterWindow.prototype = {
 		}
 	},
 
+	observe : function FSW_observe(aSubject, aTopic, aData)
+	{
+		switch (aTopic)
+		{
+			case 'domwindowclosed':
+				if (aSubject == this.window)
+					this._preDestroy();
+				return;
+		}
+	},
+
 	_onDOMAttrModified : function FSW_onDOMAttrModified(aEvent)
 	{
 		if (aEvent.target != this.documentElement)
@@ -1211,7 +1251,7 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		if (!this.parent)
-			this.onDetached();
+			this.clearGroupedAppearance();
 
 		if (!this.parent || this.root.hasMinimizedWindow) {
 			// _onWindowStateChange() should handle this event instead of this method.
@@ -1247,7 +1287,7 @@ FoxSplitterWindow.prototype = {
 		if (!this._window || !this.parent || this.raising)
 			return;
 
-		this.onAttached();
+		this.setGroupedAppearance();
 	},
 
 	onScroll : function FSW_onScroll(aEvent)
@@ -1382,7 +1422,7 @@ FoxSplitterWindow.prototype = {
 	},
 
 	// called by the parent group
-	onAttached : function FSW_onAttached()
+	setGroupedAppearance : function FSW_setGroupedAppearance()
 	{
 		if (!this._window)
 			return;
@@ -1434,7 +1474,7 @@ FoxSplitterWindow.prototype = {
 	},
 
 	// called by the parent group
-	onDetached : function FSW_onDetached()
+	clearGroupedAppearance : function FSW_clearGroupedAppearance()
 	{
 		if (!this._window)
 			return;
