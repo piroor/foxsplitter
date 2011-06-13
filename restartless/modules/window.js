@@ -1028,7 +1028,7 @@ FoxSplitterWindow.prototype = {
 
 	onScroll : function FSW_onScroll(aEvent)
 	{
-		if (this.scrolling || !this.syncScroll)
+		if (!this.parent || this.scrolling || !this.syncScroll)
 			return;
 
 		var scrolledFrame = aEvent.originalTarget.defaultView;
@@ -1049,7 +1049,7 @@ FoxSplitterWindow.prototype = {
 			var index = frames.indexOf(scrolledFrame);
 			this.root.allWindows.forEach(function(aFSWindow) {
 				if (aFSWindow.syncScroll)
-					this._setScrollPosition(xFactor, yFactor, index);
+					aFSWindow._setScrollPosition(xFactor, yFactor, index);
 			}, this);
 		}
 		catch(e) {
@@ -1061,12 +1061,11 @@ FoxSplitterWindow.prototype = {
 
 	_collectAllFrames : function FSW_getAllFrames(aFrame)
 	{
-		var frames = [];
+		var frames = [aFrame];
+		frames.push(aFrame);
 		Array.forEach(aFrame.frames, function(aFrame) {
-			frames.push(aFrame);
-			if (frame.frames)
-				Array.forEach(frame.frames, arguments.callee);
-		});
+			frames = frames.concat(this._collectAllFrames(aFrame));
+		}, this);
 		return frames;
 	},
 
@@ -1086,8 +1085,10 @@ FoxSplitterWindow.prototype = {
 			(this.syncScrollX ? (aXFactor * frame.scrollMaxX) : frame.scrollX ),
 			(this.syncScrollY ? (aYFactor * frame.scrollMaxY) : frame.scrollY )
 		);
-
-		this.scrolling--;
+		var self = this;
+		Deferred.next(function() {
+			self.scrolling--;
+		});
 	},
 
 	onSizeModeChange : function FSW_onSizeModeChange(aMode)
