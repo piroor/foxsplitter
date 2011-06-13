@@ -751,6 +751,37 @@ FoxSplitterWindow.prototype = {
 		return newTab;
 	},
 
+	canClose : function FSW_canClose()
+	{
+		if (
+			!this._window ||
+			!this.window.WindowIsClosing
+			)
+			return true;
+
+		return this.window.WindowIsClosing();
+	},
+
+	close : function FSW_close(aForce)
+	{
+		if (aForce || this.canClose())
+			this.window.close();
+	},
+
+	closeAll : function FSW_closeAll()
+	{
+		if (this.parent)
+			this.root.close();
+		else
+			this.close();
+	},
+
+	closeOther : function FSW_closeOther()
+	{
+		if (this.parent)
+			this.root.closeExcept(this);
+	},
+
 
 	// event handling
 

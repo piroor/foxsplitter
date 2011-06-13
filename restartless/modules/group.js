@@ -186,6 +186,34 @@ FoxSplitterGroup.prototype = {
 		}
 	},
 
+	canClose : function FSG_canClose(aExceptionMember)
+	{
+		return this.members.every(function(aMember) {
+			return (
+				aMember == aExceptionMember ||
+				aMember.canClose(aExceptionMember)
+			);
+		});
+	},
+
+	close : function FSG_close(aForce)
+	{
+		this.closeExcept(null, aForce);
+	},
+
+	closeExcept : function FSG_closeExcept(aExceptionMember, aForce)
+	{
+		if (aForce || this.canClose(aExceptionMember)) {
+			this.members.slice(0).forEach(function(aMember) {
+				if (aMember != aExceptionMember)
+					if (aMember.isGroup)
+						aMember.closeExcept(aExceptionMember, true);
+					else
+						aMember.close(true);
+			});
+		}
+	},
+
 
 	// group specific features
 
