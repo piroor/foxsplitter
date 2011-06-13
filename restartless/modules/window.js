@@ -323,7 +323,8 @@ FoxSplitterWindow.prototype = {
 
 	moveTo : function FSW_moveTo(aX, aY)
 	{
-		if (this.minimized) return;
+		if (this.minimized || !this._window)
+			return;
 
 		this.positioning++;
 		this.window.moveTo(aX, aY);
@@ -338,7 +339,8 @@ FoxSplitterWindow.prototype = {
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
-		if (this.minimized) return;
+		if (this.minimized || !this._window)
+			return;
 
 		this.positioning++;
 		this.window.moveBy(aDX, aDY);
@@ -353,7 +355,8 @@ FoxSplitterWindow.prototype = {
 
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
-		if (this.minimized) return;
+		if (this.minimized || !this._window)
+			return;
 
 		this.resizing++;
 		this.window.resizeTo(aW, aH);
@@ -368,7 +371,8 @@ FoxSplitterWindow.prototype = {
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
-		if (this.minimized) return;
+		if (this.minimized || !this._window)
+			return;
 
 		this.resizing++;
 		this.window.resizeBy(aDW, aDH);
@@ -384,7 +388,7 @@ FoxSplitterWindow.prototype = {
 	raise : function FSW_raise()
 	{
 		var deferred = new Deferred();
-		if (this.raising || this.minimized) {
+		if (!this._window || this.raising || this.minimized) {
 			Deferred.next(function() {
 				deferred.call();
 			});
@@ -440,6 +444,9 @@ FoxSplitterWindow.prototype = {
 
 	openLinkAt : function FSW_openLinksAt(aURIOrTab, aPositionAndSize)
 	{
+		if (!this._window)
+			return Deferred.next(function() { return null; });
+
 		var options = [
 				'chrome,dialog=no,all',
 				'screenX='+aPositionAndSize.x,
@@ -465,6 +472,9 @@ FoxSplitterWindow.prototype = {
 
 	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
 	{
+		if (!this._window)
+			return Deferred.next(function() { return null; });
+
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 
@@ -528,7 +538,10 @@ FoxSplitterWindow.prototype = {
 	tileTabs : function FSW_tileTabs(aTabs, aMode)
 	{
 		var isAllTabs = aTabs.length == this.visibleTabs.length;
-		if (isAllTabs && aTabs.length == 1) {
+		if (
+			!this._window ||
+			(isAllTabs && aTabs.length == 1)
+			) {
 			return Deferred.next(function() {
 				return [];
 			});
@@ -698,7 +711,7 @@ FoxSplitterWindow.prototype = {
 
 	gatherWindows : function FSW_gatherWindows()
 	{
-		if (!this.parent)
+		if (!this.parent || !this._window)
 			return;
 
 		var FSWindows = this.root.allWindows;
@@ -726,6 +739,9 @@ FoxSplitterWindow.prototype = {
 
 	importTab : function FSW_importTab(aTab, aPosition)
 	{
+		if (!this._window)
+			return null;
+
 		var newTab = this.browser.addTab('about:blank');
 		newTab.linkedBrowser.stop();
 		newTab.linkedBrowser.docShell;
@@ -740,7 +756,7 @@ FoxSplitterWindow.prototype = {
 
 	startListen : function FSW_startListen()
 	{
-		if (this._listening) return;
+		if (this._listening || !this._window) return;
 		this.window.addEventListener('DOMAttrModified', this, false);
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
@@ -756,7 +772,7 @@ FoxSplitterWindow.prototype = {
 
 	endListen : function FSW_endListen()
 	{
-		if (!this._listening) return;
+		if (!this._listening || !this._window) return;
 		this.window.removeEventListener('DOMAttrModified', this, false);
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
@@ -771,7 +787,7 @@ FoxSplitterWindow.prototype = {
 
 	watchWindowState : function FSW_watchWindowState()
 	{
-		if (this._watchingWindowStateTimer) return;
+		if (this._watchingWindowStateTimer || !this._window) return;
 		this.lastWindowState = this.windowState;
 		this._watchingWindowStateTimer = this.window.setInterval(function(aSelf) {
 			aSelf._checkWindowState();
@@ -862,6 +878,9 @@ FoxSplitterWindow.prototype = {
 
 	_onWindowStateChange : function FSW_onWindowStateChange()
 	{
+		if (!this._window)
+			return;
+
 		var state = this.windowState;
 		var lastState = this.lastWindowState;
 		if (state == lastState)
@@ -906,6 +925,7 @@ FoxSplitterWindow.prototype = {
 	onMove : function FSW_onMove()
 	{
 		if (
+			!this._window ||
 			this.lastX === null ||
 			this.lastY === null ||
 			this.positioning ||
@@ -927,7 +947,7 @@ FoxSplitterWindow.prototype = {
 
 	onResize : function FSW_onResize()
 	{
-		if (this.resizing || this.minimized)
+		if (!this._window || this.resizing || this.minimized)
 			return;
 
 		var x = this.x;
@@ -956,7 +976,7 @@ FoxSplitterWindow.prototype = {
 
 	onActivate : function FSW_onActivate()
 	{
-		if (this.raising || this.minimized)
+		if (!this._window || this.raising || this.minimized)
 			return;
 
 		this.active = true;
@@ -983,7 +1003,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleRaised : function FSW_handleRaised()
 	{
-		if (this.minimized)
+		if (!this._window || this.minimized)
 			return;
 
 		if (!this.parent)
@@ -999,7 +1019,7 @@ FoxSplitterWindow.prototype = {
 
 	onDeactivate : function FSW_onDeactivate()
 	{
-		if (this.raising || this.minimized)
+		if (!this._window || this.raising || this.minimized)
 			return;
 
 		if (this._reservedHandleRaised) {
@@ -1020,7 +1040,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleLowered : function FSW_handleLowered()
 	{
-		if (!this.parent || this.raising)
+		if (!this._window || !this.parent || this.raising)
 			return;
 
 		this.onAttached();
@@ -1028,7 +1048,7 @@ FoxSplitterWindow.prototype = {
 
 	onScroll : function FSW_onScroll(aEvent)
 	{
-		if (!this.parent || this.scrolling || !this.syncScroll)
+		if (!this._window || !this.parent || this.scrolling || !this.syncScroll)
 			return;
 
 		var scrolledFrame = aEvent.originalTarget.defaultView;
@@ -1071,7 +1091,7 @@ FoxSplitterWindow.prototype = {
 
 	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor, aFrameIndex)
 	{
-		if (this.scrolling)
+		if (!this._window || this.scrolling)
 			return;
 
 		this.scrolling++;
@@ -1104,7 +1124,7 @@ FoxSplitterWindow.prototype = {
 
 	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
-		if (!this.parent)
+		if (!this._window || !this.parent)
 			return;
 
 		this.resizing++;
@@ -1160,6 +1180,9 @@ FoxSplitterWindow.prototype = {
 	// called by the parent group
 	onAttached : function FSW_onAttached()
 	{
+		if (!this._window)
+			return;
+
 		this._initToolbarState();
 
 		if (
@@ -1186,7 +1209,11 @@ FoxSplitterWindow.prototype = {
 	},
 	_initToolbarState : function FSW_initToolbarState()
 	{
-		if (!this.shouldAutoSmallizeToolbarMode || this._originalToolbarState)
+		if (
+			!this._window ||
+			!this.shouldAutoSmallizeToolbarMode ||
+			this._originalToolbarState
+			)
 			return;
 
 		var state = {};
@@ -1205,6 +1232,9 @@ FoxSplitterWindow.prototype = {
 	// called by the parent group
 	onDetached : function FSW_onDetached()
 	{
+		if (!this._window)
+			return;
+
 		this._restoreToolbarState();
 
 		if (
@@ -1223,7 +1253,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_restoreToolbarState : function FSW_restoreToolbarState()
 	{
-		if (!this.shouldAutoSmallizeToolbarMode)
+		if (!this._window || !this.shouldAutoSmallizeToolbarMode)
 			return;
 
 		var state = this._originalToolbarState;
@@ -1594,7 +1624,7 @@ FoxSplitterWindow.prototype = {
 
 	_updateDropIndicator : function FSW_updateDropIndicator(aPosition, aTarget)
 	{
-		if (!(aPosition & this.POSITION_VALID)) {
+		if (!this._window || !(aPosition & this.POSITION_VALID)) {
 			this._reserveHideAllDropIndicator();
 			return;
 		}
@@ -1615,6 +1645,9 @@ FoxSplitterWindow.prototype = {
 
 	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition, aTarget)
 	{
+		if (!this._window)
+			return Deferred.next(function() {});
+
 		var deferred = new Deferred();
 
 		var size = 10;
@@ -1672,6 +1705,9 @@ FoxSplitterWindow.prototype = {
 
 	hideDropIndicator : function FSW_hideDropIndicator()
 	{
+		if (!this._window)
+			return;
+
 		this._cancelReserveHideAllDropIndicator();
 
 		if (this._reservedHandleDragOver) {
@@ -1711,6 +1747,9 @@ FoxSplitterWindow.prototype = {
 	},
 	_hideDropIndicatorPostProcess : function FSW_hideDropIndicatorPostProcess()
 	{
+		if (!this._window)
+			return;
+
 		var deferred = new Deferred();
 
 		var indicator = this._dropIndicator;
@@ -1785,7 +1824,7 @@ FoxSplitterWindow.prototype = {
 	},
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
-		if (aFrame) {
+		if (aFrame && this._window) {
 			let docShell = aFrame.top
 				.QueryInterface(Ci.nsIInterfaceRequestor)
 				.getInterface(Ci.nsIWebNavigation)
