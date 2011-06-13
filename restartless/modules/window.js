@@ -1016,9 +1016,11 @@ FoxSplitterWindow.prototype = {
 		try {
 			var xFactor = scrolledFrame.scrollX / scrolledFrame.scrollMaxX;
 			var yFactor = scrolledFrame.scrollY / scrolledFrame.scrollMaxY;
+			var frames = this._collectAllFrames(scrolledFrame.top);
+			var index = frames.indexOf(scrolledFrame);
 			this.root.allWindows.forEach(function(aFSWindow) {
 				if (aFSWindow.syncScroll)
-					this._setScrollPosition(xFactor, yFactor);
+					this._setScrollPosition(xFactor, yFactor, index);
 			}, this);
 		}
 		catch(e) {
@@ -1028,14 +1030,29 @@ FoxSplitterWindow.prototype = {
 		this.scrolling--;
 	},
 
-	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor)
+	_collectAllFrames : function FSW_getAllFrames(aFrame)
+	{
+		var frames = [];
+		Array.forEach(aFrame.frames, function(aFrame) {
+			frames.push(aFrame);
+			if (frame.frames)
+				Array.forEach(frame.frames, arguments.callee);
+		});
+		return frames;
+	},
+
+	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor, aFrameIndex)
 	{
 		if (this.scrolling)
 			return;
 
 		this.scrolling++;
 
-		var frame = this.browser.contentWindow;
+		var frames = this._collectAllFrames(this.browser.contentWindow);
+		if (!aFrameIndex || aFrameIndex >= frames.length)
+			aFrameIndex = 0;
+
+		var frame = frames[aFrameIndex];
 		frame.scrollTo(
 			(this.syncScrollX ? (aXFactor * frame.scrollMaxX) : frame.scrollX ),
 			(this.syncScrollY ? (aYFactor * frame.scrollMaxY) : frame.scrollY )
