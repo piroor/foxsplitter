@@ -1055,7 +1055,7 @@ FoxSplitterWindow.prototype = {
 
 		if (this.shouldAutoHideTabs && this.browser) {
 			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide) {
+			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 				if (!('_autoHideWasEnabled' in this))
 					this._autoHideWasEnabled = enabled;
@@ -1089,7 +1089,7 @@ FoxSplitterWindow.prototype = {
 
 		if (this.shouldAutoHideTabs && this.browser) {
 			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide) {
+			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
 					treeStyleTab.toggleAutoHide();
