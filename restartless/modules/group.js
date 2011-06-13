@@ -211,6 +211,8 @@ FoxSplitterGroup.prototype = {
 					else
 						aMember.close(true);
 			});
+			if (aExceptionMember && !aExceptionMember.isGroup)
+				aExceptionMember.clearGroupedAppearance();
 		}
 	},
 

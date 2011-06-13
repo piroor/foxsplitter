@@ -289,7 +289,7 @@ FoxSplitterWindow.prototype = {
 		.error(this.defaultHandleError);
 	},
 
-	_updateChromeHidden : function FSW_updateChromeHidden()
+	_updateChromeHidden : function FSW_updateChromeHidden(aForceRestore)
 	{
 		var hiddenItems = [
 				'menubar',
@@ -339,7 +339,8 @@ FoxSplitterWindow.prototype = {
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
-		this.clearGroupedAppearance();
+		this.clearGroupedAppearance(aOnQuit);
+		this._updateChromeHidden();
 
 		var id = this.id;
 
@@ -1438,8 +1439,9 @@ FoxSplitterWindow.prototype = {
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 				this._autoHideWasEnabled = enabled;
-				if (treeStyleTab.toggleAutoHide && !enabled)
+				if (treeStyleTab.toggleAutoHide && !enabled) {
 					treeStyleTab.toggleAutoHide();
+				}
 			}
 		}
 	},
@@ -1474,28 +1476,35 @@ FoxSplitterWindow.prototype = {
 	},
 
 	// called by the parent group
-	clearGroupedAppearance : function FSW_clearGroupedAppearance()
+	clearGroupedAppearance : function FSW_clearGroupedAppearance(aForce)
 	{
 		if (!this._window)
 			return;
 
-		this._restoreToolbarState();
+		this._restoreToolbarState(aForce);
 
 		if (
 			this.shouldAutoHideTabs &&
 			this.browser &&
-			this._autoHideWasEnabled !== undefined
+			this._autoHideWasEnabled !== undefined &&
+			(
+				aForce ||
+				(
+					!this.parent &&
+					FoxSplitterWindow.instances.length == 1
+				)
+			)
 			) {
 			let treeStyleTab = this.browser.treeStyleTab;
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (treeStyleTab.toggleAutoHide && enabled && !this._autoHideWasEnabled)
+				if (treeStyleTab.toggleAutoHide && enabled != this._autoHideWasEnabled)
 					treeStyleTab.toggleAutoHide();
 			}
 			this._autoHideWasEnabled = undefined;
 		}
 	},
-	_restoreToolbarState : function FSW_restoreToolbarState()
+	_restoreToolbarState : function FSW_restoreToolbarState(aForce)
 	{
 		if (!this._window || !this.shouldAutoSmallizeToolbarMode)
 			return;
