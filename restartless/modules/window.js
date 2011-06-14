@@ -281,28 +281,46 @@ FoxSplitterWindow.prototype = {
 
 	_restoreState : function FSW_restoreState()
 	{
-		var lastState = this.getWindowValue(this.STATE);
+		var lastState = this._lastState || this.getWindowValue(this.STATE);
 		if (!lastState)
-			return;
+			return false;
 
-		lastState = JSON.parse(lastState);
+		// Cache the last state to restore after a delay.
+		this._lastState = lastState = (this._lastState || JSON.parse(lastState));
 		if (!lastState.id)
-			return;
+			return false;
 
-		// override id by the stored one
-		this.id = lastState.id;
+		// Override the id by the old id, if it was stored.
+		if (this.id != lastState.id)
+			this.id = lastState.id;
 
 		var sibling = lastState.sibling;
-		if (sibling) {
-			if (sibling.indexOf(':') < 0)
-				sibling = FoxSplitterWindow.instancesById[lastState.sibling];
-			else
-				sibling = FoxSplitterGroup.getInstanceById(sibling);
+		if (!sibling || this.parent) {
+			delete this._lastState;
+			return false;
 		}
-		if (!this.parent && sibling) {
-			this.attachTo(sibling, lastState.position, true);
-			this.parent.resetPositionAndSize(this);
-		}
+
+		if (sibling.indexOf(':') < 0)
+			sibling = FoxSplitterWindow.instancesById[lastState.sibling];
+		else
+			sibling = FoxSplitterGroup.getInstanceById(sibling);
+
+		if (!sibling)
+			return false;
+
+		this.attachTo(sibling, lastState.position, true);
+		this.parent.resetPositionAndSize(this);
+		delete this._lastState;
+
+		/**
+		 * Because this group is restored, other member related
+		 * to the restored group can become to restorable.
+		 */
+		FoxSplitterWindow.instances.some(function(aFSWindow) {
+			return aFSWindow._restoreState();
+		});
+
+		return true;
 	},
 
 	_updateChromeHidden : function FSW_updateChromeHidden(aForceRestore)
