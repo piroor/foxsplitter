@@ -1815,7 +1815,12 @@ FoxSplitterWindow.prototype = {
 			 * Multiple Tab Handler moves/duplicates selected tabs,
 			 * so we should process only one tab.
 			 */
-			if ('MultipleTabService' in browser.ownerDocument.defaultView)
+			if (
+				'MultipleTabService' in browser.ownerDocument.defaultView &&
+				tabs.every(function(aTab) {
+					return aTab.getAttribute('multiselected') == 'true';
+				})
+				)
 				tabs = [tabs[0]];
 
 			if (this.isAccelKeyPressed(aEvent)) {
