@@ -292,9 +292,13 @@ FoxSplitterWindow.prototype = {
 		// override id by the stored one
 		this.id = lastState.id;
 
-		var sibling = lastState.sibling ?
-						FoxSplitterWindow.instancesById[lastState.sibling] :
-						null ;
+		var sibling = lastState.sibling;
+		if (sibling) {
+			if (sibling.indexOf(':') < 0)
+				sibling = FoxSplitterWindow.instancesById[lastState.sibling];
+			else
+				sibling = FoxSplitterGroup.getInstanceById(sibling);
+		}
 		if (!this.parent && sibling) {
 			this.attachTo(sibling, lastState.position, true);
 			this.parent.resetPositionAndSize(this);

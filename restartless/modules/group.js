@@ -12,6 +12,13 @@ FoxSplitterGroup.prototype = {
 
 	isGroup : true,
 
+	get id()
+	{
+		return this.members.length == 2 ?
+				this.startMember.id+':'+this.endMember.id :
+				null ;
+	},
+
 	get x()
 	{
 		var member = this.leftMember || this.topMember;
@@ -54,6 +61,10 @@ FoxSplitterGroup.prototype = {
 	{
 		return this.topMember || this.leftMember;
 	},
+	get endMember()
+	{
+		return this.bottomMember || this.rightMember;
+	},
 	_getMemberAt : function FSG_getMemberAt(aPosition)
 	{
 		var member = null;
@@ -92,12 +103,11 @@ FoxSplitterGroup.prototype = {
 
 	init : function FSG_init() 
 	{
-		this.id = 'group-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
-
 		this.resetting = 0;
-
 		this.members = [];
+
+		FoxSplitterGroup.instances.push(this);
 	},
  
 	destroy : function FSG_destroy() 
@@ -108,6 +118,10 @@ FoxSplitterGroup.prototype = {
 
 		if (this.parent)
 			this.parent.unregister(this);
+
+		FoxSplitterGroup.instances = FoxSplitterGroup.instances.filter(function(aFSGroup) {
+			return aFSGroup != this;
+		}, this);
 	},
 
 
@@ -447,6 +461,17 @@ FoxSplitterGroup.prototype = {
 };
 
 FoxSplitterBase.prototype.groupClass = FoxSplitterGroup;
+
+FoxSplitterGroup.instances = [];
+FoxSplitterGroup.getInstanceById = function FSG_getInstanceById(aId) {
+	var found = null;
+	this.instances.some(function(aInstance) {
+		if (aInstance.id == aId)
+			return found = aInstance;
+		return false;
+	});
+	return found;
+};
 
 
 function shutdown()
