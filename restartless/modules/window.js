@@ -1797,6 +1797,14 @@ FoxSplitterWindow.prototype = {
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
+
+			/**
+			 * Multiple Tab Handler moves/duplicates selected tabs,
+			 * so we should process only one tab.
+			 */
+			if ('MultipleTabService' in browser.ownerDocument.defaultView)
+				tabs = [tabs[0]];
+
 			if (this.isAccelKeyPressed(aEvent)) {
 				deferred = this.duplicateTabsIn(tabs, position);
 			}
