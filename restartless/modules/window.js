@@ -146,14 +146,24 @@ FoxSplitterWindow.prototype = {
 	{
 		return (
 			this._id ||
-			(this._id = this.documentElement.getAttribute(this.ID))
+			(this._id = this.documentElement.getAttribute(this.ID) || this.getWindowValue(this.ID))
 		);
 	},
 	set id(aValue)
 	{
-		if (aValue != this._id)
+		if (aValue != this._id) {
+			if (this._id && this._id in FoxSplitterWindow.instancesById)
+				delete FoxSplitterWindow.instancesById[this._id];
+
+			this._id = aValue;
 			this.documentElement.setAttribute(this.ID, aValue);
-		return this._id = aValue;
+			this.setWindowValue(this.ID, aValue);
+			if (aValue)
+				FoxSplitterWindow.instancesById[aValue] = this;
+
+			this.saveState();
+		}
+		return this._id;
 	},
 
 	get active()
@@ -236,7 +246,6 @@ FoxSplitterWindow.prototype = {
 		this.id = this.id || ('window-' + Date.now() + '-' + parseInt(Math.random() * 65000));
 		this.parent = null;
 		FoxSplitterWindow.instances.push(this);
-		FoxSplitterWindow.instancesById[this.id] = this;
 
 		this._installStyleSheet();
 
@@ -279,6 +288,11 @@ FoxSplitterWindow.prototype = {
 
 		var self = this;
 		Deferred.next(function() {
+			// override id by the stored one
+			var id = self.getWindowValue(self.ID);
+			if (id)
+				self.id = id;
+
 			self.updateLastPositionAndSize();
 
 			// workaround to fix misrendering by resizing on DOMContentLoaded
@@ -1011,15 +1025,21 @@ FoxSplitterWindow.prototype = {
 
 	getWindowValue : function FSW_getWindowValue(aKey)
 	{
-		if (!this._window)
+		if (
+			!this._window ||
+			!this.window.__SSi // not initialized yet by nsSessionStore
+			)
 			return null;
 
-		return SessionStore.getWindowValue(this.window, aKey);
+		return SessionStore.getWindowValue(this.window, aKey);s
 	},
 
 	setWindowValue : function FSW_setWindowValue(aKey, aValue)
 	{
-		if (!this._window)
+		if (
+			!this._window ||
+			!this.window.__SSi // not initialized yet by nsSessionStore
+			)
 			return;
 
 		SessionStore.setWindowValue(this.window, aKey, aValue);
@@ -1048,11 +1068,6 @@ FoxSplitterWindow.prototype = {
 	forgetState : function FSW_forgetState()
 	{
 		this.setWindowValue(this.STATE, '');
-	},
-
-	saveId : function FSW_saveId()
-	{
-		this.setWindowValue(this.ID, this.id);
 	},
 
 

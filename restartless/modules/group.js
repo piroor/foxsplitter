@@ -242,7 +242,6 @@ FoxSplitterGroup.prototype = {
 		var state = JSON.stringify(this.state);
 		this.allWindows.forEach(function(aFSWidow) {
 			aFSWindow.setWindowValue(this.STATE, state);
-			aFSWindow.saveId();
 		}, this);
 	},
 
