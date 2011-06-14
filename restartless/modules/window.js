@@ -459,33 +459,31 @@ FoxSplitterWindow.prototype = {
 
 		this.raising++;
 
+		/**
+		 * on Windows:
+		 *   (event loop 1) focused => "activate" event is fired
+		 *     => (event loop 2) Deferred.next() is processed
+		 *       => ready to decrement the "raising" counter
+		 * on Linux:
+		 *   (event loop 1) focused
+		 *     => (event loop 2) Deferred.next() is processed
+		 *       => (event loop 3) "activate" event is fired
+		 *         => ready to decrement the "raising" counter
+		 *
+		 * Grouped windows flick each other infinitely, if I decrement
+		 * the counter too early. To avoid this flick, I have to wait
+		 * until this window is surely activated.
+		 */
 		var self = this;
-		if (XULAppInfo.OS == 'Linux') {
-			let handleEvent = function() {
-					self.window.removeEventListener('activate', handleEvent, true);
-					self.window.removeEventListener('deactivate', handleEvent, true);
-					if (timer) timer.cancel();
-					self.raising--;
-					deferred.call();
-				};
-
-			this.window.addEventListener('activate', handleEvent, true);
-			this.window.addEventListener('deactivate', handleEvent, true);
-
-			let timer = Deferred.wait(0.5);
-			timer
-				.next(function() {
-					timer = null;
-					handleEvent();
-				})
-				.error(this.defaultHandleError);
-		}
-		else {
-			Deferred.next(function() {
+		Deferred
+			.parallel(
+				this._waitWindowActivated(this.window),
+				Deferred.next(function() {})
+			)
+			.next(function() {
 				self.raising--;
 				deferred.call();
 			});
-		}
 
 		try {
 			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
@@ -506,6 +504,31 @@ FoxSplitterWindow.prototype = {
 		catch(e) {
 			this.dumpError(e, 'FoxSplitter: FAILED TO RAISE A WINDOW!');
 		}
+
+		return deferred;
+	},
+	_waitWindowActivated : function FSW_waitWindowActivated(aDOMWindow)
+	{
+		var deferred = new Deferred();
+
+		var handleEvent = function() {
+				aDOMWindow.removeEventListener('activate', handleEvent, true);
+				aDOMWindow.removeEventListener('deactivate', handleEvent, true);
+				if (timer) timer.cancel();
+				deferred.call();
+			};
+
+		aDOMWindow.addEventListener('activate', handleEvent, true);
+		aDOMWindow.addEventListener('deactivate', handleEvent, true);
+
+		// timeout (for safety)
+		let timer = Deferred.wait(0.5);
+		timer
+			.next(function() {
+				timer = null;
+				handleEvent();
+			})
+			.error(this.defaultHandleError);
 
 		return deferred;
 	},
