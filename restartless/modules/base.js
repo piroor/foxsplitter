@@ -187,12 +187,16 @@ FoxSplitterBase.prototype = {
 	},
 
 
-	detach : function FSB_detach()
+	detach : function FSB_detach(aSilent)
 	{
 		if (!this.parent)
 			return;
 
-		this._expandSibling();
+		var root = this.root;
+
+		if (!aSilent)
+			this._expandSibling();
+
 		this.parent.unregister(this);
 
 		if (!this.isGroup)

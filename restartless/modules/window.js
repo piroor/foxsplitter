@@ -344,11 +344,7 @@ FoxSplitterWindow.prototype = {
 
 		var id = this.id;
 
-		if (this.parent) {
-			if (!aOnQuit)
-				this._expandSibling();
-			this.parent.unregister(this);
-		}
+		this.detach(aOnQuit);
 
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
