@@ -403,6 +403,25 @@ FoxSplitterBase.prototype = {
 	},
 
 
+	makeURIFromSpec : function FSB_makeURIFromSpec(aURI) 
+	{
+		const IOService = Cc['@mozilla.org/network/io-service;1']
+							.getService(Ci.nsIIOService);
+		var newURI;
+		aURI = aURI || '';
+		if (aURI && String(aURI).indexOf('file:') == 0) {
+			let fileHandler = IOService.getProtocolHandler('file')
+								.QueryInterface(Ci.nsIFileProtocolHandler);
+			let tempLocalFile = fileHandler.getFileFromURLSpec(aURI);
+			newURI = IOService.newFileURI(tempLocalFile);
+		}
+		else {
+			if (!/^\w+\:/.test(aURI)) aURI = 'http://'+aURI;
+			newURI = IOService.newURI(aURI, null, null);
+		}
+		return newURI;
+	},
+
 	isAccelKeyPressed : function FSB_isAccelKeyPressed(aEvent)
 	{
 		return XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey ;

@@ -1821,6 +1821,9 @@ FoxSplitterWindow.prototype = {
 			}
 		}
 		else {
+			links = this._filterOnlySafeLinks(links);
+			if (!links.length)
+				return;
 			deferred = this.openLinksIn(links, position);
 		}
 
@@ -1834,6 +1837,31 @@ FoxSplitterWindow.prototype = {
 				target.attachTo(FSWindow, position);
 			})
 			.error(this.defaultHandleError);
+	},
+	_filterOnlySafeLinks : function FSW_filterOnlySafeLinks(aURIs)
+	{
+		var currentDragSession = Cc['@mozilla.org/widget/dragservice;1']
+									.getService(Ci.nsIDragService)
+									.getCurrentSession();
+		const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
+						.getService(Ci.nsIScriptSecurityManager);
+
+		var sourceDoc = currentDragSession ? currentDragSession.sourceDocument : null ;
+		var sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+		return aURIs.filter(function(aURI) {
+			if (aURI.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(aURI))
+				return false;
+			var normalizedURI = this.makeURIFromSpec(aURI);
+			if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
+				try {
+					SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+				}
+				catch(e) {
+					return false;
+				}
+			}
+			return true;
+		}, this);
 	},
 
 	_onDragEnd : function FSW_onDragEnd(aEvent)
