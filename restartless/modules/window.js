@@ -942,7 +942,18 @@ FoxSplitterWindow.prototype = {
 			this.browser.moveTabTo(newTab, aPosition);
 
 		var groupInfo = this._getGroupInfo(aTab);
-		if (aTab.hidden) aTab.hidden = false; // we cannot import hidden tab!
+
+		// we cannot import hidden tab!
+		if (aTab.hidden) aTab.hidden = false;
+
+		// we cannot import collapsed tree!
+		var sourceBrowser = this._getTabBrowserFromTab(aTab);
+		if ('treeStyleTab' in sourceBrowser &&
+			sourceBrowser.treeStyleTab.isCollapsed(aTab)) {
+			sourceBrowser.treeStyleTab.collapseExpandSubtree(aTab, false, true);
+			sourceBrowser.treeStyleTab.collapseExpandTab(aTab, false, true);
+		}
+
 		this.browser.swapBrowsersAndCloseOther(newTab, aTab);
 
 		var deferred = new Deferred();
