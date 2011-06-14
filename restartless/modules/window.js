@@ -1049,6 +1049,11 @@ FoxSplitterWindow.prototype = {
 		this.setWindowValue(this.STATE, '');
 	},
 
+	saveId : function FSW_saveId()
+	{
+		this.setWindowValue(this.ID, this.id);
+	},
+
 
 	// event handling
 

@@ -14,6 +14,7 @@ FoxSplitterBase.prototype = {
 	ACTIVE            : 'foxsplitter-active',
 	HOVER             : 'foxsplitter-hover',
 	STATE             : 'foxsplitter-state',
+	ID                : 'foxsplitter-id',
 
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),

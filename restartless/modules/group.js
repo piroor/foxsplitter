@@ -225,7 +225,7 @@ FoxSplitterGroup.prototype = {
 				members : {}
 			};
 		if (this.members.length == 2) {
-			if (this.firstMember.position & this.POSITION_HORIZONTAL) {
+			if (this.startMember.position & this.POSITION_HORIZONTAL) {
 				state.members.left  = this.leftMember.state;
 				state.members.right = this.rightMember.state;
 			}
@@ -242,6 +242,7 @@ FoxSplitterGroup.prototype = {
 		var state = JSON.stringify(this.state);
 		this.allWindows.forEach(function(aFSWidow) {
 			aFSWindow.setWindowValue(this.STATE, state);
+			aFSWindow.saveId();
 		}, this);
 	},
 
