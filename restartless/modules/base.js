@@ -131,6 +131,7 @@ FoxSplitterBase.prototype = {
 			this.saveState();
 		}
 		if (!aBaseFSWindow.isGroup) {
+			aBaseFSWindow.setGroupedAppearance();
 			aBaseFSWindow.saveState();
 		}
 	},
