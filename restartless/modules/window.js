@@ -146,12 +146,13 @@ FoxSplitterWindow.prototype = {
 	{
 		return (
 			this._id ||
-			(this._id = this.documentElement.getAttribute(this.kID))
+			(this._id = this.documentElement.getAttribute(this.ID))
 		);
 	},
 	set id(aValue)
 	{
-		this.documentElement.setAttribute(this.kID, aValue);
+		if (aValue != this._id)
+			this.documentElement.setAttribute(this.ID, aValue);
 		return this._id = aValue;
 	},
 
