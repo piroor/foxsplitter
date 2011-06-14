@@ -13,6 +13,7 @@ FoxSplitterBase.prototype = {
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	ACTIVE            : 'foxsplitter-active',
 	HOVER             : 'foxsplitter-hover',
+	STATE             : 'foxsplitter-state',
 
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),
@@ -124,6 +125,8 @@ FoxSplitterBase.prototype = {
 
 		if (!this.isGroup)
 			this.setGroupedAppearance();
+
+		this.root.saveState();
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -201,6 +204,8 @@ FoxSplitterBase.prototype = {
 
 		if (!this.isGroup)
 			this.clearGroupedAppearance();
+
+		root.saveState();
 	},
 
 	_expandSibling : function FSB_expandSibling()

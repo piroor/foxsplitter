@@ -9,6 +9,9 @@ const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
 const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.getService(Ci.nsIXULAppInfo)
 					.QueryInterface(Ci.nsIXULRuntime);
+
+const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
+					.getService(Ci.nsISessionStore);
  
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -1002,6 +1005,48 @@ FoxSplitterWindow.prototype = {
 	{
 		if (this.parent)
 			this.root.closeExcept(this);
+	},
+
+
+	getWindowValue : function FSW_getWindowValue(aKey)
+	{
+		if (!this._window)
+			return null;
+
+		return SessionStore.getWindowValue(this.window, aKey);
+	},
+
+	setWindowValue : function FSW_setWindowValue(aKey, aValue)
+	{
+		if (!this._window)
+			return;
+
+		SessionStore.setWindowValue(this.window, aKey, aValue);
+	},
+
+	get state()
+	{
+		return {
+			id     : this.id,
+			type   : 'window',
+			x      : this.x,
+			y      : this.y,
+			width  : this.width,
+			height : this.height
+		};
+	},
+
+	saveState : function FSW_saveState()
+	{
+		if (this.parent)
+			this.root.saveState();
+		else
+			this.forgetState();
+	},
+
+	forgetState : function FSW_forgetState()
+	{
+		this.setWindowValue(this.STATE, '');
 	},
 
 
