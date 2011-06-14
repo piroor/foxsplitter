@@ -5,7 +5,7 @@ var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
 const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.getService(Ci.nsIXULAppInfo)
 					.QueryInterface(Ci.nsIXULRuntime);
- 
+
 function FoxSplitterBase() 
 {
 }
@@ -129,6 +129,8 @@ FoxSplitterBase.prototype = {
 		if (!this.isGroup) {
 			this.setGroupedAppearance();
 			this.saveState();
+		}
+		if (!aBaseFSWindow.isGroup) {
 			aBaseFSWindow.saveState();
 		}
 	},

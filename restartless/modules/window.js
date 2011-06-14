@@ -12,7 +12,7 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
- 
+
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
 	this.init(aWindow, aOnInit);
