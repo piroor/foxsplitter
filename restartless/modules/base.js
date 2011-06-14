@@ -87,52 +87,46 @@ FoxSplitterBase.prototype = {
 		return new this.groupClass();
 	},
 
-	attachTo : function FSB_attach(aBaseFSWindow, aPosition, aSilent)
+	bindWith : function FSB_bindWith(aSibling, aPosition, aSilent)
 	{
-		if (!aBaseFSWindow || !(aPosition & this.POSITION_VALID))
+		if (!aSibling || !(aPosition & this.POSITION_VALID))
 			return;
 
+		if (this.parent)
+			this.unbind();
+
 		var newGroup = this.createGroup();
-		var existingGroup;
 
-		existingGroup = aBaseFSWindow.parent;
+		var existingGroup = aSibling.parent;
 		if (existingGroup) {
 			// swap existing relations
-			newGroup.position = aBaseFSWindow.position;
+			newGroup.position = aSibling.position;
 			existingGroup.register(newGroup);
-			existingGroup.unregister(aBaseFSWindow);
+			existingGroup.unregister(aSibling);
 		}
-		newGroup.register(aBaseFSWindow);
 
-		existingGroup = this.parent;
-		if (existingGroup) {
-			// swap existing relations
-			newGroup.position = this.position;
-			existingGroup.register(newGroup);
-			existingGroup.unregister(this);
-		}
+		newGroup.register(aSibling);
 		newGroup.register(this);
 
 		this.position = aPosition;
-		aBaseFSWindow.position = this.opposite[aPosition];
+		aSibling.position = this.opposite[aPosition];
 
 		if (!aSilent)
 			this._initPositionAndSize();
 
-		if (this.window) {
+		if (!this.isGroup) {
+			this.setGroupedAppearance();
+			this.saveState();
+
 			let self = this;
 			Deferred.next(function() {
 				self.active = self.active; // update status of grouped windows
 			});
 		}
 
-		if (!this.isGroup) {
-			this.setGroupedAppearance();
-			this.saveState();
-		}
-		if (!aBaseFSWindow.isGroup) {
-			aBaseFSWindow.setGroupedAppearance();
-			aBaseFSWindow.saveState();
+		if (!aSibling.isGroup) {
+			aSibling.setGroupedAppearance();
+			aSibling.saveState();
 		}
 	},
 
@@ -197,7 +191,7 @@ FoxSplitterBase.prototype = {
 	},
 
 
-	detach : function FSB_detach(aSilent)
+	unbind : function FSB_unbind(aSilent)
 	{
 		if (!this.parent)
 			return;

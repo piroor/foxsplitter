@@ -281,6 +281,9 @@ FoxSplitterWindow.prototype = {
 
 	_restoreState : function FSW_restoreState()
 	{
+		if (this._restored || !this._needRestored)
+			return false;
+
 		var lastState = this._lastState || this.getWindowValue(this.STATE);
 		if (!lastState)
 			return false;
@@ -290,27 +293,35 @@ FoxSplitterWindow.prototype = {
 		if (!lastState.id)
 			return false;
 
-		// Override the id by the old id, if it was stored.
-		if (this.id != lastState.id)
+		if (this.id == lastState.id) {
+			this._needRestored = false;
+			this._restored = true;
+			return false;
+		}
+		else {
+			// Override the id by the old id, if it was stored.
 			this.id = lastState.id;
+		}
 
 		var sibling = lastState.sibling;
 		if (!sibling || this.parent) {
 			delete this._lastState;
+			this._restored = true;
 			return false;
 		}
 
-		if (sibling.indexOf(':') < 0)
-			sibling = FoxSplitterWindow.instancesById[lastState.sibling];
-		else
-			sibling = FoxSplitterGroup.getInstanceById(sibling);
+		sibling = (sibling.indexOf(':') > -1 && this.groupClass) ?
+					this.groupClass.getInstanceById(sibling) :
+					FoxSplitterWindow.instancesById[sibling] ;
 
-		if (!sibling)
+		if (!sibling || sibling.parent)
 			return false;
 
-		this.attachTo(sibling, lastState.position, true);
+		this.bindWith(sibling, lastState.position, true);
 		this.parent.resetPositionAndSize(this);
+
 		delete this._lastState;
+		this._restored = true;
 
 		/**
 		 * Because this group is restored, other member related
@@ -322,6 +333,8 @@ FoxSplitterWindow.prototype = {
 
 		return true;
 	},
+	_needRestored : true,
+	_restored : false,
 
 	_updateChromeHidden : function FSW_updateChromeHidden(aForceRestore)
 	{
@@ -378,7 +391,7 @@ FoxSplitterWindow.prototype = {
 
 		var id = this.id;
 
-		this.detach(aOnQuit);
+		this.unbind(aOnQuit);
 
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
@@ -585,7 +598,7 @@ FoxSplitterWindow.prototype = {
 			);
 		var self = this;
 		window.addEventListener(this.EVENT_TYPE_READY, function() {
-			window.removeEventListener(this.EVENT_TYPE_READY, arguments.callee, false);
+			window.removeEventListener(self.EVENT_TYPE_READY, arguments.callee, false);
 			deferred.call(window);
 		}, false);
 		return deferred
@@ -605,7 +618,7 @@ FoxSplitterWindow.prototype = {
 
 		return this.openLinkAt(first, positionAndSize)
 				.next(function(aWindow) {
-					aWindow.FoxSplitter.attachTo(base, aPosition);
+					aWindow.FoxSplitter.bindWith(base, aPosition);
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
@@ -792,20 +805,20 @@ FoxSplitterWindow.prototype = {
 
 					beforeYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : beforeYTiles[aIndex-1];
-						aTile.FSWindow.attachTo(base, self.POSITION_TOP, true);
+						aTile.FSWindow.bindWith(base, self.POSITION_TOP, true);
 					});
 					beforeXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.attachTo(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
+						aTile.FSWindow.bindWith(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
 					});
 
 					afterYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : afterYTiles[aIndex-1];
-						aTile.FSWindow.attachTo(base, self.POSITION_BOTTOM, true);
+						aTile.FSWindow.bindWith(base, self.POSITION_BOTTOM, true);
 					});
 					afterXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.attachTo(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
+						aTile.FSWindow.bindWith(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
 					});
 
 					self.parent.resetPositionAndSize(self); // for safety
@@ -1670,7 +1683,7 @@ FoxSplitterWindow.prototype = {
 			 * sibling of this window, then, Fox Splitter will do following
 			 * processes:
 			 *
-			 *  1. The dragged window is detached from its parent group.
+			 *  1. The dragged window is unbinded from its parent group.
 			 *  2. The parent group of the dragged window automatically
 			 *     destroys itself, *because there is only one member left (A)*.
 			 *     (If the dragged window is the sibling of this window,
@@ -1810,8 +1823,8 @@ FoxSplitterWindow.prototype = {
 			}
 			else if (allTabs.length == tabs.length) {
 				let window = tabs[0].ownerDocument.defaultView;
-				window.FoxSplitter.detach();
-				window.FoxSplitter.attachTo(this, position);
+				window.FoxSplitter.unbind();
+				window.FoxSplitter.bindWith(this, position);
 				deferred = Deferred.next(function() {
 					return window;
 				});
@@ -1831,10 +1844,10 @@ FoxSplitterWindow.prototype = {
 			deferred.next(function(aWindow) {
 				var FSWindow = aWindow.FoxSplitter;
 				var position = FSWindow.opposite[FSWindow.position];
-				FSWindow.detach();
+				FSWindow.unbind();
 				FSWindow.moveTo(target.x, target.y);
 				FSWindow.resizeTo(target.width, target.height);
-				target.attachTo(FSWindow, position);
+				target.bindWith(FSWindow, position);
 			})
 			.error(this.defaultHandleError);
 	},
