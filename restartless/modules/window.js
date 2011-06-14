@@ -129,25 +129,9 @@ FoxSplitterWindow.prototype = {
 		return this._window = aValue;
 	},
 
-	get position()
-	{
-		return (
-			this._position ||
-			(this._position = parseInt(this.documentElement.getAttribute(this.ATTACHED_POSITION)))
-		);
-	},
-	set position(aValue)
-	{
-		this.documentElement.setAttribute(this.ATTACHED_POSITION, aValue);
-		return this._position = aValue;
-	},
-
 	get id()
 	{
-		return (
-			this._id ||
-			(this._id = this.documentElement.getAttribute(this.ID) || this.getWindowValue(this.ID))
-		);
+		return this._id;
 	},
 	set id(aValue)
 	{
@@ -156,12 +140,8 @@ FoxSplitterWindow.prototype = {
 				delete FoxSplitterWindow.instancesById[this._id];
 
 			this._id = aValue;
-			this.documentElement.setAttribute(this.ID, aValue);
-			this.setWindowValue(this.ID, aValue);
 			if (aValue)
 				FoxSplitterWindow.instancesById[aValue] = this;
-
-			this.saveState();
 		}
 		return this._id;
 	},
@@ -243,7 +223,7 @@ FoxSplitterWindow.prototype = {
 
 		this.active = true;
 
-		this.id = this.id || ('window-' + Date.now() + '-' + parseInt(Math.random() * 65000));
+		this.id = 'window-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 		FoxSplitterWindow.instances.push(this);
 
@@ -288,23 +268,37 @@ FoxSplitterWindow.prototype = {
 
 		var self = this;
 		Deferred.next(function() {
-			// override id by the stored one
-			var id = self.getWindowValue(self.ID);
-			if (id)
-				self.id = id;
-
+			self._restoreState();
 			self.updateLastPositionAndSize();
-
-			// workaround to fix misrendering by resizing on DOMContentLoaded
-			self.resizeBy(0, -1);
-			self.resizeBy(0, 1);
-
-			if (self.parent)
-				self.parent.reserveResetPositionAndSize(); // for safety
-
 			self.startListen();
+
+			var event = self.document.createEvent('Events');
+			event.initEvent(self.EVENT_TYPE_READY, true, false);
+			self.document.dispatchEvent(event);
 		})
 		.error(this.defaultHandleError);
+	},
+
+	_restoreState : function FSW_restoreState()
+	{
+		var lastState = this.getWindowValue(this.STATE);
+		if (!lastState)
+			return;
+
+		lastState = JSON.parse(lastState);
+		if (!lastState.id)
+			return;
+
+		// override id by the stored one
+		this.id = lastState.id;
+
+		var sibling = lastState.sibling ?
+						FoxSplitterWindow.instancesById[lastState.sibling] :
+						null ;
+		if (!this.parent && sibling) {
+			this.attachTo(sibling, lastState.position, true);
+			this.parent.resetPositionAndSize(this);
+		}
 	},
 
 	_updateChromeHidden : function FSW_updateChromeHidden(aForceRestore)
@@ -568,8 +562,8 @@ FoxSplitterWindow.prototype = {
 				aURIOrTab
 			);
 		var self = this;
-		window.addEventListener('load', function() {
-			window.removeEventListener('load', arguments.callee, false);
+		window.addEventListener(this.EVENT_TYPE_READY, function() {
+			window.removeEventListener(this.EVENT_TYPE_READY, arguments.callee, false);
 			deferred.call(window);
 		}, false);
 		return deferred
@@ -1048,26 +1042,24 @@ FoxSplitterWindow.prototype = {
 	get state()
 	{
 		return {
-			id     : this.id,
-			type   : 'window',
-			x      : this.x,
-			y      : this.y,
-			width  : this.width,
-			height : this.height
+			id       : this.id,
+			x        : this.x,
+			y        : this.y,
+			width    : this.width,
+			height   : this.height,
+			sibling  : (this.sibling ? this.sibling.id : null ),
+			position : this.position
 		};
 	},
 
 	saveState : function FSW_saveState()
 	{
-		if (this.parent)
-			this.root.saveState();
-		else
-			this.forgetState();
-	},
+		if (!this._window)
+			return;
 
-	forgetState : function FSW_forgetState()
-	{
-		this.setWindowValue(this.STATE, '');
+		var state = this.state;
+		state = JSON.stringify(state);
+		this.setWindowValue(this.STATE, state);
 	},
 
 

@@ -217,42 +217,6 @@ FoxSplitterGroup.prototype = {
 	},
 
 
-	get state()
-	{
-		var state = {
-				id      : this.id,
-				type    : 'group',
-				members : {}
-			};
-		if (this.members.length == 2) {
-			if (this.startMember.position & this.POSITION_HORIZONTAL) {
-				state.members.left  = this.leftMember.state;
-				state.members.right = this.rightMember.state;
-			}
-			else {
-				state.members.top    = this.topMember.state;
-				state.members.bottom = this.bottomMember.state;
-			}
-		}
-		return state;
-	},
-
-	saveState : function FSG_saveState()
-	{
-		var state = JSON.stringify(this.state);
-		this.allWindows.forEach(function(aFSWidow) {
-			aFSWindow.setWindowValue(this.STATE, state);
-		}, this);
-	},
-
-	forgetState : function FSG_forgetState()
-	{
-		this.allWindows.forEach(function(aFSWidow) {
-			aFSWindow.forgetState();
-		});
-	},
-
-
 	// group specific features
 
 	register : function FSG_register(aMember)

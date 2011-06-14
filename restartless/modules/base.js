@@ -16,6 +16,8 @@ FoxSplitterBase.prototype = {
 	STATE             : 'foxsplitter-state',
 	ID                : 'foxsplitter-id',
 
+	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
+
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),
 	POSITION_RIGHT  : (1 << 1),
@@ -124,10 +126,11 @@ FoxSplitterBase.prototype = {
 			});
 		}
 
-		if (!this.isGroup)
+		if (!this.isGroup) {
 			this.setGroupedAppearance();
-
-		this.root.saveState();
+			this.saveState();
+			aBaseFSWindow.saveState();
+		}
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -196,7 +199,7 @@ FoxSplitterBase.prototype = {
 		if (!this.parent)
 			return;
 
-		var root = this.root;
+		var sibling = this.sibling;
 
 		if (!aSilent)
 			this._expandSibling();
@@ -206,7 +209,11 @@ FoxSplitterBase.prototype = {
 		if (!this.isGroup)
 			this.clearGroupedAppearance();
 
-		root.saveState();
+		if (!aSilent) {
+			this.saveState();
+			if (sibling)
+				sibling.saveState();
+		}
 	},
 
 	_expandSibling : function FSB_expandSibling()
