@@ -1811,10 +1811,9 @@ FoxSplitterWindow.prototype = {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
 
-			/**
-			 * Multiple Tab Handler moves/duplicates selected tabs,
-			 * so we should process only one tab.
-			 */
+			var windowMove = allTabs.length == tabs.length;
+
+			// Multiple Tab Handler moves/duplicates selected tabs, so we should process only one tab.
 			if (
 				'MultipleTabService' in browser.ownerDocument.defaultView &&
 				tabs.every(function(aTab) {
@@ -1823,10 +1822,19 @@ FoxSplitterWindow.prototype = {
 				)
 				tabs = [tabs[0]];
 
+			// Tree Style Tabs tries to move the dragged tab with descendant tabs.
+			if (
+				'treeStyleTab' in browser &&
+				tabs[0].getAttribute('multiselected') != 'true'
+				) {
+				tabs = [tabs[0]].concat(browser.treeStyleTab.getDescendantTabs(tabs[0]));
+				windowMove = allTabs.length == tabs.length;
+			}
+
 			if (this.isAccelKeyPressed(aEvent)) {
 				deferred = this.duplicateTabsIn(tabs, position);
 			}
-			else if (allTabs.length == tabs.length) {
+			else if (windowMove) {
 				let window = tabs[0].ownerDocument.defaultView;
 				window.FoxSplitter.unbind();
 				window.FoxSplitter.bindWith(this, position);
