@@ -209,12 +209,14 @@ FoxSplitterBase.prototype = {
 
 		this.parent.unregister(this);
 
-		if (!this.isGroup)
+		if (!this.isGroup) {
 			this.clearGroupedAppearance();
-
-		if (!aSilent) {
-			this.saveState();
-			if (sibling)
+			if (!aSilent)
+				this.saveState();
+		}
+		if (sibling && !sibling.isGroup) {
+			sibling.clearGroupedAppearance();
+			if (!aSilent)
 				sibling.saveState();
 		}
 	},
