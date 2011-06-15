@@ -1282,8 +1282,13 @@ FoxSplitterWindow.prototype = {
 				root.moveBy(self.lastX - prevX, self.lastY - prevY, self);
 				// for safety
 				self.parent.resetPositionAndSize(self);
+				Deferred.next(function() {
+					FoxSplitterWindow.movedInstanceCount--;
+				});
 			}
-			FoxSplitterWindow.movedInstanceCount--;
+			else {
+				FoxSplitterWindow.movedInstanceCount--;
+			}
 		});
 	},
 
@@ -1318,7 +1323,12 @@ FoxSplitterWindow.prototype = {
 
 	onActivate : function FSW_onActivate()
 	{
-		if (!this._window || this.raising || this.minimized)
+		if (
+			!this._window ||
+			this.raising ||
+			this.minimized ||
+			FoxSplitterWindow.movedInstanceCount
+			)
 			return;
 
 		this.active = true;
