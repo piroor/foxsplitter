@@ -1706,11 +1706,12 @@ FoxSplitterWindow.prototype = {
 		 * window. So, we should ignore the "possibly drop target" group
 		 * if both (A) and (B) are true.
 		 */
-		if (this.parent) {
-			let parent = this._findParentGroupToBind(aEvent, dragInfo.position);
-			if (parent && (!dragInfo.allTabs || parent != this.parent))
-				dragInfo.target = parent;
-		}
+		let target = this._findBindTarget(aEvent, dragInfo.position);
+		if (
+			target &&
+			(target != sourceFSWindow.parent || !dragInfo.allTabs)
+			)
+			dragInfo.target = target;
 
 		// window move?
 		if (dragInfo.canDrop && dragInfo.allTabs && !this.isAccelKeyPressed(aEvent))

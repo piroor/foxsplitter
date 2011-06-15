@@ -100,6 +100,24 @@ FoxSplitterGroup.prototype = {
 		});
 	},
 
+	get state()
+	{
+		var self = {
+				id       : this.id,
+				position : this.position ? this.positionName[this.position] : null ,
+				members  : {}
+			};
+		var top = this.topMember;
+		if (top) self.members.top = top.state;
+		var left = this.leftMember;
+		if (left) self.members.left = left.state;
+		var bottom = this.bottomMember;
+		if (bottom) self.members.bottom = bottom.state;
+		var right = this.rightMember;
+		if (right) self.members.right = right.state;
+		return self;
+	},
+
 
 	init : function FSG_init() 
 	{
@@ -254,16 +272,18 @@ FoxSplitterGroup.prototype = {
 					aMember.unwatchWindowState();
 			}
 		}
-		if (this.members.length == 1) {
+		if (this.members.length <= 1) {
 			let lastMember = this.members[0];
-			if (this.parent) {
-				// swap existing relations
-				lastMember.position = this.position;
-				this.parent.register(lastMember);
-				this.unregister(lastMember);
+			if (lastMember) {
+				if (this.parent) {
+					// swap existing relations
+					lastMember.position = this.position;
+					this.parent.register(lastMember);
+					this.unregister(lastMember);
+				}
+				if (this.maximized)
+					this.setMaximizedState(lastMember);
 			}
-			if (this.maximized)
-				this.setMaximizedState(lastMember);
 			this.destroy();
 		}
 	},
