@@ -420,6 +420,8 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	// proxy methods for DOMWindow
+
 	moveTo : function FSW_moveTo(aX, aY)
 	{
 		if (this.minimized || !this._window)
@@ -577,91 +579,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openLinkAt : function FSW_openLinksAt(aURIOrTab, aPositionAndSize)
-	{
-		if (!this._window)
-			return Deferred.next(function() { return null; });
-
-		var options = [
-				'chrome,dialog=no,all',
-				'screenX='+aPositionAndSize.x,
-				'screenY='+aPositionAndSize.y,
-				'outerWidth='+aPositionAndSize.width,
-				'outerHeight='+aPositionAndSize.height
-			].join(',');
-		var deferred = new Deferred();
-		var window = this.window.openDialog(
-				'chrome://browser/content/browser.xul',
-				'_blank',
-				options,
-				aURIOrTab
-			);
-		var self = this;
-		window.addEventListener(this.EVENT_TYPE_READY, function() {
-			window.removeEventListener(self.EVENT_TYPE_READY, arguments.callee, false);
-			deferred.call(window);
-		}, false);
-		return deferred
-				.error(this.defaultHandleError);
-	},
-
-	openLinksIn : function FSW_openLinkIn(aURIs, aPosition, aBase)
-	{
-		if (!this._window)
-			return Deferred.next(function() { return null; });
-
-		aURIs = aURIs.slice(0);
-		var first = aURIs.shift(); // only the first element can be tab
-
-		var base = aBase || this;
-		var positionAndSize = this._calculatePositionAndSize(base, aPosition);
-
-		return this.openLinkAt(first, positionAndSize)
-				.next(function(aWindow) {
-					aWindow.FoxSplitter.bindWith(base, aPosition);
-					aURIs.forEach(function(aURI) {
-						aWindow.gBrowser.addTab(aURI);
-					});
-					return aWindow;
-				});
-	},
-
-	openLinkIn : function FSW_openLinkIn(aURIOrTab, aPosition, aBase)
-	{
-		return this.openLinksIn([aURIOrTab], aPosition, aBase);
-	},
-
-	duplicateTabsIn : function FSW_duplicateTabsIn(aTabs, aPosition, aBase)
-	{
-		return this.openLinkIn('about:blank', aPosition, aBase)
-				.next(function(aWindow) {
-					var firstTab = aWindow.gBrowser.selectedTab;
-					aWindow.FoxSplitter.duplicateTabs(aTabs);
-					aWindow.gBrowser.removeTab(firstTab);
-					return aWindow;
-				});
-	},
-	duplicateTabIn : function FSW_duplicateTabIn(aTab, aPosition, aBase)
-	{
-		return this.duplicateTabsIn([aTab], aPosition, aBase);
-	},
-
-	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition, aBase)
-	{
-		aTabs = aTabs.slice(0);
-
-		return this.openLinkIn('about:blank', aPosition, aBase)
-				.next(function(aWindow) {
-					var firstTab = aWindow.gBrowser.selectedTab;
-					aWindow.FoxSplitter.importTabs(aTabs);
-					aWindow.gBrowser.removeTab(firstTab);
-					return aWindow;
-				});
-	},
-	moveTabTo : function FSW_moveTabTo(aTab, aPosition, aBase)
-	{
-		return this.moveTabsTo([aTab], aPosition, aBase);
-	},
 
 
 	tileTabs : function FSW_tileTabs(aTabs, aMode)
@@ -745,7 +662,7 @@ FoxSplitterWindow.prototype = {
 						tile.x = baseX + (offsetWidth * col);
 						tile.y = baseY + (height * row);
 						if (aTab) {
-							deferreds.push(this.openLinkAt(aTab, tile));
+							deferreds.push(this._openWindow(aTab, tile));
 						}
 						else {
 							this.moveTo(tile.x, tile.y);
@@ -1849,7 +1766,6 @@ FoxSplitterWindow.prototype = {
 		aEvent.stopPropagation();
 		aEvent.preventDefault();
 
-		var deferred;
 		if (tabs.length) {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
@@ -1876,37 +1792,23 @@ FoxSplitterWindow.prototype = {
 			}
 
 			if (this.isAccelKeyPressed(aEvent)) {
-				deferred = this.duplicateTabsIn(tabs, position);
+				target.duplicateTabsAt(tabs, position);
 			}
 			else if (windowMove) {
 				let window = tabs[0].ownerDocument.defaultView;
 				window.FoxSplitter.unbind();
 				window.FoxSplitter.bindWith(this, position);
-				deferred = Deferred.next(function() {
-					return window;
-				});
 			}
 			else {
-				deferred = this.moveTabsTo(tabs, position);
+				target.moveTabsTo(tabs, position);
 			}
 		}
 		else {
 			links = this._filterOnlySafeLinks(links);
 			if (!links.length)
 				return;
-			deferred = this.openLinksIn(links, position);
+			target.openLinksAt(links, position);
 		}
-
-		if (target != this)
-			deferred.next(function(aWindow) {
-				var FSWindow = aWindow.FoxSplitter;
-				var position = FSWindow.opposite[FSWindow.position];
-				FSWindow.unbind();
-				FSWindow.moveTo(target.x, target.y);
-				FSWindow.resizeTo(target.width, target.height);
-				target.bindWith(FSWindow, position);
-			})
-			.error(this.defaultHandleError);
 	},
 	_filterOnlySafeLinks : function FSW_filterOnlySafeLinks(aURIs)
 	{

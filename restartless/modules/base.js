@@ -6,6 +6,9 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.getService(Ci.nsIXULAppInfo)
 					.QueryInterface(Ci.nsIXULRuntime);
 
+const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
+						.getService(Ci.nsIWindowWatcher);
+
 function FoxSplitterBase() 
 {
 }
@@ -79,6 +82,8 @@ FoxSplitterBase.prototype = {
 	},
 
 
+	// group management
+
 	createGroup : function FSB_createGroup()
 	{
 		if (!this.groupClass)
@@ -133,7 +138,7 @@ FoxSplitterBase.prototype = {
 	_initPositionAndSize : function FSB_initPositionAndSize()
 	{
 		var base = this.sibling;
-		var positionAndSize = this._calculatePositionAndSize(base, this.position);
+		var positionAndSize = base.calculatePositionAndSizeFor(this.position);
 
 		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
 			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
@@ -146,7 +151,7 @@ FoxSplitterBase.prototype = {
 			this.resizeTo(positionAndSize.width, positionAndSize.height);
 	},
 
-	_calculatePositionAndSize : function FSB_calculatePositionAndSize(aBaseFSWidnow, aPosition)
+	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
 	{
 		var x, y, width, height;
 		var base = {
@@ -156,28 +161,28 @@ FoxSplitterBase.prototype = {
 				deltaHeight : 0
 			};
 		if (aPosition & this.POSITION_HORIZONTAL) {
-			y = aBaseFSWidnow.y;
-			width = Math.round(aBaseFSWidnow.width * 0.5);
-			height = aBaseFSWidnow.height;
+			y = this.y;
+			width = Math.round(this.width * 0.5);
+			height = this.height;
 			if (aPosition == this.POSITION_LEFT) {
-				x = aBaseFSWidnow.x;
+				x = this.x;
 				base.deltaX = width;
 			}
 			else {
-				x = aBaseFSWidnow.x + width;
+				x = this.x + width;
 			}
 			base.deltaWidth = -width;
 		}
 		else {
-			x = aBaseFSWidnow.x;
-			width = aBaseFSWidnow.width;
-			height = Math.round(aBaseFSWidnow.height * 0.5);
+			x = this.x;
+			width = this.width;
+			height = Math.round(this.height * 0.5);
 			if (aPosition == this.POSITION_TOP) {
-				y = aBaseFSWidnow.y;
+				y = this.y;
 				base.deltaY = height;
 			}
 			else {
-				y = aBaseFSWidnow.y + height;
+				y = this.y + height;
 			}
 			base.deltaHeight = -height;
 		}
@@ -234,6 +239,104 @@ FoxSplitterBase.prototype = {
 	},
 
 
+	// commands to create new pane
+
+	_openWindow : function FSW_openWindow(aURIOrTab, aPositionAndSize)
+	{
+		var options = [
+				'chrome,dialog=no,all',
+				'screenX='+aPositionAndSize.x,
+				'screenY='+aPositionAndSize.y,
+				'outerWidth='+aPositionAndSize.width,
+				'outerHeight='+aPositionAndSize.height
+			].join(',');
+		var deferred = new Deferred();
+
+		var arg = aURIOrTab;
+		if (!(arg instanceof Ci.nsISupports)) {
+			let array = Cc['@mozilla.org/supports-array;1']
+						.createInstance(Ci.nsISupportsArray);
+			let variant = Cc['@mozilla.org/variant;1']
+							.createInstance(Ci.nsIVariant)
+							.QueryInterface(Ci.nsIWritableVariant);
+			variant.setFromVariant(arg);
+			array.AppendElement(variant);
+			arg = array;
+		}
+
+		var window = WindowWatcher.openWindow(
+				this._window || null,
+				'chrome://browser/content/browser.xul',
+				'_blank',
+				options,
+				arg
+			);
+		var self = this;
+		window.addEventListener(this.EVENT_TYPE_READY, function() {
+			window.removeEventListener(self.EVENT_TYPE_READY, arguments.callee, false);
+			deferred.call(window);
+		}, false);
+		return deferred
+				.error(this.defaultHandleError);
+	},
+
+	openLinksAt : function FSW_openLinksAt(aURIs, aPosition)
+	{
+		aURIs = aURIs.slice(0);
+		var first = aURIs.shift(); // only the first element can be tab
+
+		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
+		var self = this;
+		return this._openWindow(first, positionAndSize)
+				.next(function(aWindow) {
+					aWindow.FoxSplitter.bindWith(self, aPosition);
+					aURIs.forEach(function(aURI) {
+						aWindow.gBrowser.addTab(aURI);
+					});
+					return aWindow;
+				});
+	},
+
+	openLinkAt : function FSW_openLinkAt(aURIOrTab, aPosition)
+	{
+		return this.openLinksAt([aURIOrTab], aPosition);
+	},
+
+	duplicateTabsAt : function FSW_duplicateTabsAt(aTabs, aPosition)
+	{
+		return this.openLinkAt('about:blank', aPosition)
+				.next(function(aWindow) {
+					var firstTab = aWindow.gBrowser.selectedTab;
+					aWindow.FoxSplitter.duplicateTabs(aTabs);
+					aWindow.gBrowser.removeTab(firstTab);
+					return aWindow;
+				});
+	},
+	duplicateTabAt : function FSW_duplicateTabAt(aTab, aPosition)
+	{
+		return this.duplicateTabsIn([aTab], aPosition);
+	},
+
+	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition)
+	{
+		aTabs = aTabs.slice(0);
+
+		return this.openLinkAt('about:blank', aPosition)
+				.next(function(aWindow) {
+					var firstTab = aWindow.gBrowser.selectedTab;
+					aWindow.FoxSplitter.importTabs(aTabs);
+					aWindow.gBrowser.removeTab(firstTab);
+					return aWindow;
+				});
+	},
+	moveTabTo : function FSW_moveTabTo(aTab, aPosition)
+	{
+		return this.moveTabsTo([aTab], aPosition);
+	},
+
+
+	// handling of window resizing
+
 	reserveMoveBy : function FSB_reserveMoveBy(aDX, aDY)
 	{
 		if (this._reservedMoveBy) {
@@ -273,7 +376,6 @@ FoxSplitterBase.prototype = {
 		});
 		this._reservedResizeBy.error(this.defaultHandleError);
 	},
-
 
 	onResizeTop : function FSB_onResizeTop(aDelta)
 	{
@@ -396,6 +498,8 @@ FoxSplitterBase.prototype = {
 		this.lastHeight = this.height;
 	},
 
+
+	// utility methods
 
 	makeURIFromSpec : function FSB_makeURIFromSpec(aURI) 
 	{
