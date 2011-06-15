@@ -822,7 +822,10 @@ FoxSplitterWindow.prototype = {
 					 * so we have to focus to the original selected tab again.
 					 */
 					self.browser.selectedTab = selectedTab;
-					return aImportedTabs.filter(function(aTab) {
+
+					// JSDeferred doesn't return an array...
+					aImportedTabs.length = deferreds.length;
+					return Array.filter(aImportedTabs, function(aTab) {
 						return aTab;
 					});
 				})
