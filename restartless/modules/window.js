@@ -268,6 +268,10 @@ FoxSplitterWindow.prototype = {
 
 		var self = this;
 		Deferred.next(function() {
+			// workaround to fix broken appearance on sized windows
+			self.resizeBy(0, -1);
+			self.resizeBy(0, 1);
+
 			self._restoreState();
 			self.updateLastPositionAndSize();
 			self.startListen();
@@ -1543,6 +1547,8 @@ FoxSplitterWindow.prototype = {
 		if (!this._window)
 			return;
 
+		this._updateChromeHidden();
+
 		this._initToolbarState();
 
 		if (
@@ -1595,6 +1601,8 @@ FoxSplitterWindow.prototype = {
 	{
 		if (!this._window)
 			return;
+
+		this._updateChromeHidden();
 
 		this._restoreToolbarState(aForce);
 
