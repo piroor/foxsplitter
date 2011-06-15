@@ -160,29 +160,30 @@ FoxSplitterBase.prototype = {
 				deltaWidth  : 0,
 				deltaHeight : 0
 			};
+		var factor = 0.5;
 		if (aPosition & this.POSITION_HORIZONTAL) {
 			y = this.y;
-			width = Math.round(this.width * 0.5);
+			width = Math.round(this.width * factor);
 			height = this.height;
 			if (aPosition == this.POSITION_LEFT) {
 				x = this.x;
 				base.deltaX = width;
 			}
 			else {
-				x = this.x + width;
+				x = this.x + this.width - width;
 			}
 			base.deltaWidth = -width;
 		}
 		else {
 			x = this.x;
 			width = this.width;
-			height = Math.round(this.height * 0.5);
+			height = Math.round(this.height * factor);
 			if (aPosition == this.POSITION_TOP) {
 				y = this.y;
 				base.deltaY = height;
 			}
 			else {
-				y = this.y + height;
+				y = this.y + this.height - height;
 			}
 			base.deltaHeight = -height;
 		}
