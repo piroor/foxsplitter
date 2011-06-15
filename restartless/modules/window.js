@@ -1685,60 +1685,31 @@ FoxSplitterWindow.prototype = {
 		/**
 		 * If this window has a parent, then the dragged tab can be
 		 * attached to a FoxSplitterGroup itself (not a FoxSplitterWindow).
+		 *
+		 * However, we must ignore an edge case. If the dragging
+		 * will move the window itself and the dragged window is the
+		 * sibling of this window, then, Fox Splitter will do following
+		 * processes:
+		 *
+		 *  1. The dragged window is unbound from its parent group.
+		 *  2. The parent group of the dragged window automatically
+		 *     destroys itself, *because there is only one member left (A)*.
+		 *     (If the dragged window is the sibling of this window,
+		 *     this window also loses its parent.)
+		 *  3. Fox Splitter tries to attach the dragged window to the
+		 *     drop target goup.
+		 *  4. However, *if the drop target is the parent of both windows
+		 *     this and the dragged (B)*, it has been already destroyed
+		 *     and we cannot attach the dragged window anymore.
+		 *
+		 * As the result, Fox Splitter will fail to move the dragged
+		 * window. So, we should ignore the "possibly drop target" group
+		 * if both (A) and (B) are true.
 		 */
 		if (this.parent) {
-			let parent = this.sameAxisRoot;
-			/**
-			 * ...However, we must ignore an edge case. If the dragging
-			 * will move the window itself and the dragged window is the
-			 * sibling of this window, then, Fox Splitter will do following
-			 * processes:
-			 *
-			 *  1. The dragged window is unbinded from its parent group.
-			 *  2. The parent group of the dragged window automatically
-			 *     destroys itself, *because there is only one member left (A)*.
-			 *     (If the dragged window is the sibling of this window,
-			 *     this window also loses its parent.)
-			 *  3. Fox Splitter tries to attach the dragged window to the
-			 *     drop target goup.
-			 *  4. However, *if the drop target is the parent of both windows
-			 *     this and the dragged (B)*, it has been already destroyed
-			 *     and we cannot attach the dragged window anymore.
-			 *
-			 * As the result, Fox Splitter will fail to move the dragged
-			 * window. So, we should ignore the "possibly drop target" group
-			 * if both (A) and (B) are true.
-			 */
-			if (!dragInfo.allTabs || parent != this.parent) {
-				if (dragInfo.position & this.POSITION_HORIZONTAL &&
-					this.position & this.POSITION_VERTICAL) {
-					let parentY = parent.y;
-					let area = this.height / 3;
-					let y = aEvent.screenY - this.y;
-					if (
-						y < area ?
-							this.y != parentY :
-						y > area * 2 ?
-							this.y + this.height != parentY + parent.height :
-							false
-						)
-						dragInfo.target = parent;
-				}
-				else if (dragInfo.position & this.POSITION_VERTICAL &&
-						this.position & this.POSITION_HORIZONTAL) {
-					let parentX = parent.x;
-					let area = this.width / 3;
-					let x = aEvent.screenX - this.x;
-					if (
-						x < area ?
-							this.x != parentX :
-						x > area * 2 ?
-							this.x + this.width != parentX + parent.width :
-							false
-						)
-						dragInfo.target = parent;
-				}
-			}
+			let parent = this._findParentGroupToBind(aEvent, dragInfo.position);
+			if (parent && (!dragInfo.allTabs || parent != this.parent))
+				dragInfo.target = parent;
 		}
 
 		// window move?
@@ -1848,7 +1819,7 @@ FoxSplitterWindow.prototype = {
 			else if (windowMove) {
 				let window = tabs[0].ownerDocument.defaultView;
 				window.FoxSplitter.unbind();
-				window.FoxSplitter.bindWith(this, position);
+				window.FoxSplitter.bindWith(target, position);
 			}
 			else {
 				target.moveTabsTo(tabs, position);

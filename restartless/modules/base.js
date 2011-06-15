@@ -195,6 +195,43 @@ FoxSplitterBase.prototype = {
 		};
 	},
 
+	_findParentGroupToBind : function FSB_findParentGroupToBind(aEvent, aPosition)
+	{
+		var parent = this.sameAxisRoot;
+		if (!parent || parent == this)
+			return null;
+
+		if (aPosition & this.POSITION_HORIZONTAL &&
+			this.position & this.POSITION_VERTICAL) {
+			let parentY = parent.y;
+			let area = this.height / 3;
+			let y = aEvent.screenY - this.y;
+			if (
+				y < area ?
+					this.y != parentY :
+				y > area * 2 ?
+					this.y + this.height != parentY + parent.height :
+					false
+				)
+				return parent;
+		}
+		else if (aPosition & this.POSITION_VERTICAL &&
+				this.position & this.POSITION_HORIZONTAL) {
+			let parentX = parent.x;
+			let area = this.width / 3;
+			let x = aEvent.screenX - this.x;
+			if (
+				x < area ?
+					this.x != parentX :
+				x > area * 2 ?
+					this.x + this.width != parentX + parent.width :
+					false
+				)
+				return parent;
+		}
+
+		return this.parent._findParentGroupToBind(aEvent, aPosition);
+	},
 
 	unbind : function FSB_unbind(aSilent)
 	{
