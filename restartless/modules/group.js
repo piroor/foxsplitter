@@ -271,18 +271,32 @@ FoxSplitterGroup.prototype = {
 
 	reserveResetPositionAndSize : function FSG_reserveResetPositionAndSize(aBaseMember)
 	{
+		var deferred = new Deferred();
+
 		if (this._reservedResetPositionAndSize) {
 			this._reservedResetPositionAndSize.cancel();
 			delete this._reservedResetPositionAndSize;
 		}
+
+		if (this._lastReserveResetPositionAndSize) {
+			this._lastReserveResetPositionAndSize.call();
+			delete this._lastDeferred;
+		}
+
 		var self = this;
 		this._reservedResetPositionAndSize = Deferred.wait(0.5);
 		this._reservedResetPositionAndSize
 			.next(function() {
 				delete self._reservedResetPositionAndSize;
+				delete self._lastReserveResetPositionAndSize;
 				self.resetPositionAndSize(aBaseMember);
+				deferred.call();
 			})
 			.error(this.defaultHandleError);
+
+		this._lastReserveResetPositionAndSize = deferred;
+
+		return deferred.error(this.defaultHandleError);
 	},
 
 	// reposition/resize grouped windows based on their relations
