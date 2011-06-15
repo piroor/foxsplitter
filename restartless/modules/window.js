@@ -1260,16 +1260,31 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
+		FoxSplitterWindow.movedInstanceCount++;
+
 		var x = this.x;
 		var y = this.y;
-		var root = this.root;
-		if (root) {
-			root.moveBy(x - this.lastX, y - this.lastY, this);
-			this.parent.reserveResetPositionAndSize(this); // for safety
-		}
 
+		var prevX = this.lastX;
+		var prevY = this.lastY;
 		this.lastX = x;
 		this.lastY = y;
+
+		var self = this;
+		Deferred.wait(0.1).next(function() {
+			/**
+			 * Switching of workspaces (virtual desktops) on the platform can move
+			 * multiple windows on the same time. We don't have to handle it because
+			 * the platform should keep relative positions of all windows.
+			 */
+			var root = self.root;
+			if (root && FoxSplitterWindow.movedInstanceCount == 1) {
+				root.moveBy(self.lastX - prevX, self.lastY - prevY, self);
+				// for safety
+				self.parent.resetPositionAndSize(self);
+			}
+			FoxSplitterWindow.movedInstanceCount--;
+		});
 	},
 
 	onResize : function FSW_onResize()
@@ -2220,6 +2235,7 @@ FoxSplitterWindow.prototype = {
 
 FoxSplitterWindow.instances = [];
 FoxSplitterWindow.instancesById = {};
+FoxSplitterWindow.movedInstanceCount = 0;
 
 FoxSplitterWindow.dropZoneSize = 64;
 FoxSplitterWindow.handleDragWithShiftKey = false;
