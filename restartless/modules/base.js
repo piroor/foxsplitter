@@ -42,6 +42,12 @@ FoxSplitterBase.prototype = {
 	TILE_MODE_X_AXIS : (1 << 0),
 	TILE_MODE_Y_AXIS : (1 << 1),
 
+	newMemberFactor : 0.5,
+	normalExpandFactor : 1.2,
+	get expandFactor()
+	{
+		return this.parent && this.root.maximized ? 1 : this.normalExpandFactor;
+	},
 
 	isGroup : false,
 
@@ -137,6 +143,11 @@ FoxSplitterBase.prototype = {
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
 	{
+		var root = this.root;
+		var maximized = root && root.maximized;
+		if (maximized)
+			root.restore();
+
 		var base = this.sibling;
 		var positionAndSize = base.calculatePositionAndSizeFor(this.position);
 
@@ -149,6 +160,11 @@ FoxSplitterBase.prototype = {
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
 			this.resizeTo(positionAndSize.width, positionAndSize.height);
+
+		Deferred.next(function() {
+			if (maximized)
+				root.allWindows[0].window.maximize();
+		});
 	},
 
 	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
@@ -160,32 +176,37 @@ FoxSplitterBase.prototype = {
 				deltaWidth  : 0,
 				deltaHeight : 0
 			};
-		var factor = 0.5;
+		var group = (this.isGroup && this || this.root);
+		var baseWindow = (group && group.allWindows[0] || this).window;
 		if (aPosition & this.POSITION_HORIZONTAL) {
 			y = this.y;
-			width = Math.round(this.width * factor);
+			let baseWidth = Math.min(baseWindow.screen.availWidth, this.width * this.expandFactor);
+			let deltaX = Math.round((baseWidth - this.width) / 2);
+			width = Math.round(baseWidth * this.newMemberFactor);
 			height = this.height;
 			if (aPosition == this.POSITION_LEFT) {
-				x = this.x;
-				base.deltaX = width;
+				x = this.x - (deltaX * 2);
+				base.deltaX = width - (deltaX * 2);
 			}
 			else {
-				x = this.x + this.width - width;
+				x = this.x + baseWidth - width;
 			}
-			base.deltaWidth = -width;
+			base.deltaWidth = -width + (deltaX * 2);
 		}
 		else {
 			x = this.x;
 			width = this.width;
-			height = Math.round(this.height * factor);
+			let baseHeight = Math.min(baseWindow.screen.availHeight, this.height * this.expandFactor);
+			let deltaY = Math.round((baseHeight - this.height) / 2);
+			height = Math.round(baseHeight * this.newMemberFactor);
 			if (aPosition == this.POSITION_TOP) {
-				y = this.y;
-				base.deltaY = height;
+				y = this.y - (deltaY * 2);
+				base.deltaY = height - (deltaY * 2);
 			}
 			else {
-				y = this.y + this.height - height;
+				y = this.y + baseHeight - height;
 			}
-			base.deltaHeight = -height;
+			base.deltaHeight = -height + (deltaY * 2);
 		}
 		return {
 			x      : x,
@@ -251,14 +272,18 @@ FoxSplitterBase.prototype = {
 			return;
 
 		if (sibling.position & this.POSITION_HORIZONTAL) {
+			let totalWidth = this.parent.width;
+			let deltaX = Math.round(totalWidth - (totalWidth / this.expandFactor));
 			if (sibling.position == this.POSITION_RIGHT)
-				sibling.moveBy(-this.width, 0);
-			sibling.resizeBy(this.width, 0);
+				sibling.moveBy(-this.width + deltaX, 0);
+			sibling.resizeBy(this.width - deltaX, 0);
 		}
 		else {
+			let totalHeight = this.parent.height;
+			let deltaY = Math.round(totalHeight - (totalHeight / this.expandFactor));
 			if (sibling.position == this.POSITION_BOTTOM)
-				sibling.moveBy(0, -this.height);
-			sibling.resizeBy(0, this.height);
+				sibling.moveBy(0, -this.height + deltaY);
+			sibling.resizeBy(0, this.height - deltaY);
 		}
 	},
 
