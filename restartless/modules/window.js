@@ -783,6 +783,13 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		return Deferred
 				.parallel(deferreds)
+				.next(function(aTabsFromWindows) {
+					self.clearGroupedAppearance();
+
+					// JSDeferred doesn't return an array...
+					aTabsFromWindows.length = deferreds.length;
+					return Array.slice(aTabsFromWindows);
+				})
 				.error(this.defaultHandleError);
 	},
 
