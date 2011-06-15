@@ -382,6 +382,16 @@ FoxSplitterGroup.prototype = {
 	},
 
 
+	maximize : function FSG_maximize()
+	{
+		this.allWindows[0].maximize();
+	},
+
+	minimize : function FSG_minimize()
+	{
+		this.allWindows[0].minimize();
+	},
+
 	restore : function FSG_restore(aTriggerFSWindow)
 	{
 		if (this.maximized)

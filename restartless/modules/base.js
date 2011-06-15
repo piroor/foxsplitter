@@ -21,6 +21,11 @@ FoxSplitterBase.prototype = {
 
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
 
+	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
+	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,
+	STATE_NORMAL     : Ci.nsIDOMChromeWindow.STATE_NORMAL,
+	STATE_FULLSCREEN : Ci.nsIDOMChromeWindow.STATE_FULLSCREEN,
+
 	// compatible to old implementation
 	POSITION_TOP    : (1 << 2),
 	POSITION_RIGHT  : (1 << 1),
@@ -46,7 +51,7 @@ FoxSplitterBase.prototype = {
 	normalExpandFactor : 1.2,
 	get expandFactor()
 	{
-		return this.parent && this.root.maximized ? 1 : this.normalExpandFactor;
+		return this.maximized ? 1 : this.normalExpandFactor ;
 	},
 
 	isGroup : false,
@@ -106,6 +111,11 @@ FoxSplitterBase.prototype = {
 		if (this.parent)
 			this.unbind();
 
+		if (!this.parent && this.maximized)
+			this.restore();
+		if (!aSibling.parent && aSibling.maximized)
+			aSibling.restore();
+
 		var newGroup = this.createGroup();
 
 		var existingGroup = aSibling.parent;
@@ -143,11 +153,6 @@ FoxSplitterBase.prototype = {
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
 	{
-		var root = this.root;
-		var maximized = root && root.maximized;
-		if (maximized)
-			root.restore();
-
 		var base = this.sibling;
 		var positionAndSize = base.calculatePositionAndSizeFor(this.position);
 
@@ -160,11 +165,6 @@ FoxSplitterBase.prototype = {
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
 			this.resizeTo(positionAndSize.width, positionAndSize.height);
-
-		Deferred.next(function() {
-			if (maximized)
-				root.allWindows[0].window.maximize();
-		});
 	},
 
 	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
@@ -334,6 +334,10 @@ FoxSplitterBase.prototype = {
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 
+		var maximized = !this.parent && !this.isGroup && this.maximized;
+		if (maximized)
+			this.restore();
+
 		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
 		var self = this;
 		return this._openWindow(first, positionAndSize)
@@ -343,6 +347,14 @@ FoxSplitterBase.prototype = {
 						aWindow.gBrowser.addTab(aURI);
 					});
 					return aWindow;
+/*
+					return Deferred.wait(0.5)
+							.next(function() {
+								if (maximized)
+									aWindow.maximize();
+								return aWindow;
+							});
+*/
 				});
 	},
 

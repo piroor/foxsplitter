@@ -20,11 +20,6 @@ function FoxSplitterWindow(aWindow, aOnInit)
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
 
-	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
-	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,
-	STATE_NORMAL     : Ci.nsIDOMChromeWindow.STATE_NORMAL,
-	STATE_FULLSCREEN : Ci.nsIDOMChromeWindow.STATE_FULLSCREEN,
-
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 
 	// opacity=0 panel isn't shown on Linux
@@ -176,6 +171,15 @@ FoxSplitterWindow.prototype = {
 			state = this.STATE_MINIMIZED;
 */
 		return state;
+	},
+
+	get maximized()
+	{
+		return (
+			(this.parent && this.root.maximized) ||
+			(this.windowState == this.STATE_MAXIMIZED) ||
+			this.window.fullScreen
+		);
 	},
 
 	get minimized()
@@ -582,6 +586,25 @@ FoxSplitterWindow.prototype = {
 		return deferred;
 	},
 
+	maximize : function FSW_maximize()
+	{
+		this.window.maximize();
+	},
+
+	minimize : function FSW_minimize()
+	{
+		this.window.minimize();
+	},
+
+	restore : function FSW_restore()
+	{
+		if (this.window.fullScreen)
+			this.window.fullScreen = false;
+		else if (this.windowState == this.STATE_MAXIMIZED)
+			this.window.restore();
+		else if (this.root && (this.root.minimized || this.root.maximized))
+			this.root.restore();
+	},
 
 
 
