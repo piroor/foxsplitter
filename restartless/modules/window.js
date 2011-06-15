@@ -1260,7 +1260,8 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
-		FoxSplitterWindow.movedInstanceCount++;
+		this.positioning++;
+		FoxSplitterWindow.positioning++;
 
 		var x = this.x;
 		var y = this.y;
@@ -1272,22 +1273,23 @@ FoxSplitterWindow.prototype = {
 
 		var self = this;
 		Deferred.wait(0.1).next(function() {
+			self.positioning--;
 			/**
 			 * Switching of workspaces (virtual desktops) on the platform can move
 			 * multiple windows on the same time. We don't have to handle it because
 			 * the platform should keep relative positions of all windows.
 			 */
 			var root = self.root;
-			if (root && FoxSplitterWindow.movedInstanceCount == 1) {
+			if (root && FoxSplitterWindow.positioning == 1) {
 				root.moveBy(self.lastX - prevX, self.lastY - prevY, self);
 				// for safety
 				self.parent.resetPositionAndSize(self);
 				Deferred.next(function() {
-					FoxSplitterWindow.movedInstanceCount--;
+					FoxSplitterWindow.positioning--;
 				});
 			}
 			else {
-				FoxSplitterWindow.movedInstanceCount--;
+				FoxSplitterWindow.positioning--;
 			}
 		});
 	},
@@ -1323,16 +1325,20 @@ FoxSplitterWindow.prototype = {
 
 	onActivate : function FSW_onActivate()
 	{
+		if (!this._window || this.raising || this.minimized)
+			return;
+
 		if (
-			!this._window ||
-			this.raising ||
-			this.minimized ||
-			FoxSplitterWindow.movedInstanceCount
+			FoxSplitterWindow.positioning ||
+			FoxSplitterWindow.resizing ||
+			FoxSplitterWindow.raising
 			)
 			return;
 
-		this.active = true;
 		this.raising++;
+		FoxSplitterWindow.raising++;
+
+		this.active = true;
 
 		if (this._reservedHandleRaised)
 			this._reservedHandleRaised.cancel();
@@ -1344,8 +1350,10 @@ FoxSplitterWindow.prototype = {
 		});
 		this._reservedHandleRaised
 			.error(this.defaultHandleError)
+			.wait(0.1)
 			.next(function() {
 				self.raising--;
+				FoxSplitterWindow.raising--;
 			});
 
 		if (this._reservedHandleLowered) {
@@ -2245,7 +2253,9 @@ FoxSplitterWindow.prototype = {
 
 FoxSplitterWindow.instances = [];
 FoxSplitterWindow.instancesById = {};
-FoxSplitterWindow.movedInstanceCount = 0;
+FoxSplitterWindow.positioning = 0;
+FoxSplitterWindow.resizing = 0;
+FoxSplitterWindow.raising = 0;
 
 FoxSplitterWindow.dropZoneSize = 64;
 FoxSplitterWindow.handleDragWithShiftKey = false;
