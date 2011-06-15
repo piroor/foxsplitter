@@ -412,11 +412,11 @@ FoxSplitterWindow.prototype = {
 		if (!this.parent || !this.sibling)
 			return;
 
-		var target = this.sibling;
-		this.allTabs.forEach(function(aTab) {
-			if (aTab.hidden)
-				target.importTab(aTab);
-		}, this);
+		var hiddenTabs = this.allTabs.filter(function(aTab) {
+				return aTab.hidden;
+			}, this);
+		if (hiddenTabs.length)
+			this.sibling.importTabs(hiddenTabs);
 	},
 
 
@@ -635,10 +635,8 @@ FoxSplitterWindow.prototype = {
 	{
 		return this.openLinkIn('about:blank', aPosition, aBase)
 				.next(function(aWindow) {
-					let firstTab = aWindow.gBrowser.selectedTab;
-					aTabs.forEach(function(aTab) {
-						aWindow.gBrowser.duplicateTab(aTab);
-					});
+					var firstTab = aWindow.gBrowser.selectedTab;
+					aWindow.FoxSplitter.duplicateTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
 					return aWindow;
 				});
@@ -652,15 +650,11 @@ FoxSplitterWindow.prototype = {
 	{
 		aTabs = aTabs.slice(0);
 
-		var first = aTabs.shift();
-		return this.openLinkIn(first, aPosition, aBase)
+		return this.openLinkIn('about:blank', aPosition, aBase)
 				.next(function(aWindow) {
-					aTabs.forEach(function(aTab) {
-						var tab = aWindow.gBrowser.addTab();
-						tab.stop();
-						tab.docShell;
-						aWindow.gBrowser.swapBrowsersAndCloseOther(tab, aTab);
-					});
+					var firstTab = aWindow.gBrowser.selectedTab;
+					aWindow.FoxSplitter.importTabs(aTabs);
+					aWindow.gBrowser.removeTab(firstTab);
 					return aWindow;
 				});
 	},
@@ -864,16 +858,15 @@ FoxSplitterWindow.prototype = {
 			offset += count;
 		}, this);
 
-		if (deferreds.length) {
-			let self = this;
-			return Deferred
-					.parallel(deferreds)
-					.error(this.defaultHandleError);
-		}
+		if (!deferreds.length)
+			return Deferred.next(function() {
+				return [];
+			});
 
-		return Deferred.next(function() {
-			return [];
-		});
+		var self = this;
+		return Deferred
+				.parallel(deferreds)
+				.error(this.defaultHandleError);
 	},
 
 	importTabsFrom : function FSW_importTabsFrom(aWindow, aOffset)
@@ -896,36 +889,51 @@ FoxSplitterWindow.prototype = {
 		offset = Math.min(allTabsCount, offset);
 
 		var selectedTab = this.browser.selectedTab;
-		var deferreds = [];
-		// importTab() removes tab so we have to clone an array before do it.
-		aWindow.FoxSplitter.allTabs.forEach(function(aTab) {
-			/**
-			 * before windows should be imported as leftmost tabs.
-			 * after windows should be imported as rightmost tabs.
-			 */
-			deferreds.push(this.importTab(aTab, offset++));
-		}, this);
+		var deferreds = this.importTabs(aWindow.FoxSplitter.allTabs, offset);
 
-		if (deferreds.length) {
-			let self = this;
-			return Deferred
-					.parallel(deferreds)
-					.next(function(aImportedTabs) {
-						/**
-						 * swapBrowsersAndCloseOther() focuses to the imported tab,
-						 * so we have to focus to the original selected tab again.
-						 */
-						self.browser.selectedTab = selectedTab;
-						return aImportedTabs.filter(function(aTab) {
-							return aTab;
-						});
-					})
-					.error(this.defaultHandleError);
+		if (!deferreds.length)
+			return Deferred.next(function() {
+				return [];
+			});
+
+		var self = this;
+		return Deferred
+				.parallel(deferreds)
+				.next(function(aImportedTabs) {
+					/**
+					 * swapBrowsersAndCloseOther() focuses to the imported tab,
+					 * so we have to focus to the original selected tab again.
+					 */
+					self.browser.selectedTab = selectedTab;
+					return aImportedTabs.filter(function(aTab) {
+						return aTab;
+					});
+				})
+				.error(this.defaultHandleError);
+	},
+
+	importTabs : function FSW_importTabs(aTabs, aPosition)
+	{
+		var groupInfos = aTabs.map(function(aTab) {
+				if (aTab.hidden)
+					aTab.hidden = false;
+				return this._getGroupInfo(aTab);
+			}, this);
+
+		if (this.browser.treeStyleTab && this.browser.treeStyleTab.importTabs) {
+			let allTabs = this.allTabs;
+			let insertBefore = aPosition < allTabs.length ? this.allTabs[aPosition] : null ;
+			let options = { insertBefore : insertBefore };
+			return this.browser.treeStyleTab.importTabs(aTabs, options)
+					.map(function(aTab, aIndex) {
+						return this._reserveMoveTabToGroup(aTab, groupInfos[aIndex]);
+					}, this);
 		}
 
-		return Deferred.next(function() {
-			return [];
-		});
+		return aTabs.map(function(aTab, aIndex) {
+			var newTab = this._importTabInternal(aTab, aPosition === undefined ? undefined : aPosition++ );
+			return this._reserveMoveTabToGroup(newTab, groupInfos[aIndex]);
+		}, this);
 	},
 
 	importTab : function FSW_importTab(aTab, aPosition)
@@ -935,16 +943,22 @@ FoxSplitterWindow.prototype = {
 				return null;
 			});
 
+		var groupInfo = this._getGroupInfo(aTab);
+		// we cannot import hidden tab!
+		if (aTab.hidden) aTab.hidden = false;
+		var newTab = this._importTabInternal(aTab, aPosition);
+		return this._reserveMoveTabToGroup(newTab, groupInfo);
+	},
+	_importTabInternal : function FSW_importTabInternal(aTab, aPosition)
+	{
+		if (!this._window)
+			return null;
+
 		var newTab = this.browser.addTab('about:blank');
 		newTab.linkedBrowser.stop();
 		newTab.linkedBrowser.docShell;
 		if (aPosition !== undefined && aPosition > -1)
 			this.browser.moveTabTo(newTab, aPosition);
-
-		var groupInfo = this._getGroupInfo(aTab);
-
-		// we cannot import hidden tab!
-		if (aTab.hidden) aTab.hidden = false;
 
 		// we cannot import collapsed tree!
 		var sourceBrowser = this._getTabBrowserFromTab(aTab);
@@ -955,19 +969,24 @@ FoxSplitterWindow.prototype = {
 		}
 
 		this.browser.swapBrowsersAndCloseOther(newTab, aTab);
+		this.browser.setTabTitle(newTab);
 
+		return newTab;
+	},
+
+	_reserveMoveTabToGroup : function FSW_reserveMoveTabToGroup(aTab, aGroupInfo)
+	{
 		var deferred = new Deferred();
 		var self = this;
 		Deferred.next(function() {
-			if (groupInfo)
-				self._moveImportedTabToNamedGroup(newTab, groupInfo)
+			if (aGroupInfo)
+				self._moveImportedTabToNamedGroup(aTab, aGroupInfo)
 					.next(function() {
-						deferred.call(newTab);
+						deferred.call(aTab);
 					});
 			else
-				deferred.call(newTab);
+				deferred.call(aTab);
 		});
-
 		return deferred
 				.error(this.defaultHandleError);
 	},
@@ -1029,6 +1048,19 @@ FoxSplitterWindow.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
+
+	duplicateTabs : function FSW_duplicateTabs(aTabs)
+	{
+		if (this.browser.treeStyleTab && this.browser.treeStyleTab.importTabs) {
+			let options = { duplicate : true };
+			return this.browser.treeStyleTab.importTabs(aTabs, options);
+		}
+
+		return aTabs.map(function(aTab) {
+			return this.browser.duplicateTab(aTabs);
+		}, this);
+	},
+
 
 
 	canClose : function FSW_canClose()
@@ -1822,22 +1854,23 @@ FoxSplitterWindow.prototype = {
 			let browser = this._getTabBrowserFromTab(tabs[0]);
 			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
 
-			var windowMove = allTabs.length == tabs.length;
+			let windowMove = allTabs.length == tabs.length;
+			let selected;
+			let allSelected = tabs.some(function(aTab) {
+					if (aTab.getAttribute('multiselected') == 'true')
+						return selected = true;
+					return false;
+				});
 
 			// Multiple Tab Handler moves/duplicates selected tabs, so we should process only one tab.
 			if (
 				'MultipleTabService' in browser.ownerDocument.defaultView &&
-				tabs.every(function(aTab) {
-					return aTab.getAttribute('multiselected') == 'true';
-				})
+				allSelected
 				)
 				tabs = [tabs[0]];
 
 			// Tree Style Tabs tries to move the dragged tab with descendant tabs.
-			if (
-				'treeStyleTab' in browser &&
-				tabs[0].getAttribute('multiselected') != 'true'
-				) {
+			if ('treeStyleTab' in browser && !selected) {
 				tabs = [tabs[0]].concat(browser.treeStyleTab.getDescendantTabs(tabs[0]));
 				windowMove = allTabs.length == tabs.length;
 			}
