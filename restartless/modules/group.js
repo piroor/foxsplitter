@@ -207,14 +207,20 @@ FoxSplitterGroup.prototype = {
 				deferreds.push(deferred);
 		});
 		if (aFinallyRaised) {
-			if (deferreds.length)
+			this.memberClass.raising++;
+			if (deferreds.length) {
+				let self = this;
 				Deferred
 					.parallel(deferreds)
 					.next(function() {
 						aFinallyRaised.raise();
+						self.memberClass.raising--;
 					});
-			else
+			}
+			else {
 				aFinallyRaised.raise();
+				this.memberClass.raising--;
+			}
 		}
 	},
 

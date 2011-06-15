@@ -1339,7 +1339,6 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
-		this.raising++;
 		FoxSplitterWindow.raising++;
 
 		this.active = true;
@@ -1356,7 +1355,6 @@ FoxSplitterWindow.prototype = {
 			.error(this.defaultHandleError)
 			.wait(0.1)
 			.next(function() {
-				self.raising--;
 				FoxSplitterWindow.raising--;
 			});
 
@@ -2231,6 +2229,8 @@ FoxSplitterWindow.prototype = {
 	}
 };
 
+FoxSplitterBase.prototype.memberClass = FoxSplitterWindow;
+
 FoxSplitterWindow.instances = [];
 FoxSplitterWindow.instancesById = {};
 FoxSplitterWindow.positioning = 0;
@@ -2244,3 +2244,8 @@ FoxSplitterWindow.shouldAutoSmallizeToolbarMode = true;
 FoxSplitterWindow.syncScrollX = true;
 FoxSplitterWindow.syncScrollY = true;
 
+
+function shutdown()
+{
+	FoxSplitterBase.prototype.memberClass = null;
+}
