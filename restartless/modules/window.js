@@ -92,6 +92,8 @@ FoxSplitterWindow.prototype = {
 	set syncScrollX(aValue) { return FoxSplitterWindow.syncScrollX = aValue; },
 	get syncScrollY() { return FoxSplitterWindow.syncScrollY; },
 	set syncScrollY(aValue) { return FoxSplitterWindow.syncScrollY = aValue; },
+	get fixMispositoning() { return FoxSplitterWindow.fixMispositoning; },
+	set fixMispositoning(aValue) { return FoxSplitterWindow.fixMispositoning = aValue; },
 
 	get x()
 	{
@@ -125,7 +127,7 @@ FoxSplitterWindow.prototype = {
 		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
 		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
 		 */
-		if (aNewValue) {
+		if (aNewValue && this.fixMispositoning) {
 			if (this._xOffset === null && 'x' in aNewValue && aNewValue.x != this.window.screenX)
 				this._xOffset = this.window.screenX - aNewValue.x;
 			if (this._yOffset === null && 'y' in aNewValue && aNewValue.y != this.window.screenY)
@@ -2322,6 +2324,7 @@ FoxSplitterWindow.shouldAutoHideTabs = true;
 FoxSplitterWindow.shouldAutoSmallizeToolbarMode = true;
 FoxSplitterWindow.syncScrollX = true;
 FoxSplitterWindow.syncScrollY = true;
+FoxSplitterWindow.fixMispositoning = true;
 
 
 function shutdown()
