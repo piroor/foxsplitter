@@ -343,8 +343,8 @@ FoxSplitterGroup.prototype = {
 				base = this.startMember;
 			var another = base.sibling;
 
-			base.updateLastPositionAndSize(aBaseMember);
-			another.updateLastPositionAndSize(aBaseMember);
+			base.updateLastPositionAndSize();
+			another.updateLastPositionAndSize();
 
 			if (base.isGroup)
 				base.resetPositionAndSize();
@@ -379,6 +379,14 @@ FoxSplitterGroup.prototype = {
 		}
 
 		this.resetting--;
+	},
+
+	updateLastPositionAndSize : function FSG_updateLastPositionAndSize(aBefore, aAfter)
+	{
+		this.lastX      = this.x;
+		this.lastY      = this.y;
+		this.lastWidth  = this.width;
+		this.lastHeight = this.height;
 	},
 
 

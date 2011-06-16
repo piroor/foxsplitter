@@ -548,17 +548,6 @@ FoxSplitterBase.prototype = {
 			parent.onResizeLeft(aDelta);
 	},
 
-	updateLastPositionAndSize : function FSB_updateLastPositionAndSize()
-	{
-		if (!this.isGroup && !this._window)
-			return;
-
-		this.lastX      = this.x;
-		this.lastY      = this.y;
-		this.lastWidth  = this.width;
-		this.lastHeight = this.height;
-	},
-
 
 	// utility methods
 
