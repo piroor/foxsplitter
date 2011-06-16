@@ -129,6 +129,9 @@ FoxSplitterWindow.prototype = {
 			if ('height' in aNewSize && aNewSize.height != this.window.outerHeight)
 				this._heightOffset = this.window.outerHeight - aNewSize.height;
 		}
+		else {
+			aNewSize = {};
+		}
 
 		this.lastX      = 'x' in aNewSize ? aNewSize.x : this.x ;
 		this.lastY      = 'y' in aNewSize ? aNewSize.y : this.y ;
