@@ -262,8 +262,6 @@ FoxSplitterGroup.prototype = {
 		if (this.members.indexOf(aMember) < 0) {
 			this.members.push(aMember);
 			aMember.parent = this;
-			if (!aMember.isGroup)
-				aMember.watchWindowState();
 		}
 	},
 
@@ -272,11 +270,8 @@ FoxSplitterGroup.prototype = {
 		var index = this.members.indexOf(aMember);
 		if (index > -1) {
 			this.members.splice(index, 1);
-			if (aMember.parent == this) {
+			if (aMember.parent == this)
 				aMember.parent = null;
-				if (!aMember.isGroup)
-					aMember.unwatchWindowState();
-			}
 		}
 		if (this.members.length <= 1) {
 			let lastMember = this.members[0];
@@ -406,6 +401,8 @@ FoxSplitterGroup.prototype = {
 			return this._restoreFromMaximized(aTriggerFSWindow);
 		else if (this.minimized)
 			return this._restoreFromMinimized(aTriggerFSWindow);
+
+		return Deferred.next(function() {});
 	},
 
 
@@ -432,7 +429,7 @@ FoxSplitterGroup.prototype = {
 	_restoreFromMaximized : function FSG_restoreFromMaximized()
 	{
 		if (!this.maximized || !('_normalX' in this))
-			return;
+			return Deferred.next(function() {});
 
 		this.moveTo(this._normalX, this._normalY);
 		this.resizeTo(this._normalWidth, this._normalHeight);
@@ -443,6 +440,8 @@ FoxSplitterGroup.prototype = {
 
 		this.maximized = false;
 		this.fullscreen = false;
+
+		return Deferred.next(function() {});
 	},
 
 	setMaximizedState : function FSG_setMaximizedState(aFSWindow)
@@ -502,19 +501,22 @@ FoxSplitterGroup.prototype = {
 	_restoreFromMinimized : function FSG_restoreFromMinimized(aTriggerFSWindow)
 	{
 		if (!this.minimized)
-			return;
+			return Deferred.next(function() {});
 
 		this.allWindows.forEach(function(aFSWindow) {
 			if (aFSWindow.minimized)
 				aFSWindow.window.restore();
 		});
 
+		var deferred;
 		if (aTriggerFSWindow && aTriggerFSWindow.parent)
-			aTriggerFSWindow.parent.reserveResetPositionAndSize(aTriggerFSWindow);
+			deferred = aTriggerFSWindow.parent.reserveResetPositionAndSize(aTriggerFSWindow);
 		else
-			this.reserveResetPositionAndSize();
+			deferred = this.reserveResetPositionAndSize();
 
 		this.minimized = false;
+
+		return deferred || Deferred.next(function() {});
 	}
 };
 

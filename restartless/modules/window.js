@@ -316,6 +316,7 @@ FoxSplitterWindow.prototype = {
 			self._restoreState();
 			self.updateLastPositionAndSize();
 			self.startListen();
+			self.watchWindowState();
 
 			var event = self.document.createEvent('Events');
 			event.initEvent(self.EVENT_TYPE_READY, true, false);
@@ -660,12 +661,31 @@ FoxSplitterWindow.prototype = {
 
 	restore : function FSW_restore()
 	{
-		if (this.window.fullScreen)
-			this.window.fullScreen = false;
-		else if (this.windowState == this.STATE_MAXIMIZED)
-			this.window.restore();
-		else if (this.root && (this.root.minimized || this.root.maximized))
-			this.root.restore();
+		var deferred = new Deferred();
+
+		var window = this.window;
+		if (window.fullScreen) {
+			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
+				window.removeEventListener(aEvent.type, arguments.callee, false);
+				deferred.call();
+			}, false);
+			window.fullScreen = false;
+		}
+		else if (this.windowState == this.STATE_MAXIMIZED) {
+			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
+				window.removeEventListener(aEvent.type, arguments.callee, false);
+				deferred.call();
+			}, false);
+			window.restore();
+		}
+		else if (this.root && (this.root.minimized || this.root.maximized)) {
+			return this.root.restore();
+		}
+		else {
+			return Deferred.next(function() {});
+		}
+
+		return deferred;
 	},
 
 
@@ -1304,8 +1324,13 @@ FoxSplitterWindow.prototype = {
 
 		this.lastWindowState = state;
 
-		if (!this.parent || this.windowStateUpdating)
+		var event = this.document.createEvent('Events');
+		event.initEvent(this.EVENT_TYPE_WINDOW_STATE_CHANGED, true, false);
+
+		if (!this.parent || this.windowStateUpdating) {
+			this.document.dispatchEvent(event);
 			return;
+		}
 
 		this.windowStateUpdating++;
 
@@ -1336,6 +1361,8 @@ FoxSplitterWindow.prototype = {
 		}
 
 		this.windowStateUpdating--;
+
+		this.document.dispatchEvent(event);
 	},
 
 	onMove : function FSW_onMove()

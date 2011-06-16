@@ -20,6 +20,7 @@ FoxSplitterBase.prototype = {
 	ID                : 'foxsplitter-id',
 
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
+	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
 
 	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
 	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,
@@ -165,6 +166,8 @@ FoxSplitterBase.prototype = {
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
 			this.resizeTo(positionAndSize.width, positionAndSize.height);
+
+		this.parent.reserveResetPositionAndSize(this);
 	},
 
 	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
@@ -177,10 +180,13 @@ FoxSplitterBase.prototype = {
 				deltaHeight : 0
 			};
 		var group = (this.isGroup && this || this.root);
+		var maximized = this.maximized;
 		var baseWindow = (group && group.allWindows[0] || this).window;
 		if (aPosition & this.POSITION_HORIZONTAL) {
 			y = this.y;
-			let baseWidth = Math.min(baseWindow.screen.availWidth, this.width * this.expandFactor);
+			let baseWidth = maximized ?
+							this.width :
+							Math.min(baseWindow.screen.availWidth, this.width * this.expandFactor) ;
 			let deltaX = Math.round((baseWidth - this.width) / 2);
 			width = Math.round(baseWidth * this.newMemberFactor);
 			height = this.height;
@@ -196,7 +202,9 @@ FoxSplitterBase.prototype = {
 		else {
 			x = this.x;
 			width = this.width;
-			let baseHeight = Math.min(baseWindow.screen.availHeight, this.height * this.expandFactor);
+			let baseHeight = maximized ?
+							this.height :
+							Math.min(baseWindow.screen.availHeight, this.height * this.expandFactor) ;
 			let deltaY = Math.round((baseHeight - this.height) / 2);
 			height = Math.round(baseHeight * this.newMemberFactor);
 			if (aPosition == this.POSITION_TOP) {
@@ -273,18 +281,27 @@ FoxSplitterBase.prototype = {
 
 		if (sibling.position & this.POSITION_HORIZONTAL) {
 			let totalWidth = this.parent.width;
-			let deltaX = Math.round(totalWidth - (totalWidth / this.expandFactor));
-			if (sibling.position == this.POSITION_RIGHT)
-				sibling.moveBy(-this.width + deltaX, 0);
+			let deltaX = this.maximized ? 0 : Math.round(totalWidth - (totalWidth / this.expandFactor)) ;
+			if (sibling.position == this.POSITION_RIGHT) {
+				// if this is a member of a nested groups, we should not move whole groups right.
+				let deltaXToMove = sibling.parent.parent ? 0 : deltaX ;
+				sibling.moveBy(-this.width + deltaXToMove, 0);
+			}
 			sibling.resizeBy(this.width - deltaX, 0);
 		}
 		else {
 			let totalHeight = this.parent.height;
-			let deltaY = Math.round(totalHeight - (totalHeight / this.expandFactor));
-			if (sibling.position == this.POSITION_BOTTOM)
-				sibling.moveBy(0, -this.height + deltaY);
+			let deltaY = this.maximized ? 0 : Math.round(totalHeight - (totalHeight / this.expandFactor)) ;
+			if (sibling.position == this.POSITION_BOTTOM) {
+				// if this is a member of a nested groups, we should not move whole groups bottom.
+				let deltaYToMove = sibling.parent.parent ? 0 : deltaY ;
+				sibling.moveBy(0, -this.height + deltaYToMove);
+			}
 			sibling.resizeBy(0, this.height - deltaY);
 		}
+
+		if (sibling.parent.parent)
+			sibling.parent.parent.reserveResetPositionAndSize(sibling);
 	},
 
 
@@ -341,27 +358,31 @@ FoxSplitterBase.prototype = {
 		var first = aURIs.shift(); // only the first element can be tab
 
 		var maximized = !this.parent && !this.isGroup && this.maximized;
-		if (maximized)
-			this.restore();
+		var deferred = maximized ?
+						this.restore() :
+						null ;
 
 		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
 		var self = this;
-		return this._openWindow(first, positionAndSize)
+		return Deferred
+				.next(function() {
+					return deferred;
+				})
+				.next(function() {
+					return self._openWindow(first, positionAndSize)
+				})
 				.next(function(aWindow) {
 					aWindow.FoxSplitter.bindWith(self, aPosition);
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
+
+					if (maximized)
+						aWindow.maximize();
+
 					return aWindow;
-/*
-					return Deferred.wait(0.5)
-							.next(function() {
-								if (maximized)
-									aWindow.maximize();
-								return aWindow;
-							});
-*/
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 
 	openLinkAt : function FSW_openLinkAt(aURIOrTab, aPosition)
@@ -377,7 +398,8 @@ FoxSplitterBase.prototype = {
 					aWindow.FoxSplitter.duplicateTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
 					return aWindow;
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 	duplicateTabAt : function FSW_duplicateTabAt(aTab, aPosition)
 	{
@@ -394,7 +416,8 @@ FoxSplitterBase.prototype = {
 					aWindow.FoxSplitter.importTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
 					return aWindow;
-				});
+				})
+				.error(this.defaultHandleError);
 	},
 	moveTabTo : function FSW_moveTabTo(aTab, aPosition)
 	{
