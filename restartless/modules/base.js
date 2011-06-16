@@ -321,9 +321,15 @@ FoxSplitterBase.prototype = {
 				arg
 			);
 		var self = this;
-		window.addEventListener(this.EVENT_TYPE_READY, function() {
-			window.removeEventListener(self.EVENT_TYPE_READY, arguments.callee, false);
-			deferred.call(window);
+		window.addEventListener(this.EVENT_TYPE_READY, function(aEvent) {
+			if (window) {
+				window.removeEventListener(aEvent.type, arguments.callee, false);
+				deferred.call(window);
+				window = undefined;
+			}
+			else {
+				deferred.fail(new Error(aEvent.type+' event is handled twice.'));
+			}
 		}, false);
 		return deferred
 				.error(this.defaultHandleError);
