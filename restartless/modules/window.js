@@ -421,6 +421,12 @@ FoxSplitterWindow.prototype = {
 		if (!this._preDestroyDone)
 			this._preDestroy(aOnQuit);
 
+		if (this._reservedHandleRaised) {
+			this._reservedHandleRaised.cancel();
+			delete this._reservedHandleRaised;
+			FoxSplitterWindow.raising--;
+		}
+
 		this.hideDropIndicator();
 		this.unwatchWindowState();
 		this.clearGroupedAppearance(aOnQuit);
@@ -1448,6 +1454,7 @@ FoxSplitterWindow.prototype = {
 		if (this._reservedHandleRaised) {
 			this._reservedHandleRaised.cancel();
 			delete this._reservedHandleRaised;
+			FoxSplitterWindow.raising--;
 		}
 
 		if (this._reservedHandleLowered)
