@@ -114,23 +114,29 @@ FoxSplitterWindow.prototype = {
 	_widthOffset : null,
 	_heightOffset : null,
 
-	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aNewSize)
+	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aNewValue)
 	{
 		if (!this._window)
 			return;
 
-		if (aNewSize) {
-			if (this._xOffset === null && 'x' in aNewSize && aNewSize.x != this.window.screenX)
-				this._xOffset = this.window.screenX - aNewSize.x;
-			if (this._yOffset === null && 'y' in aNewSize && aNewSize.y != this.window.screenY)
-				this._yOffset = this.window.screenY - aNewSize.y;
-			if (this._widthOffset === null && 'width' in aNewSize && aNewSize.width != this.window.outerWidth)
-				this._widthOffset = this.window.outerWidth - aNewSize.width;
-			if (this._heightOffset === null && 'height' in aNewSize && aNewSize.height != this.window.outerHeight)
-				this._heightOffset = this.window.outerHeight - aNewSize.height;
+		/**
+		 * Due to Firefox's bug 581863 and bug 581866, windows are mispositioned.
+		 * https://github.com/piroor/foxsplitter/issues/26
+		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
+		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
+		 */
+		if (aNewValue) {
+			if (this._xOffset === null && 'x' in aNewValue && aNewValue.x != this.window.screenX)
+				this._xOffset = this.window.screenX - aNewValue.x;
+			if (this._yOffset === null && 'y' in aNewValue && aNewValue.y != this.window.screenY)
+				this._yOffset = this.window.screenY - aNewValue.y;
+			if (this._widthOffset === null && 'width' in aNewValue && aNewValue.width != this.window.outerWidth)
+				this._widthOffset = this.window.outerWidth - aNewValue.width;
+			if (this._heightOffset === null && 'height' in aNewValue && aNewValue.height != this.window.outerHeight)
+				this._heightOffset = this.window.outerHeight - aNewValue.height;
 		}
 		else {
-			aNewSize = {};
+			aNewValue = {};
 		}
 
 		this.lastX      = this.x;
@@ -472,6 +478,7 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
+		// Fix to mispositioning on Linux
 		aX = Math.round(aX) - (this._xOffset || 0);
 		aY = Math.round(aY) - (this._yOffset || 0);
 
@@ -497,10 +504,11 @@ FoxSplitterWindow.prototype = {
 		var x = this.x;
 		var y = this.y;
 
-		if (XULAppInfo.OS == 'Linux') // XXX dirty hack...
-			this.window.moveBy(aDX - (this._xOffset || 0), aDY - (this._yOffset || 0));
-		else
-			this.window.moveBy(aDX, aDY);
+		// Fix to mispositioning on Linux
+		var actualDX = aDX - (this._xOffset || 0);
+		var actualDY = aDY - (this._yOffset || 0);
+		this.window.moveBy(actualDX, actualDY);
+		// this.window.moveBy(aDX, aDY);
 		this.updateLastPositionAndSize({ x : x + aDX, y : y + aDY });
 
 		var self = this;
