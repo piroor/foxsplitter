@@ -497,7 +497,10 @@ FoxSplitterWindow.prototype = {
 		var x = this.x;
 		var y = this.y;
 
-		this.window.moveBy(aDX, aDY);
+		if (XULAppInfo.OS == 'Linux') // XXX dirty hack...
+			this.window.moveBy(aDX - (this._xOffset || 0), aDY - (this._yOffset || 0));
+		else
+			this.window.moveBy(aDX, aDY);
 		this.updateLastPositionAndSize({ x : x + aDX, y : y + aDY });
 
 		var self = this;
