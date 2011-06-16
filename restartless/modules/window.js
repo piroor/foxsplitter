@@ -94,6 +94,8 @@ FoxSplitterWindow.prototype = {
 	set syncScrollY(aValue) { return FoxSplitterWindow.syncScrollY = aValue; },
 	get fixMispositoning() { return FoxSplitterWindow.fixMispositoning; },
 	set fixMispositoning(aValue) { return FoxSplitterWindow.fixMispositoning = aValue; },
+	get importTabsFromClosedSibling() { return FoxSplitterWindow.importTabsFromClosedSibling; },
+	set importTabsFromClosedSibling(aValue) { return FoxSplitterWindow.importTabsFromClosedSibling = aValue; },
 
 	get x()
 	{
@@ -421,7 +423,7 @@ FoxSplitterWindow.prototype = {
 			.unregisterNotification(this);
 
 		if (this.parent && !aOnQuit)
-			this._exportHiddenTabs();
+			this._exportTabsToSibling();
 	},
 	_preDestroyDone : false,
 
@@ -459,16 +461,27 @@ FoxSplitterWindow.prototype = {
 		delete FoxSplitterWindow.instancesById[id];
 	},
 
-	_exportHiddenTabs : function FSW_exportHiddenTabs()
+	_exportTabsToSibling : function FSW_exportTabsToSibling()
 	{
-		if (!this.parent || !this.sibling)
+		if (
+			!this.parent ||
+			!this.sibling ||
+			this.importTabsFromClosedSibling == this.IMPORT_NOTHING
+			)
 			return;
 
-		var hiddenTabs = this.allTabs.filter(function(aTab) {
+		var exportTabs = this.allTabs;
+		if (this.importTabsFromClosedSibling == this.IMPORT_ONLY_HIDDEN) {
+			exportTabs = exportTabs.filter(function(aTab) {
 				return aTab.hidden;
 			}, this);
-		if (hiddenTabs.length)
-			this.sibling.importTabs(hiddenTabs);
+		}
+		else {
+			// prevent to close the window on this timing
+			this.browser.addTab('about:blank');
+		}
+		if (exportTabs.length)
+			this.sibling.importTabs(exportTabs);
 	},
 
 
@@ -2352,6 +2365,11 @@ FoxSplitterWindow.shouldAutoSmallizeToolbarMode = true;
 FoxSplitterWindow.syncScrollX = true;
 FoxSplitterWindow.syncScrollY = true;
 FoxSplitterWindow.fixMispositoning = true;
+
+FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterWindow.prototype.IMPORT_NOTHING;
+FoxSplitterWindow.IMPORT_ALL         = FoxSplitterWindow.prototype.IMPORT_ALL;
+FoxSplitterWindow.IMPORT_ONLY_HIDDEN = FoxSplitterWindow.prototype.IMPORT_ONLY_HIDDEN;
+FoxSplitterWindow.importTabsFromClosedSibling = FoxSplitterWindow.IMPORT_ONLY_HIDDEN;
 
 
 function shutdown()

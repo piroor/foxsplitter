@@ -48,6 +48,12 @@ FoxSplitterBase.prototype = {
 	TILE_MODE_X_AXIS : (1 << 0),
 	TILE_MODE_Y_AXIS : (1 << 1),
 
+
+	IMPORT_NOTHING     : 0,
+	IMPORT_ALL         : 1,
+	IMPORT_ONLY_HIDDEN : 2,
+
+
 	newMemberFactor : 0.5,
 	normalExpandFactor : 1.2,
 	get expandFactor()
