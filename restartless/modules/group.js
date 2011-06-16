@@ -381,7 +381,7 @@ FoxSplitterGroup.prototype = {
 		this.resetting--;
 	},
 
-	updateLastPositionAndSize : function FSG_updateLastPositionAndSize(aBefore, aAfter)
+	updateLastPositionAndSize : function FSG_updateLastPositionAndSize(aNewSize)
 	{
 		this.lastX      = this.x;
 		this.lastY      = this.y;

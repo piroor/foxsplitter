@@ -95,24 +95,24 @@ FoxSplitterWindow.prototype = {
 
 	get x()
 	{
-		return this.window.screenX + this._xOffset;
+		return this.window.screenX - (this._xOffset || 0);
 	},
 	get y()
 	{
-		return this.window.screenY + this._yOffset;
+		return this.window.screenY - (this._yOffset || 0);
 	},
 	get width()
 	{
-		return this.window.outerWidth + this._widthOffset;
+		return this.window.outerWidth + (this._widthOffset || 0);
 	},
 	get height()
 	{
-		return this.window.outerHeight + this._heightOffset;
+		return this.window.outerHeight + (this._heightOffset || 0);
 	},
-	_xOffset : 0,
-	_yOffset : 0,
-	_widthOffset : 0,
-	_heightOffset : 0,
+	_xOffset : null,
+	_yOffset : null,
+	_widthOffset : null,
+	_heightOffset : null,
 
 	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aNewSize)
 	{
@@ -120,23 +120,23 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		if (aNewSize) {
-			if ('x' in aNewSize && aNewSize.x != this.window.screenX)
+			if (this._xOffset === null && 'x' in aNewSize && aNewSize.x != this.window.screenX)
 				this._xOffset = this.window.screenX - aNewSize.x;
-			if ('y' in aNewSize && aNewSize.y != this.window.screenY)
+			if (this._yOffset === null && 'y' in aNewSize && aNewSize.y != this.window.screenY)
 				this._yOffset = this.window.screenY - aNewSize.y;
-			if ('width' in aNewSize && aNewSize.width != this.window.outerWidth)
+			if (this._widthOffset === null && 'width' in aNewSize && aNewSize.width != this.window.outerWidth)
 				this._widthOffset = this.window.outerWidth - aNewSize.width;
-			if ('height' in aNewSize && aNewSize.height != this.window.outerHeight)
+			if (this._heightOffset === null && 'height' in aNewSize && aNewSize.height != this.window.outerHeight)
 				this._heightOffset = this.window.outerHeight - aNewSize.height;
 		}
 		else {
 			aNewSize = {};
 		}
 
-		this.lastX      = 'x' in aNewSize ? aNewSize.x : this.x ;
-		this.lastY      = 'y' in aNewSize ? aNewSize.y : this.y ;
-		this.lastWidth  = 'width' in aNewSize ? aNewSize.width : this.width ;
-		this.lastHeight = 'height' in aNewSize ? aNewSize.height : this.height ;
+		this.lastX      = this.x;
+		this.lastY      = this.y;
+		this.lastWidth  = this.width;
+		this.lastHeight = this.height;
 	},
 
 	get window()
@@ -466,8 +466,8 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		var x = this.lastX;
-		var y = this.lastY;
+		aX = Math.round(aX) - (this._xOffset || 0);
+		aY = Math.round(aY) - (this._yOffset || 0);
 
 		this.window.moveTo(aX, aY);
 		this.updateLastPositionAndSize({ x : aX, y : aY });
@@ -486,8 +486,10 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		var x = this.lastX;
-		var y = this.lastY;
+		aDX = Math.round(aDX);
+		aDY = Math.round(aDY);
+		var x = this.x;
+		var y = this.y;
 
 		this.window.moveBy(aDX, aDY);
 		this.updateLastPositionAndSize({ x : x + aDX, y : y + aDY });
@@ -506,10 +508,8 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		var width = this.lastWidth;
-		var height = this.lastHeight;
-		var newWidth = Math.max(this.MIN_WIDTH, aW);
-		var newHeight = Math.max(this.MIN_HEIGHT, aH);
+		var newWidth = Math.max(this.MIN_WIDTH, Math.round(aW) + (this._widthOffset || 0));
+		var newHeight = Math.max(this.MIN_HEIGHT, Math.round(aH) + (this._heightOffset || 0));
 
 		this.window.resizeTo(newWidth, newHeight);
 		this.updateLastPositionAndSize({ width : newWidth, height : newHeight });
@@ -528,10 +528,10 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		var width = this.lastWidth;
-		var height = this.lastHeight;
-		aDW = Math.max(-width+this.MIN_WIDTH, aDW);
-		aDH = Math.max(-height+this.MIN_HEIGHT, aDH);
+		var width = this.width;
+		var height = this.height;
+		aDW = Math.max(-this.window.innerWidth+this.MIN_WIDTH, Math.round(aDW));
+		aDH = Math.max(-this.window.innerHeight+this.MIN_HEIGHT, Math.round(aDH));
 
 		this.window.resizeBy(aDW, aDH);
 		this.updateLastPositionAndSize({ width : width + aDW, height : height + aDH });
@@ -1333,13 +1333,11 @@ FoxSplitterWindow.prototype = {
 		this.positioning++;
 		FoxSplitterWindow.positioning++;
 
-		var x = this.x;
-		var y = this.y;
-
 		var prevX = this.lastX;
 		var prevY = this.lastY;
-		this.lastX = x;
-		this.lastY = y;
+		this.updateLastPositionAndSize();
+		var newX = this.x;
+		var newY = this.y;
 
 		var self = this;
 		Deferred.wait(0.1).next(function() {
@@ -1351,7 +1349,7 @@ FoxSplitterWindow.prototype = {
 			 */
 			var root = self.root;
 			if (root && FoxSplitterWindow.positioning == 1) {
-				root.moveBy(self.lastX - prevX, self.lastY - prevY, self);
+				root.moveBy(newX - prevX, newY - prevY, self);
 				// for safety
 				self.parent.resetPositionAndSize(self);
 				Deferred.next(function() {
@@ -1384,10 +1382,7 @@ FoxSplitterWindow.prototype = {
 		else if (height != this.lastHeight)
 			this.onResizeBottom(height - this.lastHeight);
 
-		this.lastX      = x;
-		this.lastY      = y;
-		this.lastWidth  = width;
-		this.lastHeight = height;
+		this.updateLastPositionAndSize();
 
 		if (this.parent)
 			this.parent.reserveResetPositionAndSize(this); // for safety
