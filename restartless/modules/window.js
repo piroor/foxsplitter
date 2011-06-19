@@ -972,8 +972,7 @@ FoxSplitterWindow.prototype = {
 		if (this.browser.treeStyleTab && this.browser.treeStyleTab.importTabs) {
 			let allTabs = this.allTabs;
 			let insertBefore = aPosition < allTabs.length ? this.allTabs[aPosition] : null ;
-			let options = { insertBefore : insertBefore };
-			return this.browser.treeStyleTab.importTabs(aTabs, options)
+			return this.browser.treeStyleTab.importTabs(aTabs, insertBefore)
 					.map(function(aTab, aIndex) {
 						return this._reserveMoveTabToGroup(aTab, groupInfos[aIndex]);
 					}, this);
@@ -1100,10 +1099,8 @@ FoxSplitterWindow.prototype = {
 
 	duplicateTabs : function FSW_duplicateTabs(aTabs)
 	{
-		if (this.browser.treeStyleTab && this.browser.treeStyleTab.importTabs) {
-			let options = { duplicate : true };
-			return this.browser.treeStyleTab.importTabs(aTabs, options);
-		}
+		if (this.browser.treeStyleTab && this.browser.treeStyleTab.duplicateTab)
+			return this.browser.treeStyleTab.duplicateTabs(aTabs);
 
 		return aTabs.map(function(aTab) {
 			return this.browser.duplicateTab(aTabs);
