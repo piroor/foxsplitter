@@ -1,5 +1,10 @@
 load('lib/WindowManager');
+
+load('defaults');
+load('config');
+
 load('window');
+load('group');
 
 const TYPE_BROWSER = 'navigator:browser';
 
@@ -26,6 +31,7 @@ function shutdown()
 		// delete aWindow.SplitBrowser;
 	});
 
-	WindowManager = void(0);
-	FoxSplitterWindow = void(0);
+	WindowManager = undefined;
+	FoxSplitterWindow = undefined;
+	FoxSplitterGroup = undefined;
 }

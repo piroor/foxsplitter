@@ -1,0 +1,198 @@
+# ja-JP
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+# 
+# The contents of these files are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use these files except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+# 
+# The Original Code is the Fox Splitter (formerly Split Browser).
+# 
+# The Initial Developer of the Original Code is SHIMODA Hiroshi.
+# Portions created by the Initial Developer are Copyright (C) 2007-2011
+# the Initial Developer. All Rights Reserved.
+# 
+# Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+# 
+# Alternatively, the contents of these files may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of these files only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of these files under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the LGPL or the GPL. If you do not delete
+# the provisions above, a recipient may use your version of these files under
+# the terms of any one of the MPL, the GPL or the LGPL.
+# 
+# ***** END LICENSE BLOCK *****
+
+title=Fox Splitterの設定
+
+tab.general=全般
+
+tab.closetab.caption=タブを分割した時の挙動
+tab.closetab.move=元のタブを閉じる（タブをペインに移動する）
+tab.closetab.clone=元のタブを残す（タブをペインに複製する）
+
+syncScroll.mainArea=同期スクロールするように設定したペインを、メイン領域と同期スクロールする
+syncScroll.horizontal.true=縦横両方を同期
+syncScroll.horizontal.false=縦スクロールのみ同期
+
+
+tab.appearance=外観
+
+show.toolbar.always=分割されたペインのツールバーを常に表示する
+show.syncScroll=分割されたペインのツールバーに「スクロールを同期」ボタンを表示する
+show.collapseexpand=分割されたペインのツールバーに「たたむ」「ひろげる」ボタンを表示する
+tabs.autoHide=分割されたペインで常にタブを表示する
+show.toolbar.navigation.always=分割されたペインのツールバーでナビゲーションを常に表示する
+
+show.addbuttons.caption=ブラウズ領域の分割ボタン
+show.addbuttons.hover.type=ブラウズ領域の端をポイントした時
+show.addbuttons.hover.type.0=自動的に分割ボタンを表示する
+show.addbuttons.hover.type.1=Shiftキーを押している時だけ分割ボタンを表示する
+show.addbuttons.dragdrop=リンク、ファイル、タブなどのドラッグ＆ドロップ時に分割ボタンを表示する
+addbuttons.size.before=分割ボタンの高さ：
+addbuttons.size.after=ピクセル
+addbuttons.area.before=分割ボタンの幅：
+addbuttons.area.after=ピクセル
+
+
+tab.menu=メニュー
+show.menu=メニューバーに「分割」メニューを追加
+show.context.caption=タブのコンテキストメニューに以下の項目を追加する：
+show.tab.context.split=タブを分割
+show.tab.context.layout.grid=すべてのタブを平面に並べる
+show.tab.context.layout.x=すべてのタブを横に並べる
+show.tab.context.layout.y=すべてのタブを縦に並べる
+show.tab.context.gather=すべての分割したブラウザをタブに集める
+
+
+
+
+add.button.top.tooltip=上に分割
+add.button.bottom.tooltip=下に分割
+add.button.right.tooltip=右に分割
+add.button.left.tooltip=左に分割
+
+
+file.removeAll.label=分割されたペインをすべて閉じる
+file.removeAll.accesskey=b
+view.collapseAll.label=分割されたペインをすべてたたむ
+view.collapseAll.accesskey=l
+view.expandAll.label=分割されたペインをすべてひろげる
+view.expandAll.accesskey=x
+
+add.label=ブラウズ領域を分割
+add.top.label=上に分割
+add.bottom.label=下に分割
+add.right.label=右に分割
+add.left.label=左に分割
+
+frame.add.label=このフレームからブラウズ領域を分割
+frame.add.top.label=上に分割
+frame.add.bottom.label=下に分割
+frame.add.right.label=右に分割
+frame.add.left.label=左に分割
+
+link.add.label=分割されたブラウズ領域でリンクを開く
+link.add.top.label=上に分割
+link.add.bottom.label=下に分割
+link.add.right.label=右に分割
+link.add.left.label=左に分割
+
+tab.add.label=タブを分割
+tab.add.top.label=上に分割
+tab.add.bottom.label=下に分割
+tab.add.right.label=右に分割
+tab.add.left.label=左に分割
+
+
+
+
+tab.layout.grid.label=すべてのタブを平面に並べる
+tab.layout.x.label=すべてのタブを横に並べる
+tab.layout.y.label=すべてのタブを縦に並べる
+tab.gather.label=すべての分割されたペインをタブに集める
+
+
+
+menu.label=分割
+menu.accesskey=p
+
+menu.removeAll.label=分割されたペインをすべて閉じる
+menu.removeAll.accesskey=b
+menu.undo.label=閉じたペインを元に戻す
+menu.undo.accesskey=u
+menu.undoList.label=最近閉じたペイン
+menu.undoList.accesskey=r
+menu.collapseAll.label=分割されたペインをすべてたたむ
+menu.collapseAll.accesskey=l
+menu.expandAll.label=分割されたペインをすべてひろげる
+menu.expandAll.accesskey=x
+menu.add.label=現在のタブを分割
+menu.add.top.label=上に分割
+menu.add.bottom.label=下に分割
+menu.add.right.label=右に分割
+menu.add.left.label=左に分割
+menu.layout.grid.label=すべてのタブを平面に並べる
+menu.layout.grid.accesskey=t
+menu.layout.x.label=すべてのタブを横に並べる
+menu.layout.x.accesskey=v
+menu.layout.y.label=すべてのタブを縦に並べる
+menu.layout.y.accesskey=h
+menu.gather.label=すべての分割されたペインをタブに集める
+menu.gather.accesskey=g
+menu.syncScroll.label=分割されたペインのスクロールをメイン領域と同期させる
+menu.syncScroll.accesskey=s
+
+
+
+multipletab.layout.grid.label=平面に並べる
+multipletab.layout.x.label=横に並べる
+multipletab.layout.y.label=縦に並べる
+
+
+
+
+subbrowser.blank=（タイトルなし）
+subbrowser.loading=読み込み中...
+subbrowser.syncScroll.tooltip=スクロールを同期させる
+subbrowser.goBack.tooltip=戻る
+subbrowser.goForward.tooltip=進む
+subbrowser.reload.tooltip=更新
+subbrowser.stop.tooltip=中止
+subbrowser.go.label=Go
+subbrowser.go.tooltip=このURIを読み込む
+subbrowser.collapse.tooltip=たたむ
+subbrowser.expand.tooltip=ひろげる
+subbrowser.close.tooltip=閉じる
+
+subbrowser.menu.openNewTab=新しいタブ
+subbrowser.menu.collapse=たたむ
+subbrowser.menu.expand=ひろげる
+subbrowser.menu.close=閉じる
+subbrowser.menu.syncScroll=スクロールを同期させる
+
+
+button.menu.label=分割
+button.menu.tooltip=ブラウズ領域の分割
+button.layout.grid.label=並べる
+button.layout.grid.tooltip=タブを平面に並べる
+button.gather.label=集める
+button.gather.tooltip=分割されたペインをタブに集める
+button.collapseAll.label=たたむ
+button.collapseAll.tooltip=分割されたペインをすべてたたむ
+button.expandAll.label=ひろげる
+button.expandAll.tooltip=分割されたペインをすべてひろげる
+button.removeAll.label=分割を解除
+button.removeAll.tooltip=分割されたペインをすべて閉じる
+

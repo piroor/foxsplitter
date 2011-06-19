@@ -9,7 +9,7 @@
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
-                   em:optionsURL="about:blank?restartless-config"
+                   em:optionsURL="about:blank?foxsplitter-config"
                    em:bootstrap="true">
 
 
