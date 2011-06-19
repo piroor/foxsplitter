@@ -1,5 +1,6 @@
 load('base');
 load('lib/jsdeferred');
+load('lib/prefs');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
@@ -11,6 +12,8 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
+
+const base = 'extensions.foxsplitter@piro.sakura.ne.jp.';
 
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -83,10 +86,10 @@ FoxSplitterWindow.prototype = {
 	set dropZoneSize(aValue) { return FoxSplitterWindow.dropZoneSize = aValue; },
 	get handleDragWithShiftKey() { return FoxSplitterWindow.handleDragWithShiftKey; },
 	set handleDragWithShiftKey(aValue) { return FoxSplitterWindow.handleDragWithShiftKey = aValue; },
+	get shouldMinimalizeUI() { return FoxSplitterWindow.shouldMinimalizeUI; },
+	set shouldMinimalizeUI(aValue) { return FoxSplitterWindow.shouldMinimalizeUI = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterWindow.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterWindow.shouldAutoHideTabs = aValue; },
-	get shouldAutoSmallizeToolbarMode() { return FoxSplitterWindow.shouldAutoSmallizeToolbarMode; },
-	set shouldAutoSmallizeToolbarMode(aValue) { return FoxSplitterWindow.shouldAutoSmallizeToolbarMode = aValue; },
 	get syncScrollX() { return FoxSplitterWindow.syncScrollX; },
 	set syncScrollX(aValue) { return FoxSplitterWindow.syncScrollX = aValue; },
 	get syncScrollY() { return FoxSplitterWindow.syncScrollY; },
@@ -1693,7 +1696,7 @@ FoxSplitterWindow.prototype = {
 	{
 		if (
 			!this._window ||
-			!this.shouldAutoSmallizeToolbarMode ||
+			!this.shouldMinimalizeUI ||
 			this._originalToolbarState
 			)
 			return;
@@ -1744,7 +1747,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_restoreToolbarState : function FSW_restoreToolbarState(aForce)
 	{
-		if (!this._window || !this.shouldAutoSmallizeToolbarMode)
+		if (!this._window || !this.shouldMinimalizeUI)
 			return;
 
 		var state = this._originalToolbarState;
@@ -2354,21 +2357,36 @@ FoxSplitterWindow.positioning = 0;
 FoxSplitterWindow.resizing = 0;
 FoxSplitterWindow.raising = 0;
 
-FoxSplitterWindow.dropZoneSize = 64;
-FoxSplitterWindow.handleDragWithShiftKey = false;
-FoxSplitterWindow.shouldAutoHideTabs = true;
-FoxSplitterWindow.shouldAutoSmallizeToolbarMode = true;
-FoxSplitterWindow.syncScrollX = true;
-FoxSplitterWindow.syncScrollY = true;
-FoxSplitterWindow.fixMispositoning = true;
+FoxSplitterWindow.dropZoneSize = prefs.getPref(base+'dropZoneSize');
+FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(base+'handleDragWithShiftKey');
+FoxSplitterWindow.shouldMinimalizeUI = prefs.getPref(base+'shouldMinimalizeUI');
+FoxSplitterWindow.shouldAutoHideTabs = prefs.getPref(base+'shouldAutoHideTabs');
+FoxSplitterWindow.syncScrollX = prefs.getPref(base+'syncScrollX');
+FoxSplitterWindow.syncScrollY = prefs.getPref(base+'syncScrollY');
+FoxSplitterWindow.fixMispositoning = prefs.getPref(base+'fixMispositoning');
 
 FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterWindow.prototype.IMPORT_NOTHING;
 FoxSplitterWindow.IMPORT_ALL         = FoxSplitterWindow.prototype.IMPORT_ALL;
 FoxSplitterWindow.IMPORT_ONLY_HIDDEN = FoxSplitterWindow.prototype.IMPORT_ONLY_HIDDEN;
-FoxSplitterWindow.importTabsFromClosedSibling = FoxSplitterWindow.IMPORT_ONLY_HIDDEN;
+FoxSplitterWindow.importTabsFromClosedSibling = prefs.getPref(base+'importTabsFromClosedSibling');
 
+var prefListener = {
+		domain : base,
+		observe : function FSWPL_observe(aSubject, aTopic, aData) {
+			if (aTopic != 'nsPref:changed')
+				return;
+
+			var prefName = aData.replace(base, '');
+			if (prefName in FoxSplitterWindow)
+				FoxSplitterWindow[prefName] = prefs.getPref(aData);
+		}
+	};
+
+prefs.addPrefListener(prefListener);
 
 function shutdown()
 {
-	FoxSplitterBase.prototype.memberClass = null;
+	prefs.removePrefListener(prefListener);
+	prefs = undefined;
+	FoxSplitterBase.prototype.memberClass = undefined;
 }
