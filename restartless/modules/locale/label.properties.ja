@@ -38,18 +38,24 @@ title=Fox Splitterの設定
 
 tab.general=全般
 
-tab.closetab.caption=タブを分割した時の挙動
-tab.closetab.move=元のタブを閉じる（タブをペインに移動する）
-tab.closetab.clone=元のタブを残す（タブをペインに複製する）
-
-syncScroll.mainArea=同期スクロールするように設定したペインを、メイン領域と同期スクロールする
-syncScroll.horizontal.true=縦横両方を同期
-syncScroll.horizontal.false=縦スクロールのみ同期
-
+syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
+handleDragWithShiftKey=ウィンドウの端にタブやリンクをドラッグ＆ドロップした時の挙動
+handleDragWithShiftKey.false=通常のドラッグ操作でウィンドウを分割する
+handleDragWithShiftKey.true=Shift-ドラッグした時だけウィンドウを分割する
+dropZoneSize.before=ウィンドウの端から
+dropZoneSize.after=ピクセルの範囲にタブやリンクをドロップした時にウィンドウを分割する
+importTabsFromClosedSibling=分割されたウィンドウを閉じた時の挙動
+importTabsFromClosedSibling.nothing=そのままウィンドウを閉じる
+importTabsFromClosedSibling.hidden=非表示になっているタブを隣のウィンドウに移動する
+importTabsFromClosedSibling.hidden=すべてのタブを隣のウィンドウに移動する
 
 tab.appearance=外観
 
-show.toolbar.always=分割されたペインのツールバーを常に表示する
+shouldMinimalizeUI=分割後のウィンドウではツールバーのボタンを小さく表示する
+shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に隠す（※他のアドオンの機能を利用します）
+
+
+
 show.syncScroll=分割されたペインのツールバーに「スクロールを同期」ボタンを表示する
 show.collapseexpand=分割されたペインのツールバーに「たたむ」「ひろげる」ボタンを表示する
 tabs.autoHide=分割されたペインで常にタブを表示する

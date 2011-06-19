@@ -6,7 +6,7 @@ config.register('about:blank?foxsplitter-config', <>
 
 <prefwindow id="foxsplitter-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	title={bundle.getString('config.title')}>
+	title={bundle.getString('title')}>
 
 	<prefpane id="prefpane-general" label={bundle.getString('config.general')}>
 		<preferences>
