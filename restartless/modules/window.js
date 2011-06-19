@@ -1,5 +1,4 @@
 load('base');
-load('group');
 load('lib/jsdeferred');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];

@@ -1,0 +1,220 @@
+# ko-KR
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+# 
+# The contents of these files are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use these files except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+# 
+# The Original Code is the Fox Splitter (formerly Split Browser).
+# 
+# The Initial Developer of the Original Code is SHIMODA Hiroshi.
+# Portions created by the Initial Developer are Copyright (C) 2007
+# the Initial Developer. All Rights Reserved.
+# 
+# Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+#                 박찬규 (sushizang) <sushizang@empal.com>
+# 
+# Alternatively, the contents of these files may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of these files only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of these files under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the LGPL or the GPL. If you do not delete
+# the provisions above, a recipient may use your version of these files under
+# the terms of any one of the MPL, the GPL or the LGPL.
+# 
+# ***** END LICENSE BLOCK *****
+
+title=Fox Splitter 설정
+
+tab.general=일반
+
+subbrowser.autoFocus=마우스가 위치하면 자동으로 초점 맞추기
+delay.subbrowser.autoFocus.before=초점 맞추기 대기 시간: 
+delay.subbrowser.autoFocus.after=밀리초
+
+tab.closetab.caption=Split Tab Behavior
+tab.closetab.move=Close the original tab (move the tab to the new pane)
+tab.closetab.clone=Keep the original tab open (clone the tab to the new pane)
+
+syncScroll.mainArea=스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화
+syncScroll.horizontal.true=수직 및 수평 모두
+syncScroll.horizontal.false=수직만
+
+
+tab.appearance=모양
+
+show.toolbar.always=항상 분할된 화면에 도구 모음 보이기
+show.syncScroll=분할된 화면에 "스크롤 동기화" 도구 모음 버튼 보이기
+show.collapseexpand=분할된 화면에 "감추기"/"보이기" 도구 모음 버튼 보이기
+tabs.autoHide=항상 분할된 화면에 탭 도구 모음 보이기
+show.toolbar.navigation.always=항상 분할된 화면에 도구 모음 네비게이션 보이기
+
+show.addbuttons.caption=컨텐트 영역의 "분할" 버튼
+show.addbuttons.hover.type=마우스가 컨텐트 영역의 가장자리 중 한 곳에 위치하면:
+show.addbuttons.hover.type.0=항상 자동으로 "분할" 버튼 보이기
+show.addbuttons.hover.type.1="Shift" 키가 눌리면 "분할" 버튼 보이기
+show.addbuttons.dragdrop=링크, 파일 등을 드래그할 때 "분할" 버튼 보이기
+addbuttons.size.before=Height of "Split" buttons:
+addbuttons.size.after=pixels
+addbuttons.area.before=Width of "Split" buttons:
+addbuttons.area.after=pixels
+
+
+tab.target=조합
+
+search.loadResultsIn=검색 결과 열기
+search.loadResultsIn.0=주 영역 (Firefox 기본값)
+search.loadResultsIn.1=활성 창
+search.loadResultsIn.2=검색 결과 창
+
+
+tab.menu=메뉴
+show.menu=메뉴 도구 모음에 "Split" 메뉴 보이기
+show.context.caption=탭 상에 추가할 컨텍스트 메뉴 항목:
+show.tab.context.split=화면 분할...
+show.tab.context.layout.grid=모든 탭을 바둑판식으로 보이기
+show.tab.context.layout.x=모든 탭을 수직 바둑판식으로 보이기
+show.tab.context.layout.y=모든 탭을 수평 바둑판식으로 보이기
+show.tab.context.gather=모든 분할 화면을 탭으로 보이기
+
+
+tab.session=State
+state.restore=화면 분할 상태 저장
+undo.max.before=Allow to reopen closed panes until 
+undo.max.after=times
+undo.clearCache=Clear cache
+
+
+
+
+add.button.top.tooltip=위쪽으로 분할
+add.button.bottom.tooltip=아래쪽으로 분할
+add.button.right.tooltip=오른쪽으로 분할
+add.button.left.tooltip=왼쪽으로 분할
+
+
+file.removeAll.label=분할된 화면 모두 닫기
+file.removeAll.accesskey=b
+view.collapseAll.label=분할된 화면 모두 감추기
+view.collapseAll.accesskey=l
+view.expandAll.label=분할된 화면 모두 보이기
+view.expandAll.accesskey=x
+
+add.label=화면 분할
+add.top.label=위쪽
+add.bottom.label=아래쪽
+add.right.label=오른쪽
+add.left.label=왼쪽
+
+frame.add.label=현재 프레임에서의 화면 분할
+frame.add.top.label=위쪽
+frame.add.bottom.label=아래쪽
+frame.add.right.label=오른쪽
+frame.add.left.label=왼쪽
+
+link.add.label=분할 화면으로의 로드
+link.add.top.label=위쪽
+link.add.bottom.label=아래쪽
+link.add.right.label=오른쪽
+link.add.left.label=왼쪽
+
+tab.add.label=화면 분할
+tab.add.top.label=위쪽
+tab.add.bottom.label=아래쪽
+tab.add.right.label=오른쪽
+tab.add.left.label=왼쪽
+
+
+
+tab.layout.grid.label=모든 탭을 바둑판식으로 보이기
+tab.layout.x.label=모든 탭을 수직 바둑판식으로 보이기
+tab.layout.y.label=모든 탭을 수평 바둑판식으로 보이기
+tab.gather.label=모든 분할 화면을 탭으로 보이기
+
+
+
+
+menu.label=Split
+menu.accesskey=p
+menu.removeAll.label=분할된 화면 모두 닫기
+menu.removeAll.accesskey=b
+menu.undo.label=Undo Close Pane
+menu.undo.accesskey=U
+menu.undoList.label=Recently Closed Panes
+menu.undoList.accesskey=R
+menu.collapseAll.label=분할된 화면 모두 감추기
+menu.collapseAll.accesskey=l
+menu.expandAll.label=분할된 화면 모두 보이기
+menu.expandAll.accesskey=x
+menu.add.label=화면 분할
+menu.add.top.label=위쪽
+menu.add.bottom.label=아래쪽
+menu.add.right.label=오른쪽
+menu.add.left.label=왼쪽
+menu.layout.grid.label=모든 탭을 바둑판식으로 보이기
+menu.layout.grid.accesskey=t
+menu.layout.x.label=모든 탭을 수직 바둑판식으로 보이기
+menu.layout.x.accesskey=v
+menu.layout.y.label=모든 탭을 수평 바둑판식으로 보이기
+menu.layout.y.accesskey=h
+menu.gather.label=모든 분할 화면을 탭으로 보이기
+menu.gather.accesskey=g
+menu.syncScroll.label=주 영역으로 분할 화면 스크롤 동기화
+menu.syncScroll.accesskey=s
+
+
+
+multipletab.layout.grid.label=바둑판식으로 보이기
+multipletab.layout.x.label=수직 바둑판식으로 보이기
+multipletab.layout.y.label=수평 바둑판식으로 보이기
+
+
+
+
+subbrowser.blank=(비어 있음)
+subbrowser.loading=로드 중...
+subbrowser.syncScroll.tooltip=스크롤 동기화
+subbrowser.goBack.tooltip=뒤로
+subbrowser.goForward.tooltip=앞으로
+subbrowser.reload.tooltip=새로 고침
+subbrowser.stop.tooltip=중지
+subbrowser.go.label=가기
+subbrowser.go.tooltip=현재 URI 로드
+subbrowser.collapse.tooltip=감추기
+subbrowser.expand.tooltip=보이기
+subbrowser.close.tooltip=닫기
+
+subbrowser.menu.openNewTab=새 탭
+subbrowser.menu.collapse=감추기
+subbrowser.menu.expand=보이기
+subbrowser.menu.close=닫기
+subbrowser.menu.syncScroll=스크롤 동기화
+
+button.menu.label=화면 분할
+button.menu.tooltip=브라우저 화면을 분할합니다.
+button.layout.grid.label=바둑판식으로 보이기
+button.layout.grid.tooltip=탭을 모두 바둑판식으로 보입니다.
+button.gather.label=모으기
+button.gather.tooltip=분할된 화면을 모두 탭으로 보입니다.
+button.collapseAll.label=감추기
+button.collapseAll.tooltip=분할된 화면을 모두 감춥니다
+button.expandAll.label=보이기
+button.expandAll.tooltip=분할된 화면을 모두 보입니다
+button.removeAll.label=모두 닫기
+button.removeAll.tooltip=분할된 화면을 모두 닫습니다
+
+
+
+privacy.undoCache.label=Undo cahce for closed panes of Fox Splitter
+privacy.undoCache.accesskey=u

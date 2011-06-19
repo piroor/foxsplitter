@@ -1,0 +1,220 @@
+# hu-HU
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+# 
+# The contents of these files are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use these files except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+# 
+# The Original Code is the Fox Splitter (formerly Split Browser).
+# 
+# The Initial Developer of the Original Code is SHIMODA Hiroshi.
+# Portions created by the Initial Developer are Copyright (C) 2007
+# the Initial Developer. All Rights Reserved.
+# 
+# Contributor(s): Mikes Kaszmán István <cashman@inmail.sk>
+# 
+# Alternatively, the contents of these files may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of these files only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of these files under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the LGPL or the GPL. If you do not delete
+# the provisions above, a recipient may use your version of these files under
+# the terms of any one of the MPL, the GPL or the LGPL.
+# 
+# ***** END LICENSE BLOCK *****
+
+title=Fox Splitter – Beállítások
+
+tab.general=Általános
+
+subbrowser.autoFocus=Automatikus előtérbe helyezés
+delay.subbrowser.autoFocus.before=Az előtérbe helyezés késleltetése 
+delay.subbrowser.autoFocus.after=ezredmásodperc.
+
+tab.closetab.caption=Lap felosztása
+tab.closetab.move=Eredeti lap bezárása (áthelyezés új panelbe)
+tab.closetab.clone=Eredeti lap megtartása (másolat új panelbe)
+
+syncScroll.mainArea=Főlap csúszkájának szinkronizációja a felosztott lapok csúszkáival
+syncScroll.horizontal.true=Függőlegesen és vízszintesen
+syncScroll.horizontal.false=Csak függőlegesen
+
+
+tab.appearance=Megjelenés
+
+
+show.toolbar.always=A felosztott lapok eszköztára mindig látható
+show.syncScroll=A "Csúszka-szinkron" gomb megjelenítése a felosztott lap eszköztárán
+show.collapseexpand=Az "Összecsukás"/"Kinyitás" gomb megjelenítése a felosztott lapokon
+tabs.autoHide=A fülek mindig láthatóak a felosztott lapokon
+show.toolbar.navigation.always=A navigációgombok mindig láthatóak a felosztott lapok eszköztárán
+
+show.addbuttons.caption="Felosztás" gomb megjelenítése a lapok szélein
+show.addbuttons.hover.type=Ha az egér kurzora a lap bármelyik széléhez ér:
+show.addbuttons.hover.type.0=A "Felosztás" gomb automatikus megjelenítése
+show.addbuttons.hover.type.1=A "Felosztás" gomb megjelenítése a "Shift" billentyű lenyomásakor
+show.addbuttons.dragdrop=A "Felosztás" gomb megjelenítése link, fájl, stb. áthúzásakor
+addbuttons.size.before="Felosztás" gombok magassága:
+addbuttons.size.after=képpont
+addbuttons.area.before="Felosztás" gombok szélessége:
+addbuttons.area.after=képpont
+
+
+tab.target=Kombináció
+
+search.loadResultsIn=Keresés eredményének megjelenítése
+search.loadResultsIn.0=a fő lapon (Firefox alapértelmezett)
+search.loadResultsIn.1=az aktív mezőben
+search.loadResultsIn.2=a keresés eredményének mezejében
+
+
+tab.menu=Menü
+show.menu=A "Felosztás" menü megjelenítése a menüsorban
+show.context.caption=Lapok helyi menüjének bővítése a következőkkel:
+show.tab.context.split=Ablak felosztása...
+show.tab.context.layout.grid=Lapok mozaikszerű felosztása
+show.tab.context.layout.x=Lapok felosztása függőlegesen
+show.tab.context.layout.y=Lapok felosztása vízszintesen
+show.tab.context.gather=Felosztott ablakok összegyűjtése ide lapokként
+
+
+tab.session=Állapot
+state.restore=Felosztás állapotának mentése
+undo.max.before=Bezárt panel újranyitásának engedélyezése 
+undo.max.after=alkalommal
+undo.clearCache=Gyorstár törlése
+
+
+
+add.button.top.tooltip=Felosztás felülre
+add.button.bottom.tooltip=Felosztás alulra
+add.button.right.tooltip=Felosztás jobbra
+add.button.left.tooltip=Felosztás balra
+
+
+file.removeAll.label=Minden felosztott ablak bezárása
+file.removeAll.accesskey=b
+view.collapseAll.label=Minden felosztott ablak összecsukása
+view.collapseAll.accesskey=l
+view.expandAll.label=Minden felosztott ablak kinyitása
+view.expandAll.accesskey=y
+
+add.label=Ablak felosztása...
+add.top.label=Felülre
+add.bottom.label=Alulra
+add.right.label=Jobbra
+add.left.label=Balra
+
+frame.add.label=Ablak felosztása innen...
+frame.add.top.label=Felülre
+frame.add.bottom.label=Alulra
+frame.add.right.label=Jobbra
+frame.add.left.label=Balra
+
+link.add.label=Megnyitás új felosztott ablakban
+link.add.top.label=Felülre
+link.add.bottom.label=Alulra
+link.add.right.label=Jobbra
+link.add.left.label=Balra
+
+tab.add.label=Lap felosztása...
+tab.add.top.label=Felülre
+tab.add.bottom.label=Alulra
+tab.add.right.label=Jobbra
+tab.add.left.label=Balra
+
+
+
+
+tab.layout.grid.label=Lapok mozaikszerű felosztása
+tab.layout.x.label=Lapok felosztása függőlegesen
+tab.layout.y.label=Lapok felosztása vízszintesen
+tab.gather.label=Felosztott ablakok összegyűjtése ide lapokként
+
+
+
+
+menu.label=Felosztás
+menu.accesskey=L
+menu.removeAll.label=Minden felosztott ablak bezárása
+menu.removeAll.accesskey=b
+menu.undo.label=Panel bezárásának visszavonása
+menu.undo.accesskey=z
+menu.undoList.label=Mostanában bezárt panelek
+menu.undoList.accesskey=p
+menu.collapseAll.label=Minden felosztott ablak összecsukása
+menu.collapseAll.accesskey=l
+menu.expandAll.label=Minden felosztott ablak kinyitása
+menu.expandAll.accesskey=y
+menu.add.label=Jelenlegi lap felosztása...
+menu.add.top.label=Felülre
+menu.add.bottom.label=Alulra
+menu.add.right.label=Jobbra
+menu.add.left.label=Balra
+menu.layout.grid.label=Lapok mozaikszerű felosztása
+menu.layout.grid.accesskey=t
+menu.layout.x.label=Lapok felosztása függőlegesen
+menu.layout.x.accesskey=f
+menu.layout.y.label=Lapok felosztása vízszintesen
+menu.layout.y.accesskey=v
+menu.gather.label=Felosztott ablakok összegyűjtése ide lapokként
+menu.gather.accesskey=G
+menu.syncScroll.label=A főlap és az osztott lapok közötti csúszka-szinkron
+menu.syncScroll.accesskey=s
+
+
+
+multipletab.layout.grid.label=Lapok mozaikszerű felosztása
+multipletab.layout.x.label=Lapok felosztása függőlegesen
+multipletab.layout.y.label=Lapok felosztása vízszintesen
+
+
+
+subbrowser.blank=(Üres)
+subbrowser.loading=Betöltés...
+subbrowser.syncScroll.tooltip=Csúszka-szinkron
+subbrowser.goBack.tooltip=Vissza
+subbrowser.goForward.tooltip=Előre
+subbrowser.reload.tooltip=Újratöltés
+subbrowser.stop.tooltip=Megállítás
+subbrowser.go.label=Indítás
+subbrowser.go.tooltip=Betöltés
+subbrowser.collapse.tooltip=Összecsukás
+subbrowser.expand.tooltip=Kinyitás
+subbrowser.close.tooltip=Bezárás
+
+subbrowser.menu.openNewTab=Új lap
+subbrowser.menu.collapse=Összecsukás
+subbrowser.menu.expand=Kinyitás
+subbrowser.menu.close=Bezárás
+subbrowser.menu.syncScroll=Csúszka-szinkron
+
+
+button.menu.label=Felosztás
+button.menu.tooltip=Böngésző terület felosztása
+button.layout.grid.label=Mozaik
+button.layout.grid.tooltip=Összes lap mozaikszerű felosztása
+button.gather.label=Összegyűjtés
+button.gather.tooltip=Felosztott ablakok összegyűjtése lapokként
+button.collapseAll.label=Összecsukás
+button.collapseAll.tooltip=Minden felosztott ablak összecsukása
+button.expandAll.label=Kinyitás
+button.expandAll.tooltip=Minden felosztott ablak kinyitása
+button.removeAll.label=Mindegyik bezárása
+button.removeAll.tooltip=Minden felosztott ablak bezárása
+
+
+
+privacy.undoCache.label=Fox Splitter által bezárt panelek gyorsítótára
+privacy.undoCache.accesskey=p
