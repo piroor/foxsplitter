@@ -23,59 +23,11 @@ function FoxSplitterWindow(aWindow, aOnInit)
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
 
-	DROP_INDICATOR : 'foxsplitter-drop-indicator',
-
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
 	// too small window isn't shown on Linux
 	MIN_WIDTH : 16,
 	MIN_HEIGHT : 16,
-
-	BASE_STYLESHEET : <![CDATA[
-/*
-		:root[ACTIVE="false"] toolbox,
-		:root[ACTIVE="false"] .treestyletab-tabbar,
-		:root[ACTIVE="false"] .treestyletab-tabbar-ready {
-			visibility: collapse !important;
-		}
-*/
-		.DROP_INDICATOR {
-			background: rgba(0, 0, 0, 0.75);
-			border: 0 solid rgba(255, 255, 255, 0.75);
-			border-radius: 0;
-			line-height: 0;
-			margin: 0;
-			opacity: MIN_OPACITY;
-			padding: 0;
-			-moz-appearance: none;
-			-moz-border-radius: 0;
-			-moz-box-align: center;
-			-moz-box-pack: center;
-			-moz-transition: opacity 0.25s ease-in;
-		}
-
-		.DROP_INDICATOR.top {
-			border-top-width: 1px;
-		}
-		.DROP_INDICATOR.right {
-			border-right-width: 1px;
-		}
-		.DROP_INDICATOR.bottom {
-			border-bottom-width: 1px;
-		}
-		.DROP_INDICATOR.left {
-			border-left-width: 1px;
-		}
-
-		.DROP_INDICATOR label {
-			color: white;
-			line-height: 0;
-			margin: 0;
-			min-height: 0;
-			min-width: 0;
-			padding: 0;
-		}
-	]]>.toString(),
 
 	lastX      : null,
 	lastY      : null,
@@ -87,10 +39,6 @@ FoxSplitterWindow.prototype = {
 	set dropZoneSize(aValue) { return FoxSplitterWindow.dropZoneSize = aValue; },
 	get handleDragWithShiftKey() { return FoxSplitterWindow.handleDragWithShiftKey; },
 	set handleDragWithShiftKey(aValue) { return FoxSplitterWindow.handleDragWithShiftKey = aValue; },
-	get shouldMinimalizeUI() { return FoxSplitterWindow.shouldMinimalizeUI; },
-	set shouldMinimalizeUI(aValue) { return FoxSplitterWindow.shouldMinimalizeUI = aValue; },
-	get shouldAutoHideTabs() { return FoxSplitterWindow.shouldAutoHideTabs; },
-	set shouldAutoHideTabs(aValue) { return FoxSplitterWindow.shouldAutoHideTabs = aValue; },
 	get syncScrollX() { return FoxSplitterWindow.syncScrollX; },
 	set syncScrollX(aValue) { return FoxSplitterWindow.syncScrollX = aValue; },
 	get syncScrollY() { return FoxSplitterWindow.syncScrollY; },
@@ -197,7 +145,7 @@ FoxSplitterWindow.prototype = {
 			}, this);
 		}
 		this.documentElement.setAttribute(this.ACTIVE, this._active);
-		this._updateChromeHidden();
+		this.ui.updateChromeHidden();
 		return this._active;
 	},
 
@@ -251,10 +199,6 @@ FoxSplitterWindow.prototype = {
 		return !this.browser ? [] :
 			Array.slice(this.browser.mTabContainer.childNodes);
 	},
-	get toolbars()
-	{
-		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
-	},
 
 
 	init : function FSW_init(aWindow, aOnInit) 
@@ -267,44 +211,21 @@ FoxSplitterWindow.prototype = {
 		this.scrolling   = 0;
 		this.windowStateUpdating = 0;
 
-		this.active = true;
-
 		this.id = 'window-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
 		FoxSplitterWindow.instances.push(this);
 
-		this._installStyleSheet();
+		this.ui = new FoxSplitterUI(this);
 
 		if (!aOnInit)
 			aWindow.addEventListener('load', this, false);
 
 		aWindow.addEventListener('unload', this, false);
 
-		this.ui = new FoxSplitterUI(this);
+		this.active = true;
 
 		if (aOnInit)
 			this._initAfterLoad();
-	},
-
-	_installStyleSheet : function FSW_installStyleSheet()
-	{
-		if (this._styleSheet)
-			return;
-		var styles = this.BASE_STYLESHEET
-						.replace(/ACTIVE/g, this.ACTIVE)
-						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
-						.replace(/MIN_OPACITY/g, this.MIN_OPACITY);
-		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
-			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
-		this.document.insertBefore(this._styleSheet, this.documentElement);
-	},
-
-	_uninstallStyleSheet : function FSW_uninstallStyleSheet()
-	{
-		if (!this._styleSheet)
-			return;
-		this.document.removeChild(this._styleSheet);
-		delete this._styleSheet;
 	},
 
 	_initAfterLoad : function FSW_initAfterLoad()
@@ -389,26 +310,6 @@ FoxSplitterWindow.prototype = {
 	_needRestored : true,
 	_restored : false,
 
-	_updateChromeHidden : function FSW_updateChromeHidden(aForceRestore)
-	{
-		var hiddenItems = [
-				'menubar',
-//				'toolbar',
-//				'location',
-				'directories',
-//				'status',
-				'extrachrome'
-			].join(' ');
-		if (this._originalChromeHidden === undefined)
-			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
-
-		if (this.active || !this.parent)
-			this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
-		else
-			this.documentElement.setAttribute('chromehidden', hiddenItems);
-	},
-	_originalChromeHidden : undefined,
-
 
 	/**
 	 * This process must be done at the timing between "close/DOMWindowClose"
@@ -443,13 +344,11 @@ FoxSplitterWindow.prototype = {
 			FoxSplitterWindow.raising--;
 		}
 
-		this.ui.destroy();
-		delete this.ui;
-
 		this.hideDropIndicator();
 		this.unwatchWindowState();
-		this.clearGroupedAppearance(aOnQuit);
-		this._updateChromeHidden();
+
+		this.ui.destroy(aOnQuit);
+		delete this.ui;
 
 		var id = this.id;
 
@@ -458,8 +357,6 @@ FoxSplitterWindow.prototype = {
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
 		this.endListen();
-
-		this._uninstallStyleSheet();
 
 		this.window = null;
 
@@ -1668,111 +1565,13 @@ FoxSplitterWindow.prototype = {
 	// called by the parent group
 	setGroupedAppearance : function FSW_setGroupedAppearance()
 	{
-		if (!this._window)
-			return;
-
-		this._updateChromeHidden();
-
-		this._initToolbarState();
-
-		if (
-			this.shouldAutoHideTabs &&
-			this.browser &&
-			this._autoHideWasEnabled === undefined
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				this._autoHideWasEnabled = enabled;
-				if (treeStyleTab.toggleAutoHide && !enabled) {
-					treeStyleTab.toggleAutoHide();
-				}
-			}
-		}
+		if (this.ui)
+			this.ui.setGroupedAppearance();
 	},
-	get _autoHideWasEnabled()
-	{
-		return FoxSplitterWindow._autoHideWasEnabled;
-	},
-	set _autoHideWasEnabled(aValue)
-	{
-		return FoxSplitterWindow._autoHideWasEnabled = aValue;
-	},
-	_initToolbarState : function FSW_initToolbarState()
-	{
-		if (
-			!this._window ||
-			!this.shouldMinimalizeUI ||
-			this._originalToolbarState
-			)
-			return;
-
-		var state = {};
-		this.toolbars.forEach(function(aToolbar, aIndex) {
-			let key = aToolbar.id ? 'id:'+aToolbar.id : 'index:'+aIndex;
-			state[key] = {
-				mode     : aToolbar.getAttribute('mode'),
-				iconsize : aToolbar.getAttribute('iconsize')
-			};
-			aToolbar.setAttribute('mode', 'icons');
-			aToolbar.setAttribute('iconsize', 'small');
-		}, this);
-		this._originalToolbarState = state;
-	},
-
-	// called by the parent group
 	clearGroupedAppearance : function FSW_clearGroupedAppearance(aForce)
 	{
-		if (!this._window)
-			return;
-
-		this._updateChromeHidden();
-
-		this._restoreToolbarState(aForce);
-
-		if (
-			this.shouldAutoHideTabs &&
-			this.browser &&
-			this._autoHideWasEnabled !== undefined &&
-			(
-				aForce ||
-				(
-					!this.parent &&
-					FoxSplitterWindow.instances.length == 1
-				)
-			)
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (treeStyleTab.toggleAutoHide && enabled != this._autoHideWasEnabled)
-					treeStyleTab.toggleAutoHide();
-			}
-			this._autoHideWasEnabled = undefined;
-		}
-	},
-	_restoreToolbarState : function FSW_restoreToolbarState(aForce)
-	{
-		if (!this._window || !this.shouldMinimalizeUI)
-			return;
-
-		var state = this._originalToolbarState;
-		delete this._originalToolbarState;
-		if (state && this._window) {
-			this.toolbars.forEach(function(aToolbar, aIndex) {
-				let key = aToolbar.id ? 'id:'+aToolbar.id : 'index:'+aIndex;
-
-				if (state[key].mode)
-					aToolbar.setAttribute('mode', state[key].mode);
-				else
-					aToolbar.removeAttribute('mode');
-
-				if (state[key].iconsize)
-					aToolbar.setAttribute('iconsize', state[key].iconsize);
-				else
-					aToolbar.removeAttribute('iconsize');
-			}, this);
-		}
+		if (this.ui)
+			this.ui.clearGroupedAppearance(aForce);
 	},
 
 
@@ -2365,8 +2164,6 @@ FoxSplitterWindow.raising = 0;
 
 FoxSplitterWindow.dropZoneSize = prefs.getPref(FoxSplitterConst.domain+'dropZoneSize');
 FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(FoxSplitterConst.domain+'handleDragWithShiftKey');
-FoxSplitterWindow.shouldMinimalizeUI = prefs.getPref(FoxSplitterConst.domain+'shouldMinimalizeUI');
-FoxSplitterWindow.shouldAutoHideTabs = prefs.getPref(FoxSplitterConst.domain+'shouldAutoHideTabs');
 FoxSplitterWindow.syncScrollX = prefs.getPref(FoxSplitterConst.domain+'syncScrollX');
 FoxSplitterWindow.syncScrollY = prefs.getPref(FoxSplitterConst.domain+'syncScrollY');
 FoxSplitterWindow.fixMispositoning = prefs.getPref(FoxSplitterConst.domain+'fixMispositoning');

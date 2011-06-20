@@ -7,6 +7,8 @@ var exports = {
 	STATE             : 'foxsplitter-state',
 	ID                : 'foxsplitter-id',
 
+	DROP_INDICATOR : 'foxsplitter-drop-indicator',
+
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
 
