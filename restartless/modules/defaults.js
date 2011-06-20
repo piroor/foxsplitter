@@ -1,21 +1,20 @@
 var config = require('lib/config');
 
-load('base');
+var FoxSplitterConst = require('const');
+var domain = FoxSplitterConst.domain;
 
-const base = 'extensions.foxsplitter@piro.sakura.ne.jp.';
+config.setDefault(domain+'dropZoneSize', 64);
+config.setDefault(domain+'handleDragWithShiftKey', false);
 
-config.setDefault(base+'dropZoneSize', 64);
-config.setDefault(base+'handleDragWithShiftKey', false);
+config.setDefault(domain+'shouldMinimalizeUI', true);
+config.setDefault(domain+'shouldAutoHideTabs', true);
 
-config.setDefault(base+'shouldMinimalizeUI', true);
-config.setDefault(base+'shouldAutoHideTabs', true);
+config.setDefault(domain+'syncScrollX', true);
+config.setDefault(domain+'syncScrollY', true);
 
-config.setDefault(base+'syncScrollX', true);
-config.setDefault(base+'syncScrollY', true);
+config.setDefault(domain+'fixMispositoning', true);
 
-config.setDefault(base+'fixMispositoning', true);
-
-config.setDefault(base+'importTabsFromClosedSibling', FoxSplitterBase.prototype.IMPORT_ONLY_HIDDEN);
+config.setDefault(domain+'importTabsFromClosedSibling', FoxSplitterConst.IMPORT_ONLY_HIDDEN);
 
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-grid', true);
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-x',    true);

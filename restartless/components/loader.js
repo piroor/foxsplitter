@@ -65,7 +65,7 @@ function load(aURISpec, aExportTargetForImport, aExportTargetForRequire, aRoot)
 			.loadSubScript(aURISpec, ns);
 	}
 	catch(e) {
-		dump('Loader::load('+aURISpec+') failed!\n'+e+'\n');
+		dump('Loader::load('+aURISpec+') failed!\n'+e+'\n'+e.stack+'\n');
 		throw e;
 	}
 	_exportForImport(ns, aExportTargetForImport);

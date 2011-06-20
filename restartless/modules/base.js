@@ -13,46 +13,7 @@ function FoxSplitterBase()
 {
 }
 FoxSplitterBase.prototype = {
-	ATTACHED_POSITION : 'foxsplitter-attached-position',
-	ACTIVE            : 'foxsplitter-active',
-	HOVER             : 'foxsplitter-hover',
-	STATE             : 'foxsplitter-state',
-	ID                : 'foxsplitter-id',
-
-	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
-	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
-
-	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
-	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,
-	STATE_NORMAL     : Ci.nsIDOMChromeWindow.STATE_NORMAL,
-	STATE_FULLSCREEN : Ci.nsIDOMChromeWindow.STATE_FULLSCREEN,
-
-	// compatible to old implementation
-	POSITION_TOP    : (1 << 2),
-	POSITION_RIGHT  : (1 << 1),
-	POSITION_BOTTOM : (1 << 3),
-	POSITION_LEFT   : (1 << 0),
-
-	POSITION_HORIZONTAL : (1 << 0) | (1 << 1),
-	POSITION_VERTICAL   : (1 << 2) | (1 << 3),
-
-	POSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
-	POSITION_INVALID : 0,
-
-	POSITION_OUTSIDE : (1 << 4),
-	POSITION_INSIDE  : (1 << 5),
-
-
-	// compatible to old implementation
-	TILE_MODE_GRID   : 0,
-	TILE_MODE_X_AXIS : (1 << 0),
-	TILE_MODE_Y_AXIS : (1 << 1),
-
-
-	IMPORT_NOTHING     : 0,
-	IMPORT_ALL         : 1,
-	IMPORT_ONLY_HIDDEN : 2,
-
+	__proto__ : require('const'),
 
 	newMemberFactor : 0.5,
 	normalExpandFactor : 1.2,
@@ -623,18 +584,3 @@ FoxSplitterBase.prototype = {
 	}
 };
 
-var prototype = FoxSplitterBase.prototype;
-prototype.positionName = {};
-prototype.positionName[prototype.POSITION_TOP]     = 'top';
-prototype.positionName[prototype.POSITION_RIGHT]   = 'right';
-prototype.positionName[prototype.POSITION_BOTTOM]  = 'bottom';
-prototype.positionName[prototype.POSITION_LEFT]    = 'left';
-prototype.positionName[prototype.POSITION_INSIDE]  = 'in';
-prototype.positionName[prototype.POSITION_OUTSIDE] = 'out';
-prototype.opposite = {};
-prototype.opposite[prototype.POSITION_TOP]     = prototype.POSITION_BOTTOM;
-prototype.opposite[prototype.POSITION_RIGHT]   = prototype.POSITION_LEFT;
-prototype.opposite[prototype.POSITION_BOTTOM]  = prototype.POSITION_TOP;
-prototype.opposite[prototype.POSITION_LEFT]    = prototype.POSITION_RIGHT;
-prototype.opposite[prototype.POSITION_INSIDE]  = prototype.POSITION_OUTSIDE;
-prototype.opposite[prototype.POSITION_OUTSIDE] = prototype.POSITION_INSIDE;

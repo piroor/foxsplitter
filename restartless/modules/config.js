@@ -2,9 +2,8 @@ var config = require('lib/config');
 var bundle = require('lib/locale')
 				.get(resolve('locale/label.properties'));
 
-load('base');
-
-const base = 'extensions.foxsplitter@piro.sakura.ne.jp.';
+var FoxSplitterConst = require('const');
+var domain = FoxSplitterConst.domain;
 
 config.register('about:blank?foxsplitter-config', <>
 
@@ -16,16 +15,16 @@ config.register('about:blank?foxsplitter-config', <>
 		label={bundle.getString('tab.general')}>
 		<preferences>
 			<preference id="dropZoneSize"
-				name={base+'dropZoneSize'}
+				name={domain+'dropZoneSize'}
 				type="int"/>
 			<preference id="handleDragWithShiftKey"
-				name={base+'handleDragWithShiftKey'}
+				name={domain+'handleDragWithShiftKey'}
 				type="bool"/>
 			<preference id="importTabsFromClosedSibling"
-				name={base+'importTabsFromClosedSibling'}
+				name={domain+'importTabsFromClosedSibling'}
 				type="int"/>
 			<preference id="syncScrollX"
-				name={base+'syncScrollX'}
+				name={domain+'syncScrollX'}
 				type="bool"/>
 		</preferences>
 
@@ -53,11 +52,11 @@ config.register('about:blank?foxsplitter-config', <>
 			<caption label={bundle.getString('importTabsFromClosedSibling')}/>
 			<radiogroup orient="vertical"
 				preference="importTabsFromClosedSibling">
-				<radio value={FoxSplitterBase.prototype.IMPORT_NOTHING}
+				<radio value={FoxSplitterConst.IMPORT_NOTHING}
 					label={bundle.getString('importTabsFromClosedSibling.nothing')}/>
-				<radio value={FoxSplitterBase.prototype.IMPORT_ONLY_HIDDEN}
+				<radio value={FoxSplitterConst.IMPORT_ONLY_HIDDEN}
 					label={bundle.getString('importTabsFromClosedSibling.hidden')}/>
-				<radio value={FoxSplitterBase.prototype.IMPORT_ALL}
+				<radio value={FoxSplitterConst.IMPORT_ALL}
 					label={bundle.getString('importTabsFromClosedSibling.all')}/>
 			</radiogroup>
 		</groupbox>
@@ -69,10 +68,10 @@ config.register('about:blank?foxsplitter-config', <>
 		label={bundle.getString('tab.appearance')}>
 		<preferences>
 			<preference id="shouldMinimalizeUI"
-				name={base+'shouldMinimalizeUI'}
+				name={domain+'shouldMinimalizeUI'}
 				type="bool"/>
 			<preference id="shouldAutoHideTabs"
-				name={base+'shouldAutoHideTabs'}
+				name={domain+'shouldAutoHideTabs'}
 				type="bool"/>
 		</preferences>
 

@@ -1,4 +1,5 @@
 load('base');
+load('ui');
 load('lib/jsdeferred');
 load('lib/prefs');
 
@@ -13,7 +14,7 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
 
-const base = 'extensions.foxsplitter@piro.sakura.ne.jp.';
+var FoxSplitterConst = require('const');
 
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -279,6 +280,8 @@ FoxSplitterWindow.prototype = {
 
 		aWindow.addEventListener('unload', this, false);
 
+		this.ui = new FoxSplitterUI(this);
+
 		if (aOnInit)
 			this._initAfterLoad();
 	},
@@ -439,6 +442,9 @@ FoxSplitterWindow.prototype = {
 			delete this._reservedHandleRaised;
 			FoxSplitterWindow.raising--;
 		}
+
+		this.ui.destroy();
+		delete this.ui;
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
@@ -2357,26 +2363,26 @@ FoxSplitterWindow.positioning = 0;
 FoxSplitterWindow.resizing = 0;
 FoxSplitterWindow.raising = 0;
 
-FoxSplitterWindow.dropZoneSize = prefs.getPref(base+'dropZoneSize');
-FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(base+'handleDragWithShiftKey');
-FoxSplitterWindow.shouldMinimalizeUI = prefs.getPref(base+'shouldMinimalizeUI');
-FoxSplitterWindow.shouldAutoHideTabs = prefs.getPref(base+'shouldAutoHideTabs');
-FoxSplitterWindow.syncScrollX = prefs.getPref(base+'syncScrollX');
-FoxSplitterWindow.syncScrollY = prefs.getPref(base+'syncScrollY');
-FoxSplitterWindow.fixMispositoning = prefs.getPref(base+'fixMispositoning');
+FoxSplitterWindow.dropZoneSize = prefs.getPref(FoxSplitterConst.domain+'dropZoneSize');
+FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(FoxSplitterConst.domain+'handleDragWithShiftKey');
+FoxSplitterWindow.shouldMinimalizeUI = prefs.getPref(FoxSplitterConst.domain+'shouldMinimalizeUI');
+FoxSplitterWindow.shouldAutoHideTabs = prefs.getPref(FoxSplitterConst.domain+'shouldAutoHideTabs');
+FoxSplitterWindow.syncScrollX = prefs.getPref(FoxSplitterConst.domain+'syncScrollX');
+FoxSplitterWindow.syncScrollY = prefs.getPref(FoxSplitterConst.domain+'syncScrollY');
+FoxSplitterWindow.fixMispositoning = prefs.getPref(FoxSplitterConst.domain+'fixMispositoning');
 
-FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterWindow.prototype.IMPORT_NOTHING;
-FoxSplitterWindow.IMPORT_ALL         = FoxSplitterWindow.prototype.IMPORT_ALL;
-FoxSplitterWindow.IMPORT_ONLY_HIDDEN = FoxSplitterWindow.prototype.IMPORT_ONLY_HIDDEN;
-FoxSplitterWindow.importTabsFromClosedSibling = prefs.getPref(base+'importTabsFromClosedSibling');
+FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterConst.IMPORT_NOTHING;
+FoxSplitterWindow.IMPORT_ALL         = FoxSplitterConst.IMPORT_ALL;
+FoxSplitterWindow.IMPORT_ONLY_HIDDEN = FoxSplitterConst.IMPORT_ONLY_HIDDEN;
+FoxSplitterWindow.importTabsFromClosedSibling = prefs.getPref(FoxSplitterConst.domain+'importTabsFromClosedSibling');
 
 var prefListener = {
-		domain : base,
+		domain : FoxSplitterConst.domain,
 		observe : function FSWPL_observe(aSubject, aTopic, aData) {
 			if (aTopic != 'nsPref:changed')
 				return;
 
-			var prefName = aData.replace(base, '');
+			var prefName = aData.replace(FoxSplitterConst.domain, '');
 			if (prefName in FoxSplitterWindow)
 				FoxSplitterWindow[prefName] = prefs.getPref(aData);
 		}
@@ -2389,4 +2395,5 @@ function shutdown()
 	prefs.removePrefListener(prefListener);
 	prefs = undefined;
 	FoxSplitterBase.prototype.memberClass = undefined;
+	FoxSplitterConst = undefined;
 }
