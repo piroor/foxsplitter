@@ -52,7 +52,11 @@ tab.appearance=Appearance
 
 shouldMinimalizeUI=Minimalize toolbar buttons in split windows
 shouldAutoHideTabs=Hide tab bar automatically in split windows (*require other addons which provide such feature)
-
+hiddenUIInInactiveWindow=Hide following UIs to make the browsing area in inactive windows wide
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Toolbar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.addonbar=Add-on Bar (Status Bar)
 
 
 

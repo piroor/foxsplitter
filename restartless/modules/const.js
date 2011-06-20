@@ -41,7 +41,13 @@ var exports = {
 
 	IMPORT_NOTHING     : 0,
 	IMPORT_ALL         : 1,
-	IMPORT_ONLY_HIDDEN : 2
+	IMPORT_ONLY_HIDDEN : 2,
+
+
+	HIDE_MENUBAR   : (1 << 0),
+	HIDE_TOOLBAR   : (1 << 1),
+	HIDE_BOOKMARKS : (1 << 2),
+	HIDE_ADDONBAR  : (1 << 3)
 };
 
 exports.positionName = {};

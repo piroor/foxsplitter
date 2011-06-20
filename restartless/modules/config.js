@@ -65,7 +65,8 @@ config.register('about:blank?foxsplitter-config', <>
 	</prefpane>
 
 	<prefpane id="prefpane-appearance"
-		label={bundle.getString('tab.appearance')}>
+		label={bundle.getString('tab.appearance')}
+		onpaneload="initHiddenUIInInactiveWindowChecks()">
 		<preferences>
 			<preference id="shouldMinimalizeUI"
 				name={domain+'shouldMinimalizeUI'}
@@ -73,14 +74,57 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldAutoHideTabs"
 				name={domain+'shouldAutoHideTabs'}
 				type="bool"/>
+			<preference id="updateHiddenUIInInactiveWindow"
+				name={domain+'updateHiddenUIInInactiveWindow'}
+				type="int"/>
 		</preferences>
 
 		<checkbox label={bundle.getString('shouldMinimalizeUI')}
 			preference="shouldMinimalizeUI"/>
 		<checkbox label={bundle.getString('shouldAutoHideTabs')}
 			preference="shouldAutoHideTabs"/>
+		<groupbox id="updateHiddenUIInInactiveWindow-groupbox"
+			orient="horizontal" oncommand="onChangeHiddenUIInInactiveWindow()">
+			<caption label={bundle.getString('hiddenUIInInactiveWindow')}/>
+			<vbox>
+				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.menubar')}
+					value={FoxSplitterConst.HIDE_MENUBAR}/>
+				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.toolbar')}
+					value={FoxSplitterConst.HIDE_TOOLBAR}/>
+			</vbox>
+			<vbox>
+				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.bookmarks')}
+					value={FoxSplitterConst.HIDE_BOOKMARKS}/>
+				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.addonbar')}
+					value={FoxSplitterConst.HIDE_ADDONBAR}/>
+			</vbox>
+		</groupbox>
 	</prefpane>
 
+	<script type="application/javascript"><![CDATA[
+		var hiddenUIInInactiveWindow;
+		var updateHiddenUIInInactiveWindowGroupbox;
+		function initHiddenUIInInactiveWindowChecks() {
+			hiddenUIInInactiveWindow = document.getElementById('hiddenUIInInactiveWindow');
+			updateHiddenUIInInactiveWindowGroupbox = document.getElementById('updateHiddenUIInInactiveWindow-groupbox');
+			var prefValue = parseInt(hiddenUIInInactiveWindow.value);
+			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectAll('checkbox[value]'), function(aCheckbox) {
+				var value = parseInt(aCheckbox.getAttribute('value'));
+				aCheckbox.checked = !!(prefValue & value);
+			});
+		}
+		function onChangeHiddenUIInInactiveWindow() {
+			var pref = hiddenUIInInactiveWindow;
+			var prefValue = parseInt(pref.value);
+			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectAll('checkbox[value]'), function(aCheckbox) {
+				var value = parseInt(aCheckbox.getAttribute('value'));
+				if (prefValue & value) prefValue ^= value;
+				if (aCheckbox.checked)
+					prefValue |= value;
+			});
+			pref.value = prefValue;
+		}
+	]]></script>
 </prefwindow>
 
 </>);

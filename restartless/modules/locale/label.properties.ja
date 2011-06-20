@@ -53,6 +53,13 @@ tab.appearance=外観
 
 shouldMinimalizeUI=分割後のウィンドウではツールバーのボタンを小さく表示する
 shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に隠す（※そのような機能を提供する他のアドオンが必要です）
+hiddenUIInInactiveWindow=アクティブなウィンドウ以外では以下のUI要素を隠してブラウズ領域を広くする
+hiddenUIInInactiveWindow.menubar=メニューバー
+hiddenUIInInactiveWindow.toolbar=ツールバー
+hiddenUIInInactiveWindow.bookmarks=ブックマークツールバー
+hiddenUIInInactiveWindow.addonbar=アドオンバー（ステータスバー）
+
+
 
 
 
