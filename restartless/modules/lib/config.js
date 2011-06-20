@@ -111,6 +111,11 @@ var config = {
 	 *   A source of a XUL document for a configuration dialog defined as an
 	 *   E4X object (XML object). Typical headers (<?xml version="1.0"?> and
 	 *   an <?xml-stylesheet?> for the default theme) are automatically added.
+	 *   Note: Any <script/> elements must be written as XHTML script elements.
+	 *   (ex. <script xmlns="http://www.w3.org/1999/xhtml" ...> )
+	 *   If you put XUL <script/>s in your dialog, they won't be evaluated
+	 *   because they are inserted to the document dynamically. Only XHTML
+	 *   script elements are evaluated by dynamic insertion.
 	 */
 	register : function(aURI, aXML)
 	{
