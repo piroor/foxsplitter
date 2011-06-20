@@ -56,7 +56,7 @@ shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に�
 shouldAutoHideTabs.note=（※そのような機能を提供する他のアドオンが必要です）
 hiddenUIInInactiveWindow=アクティブなウィンドウ以外では以下のUI要素を隠してブラウズ領域を広くする
 hiddenUIInInactiveWindow.menubar=メニューバー
-hiddenUIInInactiveWindow.toolbar=ツールバー
+hiddenUIInInactiveWindow.toolbar=ナビゲーションツールバー
 hiddenUIInInactiveWindow.bookmarks=ブックマークツールバー
 hiddenUIInInactiveWindow.addonbar=アドオンバー（ステータスバー）
 

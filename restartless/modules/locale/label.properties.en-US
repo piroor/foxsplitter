@@ -14,7 +14,7 @@
 # The Original Code is the Fox Splitter (formerly Split Browser).
 # 
 # The Initial Developer of the Original Code is SHIMODA Hiroshi.
-# Portions created by the Initial Developer are Copyright (C) 2007-2009
+# Portions created by the Initial Developer are Copyright (C) 2007-2011
 # the Initial Developer. All Rights Reserved.
 # 
 # Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
@@ -55,7 +55,7 @@ shouldAutoHideTabs=Hide tab bar automatically in split windows
 shouldAutoHideTabs.note=(*require other addons which provide such feature)
 hiddenUIInInactiveWindow=Hide following UIs to make the browsing area in inactive windows wide
 hiddenUIInInactiveWindow.menubar=Menu Bar
-hiddenUIInInactiveWindow.toolbar=Toolbar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar
 hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
 hiddenUIInInactiveWindow.addonbar=Add-on Bar (Status Bar)
 

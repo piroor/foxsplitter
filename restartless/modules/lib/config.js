@@ -53,7 +53,7 @@ var config = {
 
 		var source = Cc['@mozilla.org/variant;1']
 						.createInstance(Ci.nsIWritableVariant);
-		source.setFromVariant(current.source);
+		source.setFromVariant([this._builder.toSource(), current.source]);
 
 		if (aOwner) {
 			let parent = aOwner.top
@@ -117,7 +117,7 @@ var config = {
 		var root = aXML.copy();
 		delete root.*;
 		var attributes = root.attributes();
-		for each (var attribute in attributes)
+		for each (let attribute in attributes)
 		{
 			delete root['@'+attribute.name()];
 		}
@@ -140,15 +140,18 @@ var config = {
 		XML.setSettings(originalSettings);
 	},
 	_loader : <![CDATA[
-		var d = document;
-		var e = d.documentElement;
-		var r = d.createRange();
-		r.selectNode(e);
-		d.replaceChild(r.createContextualFragment(arguments[0]), e);
-		r.detach();
+		eval('f='+arguments[0][0]);
+		f(document, arguments[0][1]);
 	]]>.toString()
-		.replace(/\/\/.*$/gm, '')
 		.replace(/\s\s+/g, ' '),
+	_builder : function(aDocument, aSource)
+	{
+		var root = aDocument.documentElement;
+		var range = aDocument.createRange();
+		range.selectNode(root);
+		aDocument.replaceChild(range.createContextualFragment(aSource), root);
+		range.detach();
+	},
 
 	/**
 	 * Unregisters a registeed dialog for the given URI.

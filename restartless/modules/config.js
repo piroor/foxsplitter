@@ -5,6 +5,31 @@ var bundle = require('lib/locale')
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
+var script = (function() {
+		var hiddenUIInInactiveWindow;
+		var updateHiddenUIInInactiveWindowGroupbox;
+		function initHiddenUIInInactiveWindowChecks() {
+			hiddenUIInInactiveWindow = document.getElementById('hiddenUIInInactiveWindow');
+			updateHiddenUIInInactiveWindowGroupbox = document.getElementById('updateHiddenUIInInactiveWindow-groupbox');
+			var prefValue = parseInt(hiddenUIInInactiveWindow.value);
+			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
+				var value = parseInt(aCheckbox.getAttribute('value'));
+				aCheckbox.checked = !!(prefValue & value);
+			});
+		}
+		function onChangeHiddenUIInInactiveWindow() {
+			var pref = hiddenUIInInactiveWindow;
+			var prefValue = parseInt(pref.value);
+			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
+				var value = parseInt(aCheckbox.getAttribute('value'));
+				if (prefValue & value) prefValue ^= value;
+				if (aCheckbox.checked)
+					prefValue |= value;
+			});
+			pref.value = prefValue;
+		}
+	}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '');
+
 config.register('about:blank?foxsplitter-config', <>
 
 <prefwindow id="foxsplitter-config"
@@ -67,7 +92,7 @@ config.register('about:blank?foxsplitter-config', <>
 
 	<prefpane id="prefpane-appearance"
 		label={bundle.getString('tab.appearance')}
-		onpaneload="initHiddenUIInInactiveWindowChecks()">
+		onpaneload="initHiddenUIInInactiveWindowChecks();">
 		<preferences>
 			<preference id="shouldMinimalizeUI"
 				name={domain+'shouldMinimalizeUI'}
@@ -75,8 +100,8 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldAutoHideTabs"
 				name={domain+'shouldAutoHideTabs'}
 				type="bool"/>
-			<preference id="updateHiddenUIInInactiveWindow"
-				name={domain+'updateHiddenUIInInactiveWindow'}
+			<preference id="hiddenUIInInactiveWindow"
+				name={domain+'hiddenUIInInactiveWindow'}
 				type="int"/>
 		</preferences>
 
@@ -108,30 +133,10 @@ config.register('about:blank?foxsplitter-config', <>
 		</groupbox>
 	</prefpane>
 
-	<script type="application/javascript"><![CDATA[
-		var hiddenUIInInactiveWindow;
-		var updateHiddenUIInInactiveWindowGroupbox;
-		function initHiddenUIInInactiveWindowChecks() {
-			hiddenUIInInactiveWindow = document.getElementById('hiddenUIInInactiveWindow');
-			updateHiddenUIInInactiveWindowGroupbox = document.getElementById('updateHiddenUIInInactiveWindow-groupbox');
-			var prefValue = parseInt(hiddenUIInInactiveWindow.value);
-			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectAll('checkbox[value]'), function(aCheckbox) {
-				var value = parseInt(aCheckbox.getAttribute('value'));
-				aCheckbox.checked = !!(prefValue & value);
-			});
-		}
-		function onChangeHiddenUIInInactiveWindow() {
-			var pref = hiddenUIInInactiveWindow;
-			var prefValue = parseInt(pref.value);
-			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectAll('checkbox[value]'), function(aCheckbox) {
-				var value = parseInt(aCheckbox.getAttribute('value'));
-				if (prefValue & value) prefValue ^= value;
-				if (aCheckbox.checked)
-					prefValue |= value;
-			});
-			pref.value = prefValue;
-		}
-	]]></script>
+	<!-- This must be created as an XHTML script element, not XUL one, because
+	     XUL script elements are not evaluated when they are dynamically inserted. -->
+	<script type="application/javascript"
+		xmlns="http://www.w3.org/1999/xhtml">{script}</script>
 </prefwindow>
 
 </>);
