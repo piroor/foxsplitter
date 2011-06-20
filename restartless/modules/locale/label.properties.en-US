@@ -37,21 +37,21 @@ title=Fox Splitter Configuration
 
 tab.general=General
 
-syncScrollX=Enable synchronized scroll for horizontal scrolls
+dropZoneSize.before=Split the window if tabs and links are dropped on the area
+dropZoneSize.after=pixels from each window edge
 handleDragWithShiftKey=Behavior about drag and drop of tabs and links onto window edges
 handleDragWithShiftKey.false=Split the window by normal drag
 handleDragWithShiftKey.true=Split the window only by Shift-drag
-dropZoneSize.before=Split the window if tabs and links are dropped on the area
-dropZoneSize.after=pixels from each window edge
 importTabsFromClosedSibling=When a split window is closed
 importTabsFromClosedSibling.nothing=Simply close the window
 importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
-importTabsFromClosedSibling.hidden=Move all tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
+syncScrollX=Enable synchronized scroll for horizontal scrolls
 
 tab.appearance=Appearance
 
 shouldMinimalizeUI=Minimalize toolbar buttons in split windows
-shouldAutoHideTabs=Hide tab bar automatically in split windows (*for Tree Style Tab or other addons)
+shouldAutoHideTabs=Hide tab bar automatically in split windows (*require other addons which provide such feature)
 
 
 
@@ -70,8 +70,6 @@ syncScroll.mainArea=Synchronously scroll the main area and split panes which are
 syncScroll.horizontal.true=Both vertically and horizontally
 syncScroll.horizontal.false=Only vertically
 
-
-tab.appearance=
 
 show.toolbar.always=Always show toolbar in split panes
 show.syncScroll=Show "Synchronize Scroll" toolbar button in split panes
