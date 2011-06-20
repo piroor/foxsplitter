@@ -1,5 +1,6 @@
 load('lib/jsdeferred');
 load('lib/prefs');
+load('lib/ToolbarItem');
 load('base');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterUI'];
@@ -100,11 +101,24 @@ FoxSplitterUI.prototype = {
 		FoxSplitterUI.instances.push(this);
 
 		this._installStyleSheet();
+
+		var button = this.document.createElement('toolbarbutton');
+		button.setAttribute('id', 'foxsplitter-test');
+		button.setAttribute('label', 'test');
+		button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
+		this.button = new ToolbarItem({
+						node    : button,
+						toolbar : 'nav-bar'
+					});
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
+
+		this.button.destroy();
+		delete this.button;
+
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
