@@ -46,8 +46,10 @@ var exports = {
 
 	HIDE_MENUBAR   : (1 << 0),
 	HIDE_TOOLBAR   : (1 << 1),
-	HIDE_BOOKMARKS : (1 << 2),
-	HIDE_ADDONBAR  : (1 << 3)
+	HIDE_LOCATION  : (1 << 2),
+	HIDE_BOOKMARKS : (1 << 3),
+	HIDE_STATUS    : (1 << 4),
+	HIDE_EXTRA     : (1 << 5)
 };
 
 exports.positionName = {};

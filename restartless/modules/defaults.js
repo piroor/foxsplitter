@@ -15,7 +15,7 @@ config.setDefault(domain+'syncScrollY', true);
 config.setDefault(domain+'fixMispositoning', true);
 
 config.setDefault(domain+'importTabsFromClosedSibling', FoxSplitterConst.IMPORT_ONLY_HIDDEN);
-config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUBAR | FoxSplitterConst.HIDE_BOOKMARKS);
+config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUBAR | FoxSplitterConst.HIDE_BOOKMARKS | FoxSplitterConst.HIDE_EXTRA);
 
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-grid', true);
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-x',    true);

@@ -14,7 +14,7 @@ var script = (function() {
 			var prefValue = parseInt(hiddenUIInInactiveWindow.value);
 			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
 				var value = parseInt(aCheckbox.getAttribute('value'));
-				aCheckbox.checked = !!(prefValue & value);
+				aCheckbox.checked = !(prefValue & value);
 			});
 		}
 		function onChangeHiddenUIInInactiveWindow() {
@@ -23,7 +23,7 @@ var script = (function() {
 			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
 				var value = parseInt(aCheckbox.getAttribute('value'));
 				if (prefValue & value) prefValue ^= value;
-				if (aCheckbox.checked)
+				if (!aCheckbox.checked)
 					prefValue |= value;
 			});
 			pref.value = prefValue;
@@ -116,20 +116,28 @@ config.register('about:blank?foxsplitter-config', <>
 				control="shouldAutoHideTabs-checkbox"/>
 		</hbox>
 		<groupbox id="updateHiddenUIInInactiveWindow-groupbox"
-			orient="horizontal" oncommand="onChangeHiddenUIInInactiveWindow()">
+			orient="vertical"
+			oncommand="onChangeHiddenUIInInactiveWindow()">
 			<caption label={bundle.getString('hiddenUIInInactiveWindow')}/>
-			<vbox>
-				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.menubar')}
-					value={FoxSplitterConst.HIDE_MENUBAR}/>
-				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.toolbar')}
-					value={FoxSplitterConst.HIDE_TOOLBAR}/>
-			</vbox>
-			<vbox>
-				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.bookmarks')}
-					value={FoxSplitterConst.HIDE_BOOKMARKS}/>
-				<checkbox label={bundle.getString('hiddenUIInInactiveWindow.addonbar')}
-					value={FoxSplitterConst.HIDE_ADDONBAR}/>
-			</vbox>
+			<description value={bundle.getString('hiddenUIInInactiveWindow.note')}/>
+			<hbox>
+				<vbox>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.menubar')}
+						value={FoxSplitterConst.HIDE_MENUBAR}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.toolbar')}
+						value={FoxSplitterConst.HIDE_TOOLBAR}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.location')}
+						value={FoxSplitterConst.HIDE_LOCATION}/>
+				</vbox>
+				<vbox>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.bookmarks')}
+						value={FoxSplitterConst.HIDE_BOOKMARKS}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.status')}
+						value={FoxSplitterConst.HIDE_STATUS}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.extra')}
+						value={FoxSplitterConst.HIDE_EXTRA}/>
+				</vbox>
+			</hbox>
 		</groupbox>
 	</prefpane>
 

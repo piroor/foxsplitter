@@ -89,6 +89,8 @@ FoxSplitterUI.prototype = {
 	set shouldMinimalizeUI(aValue) { return FoxSplitterUI.shouldMinimalizeUI = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
+	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
+	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
 
 
 	init : function FSUI_init(aFSWindow)
@@ -136,14 +138,20 @@ FoxSplitterUI.prototype = {
 
 	updateChromeHidden : function FSUI_updateChromeHidden(aForceRestore)
 	{
-		var hiddenItems = [
-				'menubar',
-//				'toolbar',
-//				'location',
-				'directories',
-//				'status',
-				'extrachrome'
-			].join(' ');
+		var hiddenItems = [];
+		if (this.hiddenUIInInactiveWindow & this.HIDE_MENUBAR)
+			hiddenItems.push('menubar');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_TOOLBAR)
+			hiddenItems.push('toolbar');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_BOOKMARKS)
+			hiddenItems.push('directories');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_STATUS)
+			hiddenItems.push('status');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA)
+			hiddenItems.push('extrachrome');
+//		'location',
+		hiddenItems = hiddenItems.join(' ');
+
 		if (this._originalChromeHidden === undefined)
 			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
 
@@ -271,6 +279,7 @@ FoxSplitterUI.instances = [];
 
 FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
+FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 
 var prefListener = {
 		domain : domain,
