@@ -28,13 +28,14 @@ config.register('about:blank?foxsplitter-config', <>
 				type="bool"/>
 		</preferences>
 
+		<label value={bundle.getString('dropZoneSize.before')}
+			control="dropZoneSize-textbox"/>
 		<hbox align="center">
-			<label value={bundle.getString('dropZoneSize.before')}
-				control="dropZoneSize-textbox"/>
+			<spacer style="width:2em;"/>
 			<textbox id="dropZoneSize-textbox"
 				preference="dropZoneSize"
 				type="number"
-				size="4"
+				size="3"
 				min="0"
 				increment="1"/>
 			<label value={bundle.getString('dropZoneSize.after')}
@@ -82,7 +83,13 @@ config.register('about:blank?foxsplitter-config', <>
 		<checkbox label={bundle.getString('shouldMinimalizeUI')}
 			preference="shouldMinimalizeUI"/>
 		<checkbox label={bundle.getString('shouldAutoHideTabs')}
+			id="shouldAutoHideTabs-checkbox"
 			preference="shouldAutoHideTabs"/>
+		<hbox>
+			<spacer style="width:2em;"/>
+			<label value={bundle.getString('shouldAutoHideTabs.note')}
+				control="shouldAutoHideTabs-checkbox"/>
+		</hbox>
 		<groupbox id="updateHiddenUIInInactiveWindow-groupbox"
 			orient="horizontal" oncommand="onChangeHiddenUIInInactiveWindow()">
 			<caption label={bundle.getString('hiddenUIInInactiveWindow')}/>
