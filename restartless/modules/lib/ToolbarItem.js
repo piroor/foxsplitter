@@ -114,7 +114,7 @@ ToolbarItem.prototype = {
 		var toolbar = this.getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.node.id.quote()+')]');
 		if (toolbar) { // when inserted into another toolbar
 			if (!this.inserted) {
-				let items = toolbar.currentSet.split(',');
+				let items = (toolbar.getAttribute('currentset') || '').split(',');
 				let index = items.indexOf(this.node.id) + 1;
 				if (index < items.length)
 					toolbar.insertBefore(this.node, this.document.getElementById(items[index]));
@@ -123,7 +123,7 @@ ToolbarItem.prototype = {
 		}
 
 		toolbar = this.document.getElementById(this.definition.toolbar);
-		if (!toolbar || !toolbar.toolbox )
+		if (!toolbar || !toolbar.toolbox)
 			return;
 
 		const Prefs = Cc['@mozilla.org/preferences;1']
@@ -141,22 +141,22 @@ ToolbarItem.prototype = {
 			let palette = toolbar.toolbox.palette || this.getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbar.toolbox);
 			if (palette)
 				palette.appendChild(this.node);
-			return;
 		}
+		else {
+			let refNode = this.getNodeByXPath('descendant::*[@id="fullscreenflex"]') ||
+						this.getNodeByXPath('descendant::*[@id="window-controls"]');
+			toolbar.insertBefore(this.node, refNode);
 
-		var refNode = this.getNodeByXPath('descendant::*[@id="fullscreenflex"]') ||
-					this.getNodeByXPath('descendant::*[@id="window-controls"]');
-		toolbar.insertBefore(this.node, refNode);
+			let currentset = toolbar.currentSet.replace(/__empty/, '');
+			currentset = currentset ? currentset.split(',') : [] ;
+			currentset.push(this.node.id);
+			currentset = currentset.join(',');
+			toolbar.currentSet = currentset;
+			toolbar.setAttribute('currentset', currentset);
+			this.document.persist(toolbar.id, 'currentset');
 
-		var currentset = toolbar.currentSet.replace(/__empty/, '');
-		currentset = currentset ? currentset.split(',') : [] ;
-		currentset.push(this.node.id);
-		currentset = currentset.join(',');
-		toolbar.currentSet = currentset;
-		toolbar.setAttribute('currentset', currentset);
-		this.document.persist(toolbar.id, 'currentset');
-
-		Prefs.setBoolPref(key, true);
+			Prefs.setBoolPref(key, true);
+		}
 	},
 
 	getNodeByXPath : function(aExpression, aContext)
