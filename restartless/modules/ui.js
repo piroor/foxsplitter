@@ -19,13 +19,12 @@ FoxSplitterUI.prototype = {
 	__proto__ : FoxSplitterConst,
 
 	BASE_STYLESHEET : <![CDATA[
-/*
-		:root[ACTIVE="false"] toolbox,
-		:root[ACTIVE="false"] .treestyletab-tabbar,
-		:root[ACTIVE="false"] .treestyletab-tabbar-ready {
-			visibility: collapse !important;
+		:root[chromehidden~="toolbar-home-button"] #home-button,
+		:root[chromehidden~="toolbar-bookmarks-menu-button"] #bookmarks-menu-button-container,
+		:root[chromehidden~="toolbar-search"] #search-container {
+			visibility: collapse;
 		}
-*/
+
 		.DROP_INDICATOR {
 			background: rgba(0, 0, 0, 0.75);
 			border: 0 solid rgba(255, 255, 255, 0.75);
@@ -298,9 +297,8 @@ FoxSplitterUI.prototype = {
 		var b = this.browser;
 		var tabs = owner.selectedTabs;
 		var selected = tabs.length;
-		if (!tabs.length) {
+		if (!tabs.length)
 			tabs.push(b.selectedTab);
-		}
 
 		switch (aEvent.target.id)
 		{
@@ -399,17 +397,28 @@ FoxSplitterUI.prototype = {
 	updateChromeHidden : function FSUI_updateChromeHidden(aForceRestore)
 	{
 		var hiddenItems = [];
+
 		if (this.hiddenUIInInactiveWindow & this.HIDE_MENUBAR)
 			hiddenItems.push('menubar');
 		if (this.hiddenUIInInactiveWindow & this.HIDE_TOOLBAR)
 			hiddenItems.push('toolbar');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_LOCATION)
+			hiddenItems.push('location');
 		if (this.hiddenUIInInactiveWindow & this.HIDE_BOOKMARKS)
 			hiddenItems.push('directories');
 		if (this.hiddenUIInInactiveWindow & this.HIDE_STATUS)
 			hiddenItems.push('status');
 		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA)
 			hiddenItems.push('extrachrome');
-//		'location',
+
+		// extra hidden items controled by Fox Splitter
+		if (this.hiddenUIInInactiveWindow & this.HIDE_HOME)
+			hiddenItems.push('toolbar-home-button');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_BOOKMARKS_BUTTON)
+			hiddenItems.push('toolbar-bookmarks-menu-button');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_SEARCH)
+			hiddenItems.push('toolbar-search');
+
 		hiddenItems = hiddenItems.join(' ');
 
 		if (this._originalChromeHidden === undefined)
