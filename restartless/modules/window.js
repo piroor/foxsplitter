@@ -23,7 +23,19 @@ FoxSplitterWindow.prototype = {
 	lastY      : null,
 	lastWidth  : null,
 	lastHeight : null,
-	syncScroll : false,
+
+	_syncScroll : false,
+	get syncScroll()
+	{
+		return this._syncScroll;
+	},
+	set syncScroll(aValue)
+	{
+		this._syncScroll = !!aValue;
+		if (this.ui)
+			this.ui.onSyncScrollStateChange();
+		return this._syncScroll;
+	},
 
 	get shouldDuplicateOnDrop() { return FoxSplitterWindow.shouldDuplicateOnDrop; },
 	set shouldDuplicateOnDrop(aValue) { return FoxSplitterWindow.shouldDuplicateOnDrop = aValue; },
@@ -256,6 +268,8 @@ FoxSplitterWindow.prototype = {
 		if (this._restored || !this._needRestored)
 			return false;
 
+		this.syncScroll = this.getWindowValue(this.SYNC_SCROLL);
+
 		var lastState = this._lastState || this.getWindowValue(this.STATE);
 		if (!lastState)
 			return false;
@@ -344,6 +358,8 @@ FoxSplitterWindow.prototype = {
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
+
+		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
 		this.ui.destroy(aOnQuit);
 		delete this.ui;

@@ -10,6 +10,7 @@ var exports = {
 	HOVER             : 'foxsplitter-hover',
 	STATE             : 'foxsplitter-state',
 	ID                : 'foxsplitter-id',
+	SYNC_SCROLL       : 'foxsplitter-syncScroll',
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',

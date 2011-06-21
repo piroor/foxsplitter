@@ -220,7 +220,7 @@ FoxSplitterUI.prototype = {
 			toolbar,
 			{
 				onInit : function() {
-					self._updateSyncScrollCheckState();
+					self.onSyncScrollStateChange();
 				},
 				onDestroy : function() {
 				}
@@ -240,7 +240,7 @@ FoxSplitterUI.prototype = {
 			toolbar,
 			{
 				onInit : function() {
-					self._updateSyncScrollCheckState();
+					self.onSyncScrollStateChange();
 				},
 				onDestroy : function() {
 				}
@@ -270,6 +270,7 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-menubutton-split-top':
+
 				return owner.splitTabsTo(tabs, this.POSITION_TOP);
 			case 'foxsplitter-general-menubutton-split-right':
 				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
@@ -302,7 +303,7 @@ FoxSplitterUI.prototype = {
 			case 'foxsplitter-general-menubutton-syncScroll':
 			case 'foxsplitter-syncScroll-button':
 				owner.syncScroll = !owner.syncScroll;
-				this._updateSyncScrollCheckState();
+				this.onSyncScrollStateChange();
 				return;
 		}
 	},
@@ -327,7 +328,7 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
-	_updateSyncScrollCheckState : function FSUI_updateSyncScrollCheckState()
+	onSyncScrollStateChange : function FSUI_onSyncScrollStateChange()
 	{
 		var menuitem = this.document.getElementById('foxsplitter-general-menubutton-syncScroll');
 		var button = this.document.getElementById('foxsplitter-syncScroll-button');
