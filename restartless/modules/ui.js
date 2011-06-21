@@ -91,6 +91,8 @@ FoxSplitterUI.prototype = {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
 			-moz-image-region: rect(0 16px 16px 0);
 		}
+		.MENU_ITEM.split                         { -moz-image-region: rect(0 16px 16px 0); }
+		.MENU_ITEM.split[disabled="true"]        { -moz-image-region: rect(16px 16px 32px 0); }
 		.MENU_ITEM.closeAll                      { -moz-image-region: rect(0 32px 16px 16px); }
 		.MENU_ITEM.closeAll[disabled="true"]     { -moz-image-region: rect(16px 32px 32px 16px); }
 		.MENU_ITEM.gather                        { -moz-image-region: rect(0 48px 16px 32px); }
@@ -309,8 +311,12 @@ FoxSplitterUI.prototype = {
 
 	_initMenuItems : function FSUI_initMenuItems()
 	{
-		var contextLinkItems = ToolbarItem.toDOMDocumentFragment(<>
+		var iconicClass = 'menuitem-iconic ' + this.MENU_ITEM+' ';
+
+		var popup = this.document.getElementById('contentAreaContextMenu');
+		this.contextLinkItem = ToolbarItem.toDOMDocumentFragment(<>
 				<menu id="foxsplitter-context-link-split"
+					class={iconicClass+'split'}
 					label={bundle.getString('ui.split.link.label')}
 					accesskey={bundle.getString('ui.split.link.accesskey')}
 					oncommand="FoxSplitter.ui.onCommand(event);">
@@ -333,10 +339,13 @@ FoxSplitterUI.prototype = {
 							accesskey={bundle.getString('ui.split.left.accesskey')}/>
 					</menupopup>
 				</menu>
-			</>, this.document);
+			</>, popup).querySelector('*');
+		popup.insertBefore(this.contextLinkItem, this.document.getElementById('context-openlink').nextSibling);
 
-		var contextFrameItems = ToolbarItem.toDOMDocumentFragment(<>
+		popup = popup.querySelector('#frame menupopup');
+		this.contextFrameItem = ToolbarItem.toDOMDocumentFragment(<>
 				<menu id="foxsplitter-context-frame-split"
+					class={iconicClass+'split'}
 					label={bundle.getString('ui.split.frame.label')}
 					accesskey={bundle.getString('ui.split.frame.accesskey')}
 					oncommand="FoxSplitter.ui.onCommand(event);">
@@ -359,11 +368,16 @@ FoxSplitterUI.prototype = {
 							accesskey={bundle.getString('ui.split.left.accesskey')}/>
 					</menupopup>
 				</menu>
-			</>, this.document);
+			</>, popup).querySelector('*');
+		popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
 	},
 
 	_destroyMenuItems : function FSUI_destroyMenuItems()
 	{
+		if (this.contextLinkItem.parentNode)
+			this.contextLinkItem.parentNode.removeChild(this.contextLinkItem);
+		if (this.contextFrameItem.parentNode)
+			this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
 	},
 
 
