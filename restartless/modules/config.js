@@ -156,6 +156,8 @@ config.register('about:blank?foxsplitter-config', <>
 						value={FoxSplitterConst.HIDE_TOOLBAR}/>
 					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.location')}
 						value={FoxSplitterConst.HIDE_LOCATION}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.non-navigation')}
+						value={FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS}/>
 				</vbox>
 				<vbox>
 					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.bookmarks')}

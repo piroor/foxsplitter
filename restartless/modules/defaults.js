@@ -21,9 +21,7 @@ config.setDefault(domain+'importTabsFromClosedSibling', FoxSplitterConst.IMPORT_
 config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUBAR |
                                                      FoxSplitterConst.HIDE_BOOKMARKS |
                                                      FoxSplitterConst.HIDE_EXTRA |
-                                                     FoxSplitterConst.HIDE_HOME |
-                                                     FoxSplitterConst.HIDE_BOOKMARKS_BUTTON |
-                                                     FoxSplitterConst.HIDE_SEARCH);
+                                                     FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS);
 
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-grid', true);
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-x',    true);

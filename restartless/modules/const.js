@@ -58,9 +58,7 @@ var exports = {
 	HIDE_BOOKMARKS : (1 << 3),
 	HIDE_STATUS    : (1 << 4),
 	HIDE_EXTRA     : (1 << 5),
-	HIDE_HOME      : (1 << 6),
-	HIDE_BOOKMARKS_BUTTON : (1 << 7),
-	HIDE_SEARCH    : (1 << 8),
+	HIDE_NON_NAVIGATION_ITEMS : (1 << 6),
 
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),

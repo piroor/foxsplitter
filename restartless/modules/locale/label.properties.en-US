@@ -70,6 +70,7 @@ hiddenUIInInactiveWindow.location=Location Bar
 hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
 hiddenUIInInactiveWindow.status=Status Bar
 hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 
 

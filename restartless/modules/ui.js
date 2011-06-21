@@ -19,9 +19,23 @@ FoxSplitterUI.prototype = {
 	__proto__ : FoxSplitterConst,
 
 	BASE_STYLESHEET : <![CDATA[
-		:root[chromehidden~="toolbar-home-button"] #home-button,
-		:root[chromehidden~="toolbar-bookmarks-menu-button"] #bookmarks-menu-button-container,
-		:root[chromehidden~="toolbar-search"] #search-container {
+		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
+		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
+		:root[chromehidden~="toolbar-non-navigation-items"] #home-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #bookmarks-menu-button-container,
+		:root[chromehidden~="toolbar-non-navigation-items"] #search-container,
+		:root[chromehidden~="toolbar-non-navigation-items"] #print-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #downloads-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #history-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #bookarmks-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #new-window-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #cut-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #copy-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #paste-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #fullscreen-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #zoom-controls,
+		:root[chromehidden~="toolbar-non-navigation-items"] #sync-button,
+		:root[chromehidden~="toolbar-non-navigation-items"] #feed-button {
 			visibility: collapse;
 		}
 
@@ -412,12 +426,8 @@ FoxSplitterUI.prototype = {
 			hiddenItems.push('extrachrome');
 
 		// extra hidden items controled by Fox Splitter
-		if (this.hiddenUIInInactiveWindow & this.HIDE_HOME)
-			hiddenItems.push('toolbar-home-button');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_BOOKMARKS_BUTTON)
-			hiddenItems.push('toolbar-bookmarks-menu-button');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_SEARCH)
-			hiddenItems.push('toolbar-search');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_NON_NAVIGATION_ITEMS)
+			hiddenItems.push('toolbar-non-navigation-items');
 
 		hiddenItems = hiddenItems.join(' ');
 
