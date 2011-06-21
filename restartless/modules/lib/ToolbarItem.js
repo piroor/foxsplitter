@@ -12,12 +12,13 @@
 const EXPORTED_SYMBOLS = ['ToolbarItem'];
 
 /**
- * aDefinition = {
- *   node      : nsIDOMElement (the toolbar item),
- *   toolbar   : String (the ID of customizable toolbar),
- *   onInit    : Function (optional: called when the item is inserted to the toolbar),
- *   onDestroy : Function (optional: called when the item is removed from the toolbar)
- * }
+ * aDefinition = nsIDOMElement (the toolbar item) ||
+ *               {
+ *                 node      : nsIDOMElement (the toolbar item),
+ *                 toolbar   : String (optional: the ID of customizable toolbar),
+ *                 onInit    : Function (optional: called when the item is inserted to the toolbar),
+ *                 onDestroy : Function (optional: called when the item is removed from the toolbar)
+ *               }
  */
 function ToolbarItem(aDefinition) {
 	this.init(aDefinition);
@@ -34,7 +35,7 @@ ToolbarItem.prototype = {
 		if (this.definition)
 			return;
 
-		this.normalizeDefinition(aDefinition);
+		aDefinition = this.normalizeDefinition(aDefinition);
 		this.assertDefinition(aDefinition);
 		this.definition = aDefinition;
 
@@ -79,6 +80,8 @@ ToolbarItem.prototype = {
 
 	normalizeDefinition : function(aDefinition)
 	{
+		if (aDefinition instanceof Ci.nsIDOMElement)
+			aDefinition = { node : aDefinition };
 		if (aDefinition.element && !aDefinition.node)
 			aDefinition.node = aDefinition.element;
 
@@ -96,6 +99,8 @@ ToolbarItem.prototype = {
 
 		if (aDefinition.toolbar && aDefinition.toolbar instanceof Ci.nsIDOMElement)
 			aDefinition.toolbar = aDefinition.toolbar.id;
+
+		return aDefinition;
 	},
 
 	assertDefinition : function(aDefinition)
@@ -104,8 +109,6 @@ ToolbarItem.prototype = {
 			throw new Error('"node", the toolbar item DOM element is required!');
 		if (!aDefinition.node.id)
 			throw new Error('"node", the toolbar item DOM element must have ID!');
-		if (!aDefinition.toolbar)
-			throw new Error('"toolbar", the ID of the default toolbar is required!');
 	},
 
 
@@ -122,8 +125,8 @@ ToolbarItem.prototype = {
 			return;
 		}
 
-		toolbar = this.document.getElementById(this.definition.toolbar);
-		if (!toolbar || !toolbar.toolbox)
+		toolbar = this.definition.toolbar ? this.document.getElementById(this.definition.toolbar) : null ;
+		if (toolbar && !toolbar.toolbox)
 			return;
 
 		const Prefs = Cc['@mozilla.org/preferences;1']
@@ -137,7 +140,9 @@ ToolbarItem.prototype = {
 		catch(e) {
 		}
 
-		if (done) {
+		if (done || !toolbar) {
+			if (!toolbar) // if no toolbar is specified, insert to the palette of the main toolbox.
+				toolbar = this.getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
 			let palette = toolbar.toolbox.palette || this.getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbar.toolbox);
 			if (palette)
 				palette.appendChild(this.node);
@@ -154,9 +159,10 @@ ToolbarItem.prototype = {
 			toolbar.currentSet = currentset;
 			toolbar.setAttribute('currentset', currentset);
 			this.document.persist(toolbar.id, 'currentset');
-
-			Prefs.setBoolPref(key, true);
 		}
+
+		if (!done)
+			Prefs.setBoolPref(key, true);
 	},
 
 	getNodeByXPath : function(aExpression, aContext)
