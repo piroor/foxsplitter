@@ -87,7 +87,8 @@ FoxSplitterUI.prototype = {
 			-moz-image-region: rect(0 24px 24px 0);
 		}
 
-		.MENU_ITEM.menuitem-iconic {
+		.MENU_ITEM.menuitem-iconic,
+		.MENU_ITEM.menu-iconic {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
 			-moz-image-region: rect(0 16px 16px 0);
 		}
@@ -316,7 +317,7 @@ FoxSplitterUI.prototype = {
 		var popup = this.document.getElementById('contentAreaContextMenu');
 		this.contextLinkItem = ToolbarItem.toDOMDocumentFragment(<>
 				<menu id="foxsplitter-context-link-split"
-					class={iconicClass+'split'}
+					class={'menu-iconic split '+this.MENU_ITEM}
 					label={bundle.getString('ui.split.link.label')}
 					accesskey={bundle.getString('ui.split.link.accesskey')}
 					oncommand="FoxSplitter.ui.onCommand(event);">
@@ -341,11 +342,12 @@ FoxSplitterUI.prototype = {
 				</menu>
 			</>, popup).querySelector('*');
 		popup.insertBefore(this.contextLinkItem, this.document.getElementById('context-openlink').nextSibling);
+		popup.addEventListener('popupshowing', this, false);
 
 		popup = popup.querySelector('#frame menupopup');
 		this.contextFrameItem = ToolbarItem.toDOMDocumentFragment(<>
 				<menu id="foxsplitter-context-frame-split"
-					class={iconicClass+'split'}
+					class={'menu-iconic split '+this.MENU_ITEM}
 					label={bundle.getString('ui.split.frame.label')}
 					accesskey={bundle.getString('ui.split.frame.accesskey')}
 					oncommand="FoxSplitter.ui.onCommand(event);">
@@ -374,12 +376,28 @@ FoxSplitterUI.prototype = {
 
 	_destroyMenuItems : function FSUI_destroyMenuItems()
 	{
+		var popup = this.document.getElementById('contentAreaContextMenu');
+		popup.removeEventListener('popupshowing', this, false);
+
 		if (this.contextLinkItem.parentNode)
 			this.contextLinkItem.parentNode.removeChild(this.contextLinkItem);
 		if (this.contextFrameItem.parentNode)
 			this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
 	},
 
+
+	handleEvent : function FSUI_handleEvent(aEvent)
+	{
+		switch (aEvent.type)
+		{
+			case 'command':
+				return this.onCommand(aEvent);
+			case 'popupshowing':
+				return this.onPopupShowing(aEvent);
+			default:
+				return;
+		}
+	},
 
 	onCommand : function FSUI_onCommand(aEvent)
 	{
@@ -454,6 +472,9 @@ FoxSplitterUI.prototype = {
 		{
 			case 'foxsplitter-general-button-popup':
 				return this._updateGeneralPopup();
+
+			case 'contentAreaContextMenu':
+				return this._updateContextPopup();
 		}
 	},
 	_updateGeneralPopup : function FSUI_updateGeneralPopup()
@@ -485,6 +506,15 @@ FoxSplitterUI.prototype = {
 		else {
 			if (separator) separator.removeAttribute('hidden');
 			if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
+		}
+	},
+	_updateContextPopup : function FSUI_updateContextPopup()
+	{
+		if (this.contextLinkItem) {
+			if (this.window.gContextMenu.onLink)
+				this.contextLinkItem.removeAttribute('hidden');
+			else
+				this.contextLinkItem.setAttribute('hidden', true);
 		}
 	},
 
