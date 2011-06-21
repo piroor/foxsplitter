@@ -998,7 +998,7 @@ FoxSplitterWindow.prototype = {
 			return this.browser.treeStyleTab.duplicateTabs(aTabs);
 
 		return aTabs.map(function(aTab) {
-			return this.browser.duplicateTab(aTabs);
+			return this.browser.duplicateTab(aTab);
 		}, this);
 	},
 
