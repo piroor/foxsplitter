@@ -219,7 +219,13 @@ ToolbarItem.prototype = {
 
 		if (!this.inserted) {
 			let items = (toolbar.getAttribute('currentset') || '').split(',');
-			let index = items.indexOf(this.id) + 1;
+
+			let index = items.indexOf(this.id);
+			do {
+				index++;
+			}
+			while (!this._document.getElementById(items[index]));
+
 			if (index < items.length)
 				toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
 		}
