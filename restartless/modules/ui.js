@@ -63,7 +63,8 @@ FoxSplitterUI.prototype = {
 			padding: 0;
 		}
 
-		.toolbarbutton-1.TOOLBAR_ITEM {
+		.toolbarbutton-1.TOOLBAR_ITEM,
+		#foxsplitter-syncScroll-button {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
 			-moz-image-region: rect(0 16px 16px 0);
 		}
@@ -71,6 +72,13 @@ FoxSplitterUI.prototype = {
 		toolbox[iconsize="large"] .toolbarbutton-1.TOOLBAR_ITEM {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png");
 			-moz-image-region: rect(0 24px 24px 0);
+		}
+
+		#foxsplitter-syncScroll-button {
+			-moz-image-region: rect(0 112px 16px 96px);
+		}
+		#foxsplitter-syncScroll-button[checked="true"] {
+			-moz-image-region: rect(0 128px 16px 112px);
 		}
 	]]>.toString(),
 
@@ -156,6 +164,8 @@ FoxSplitterUI.prototype = {
 	_initToolbarItems : function FSUI_initToolbarItems()
 	{
 		var toolbar = this.document.getElementById('nav-bar');
+		var self = this;
+
 		this.generalButton = ToolbarItem.create(
 			<>
 				<toolbarbutton id="foxsplitter-general-button"
@@ -163,9 +173,9 @@ FoxSplitterUI.prototype = {
 					label={bundle.getString('ui.split.short')}
 					tooltip={bundle.getString('ui.split.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
-					oncommand="FoxSplitter.ui.onCommand(event);"
-					onpopupshowing="FoxSplitter.ui.onPopupShowing(event);">
-					<menupopup>
+					oncommand="FoxSplitter.ui.onCommand(event);">
+					<menupopup id="foxsplitter-general-button-popup"
+						onpopupshowing="FoxSplitter.ui.onPopupShowing(event);">
 						<menuitem id="foxsplitter-general-menubutton-split-top"
 							label={bundle.getString('ui.split.top.long')}
 							accesskey={bundle.getString('ui.split.top.accesskey')}/>
@@ -198,9 +208,10 @@ FoxSplitterUI.prototype = {
 						<menuitem id="foxsplitter-general-menubutton-closeOther"
 							label={bundle.getString('ui.closeOther.long')}
 							accesskey={bundle.getString('ui.closeOther.accesskey')}/>
-						<menuseparator/>
-						<menuitem id="foxsplitter-general-menubutton-sync"
+						<menuseparator id="foxsplitter-general-menubutton-syncScroll-separator"/>
+						<menuitem id="foxsplitter-general-menubutton-syncScroll"
 							type="checkbox"
+							autoCheck="false"
 							label={bundle.getString('ui.syncScroll.long')}
 							accesskey={bundle.getString('ui.syncScroll.accesskey')}/>
 					</menupopup>
@@ -209,6 +220,27 @@ FoxSplitterUI.prototype = {
 			toolbar,
 			{
 				onInit : function() {
+					self._updateSyncScrollCheckState();
+				},
+				onDestroy : function() {
+				}
+			}
+		);
+
+		this.syncScrollButton = ToolbarItem.create(
+			<>
+				<toolbarbutton id="foxsplitter-syncScroll-button"
+					type="checkbox"
+					autoCheck="false"
+					label={bundle.getString('ui.syncScroll.short')}
+					tooltip={bundle.getString('ui.syncScroll.long')}
+					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
+					oncommand="FoxSplitter.ui.onCommand(event);"/>
+			</>,
+			toolbar,
+			{
+				onInit : function() {
+					self._updateSyncScrollCheckState();
 				},
 				onDestroy : function() {
 				}
@@ -220,6 +252,8 @@ FoxSplitterUI.prototype = {
 	{
 		this.generalButton.destroy();
 		delete this.generalButton;
+		this.syncScrollButton.destroy();
+		delete this.syncScrollButton;
 	},
 
 
@@ -265,14 +299,46 @@ FoxSplitterUI.prototype = {
 			case 'foxsplitter-general-menubutton-closeOther':
 				return owner.closeOther();
 
-			case 'foxsplitter-general-menubutton-sync':
-				owner.syncScroll != owner.syncScroll;
+			case 'foxsplitter-general-menubutton-syncScroll':
+			case 'foxsplitter-syncScroll-button':
+				owner.syncScroll = !owner.syncScroll;
+				this._updateSyncScrollCheckState();
 				return;
 		}
 	},
 
 	onPopupShowing : function FSUI_onPopupShowing(aEvent)
 	{
+		switch (aEvent.target.id)
+		{
+			case 'foxsplitter-general-button-popup':
+				let (separator = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll-separator'),
+					item = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll')) {
+					if (this.syncScrollButton.inserted) {
+						if (separator) separator.setAttribute('hidden', true);
+						if (item) item.setAttribute('hidden', true);
+					}
+					else {
+						if (separator) separator.removeAttribute('hidden');
+						if (item) item.removeAttribute('hidden');
+					}
+				}
+				return;
+		}
+	},
+
+	_updateSyncScrollCheckState : function FSUI_updateSyncScrollCheckState()
+	{
+		var menuitem = this.document.getElementById('foxsplitter-general-menubutton-syncScroll');
+		var button = this.document.getElementById('foxsplitter-syncScroll-button');
+		if (this.owner.syncScroll) {
+			if (menuitem) menuitem.setAttribute('checked', true);
+			if (button) button.setAttribute('checked', true);
+		}
+		else {
+			if (menuitem) menuitem.removeAttribute('checked');
+			if (button) button.removeAttribute('checked');
+		}
 	},
 
 
