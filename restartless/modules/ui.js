@@ -162,11 +162,44 @@ FoxSplitterUI.prototype = {
 					type="menu-button"
 					label={bundle.getString('button.split.label')}
 					tooltip={bundle.getString('button.split.tooltip')}
-					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}>
+					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
+					oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_RIGHT)">
 					<menupopup>
-						<menuitem/>
-						<menuitem/>
-						<menuitem/>
+						<menuitem id="foxsplitter-general-menubutton-move-top"
+							oncommand="FoxSplitter.moveTabTo(gBrowser.selectedTab, FoxSplitter.POSITION_TOP)"/>
+						<menuitem id="foxsplitter-general-menubutton-move-right"
+							oncommand="FoxSplitter.moveTabTo(gBrowser.selectedTab, FoxSplitter.POSITION_RIGHT)"/>
+						<menuitem id="foxsplitter-general-menubutton-move-bottom"
+							oncommand="FoxSplitter.moveTabTo(gBrowser.selectedTab, FoxSplitter.POSITION_BOTTOM)"/>
+						<menuitem id="foxsplitter-general-menubutton-move-left"
+							oncommand="FoxSplitter.moveTabTo(gBrowser.selectedTab, FoxSplitter.POSITION_LEFT)"/>
+						<menuseparator/>
+						<menuitem id="foxsplitter-general-menubutton-duplicate-top"
+							oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_TOP)"/>
+						<menuitem id="foxsplitter-general-menubutton-duplicate-right"
+							oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_RIGHT)"/>
+						<menuitem id="foxsplitter-general-menubutton-duplicate-bottom"
+							oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_BOTTOM)"/>
+						<menuitem id="foxsplitter-general-menubutton-duplicate-left"
+							oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_LEFT)"/>
+						<menuseparator/>
+						<menuitem id="foxsplitter-general-menubutton-tile-grid"
+							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_GRID)"/>
+						<menuitem id="foxsplitter-general-menubutton-tile-x"
+							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_X_AXIS)"/>
+						<menuitem id="foxsplitter-general-menubutton-tile-y"
+							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_Y_AXIS)"/>
+						<menuitem id="foxsplitter-general-menubutton-gather"
+							oncommand="FoxSplitter.gatherWindows()"/>
+						<menuseparator/>
+						<menuitem id="foxsplitter-general-menubutton-closeAll"
+						oncommand="FoxSplitter.closeAll()"/>
+						<menuitem id="foxsplitter-general-menubutton-closeOther"
+						oncommand="FoxSplitter.closeOther()"/>
+						<menuseparator/>
+						<menuitem id="foxsplitter-general-menubutton-sync"
+							type="checkbox"
+							oncommand="FoxSplitter.syncScroll != FoxSplitter.syncScroll"/>
 					</menupopup>
 				</toolbarbutton>
 			</>,

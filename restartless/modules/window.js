@@ -1003,7 +1003,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-
 	canClose : function FSW_canClose()
 	{
 		if (
