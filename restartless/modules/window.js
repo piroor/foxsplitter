@@ -7,10 +7,6 @@ var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
 const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
 
-const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
-					.getService(Ci.nsIXULAppInfo)
-					.QueryInterface(Ci.nsIXULRuntime);
-
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
 
@@ -22,12 +18,6 @@ function FoxSplitterWindow(aWindow, aOnInit)
 }
 FoxSplitterWindow.prototype = {
 	__proto__ : FoxSplitterBase.prototype,
-
-	// opacity=0 panel isn't shown on Linux
-	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
-	// too small window isn't shown on Linux
-	MIN_WIDTH : 16,
-	MIN_HEIGHT : 16,
 
 	lastX      : null,
 	lastY      : null,

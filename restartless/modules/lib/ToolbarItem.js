@@ -217,6 +217,7 @@ ToolbarItem.prototype = {
 };
 
 ToolbarItem.instances = [];
+ToolbarItem.BASIC_ITEM_CLASS = 'toolbarbutton-1 chromeclass-toolbar-additional';
 
 /** A handler for bootstrap.js */
 function shutdown()

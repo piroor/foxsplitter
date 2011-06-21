@@ -59,6 +59,13 @@ FoxSplitterUI.prototype = {
 			min-width: 0;
 			padding: 0;
 		}
+
+		.toolbarbutton-1.TOOLBAR_ITEM,
+		toolbar[iconsize="small"] .toolbarbutton-1.TOOLBAR_ITEM,
+		toolbox[iconsize="small"] .toolbarbutton-1.TOOLBAR_ITEM {
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
+			-moz-image-region: rect(0 16px 16px 0);
+		}
 	]]>.toString(),
 
 	get _window()
@@ -101,24 +108,13 @@ FoxSplitterUI.prototype = {
 		FoxSplitterUI.instances.push(this);
 
 		this._installStyleSheet();
-
-		var button = this.document.createElement('toolbarbutton');
-		button.setAttribute('id', 'foxsplitter-test');
-		button.setAttribute('label', 'test');
-		button.setAttribute('class', 'toolbarbutton-1 chromeclass-toolbar-additional');
-		this.button = new ToolbarItem({
-						node    : button,
-						toolbar : 'nav-bar'
-					});
+		this._initToolbarItems();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
-
-		this.button.destroy();
-		delete this.button;
-
+		this._destroyToolbarItems();
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
@@ -135,6 +131,7 @@ FoxSplitterUI.prototype = {
 		var styles = this.BASE_STYLESHEET
 						.replace(/ACTIVE/g, this.ACTIVE)
 						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
+						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM)
 						.replace(/MIN_OPACITY/g, this.MIN_OPACITY);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
@@ -147,6 +144,25 @@ FoxSplitterUI.prototype = {
 			return;
 		this.document.removeChild(this._styleSheet);
 		delete this._styleSheet;
+	},
+
+
+	_initToolbarItems : function FSUI_initToolbarItems()
+	{
+		var button = this.document.createElement('toolbarbutton');
+		button.setAttribute('id', 'foxsplitter-test');
+		button.setAttribute('label', 'test');
+		button.setAttribute('class', ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM);
+		this.button = new ToolbarItem({
+						node    : button,
+						toolbar : 'nav-bar'
+					});
+	},
+
+	_destroyToolbarItems : function FSUI_destroyToolbarItems()
+	{
+		this.button.destroy();
+		delete this.button;
 	},
 
 

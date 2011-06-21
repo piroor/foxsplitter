@@ -1,3 +1,7 @@
+const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+					.getService(Ci.nsIXULAppInfo)
+					.QueryInterface(Ci.nsIXULRuntime);
+
 var exports = {
 	domain : 'extensions.foxsplitter@piro.sakura.ne.jp.',
 
@@ -8,6 +12,7 @@ var exports = {
 	ID                : 'foxsplitter-id',
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
+	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',
 
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
@@ -49,7 +54,13 @@ var exports = {
 	HIDE_LOCATION  : (1 << 2),
 	HIDE_BOOKMARKS : (1 << 3),
 	HIDE_STATUS    : (1 << 4),
-	HIDE_EXTRA     : (1 << 5)
+	HIDE_EXTRA     : (1 << 5),
+
+	// opacity=0 panel isn't shown on Linux
+	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
+	// too small window isn't shown on Linux
+	MIN_WIDTH : 16,
+	MIN_HEIGHT : 16
 };
 
 exports.positionName = {};
