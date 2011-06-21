@@ -60,7 +60,12 @@ FoxSplitterUI.prototype = {
 			padding: 0;
 		}
 
-		.toolbarbutton-1.TOOLBAR_ITEM,
+		.toolbarbutton-1.TOOLBAR_ITEM {
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png");
+			-moz-image-region: rect(0 24px 24px 0);
+		}
+
+		.toolbarbutton-1.TOOLBAR_ITEM:not(.platform-Linux),
 		toolbar[iconsize="small"] .toolbarbutton-1.TOOLBAR_ITEM,
 		toolbox[iconsize="small"] .toolbarbutton-1.TOOLBAR_ITEM {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");

@@ -11,6 +11,10 @@
 
 const EXPORTED_SYMBOLS = ['ToolbarItem'];
 
+const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+					.getService(Ci.nsIXULAppInfo)
+					.QueryInterface(Ci.nsIXULRuntime);
+
 /**
  * aDefinition = nsIDOMElement (the toolbar item) ||
  *               {
@@ -86,6 +90,7 @@ ToolbarItem.prototype = {
 			aDefinition.node = aDefinition.element;
 
 		aDefinition.node.setAttribute('removable', true);
+		aDefinition.node.setAttribute('class', aDefinition.node.className+' platform-'+XULAppInfo.OS);
 
 		if (aDefinition.oninit && !aDefinition.onInit)
 			aDefinition.onInit = aDefinition.oninit;
