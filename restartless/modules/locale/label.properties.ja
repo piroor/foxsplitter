@@ -103,6 +103,9 @@ ui.split.link.accesskey=s
 ui.split.frame.label=分割されたウィンドウでフレームを開く
 ui.split.frame.accesskey=s
 
+ui.split.tab.label=タブをウィンドウに分割
+ui.split.tab.accesskey=s
+
 
 ui.grid.short=並べる
 ui.grid.long=すべてのタブを平面に並べる

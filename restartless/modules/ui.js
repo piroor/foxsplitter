@@ -372,17 +372,51 @@ FoxSplitterUI.prototype = {
 				</menu>
 			</>, popup).querySelector('*');
 		popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
+
+		popup = this.document.querySelector('#tabContextMenu');
+		this.tabContextItem = ToolbarItem.toDOMDocumentFragment(<>
+				<menu id="foxsplitter-context-tab-split"
+					class={'menu-iconic split '+this.MENU_ITEM}
+					label={bundle.getString('ui.split.tab.label')}
+					accesskey={bundle.getString('ui.split.tab.accesskey')}
+					oncommand="FoxSplitter.ui.onCommand(event);">
+					<menupopup>
+						<menuitem id="foxsplitter-context-tab-split-top"
+							class={iconicClass+'split-top'}
+							label={bundle.getString('ui.split.top.short')}
+							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+						<menuitem id="foxsplitter-context-tab-split-right"
+							class={iconicClass+'split-right'}
+							label={bundle.getString('ui.split.right.short')}
+							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+						<menuitem id="foxsplitter-context-tab-split-bottom"
+							class={iconicClass+'split-bottom'}
+							label={bundle.getString('ui.split.bottom.short')}
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+						<menuitem id="foxsplitter-context-tab-split-left"
+							class={iconicClass+'split-left'}
+							label={bundle.getString('ui.split.left.short')}
+							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+					</menupopup>
+				</menu>
+			</>, popup).querySelector('*');
+		popup.insertBefore(this.tabContextItem, this.document.getElementById('context_openTabInWindow').nextSibling);
+		popup.addEventListener('popupshowing', this, false);
 	},
 
 	_destroyMenuItems : function FSUI_destroyMenuItems()
 	{
 		var popup = this.document.getElementById('contentAreaContextMenu');
 		popup.removeEventListener('popupshowing', this, false);
+		popup = this.document.getElementById('tabContextMenu');
+		popup.removeEventListener('popupshowing', this, false);
 
 		if (this.contextLinkItem.parentNode)
 			this.contextLinkItem.parentNode.removeChild(this.contextLinkItem);
 		if (this.contextFrameItem.parentNode)
 			this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
+		if (this.tabContextItem.parentNode)
+			this.tabContextItem.parentNode.removeChild(this.tabContextItem);
 	},
 
 
@@ -412,13 +446,17 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-menubutton-split-top':
+			case 'foxsplitter-context-tab-split-top':
 				return owner.splitTabsTo(tabs, this.POSITION_TOP);
 			case 'foxsplitter-general-button':
 			case 'foxsplitter-general-menubutton-split-right':
+			case 'foxsplitter-context-tab-split-right':
 				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
 			case 'foxsplitter-general-menubutton-split-bottom':
+			case 'foxsplitter-context-tab-split-bottom':
 				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM);
 			case 'foxsplitter-general-menubutton-split-left':
+			case 'foxsplitter-context-tab-split-left':
 				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
 
 			case 'foxsplitter-context-link-split-top':
@@ -474,7 +512,10 @@ FoxSplitterUI.prototype = {
 				return this._updateGeneralPopup();
 
 			case 'contentAreaContextMenu':
-				return this._updateContextPopup();
+				return this._updatePageContextPopup();
+
+			case 'tabContextMenu':
+				return this._updateTabContextPopup();
 		}
 	},
 	_updateGeneralPopup : function FSUI_updateGeneralPopup()
@@ -508,13 +549,28 @@ FoxSplitterUI.prototype = {
 			if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
 		}
 	},
-	_updateContextPopup : function FSUI_updateContextPopup()
+	_updatePageContextPopup : function FSUI_updatePageContextPopup()
 	{
 		if (this.contextLinkItem) {
 			if (this.window.gContextMenu.onLink)
 				this.contextLinkItem.removeAttribute('hidden');
 			else
 				this.contextLinkItem.setAttribute('hidden', true);
+		}
+	},
+	_updateTabContextPopup : function FSUI_updateTabContextPopup()
+	{
+		if (this.tabContextItem) {
+			if (this.window.TabContextMenu.contextTab)
+				this.contextLinkItem.removeAttribute('hidden');
+			else
+				this.contextLinkItem.setAttribute('hidden', true);
+
+			if (this.owner.visibleTabs.length > 1 ||
+				this.owner.shouldDuplicateOnSplit)
+				this.contextLinkItem.removeAttribute('disabled');
+			else
+				this.contextLinkItem.setAttribute('disabled', true);
 		}
 	},
 

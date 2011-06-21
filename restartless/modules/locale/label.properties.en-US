@@ -100,6 +100,9 @@ ui.split.link.accesskey=s
 ui.split.frame.label=Open Frame in New Split Window
 ui.split.frame.accesskey=s
 
+ui.split.tab.label=Move to Split Window
+ui.split.tab.accesskey=s
+
 
 ui.grid.short=Tile
 ui.grid.long=Tile all tabs
