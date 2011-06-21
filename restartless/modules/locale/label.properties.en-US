@@ -37,16 +37,25 @@ title=Fox Splitter Configuration
 
 tab.general=General
 
-dropZoneSize.before=Split the window if tabs and links are dropped on the area
-dropZoneSize.after=pixels from each window edge
-handleDragWithShiftKey=Behavior about drag and drop of tabs and links onto window edges
-handleDragWithShiftKey.false=Split the window by normal drag
-handleDragWithShiftKey.true=Split the window only by Shift-drag
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
 importTabsFromClosedSibling=When a split window is closed
 importTabsFromClosedSibling.nothing=Simply close the window
 importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
 importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 syncScrollX=Enable synchronized scroll for horizontal scrolls
+
+tab.drag=Drag and Drop
+
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Split the window if tabs and links are dropped on the area
+dropZoneSize.after=pixels from each window edge
+handleDragWithShiftKey=Drag and drop of tabs and links onto window edges
+handleDragWithShiftKey.false=Split the window by normal drag
+handleDragWithShiftKey.true=Split the window only by Shift-drag
 
 tab.appearance=Appearance
 

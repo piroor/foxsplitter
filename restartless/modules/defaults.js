@@ -4,6 +4,7 @@ var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
 config.setDefault(domain+'shouldDuplicateOnSplit', true);
+config.setDefault(domain+'shouldDuplicateOnDrop', false);
 
 config.setDefault(domain+'dropZoneSize', 64);
 config.setDefault(domain+'handleDragWithShiftKey', false);

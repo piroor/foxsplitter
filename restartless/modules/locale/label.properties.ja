@@ -38,16 +38,25 @@ title=Fox Splitterの設定
 
 tab.general=全般
 
-dropZoneSize.before=ウィンドウの端から
-dropZoneSize.after=ピクセルの範囲にタブやリンクをドロップした時にウィンドウを分割する
-handleDragWithShiftKey=ウィンドウの端にタブやリンクをドラッグ＆ドロップした時の挙動
-handleDragWithShiftKey.false=通常のドラッグ操作でウィンドウを分割する
-handleDragWithShiftKey.true=Shift-ドラッグした時だけウィンドウを分割する
+shouldDuplicateOnSplit=ウィンドウを分割した時の既定の挙動
+shouldDuplicateOnSplit.true=選択されたタブを新しいウィンドウに複製する
+shouldDuplicateOnSplit.false=選択されたタブを新しいウィンドウに移動する
 importTabsFromClosedSibling=分割されたウィンドウを閉じた時の挙動
 importTabsFromClosedSibling.nothing=そのままウィンドウを閉じる
 importTabsFromClosedSibling.hidden=非表示になっているタブを隣のウィンドウに移動する
 importTabsFromClosedSibling.all=すべてのタブを隣のウィンドウに移動する
 syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
+
+tab.drag=ドラッグ＆ドロップ
+
+shouldDuplicateOnDrop=タブをドラッグ＆ドロップしてウィンドウを分割した時の既定の挙動
+shouldDuplicateOnDrop.true=ドロップしたタブを新しいウィンドウに複製する
+shouldDuplicateOnDrop.false=ドロップしたタブを新しいウィンドウに移動する
+dropZoneSize.before=ウィンドウの端から
+dropZoneSize.after=ピクセルの範囲にタブやリンクをドロップした時にウィンドウを分割する
+handleDragWithShiftKey=ウィンドウの端にタブやリンクをドラッグ＆ドロップした時
+handleDragWithShiftKey.false=通常のドラッグ操作でウィンドウを分割する
+handleDragWithShiftKey.true=Shift-ドラッグした時だけウィンドウを分割する
 
 tab.appearance=外観
 

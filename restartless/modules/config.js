@@ -39,11 +39,8 @@ config.register('about:blank?foxsplitter-config', <>
 	<prefpane id="prefpane-general"
 		label={bundle.getString('tab.general')}>
 		<preferences>
-			<preference id="dropZoneSize"
-				name={domain+'dropZoneSize'}
-				type="int"/>
-			<preference id="handleDragWithShiftKey"
-				name={domain+'handleDragWithShiftKey'}
+			<preference id="shouldDuplicateOnSplit"
+				name={domain+'shouldDuplicateOnSplit'}
 				type="bool"/>
 			<preference id="importTabsFromClosedSibling"
 				name={domain+'importTabsFromClosedSibling'}
@@ -53,6 +50,51 @@ config.register('about:blank?foxsplitter-config', <>
 				type="bool"/>
 		</preferences>
 
+		<groupbox>
+			<caption label={bundle.getString('shouldDuplicateOnSplit')}/>
+			<radiogroup orient="vertical"
+				preference="shouldDuplicateOnSplit">
+				<radio value="false" label={bundle.getString('shouldDuplicateOnSplit.false')}/>
+				<radio value="true" label={bundle.getString('shouldDuplicateOnSplit.true')}/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label={bundle.getString('importTabsFromClosedSibling')}/>
+			<radiogroup orient="vertical"
+				preference="importTabsFromClosedSibling">
+				<radio value={FoxSplitterConst.IMPORT_NOTHING}
+					label={bundle.getString('importTabsFromClosedSibling.nothing')}/>
+				<radio value={FoxSplitterConst.IMPORT_ONLY_HIDDEN}
+					label={bundle.getString('importTabsFromClosedSibling.hidden')}/>
+				<radio value={FoxSplitterConst.IMPORT_ALL}
+					label={bundle.getString('importTabsFromClosedSibling.all')}/>
+			</radiogroup>
+		</groupbox>
+		<checkbox label={bundle.getString('syncScrollX')}
+			preference="syncScrollX"/>
+	</prefpane>
+
+	<prefpane id="prefpane-drag"
+		label={bundle.getString('tab.drag')}>
+		<preferences>
+			<preference id="shouldDuplicateOnDrop"
+				name={domain+'shouldDuplicateOnDrop'}
+				type="bool"/>
+			<preference id="dropZoneSize"
+				name={domain+'dropZoneSize'}
+				type="int"/>
+			<preference id="handleDragWithShiftKey"
+				name={domain+'handleDragWithShiftKey'}
+				type="bool"/>
+		</preferences>
+		<groupbox>
+			<caption label={bundle.getString('shouldDuplicateOnDrop')}/>
+			<radiogroup orient="vertical"
+				preference="shouldDuplicateOnDrop">
+				<radio value="false" label={bundle.getString('shouldDuplicateOnDrop.false')}/>
+				<radio value="true" label={bundle.getString('shouldDuplicateOnDrop.true')}/>
+			</radiogroup>
+		</groupbox>
 		<label value={bundle.getString('dropZoneSize.before')}
 			control="dropZoneSize-textbox"/>
 		<hbox align="center">
@@ -74,20 +116,6 @@ config.register('about:blank?foxsplitter-config', <>
 				<radio value="true" label={bundle.getString('handleDragWithShiftKey.true')}/>
 			</radiogroup>
 		</groupbox>
-		<groupbox>
-			<caption label={bundle.getString('importTabsFromClosedSibling')}/>
-			<radiogroup orient="vertical"
-				preference="importTabsFromClosedSibling">
-				<radio value={FoxSplitterConst.IMPORT_NOTHING}
-					label={bundle.getString('importTabsFromClosedSibling.nothing')}/>
-				<radio value={FoxSplitterConst.IMPORT_ONLY_HIDDEN}
-					label={bundle.getString('importTabsFromClosedSibling.hidden')}/>
-				<radio value={FoxSplitterConst.IMPORT_ALL}
-					label={bundle.getString('importTabsFromClosedSibling.all')}/>
-			</radiogroup>
-		</groupbox>
-		<checkbox label={bundle.getString('syncScrollX')}
-			preference="syncScrollX"/>
 	</prefpane>
 
 	<prefpane id="prefpane-appearance"

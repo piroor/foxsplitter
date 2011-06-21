@@ -25,6 +25,8 @@ FoxSplitterWindow.prototype = {
 	lastHeight : null,
 	syncScroll : false,
 
+	get shouldDuplicateOnDrop() { return FoxSplitterWindow.shouldDuplicateOnDrop; },
+	set shouldDuplicateOnDrop(aValue) { return FoxSplitterWindow.shouldDuplicateOnDrop = aValue; },
 	get dropZoneSize() { return FoxSplitterWindow.dropZoneSize; },
 	set dropZoneSize(aValue) { return FoxSplitterWindow.dropZoneSize = aValue; },
 	get handleDragWithShiftKey() { return FoxSplitterWindow.handleDragWithShiftKey; },
@@ -1576,6 +1578,7 @@ FoxSplitterWindow.prototype = {
 				position : this.POSITION_OUTSIDE,
 				allTabs  : false,
 				target   : this
+
 			};
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return dragInfo;
@@ -1729,7 +1732,7 @@ FoxSplitterWindow.prototype = {
 				windowMove = allTabs.length == tabs.length;
 			}
 
-			if (this.isAccelKeyPressed(aEvent)) {
+			if (this.isAccelKeyPressed(aEvent) != this.shouldDuplicateOnDrop) {
 				target.duplicateTabsAt(tabs, position);
 			}
 			else if (windowMove) {
@@ -2154,6 +2157,7 @@ FoxSplitterWindow.positioning = 0;
 FoxSplitterWindow.resizing = 0;
 FoxSplitterWindow.raising = 0;
 
+FoxSplitterWindow.shouldDuplicateOnDrop = prefs.getPref(FoxSplitterConst.domain+'shouldDuplicateOnDrop');
 FoxSplitterWindow.dropZoneSize = prefs.getPref(FoxSplitterConst.domain+'dropZoneSize');
 FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(FoxSplitterConst.domain+'handleDragWithShiftKey');
 FoxSplitterWindow.syncScrollX = prefs.getPref(FoxSplitterConst.domain+'syncScrollX');
