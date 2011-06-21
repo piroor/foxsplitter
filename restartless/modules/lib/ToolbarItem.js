@@ -31,58 +31,58 @@ ToolbarItem.prototype = {
 	get inserted()
 	{
 		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
-		return this.document.compareDocumentPosition(this.node) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY;
+		return this._document.compareDocumentPosition(this.node) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY;
 	},
 
 	init : function(aDefinition)
 	{
-		if (this.definition)
+		if (this._definition)
 			return;
 
-		aDefinition = this.normalizeDefinition(aDefinition);
-		this.assertDefinition(aDefinition);
-		this.definition = aDefinition;
+		aDefinition = this._normalizeDefinition(aDefinition);
+		this._assertDefinition(aDefinition);
+		this._definition = aDefinition;
 
-		this.node = this.definition.node;
-		this.document = this.node.ownerDocument || this.node;
-		this.window = this.document.defaultView;
+		this.node = this._definition.node;
+		this._document = this.node.ownerDocument || this.node;
+		this._window = this._document.defaultView;
 
-		this.window.addEventListener('beforecustomization', this, false);
-		this.window.addEventListener('aftercustomization', this, false);
-		this.window.addEventListener('unload', this, false);
+		this._window.addEventListener('beforecustomization', this, false);
+		this._window.addEventListener('aftercustomization', this, false);
+		this._window.addEventListener('unload', this, false);
 
 		ToolbarItem.instances.push(this);
 
-		this.initialInsert();
+		this._initialInsert();
 
-		this.onAfterCustomization();
+		this._onAfterCustomization();
 	},
 
 	destroy : function()
 	{
-		if (!this.definition)
+		if (!this._definition)
 			return;
 
-		this.onBeforeCustomization();
+		this._onBeforeCustomization();
 
-		this.window.removeEventListener('beforecustomization', this, false);
-		this.window.removeEventListener('aftercustomization', this, false);
-		this.window.removeEventListener('unload', this, false);
+		this._window.removeEventListener('beforecustomization', this, false);
+		this._window.removeEventListener('aftercustomization', this, false);
+		this._window.removeEventListener('unload', this, false);
 
 		if (this.node.parentNode)
 			this.node.parentNode.removeChild(this.node);
 
-		delete this.definition;
+		delete this._definition;
 		delete this.node;
-		delete this.document;
-		delete this.window;
+		delete this._document;
+		delete this._window;
 
 		ToolbarItem.instances = ToolbarItem.instances.filter(function(aItem) {
 			return aItem != this;
 		}, this);
 	},
 
-	normalizeDefinition : function(aDefinition)
+	_normalizeDefinition : function(aDefinition)
 	{
 		if (aDefinition instanceof Ci.nsIDOMElement)
 			aDefinition = { node : aDefinition };
@@ -108,7 +108,7 @@ ToolbarItem.prototype = {
 		return aDefinition;
 	},
 
-	assertDefinition : function(aDefinition)
+	_assertDefinition : function(aDefinition)
 	{
 		if (!aDefinition.node)
 			throw new Error('"node", the toolbar item DOM element is required!');
@@ -117,20 +117,20 @@ ToolbarItem.prototype = {
 	},
 
 
-	initialInsert : function()
+	_initialInsert : function()
 	{
-		var toolbar = this.getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.node.id.quote()+')]');
+		var toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.node.id.quote()+')]');
 		if (toolbar) { // when inserted into another toolbar
 			if (!this.inserted) {
 				let items = (toolbar.getAttribute('currentset') || '').split(',');
 				let index = items.indexOf(this.node.id) + 1;
 				if (index < items.length)
-					toolbar.insertBefore(this.node, this.document.getElementById(items[index]));
+					toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
 			}
 			return;
 		}
 
-		toolbar = this.definition.toolbar ? this.document.getElementById(this.definition.toolbar) : null ;
+		toolbar = this.definition.toolbar ? this._document.getElementById(this.definition.toolbar) : null ;
 		if (toolbar && !toolbar.toolbox)
 			return;
 
@@ -147,14 +147,14 @@ ToolbarItem.prototype = {
 
 		if (done || !toolbar) {
 			if (!toolbar) // if no toolbar is specified, insert to the palette of the main toolbox.
-				toolbar = this.getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
-			let palette = toolbar.toolbox.palette || this.getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbar.toolbox);
+				toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
+			let palette = toolbar.toolbox.palette || this._getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbar.toolbox);
 			if (palette)
 				palette.appendChild(this.node);
 		}
 		else {
-			let refNode = this.getNodeByXPath('descendant::*[@id="fullscreenflex"]') ||
-						this.getNodeByXPath('descendant::*[@id="window-controls"]');
+			let refNode = this._getNodeByXPath('descendant::*[@id="fullscreenflex"]') ||
+						this._getNodeByXPath('descendant::*[@id="window-controls"]');
 			toolbar.insertBefore(this.node, refNode);
 
 			let currentset = toolbar.currentSet.replace(/__empty/, '');
@@ -163,18 +163,18 @@ ToolbarItem.prototype = {
 			currentset = currentset.join(',');
 			toolbar.currentSet = currentset;
 			toolbar.setAttribute('currentset', currentset);
-			this.document.persist(toolbar.id, 'currentset');
+			this._document.persist(toolbar.id, 'currentset');
 		}
 
 		if (!done)
 			Prefs.setBoolPref(key, true);
 	},
 
-	getNodeByXPath : function(aExpression, aContext)
+	_getNodeByXPath : function(aExpression, aContext)
 	{
-		return this.document.evaluate(
+		return this._document.evaluate(
 			aExpression,
-			aContext || this.document,
+			aContext || this._document,
 			null,
 			Ci.nsIDOMXPathResult.FIRST_ORDERED_NODE_TYPE,
 			null
@@ -187,23 +187,23 @@ ToolbarItem.prototype = {
 		switch (aEvent.type)
 		{
 			case 'beforecustomization':
-				return this.onBeforeCustomization();
+				return this._onBeforeCustomization();
 
 			case 'aftercustomization':
-				return this.onAfterCustomization();
+				return this._onAfterCustomization();
 
 			case 'unload':
 				return this.destroy();
 		}
 	},
 
-	onBeforeCustomization : function()
+	_onBeforeCustomization : function()
 	{
 		if (this.definition && this.definition.destroy && this.inserted)
 			this.definition.destroy();
 	},
 
-	onAfterCustomization : function()
+	_onAfterCustomization : function()
 	{
 		if (this.definition && this.definition.destroy && this.inserted)
 			this.definition.init();
