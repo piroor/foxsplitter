@@ -64,29 +64,44 @@ hiddenUIInInactiveWindow.extra=Extra Toolbars
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-button.split.label=Split
-button.split.tooltip=Split Browsing Window
+ui.grid.short=Tile
+ui.grid.long=Tile all tabs
+ui.grid.accesskey=t
 
-button.layout.grid.label=Tile
-button.layout.grid.tooltip=Tile all tabs
-button.layout.menu.grid.label=Tile all tabs
-button.layout.menu.grid.accesskey=t
-button.layout.menu.x.label=Tile all tabs Vertically
-button.layout.menu.x.accesskey=v
-button.layout.menu.y.label=Tile all tabs Horizontally
-button.layout.menu.y.accesskey=h
-button.layout.menu.gather.label=Gather all windows as tabs
-button.layout.menu.gather.accesskey=g
+ui.x.short=Tile Vertically
+ui.x.long=Tile all tabs Vertically
+ui.x.accesskey=v
 
-button.gather.label=Gather
-button.gather.tooltip=Gather panes to the main area as tabs
-button.collapseAll.label=Collapse
-button.collapseAll.tooltip=Collapse all of panes
-button.expandAll.label=Expand
-button.expandAll.tooltip=Expand all of panes
-button.removeAll.label=Close All
-button.removeAll.tooltip=Close all of panes
+ui.y.short=Tile Horizontally
+ui.y.long=Tile all tabs Horizontally
+ui.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Collapse
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Expand
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Synchronize scroll state
+ui.syncScroll.accesskey=s
 
 
 
@@ -230,7 +245,7 @@ multipletab.layout.y.label=Tile Horizontally
 
 subbrowser.blank=(Blank)
 subbrowser.loading=Loading...
-subbrowser.syncScroll.tooltip=Synchronize Scroll
+subbrowser.syncScroll.tooltip=
 subbrowser.goBack.tooltip=Back
 subbrowser.goForward.tooltip=Forward
 subbrowser.reload.tooltip=Reload

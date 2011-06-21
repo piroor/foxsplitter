@@ -160,8 +160,8 @@ FoxSplitterUI.prototype = {
 			<>
 				<toolbarbutton id="foxsplitter-general-button"
 					type="menu-button"
-					label={bundle.getString('button.split.label')}
-					tooltip={bundle.getString('button.split.tooltip')}
+					label={bundle.getString('ui.split.short')}
+					tooltip={bundle.getString('ui.split.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
 					oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_RIGHT)">
 					<menupopup>
@@ -184,21 +184,35 @@ FoxSplitterUI.prototype = {
 							oncommand="FoxSplitter.duplicateTabAt(gBrowser.selectedTab, FoxSplitter.POSITION_LEFT)"/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-tile-grid"
+							label={bundle.getString('ui.grid.long')}
+							accesskey={bundle.getString('ui.grid.accesskey')}
 							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_GRID)"/>
 						<menuitem id="foxsplitter-general-menubutton-tile-x"
+							label={bundle.getString('ui.x.long')}
+							accesskey={bundle.getString('ui.x.accesskey')}
 							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_X_AXIS)"/>
 						<menuitem id="foxsplitter-general-menubutton-tile-y"
+							label={bundle.getString('ui.y.long')}
+							accesskey={bundle.getString('ui.y.accesskey')}
 							oncommand="FoxSplitter.tileAllTabs(FoxSplitter.TILE_MODE_Y_AXIS)"/>
 						<menuitem id="foxsplitter-general-menubutton-gather"
+							label={bundle.getString('ui.gather.long')}
+							accesskey={bundle.getString('ui.gather.accesskey')}
 							oncommand="FoxSplitter.gatherWindows()"/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-closeAll"
-						oncommand="FoxSplitter.closeAll()"/>
+							oncommand="FoxSplitter.closeAll()"
+							label={bundle.getString('ui.closeAll.long')}
+							accesskey={bundle.getString('ui.closeAll.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-closeOther"
-						oncommand="FoxSplitter.closeOther()"/>
+							oncommand="FoxSplitter.closeOther()"
+							label={bundle.getString('ui.closeOther.long')}
+							accesskey={bundle.getString('ui.closeOther.accesskey')}/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-sync"
 							type="checkbox"
+							label={bundle.getString('ui.syncScroll.long')}
+							accesskey={bundle.getString('ui.syncScroll.accesskey')}
 							oncommand="FoxSplitter.syncScroll != FoxSplitter.syncScroll"/>
 					</menupopup>
 				</toolbarbutton>

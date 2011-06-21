@@ -66,29 +66,45 @@ hiddenUIInInactiveWindow.extra=その他のツールバー
 
 
 
-button.split.label=分割
-button.split.tooltip=ウィンドウを分割する
 
-button.layout.grid.label=並べる
-button.layout.grid.tooltip=タブを平面に並べる
-button.layout.menu.grid.label=すべてのタブを平面に並べる
-button.layout.menu.grid.accesskey=t
-button.layout.menu.x.label=すべてのタブを横に並べる
-button.layout.menu.x.accesskey=v
-button.layout.menu.y.label=すべてのタブを縦に並べる
-button.layout.menu.y.accesskey=h
-button.layout.menu.gather.label=すべての分割されたウィンドウをタブに集める
-button.layout.menu.gather.accesskey=g
+ui.split.short=分割
+ui.split.long=ウィンドウを分割する
 
-button.gather.label=集める
-button.gather.tooltip=分割されたペインをタブに集める
-button.collapseAll.label=たたむ
-button.collapseAll.tooltip=分割されたペインをすべてたたむ
-button.expandAll.label=ひろげる
-button.expandAll.tooltip=分割されたペインをすべてひろげる
-button.removeAll.label=分割を解除
-button.removeAll.tooltip=分割されたペインをすべて閉じる
+ui.grid.short=並べる
+ui.grid.long=すべてのタブを平面に並べる
+ui.grid.accesskey=t
 
+ui.x.short=横に並べる
+ui.x.long=すべてのタブを横に並べる
+ui.x.accesskey=v
+
+ui.y.short=縦に並べる
+ui.y.long=すべてのタブを縦に並べる
+ui.y.accesskey=h
+
+ui.gather.short=集める
+ui.gather.long=分割されたウィンドウをタブに集める
+ui.gather.accesskey=g
+
+ui.collapseAll.short=たたむ
+ui.collapseAll.long=分割されたペインをすべてたたむ
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=ひろげる
+ui.expandAll.long=分割されたウィンドウをすべてひろげる
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=すべて閉じる
+ui.closeAll.long=これらのウィンドウをすべて閉じる
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=他を閉じる
+ui.closeOther.long=分割された他のウィンドウをすべて閉じる
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=スクロールを同期
+ui.syncScroll.long=スクロールを同期させる
+ui.syncScroll.accesskey=s
 
 
 
