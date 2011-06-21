@@ -387,8 +387,9 @@ FoxSplitterUI.prototype = {
 		var b = this.browser;
 		var tabs = owner.selectedTabs;
 		var selected = tabs.length;
-		if (!tabs.length)
+		if (!selected)
 			tabs.push(b.selectedTab);
+		var gCM = this.window.gContextMenu;
 
 		switch (aEvent.target.id)
 		{
@@ -401,6 +402,24 @@ FoxSplitterUI.prototype = {
 				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM);
 			case 'foxsplitter-general-menubutton-split-left':
 				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
+
+			case 'foxsplitter-context-link-split-top':
+				return owner.openLinkAt(gCM.linkURL, this.POSITION_TOP);
+			case 'foxsplitter-context-link-split-right':
+				return owner.openLinkAt(gCM.linkURL, this.POSITION_RIGHT);
+			case 'foxsplitter-context-link-split-bottom':
+				return owner.openLinkAt(gCM.linkURL, this.POSITION_BOTTOM);
+			case 'foxsplitter-context-link-split-left':
+				return owner.openLinkAt(gCM.linkURL, this.POSITION_LEFT);
+
+			case 'foxsplitter-context-frame-split-top':
+				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_TOP);
+			case 'foxsplitter-context-frame-split-right':
+				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_RIGHT);
+			case 'foxsplitter-context-frame-split-bottom':
+				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_BOTTOM);
+			case 'foxsplitter-context-frame-split-left':
+				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_LEFT);
 
 			case 'foxsplitter-general-menubutton-tile-grid':
 				return selected ?
