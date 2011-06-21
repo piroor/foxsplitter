@@ -302,9 +302,7 @@ FoxSplitterUI.prototype = {
 
 			case 'foxsplitter-general-menubutton-syncScroll':
 			case 'foxsplitter-syncScroll-button':
-				owner.syncScroll = !owner.syncScroll;
-				this.onSyncScrollStateChange();
-				return;
+				return owner.syncScroll = !owner.syncScroll;
 		}
 	},
 
