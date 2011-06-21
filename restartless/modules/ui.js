@@ -74,15 +74,34 @@ FoxSplitterUI.prototype = {
 			-moz-image-region: rect(0 24px 24px 0);
 		}
 
+		.MENU_ITEM.menuitem-iconic {
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
+			-moz-image-region: rect(0 16px 16px 0);
+		}
+		.MENU_ITEM.closeAll                      { -moz-image-region: rect(0 32px 16px 16px); }
+		.MENU_ITEM.closeAll[disabled="true"]     { -moz-image-region: rect(16px 32px 32px 16px); }
+		.MENU_ITEM.gather                        { -moz-image-region: rect(0 48px 16px 32px); }
+		.MENU_ITEM.gather[disabled="true"]       { -moz-image-region: rect(16px 48px 32px 32px); }
+		.MENU_ITEM.tile-grid                     { -moz-image-region: rect(0 64px 16px 48px); }
+		.MENU_ITEM.tile-grid[disabled="true"]    { -moz-image-region: rect(16px 64px 32px 48px); }
+		.MENU_ITEM.tile-x                        { -moz-image-region: rect(0 80px 16px 64px); }
+		.MENU_ITEM.tile-x[disabled="true"]       { -moz-image-region: rect(16px 80px 32px 64px); }
+		.MENU_ITEM.tile-y                        { -moz-image-region: rect(0 96px 16px 80px); }
+		.MENU_ITEM.tile-y[disabled="true"]       { -moz-image-region: rect(16px 96px 32px 80px); }
+		.MENU_ITEM.split-top                     { -moz-image-region: rect(0 144px 16px 128px); }
+		.MENU_ITEM.split-top[disabled="true"]    { -moz-image-region: rect(16px 144px 32px 128px); }
+		.MENU_ITEM.split-right                   { -moz-image-region: rect(0 160px 16px 144px); }
+		.MENU_ITEM.split-right[disabled="true"]  { -moz-image-region: rect(16px 160px 32px 144px); }
+		.MENU_ITEM.split-bottom                  { -moz-image-region: rect(0 176px 16px 160px); }
+		.MENU_ITEM.split-bottom[disabled="true"] { -moz-image-region: rect(16px 176px 32px 160px); }
+		.MENU_ITEM.split-left                    { -moz-image-region: rect(0 192px 16px 176px); }
+		.MENU_ITEM.split-left[disabled="true"]   { -moz-image-region: rect(16px 192px 32px 176px); }
+
 		:root:not([MEMBER="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button {
 			visibility: collapse;
 		}
-		#foxsplitter-syncScroll-button {
-			-moz-image-region: rect(0 112px 16px 96px);
-		}
-		#foxsplitter-syncScroll-button[checked="true"] {
-			-moz-image-region: rect(0 128px 16px 112px);
-		}
+		#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
+		#foxsplitter-syncScroll-button[checked="true"] { -moz-image-region: rect(0 128px 16px 112px); }
 	]]>.toString(),
 
 	get _window()
@@ -149,6 +168,7 @@ FoxSplitterUI.prototype = {
 						.replace(/ACTIVE/g, this.ACTIVE)
 						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
 						.replace(/MEMBER/g, this.MEMBER)
+						.replace(/MENU_ITEM/g, this.MENU_ITEM)
 						.replace(/MIN_OPACITY/g, this.MIN_OPACITY)
 						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
@@ -169,6 +189,7 @@ FoxSplitterUI.prototype = {
 	{
 		var toolbar = this.document.getElementById('nav-bar');
 		var self = this;
+		var iconicClass = 'menuitem-iconic ' + this.MENU_ITEM+' ';
 
 		this.generalButton = ToolbarItem.create(
 			<>
@@ -181,35 +202,45 @@ FoxSplitterUI.prototype = {
 					<menupopup id="foxsplitter-general-button-popup"
 						onpopupshowing="FoxSplitter.ui.onPopupShowing(event);">
 						<menuitem id="foxsplitter-general-menubutton-split-top"
+							class={iconicClass+'split-top'}
 							label={bundle.getString('ui.split.top.long')}
 							accesskey={bundle.getString('ui.split.top.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-split-right"
+							class={iconicClass+'split-right'}
 							label={bundle.getString('ui.split.right.long')}
 							accesskey={bundle.getString('ui.split.right.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-split-bottom"
+							class={iconicClass+'split-bottom'}
 							label={bundle.getString('ui.split.bottom.long')}
 							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-split-left"
+							class={iconicClass+'split-left'}
 							label={bundle.getString('ui.split.left.long')}
 							accesskey={bundle.getString('ui.split.left.accesskey')}/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-tile-grid"
+							class={iconicClass+'tile-grid tabs'}
 							label={bundle.getString('ui.grid.long')}
 							accesskey={bundle.getString('ui.grid.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-tile-x"
+							class={iconicClass+'tile-x tabs'}
 							label={bundle.getString('ui.x.long')}
 							accesskey={bundle.getString('ui.x.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-tile-y"
+							class={iconicClass+'tile-y tabs'}
 							label={bundle.getString('ui.y.long')}
 							accesskey={bundle.getString('ui.y.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-gather"
+							class={iconicClass+'gather grouped'}
 							label={bundle.getString('ui.gather.long')}
 							accesskey={bundle.getString('ui.gather.accesskey')}/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-closeAll"
+							class={iconicClass+'closeAll grouped'}
 							label={bundle.getString('ui.closeAll.long')}
 							accesskey={bundle.getString('ui.closeAll.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-closeOther"
+							class={this.MENU_ITEM+' closeOther grouped'}
 							label={bundle.getString('ui.closeOther.long')}
 							accesskey={bundle.getString('ui.closeOther.accesskey')}/>
 						<menuseparator id="foxsplitter-general-menubutton-syncScroll-separator"/>
@@ -274,8 +305,8 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-menubutton-split-top':
-
 				return owner.splitTabsTo(tabs, this.POSITION_TOP);
+			case 'foxsplitter-general-button':
 			case 'foxsplitter-general-menubutton-split-right':
 				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
 			case 'foxsplitter-general-menubutton-split-bottom':
@@ -315,18 +346,38 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-button-popup':
-				let (separator = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll-separator'),
-					item = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll')) {
-					if (this.syncScrollButton.inserted && this.syncScrollButton.boxObject.width) {
-						if (separator) separator.setAttribute('hidden', true);
-						if (item) item.setAttribute('hidden', true);
-					}
-					else {
-						if (separator) separator.removeAttribute('hidden');
-						if (item) item.removeAttribute('hidden');
-					}
-				}
-				return;
+				return this._updateGeneralPopup();
+		}
+	},
+	_updateGeneralPopup : function FSUI_updateGeneralPopup()
+	{
+		var tabsItems = this.generalButton.node.querySelectorAll('.'+this.MENU_ITEM+'.tabs');
+		var multipleTabs = this.owner.visibleTabs.length > 1;
+		Array.forEach(tabsItems, function(aItem) {
+			if (multipleTabs)
+				aItem.removeAttribute('disabled');
+			else
+				aItem.setAttribute('disabled', true);
+		}, this);
+
+		var groupedItems = this.generalButton.node.querySelectorAll('.'+this.MENU_ITEM+'.grouped');
+		Array.forEach(groupedItems, function(aItem) {
+			if (this.owner.parent)
+				aItem.removeAttribute('disabled');
+			else
+				aItem.setAttribute('disabled', true);
+		}, this);
+
+		var separator = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll-separator');
+		var syncScrollItem = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll');
+		if (this.syncScrollButton.inserted &&
+			this.syncScrollButton.node.boxObject.width) {
+			if (separator) separator.setAttribute('hidden', true);
+			if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
+		}
+		else {
+			if (separator) separator.removeAttribute('hidden');
+			if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
 		}
 	},
 

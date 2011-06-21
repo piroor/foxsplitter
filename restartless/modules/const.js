@@ -15,6 +15,7 @@ var exports = {
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',
+	MENU_ITEM      : 'foxsplitter-menuitem',
 
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
