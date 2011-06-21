@@ -370,7 +370,7 @@ FoxSplitterBase.prototype = {
 	},
 	duplicateTabAt : function FSW_duplicateTabAt(aTab, aPosition)
 	{
-		return this.duplicateTabsIn([aTab], aPosition);
+		return this.duplicateTabsAt([aTab], aPosition);
 	},
 
 	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition)
