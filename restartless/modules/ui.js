@@ -158,12 +158,14 @@ FoxSplitterUI.prototype = {
 
 		this._installStyleSheet();
 		this._initToolbarItems();
+		this._initMenuItems();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
+		this._destroyMenuItems();
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
@@ -302,6 +304,66 @@ FoxSplitterUI.prototype = {
 		delete this.generalButton;
 		this.syncScrollButton.destroy();
 		delete this.syncScrollButton;
+	},
+
+
+	_initMenuItems : function FSUI_initMenuItems()
+	{
+		var contextLinkItems = ToolbarItem.toDOMDocumentFragment(<>
+				<menu id="foxsplitter-context-link-split"
+					label={bundle.getString('ui.split.link.label')}
+					accesskey={bundle.getString('ui.split.link.accesskey')}
+					oncommand="FoxSplitter.ui.onCommand(event);">
+					<menupopup>
+						<menuitem id="foxsplitter-context-link-split-top"
+							class={iconicClass+'split-top'}
+							label={bundle.getString('ui.split.top.short')}
+							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+						<menuitem id="foxsplitter-context-link-split-right"
+							class={iconicClass+'split-right'}
+							label={bundle.getString('ui.split.right.short')}
+							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+						<menuitem id="foxsplitter-context-link-split-bottom"
+							class={iconicClass+'split-bottom'}
+							label={bundle.getString('ui.split.bottom.short')}
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+						<menuitem id="foxsplitter-context-link-split-left"
+							class={iconicClass+'split-left'}
+							label={bundle.getString('ui.split.left.short')}
+							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+					</menupopup>
+				</menu>
+			</>, this.document);
+
+		var contextFrameItems = ToolbarItem.toDOMDocumentFragment(<>
+				<menu id="foxsplitter-context-frame-split"
+					label={bundle.getString('ui.split.frame.label')}
+					accesskey={bundle.getString('ui.split.frame.accesskey')}
+					oncommand="FoxSplitter.ui.onCommand(event);">
+					<menupopup>
+						<menuitem id="foxsplitter-context-frame-split-top"
+							class={iconicClass+'split-top'}
+							label={bundle.getString('ui.split.top.short')}
+							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+						<menuitem id="foxsplitter-context-frame-split-right"
+							class={iconicClass+'split-right'}
+							label={bundle.getString('ui.split.right.short')}
+							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+						<menuitem id="foxsplitter-context-frame-split-bottom"
+							class={iconicClass+'split-bottom'}
+							label={bundle.getString('ui.split.bottom.short')}
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+						<menuitem id="foxsplitter-context-frame-split-left"
+							class={iconicClass+'split-left'}
+							label={bundle.getString('ui.split.left.short')}
+							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+					</menupopup>
+				</menu>
+			</>, this.document);
+	},
+
+	_destroyMenuItems : function FSUI_destroyMenuItems()
+	{
 	},
 
 

@@ -93,6 +93,14 @@ ui.split.left.short=Split to Left
 ui.split.left.long=Split tab as Left window
 ui.split.left.accesskey=l
 
+
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
+
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
+
+
 ui.grid.short=Tile
 ui.grid.long=Tile all tabs
 ui.grid.accesskey=t

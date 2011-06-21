@@ -97,6 +97,13 @@ ui.split.left.long=タブを左のウィンドウとして分割
 ui.split.left.accesskey=l
 
 
+ui.split.link.label=分割されたウィンドウでリンク先を開く
+ui.split.link.accesskey=s
+
+ui.split.frame.label=分割されたウィンドウでフレームを開く
+ui.split.frame.accesskey=s
+
+
 ui.grid.short=並べる
 ui.grid.long=すべてのタブを平面に並べる
 ui.grid.accesskey=t
@@ -136,24 +143,6 @@ ui.syncScroll.accesskey=s
 
 
 
-show.syncScroll=分割されたペインのツールバーに「スクロールを同期」ボタンを表示する
-show.collapseexpand=分割されたペインのツールバーに「たたむ」「ひろげる」ボタンを表示する
-tabs.autoHide=分割されたペインで常にタブを表示する
-show.toolbar.navigation.always=分割されたペインのツールバーでナビゲーションを常に表示する
-
-show.addbuttons.caption=ブラウズ領域の分割ボタン
-show.addbuttons.hover.type=ブラウズ領域の端をポイントした時
-show.addbuttons.hover.type.0=自動的に分割ボタンを表示する
-show.addbuttons.hover.type.1=Shiftキーを押している時だけ分割ボタンを表示する
-show.addbuttons.dragdrop=リンク、ファイル、タブなどのドラッグ＆ドロップ時に分割ボタンを表示する
-addbuttons.size.before=分割ボタンの高さ：
-addbuttons.size.after=ピクセル
-addbuttons.area.before=分割ボタンの幅：
-addbuttons.area.after=ピクセル
-
-
-tab.menu=メニュー
-show.menu=メニューバーに「分割」メニューを追加
 show.context.caption=タブのコンテキストメニューに以下の項目を追加する：
 show.tab.context.split=タブを分割
 show.tab.context.layout.grid=すべてのタブを平面に並べる
@@ -161,27 +150,12 @@ show.tab.context.layout.x=すべてのタブを横に並べる
 show.tab.context.layout.y=すべてのタブを縦に並べる
 show.tab.context.gather=すべての分割したブラウザをタブに集める
 
-
-
-
-add.button.top.tooltip=上に分割
-add.button.bottom.tooltip=下に分割
-add.button.right.tooltip=右に分割
-add.button.left.tooltip=左に分割
-
-
 file.removeAll.label=分割されたペインをすべて閉じる
 file.removeAll.accesskey=b
 view.collapseAll.label=分割されたペインをすべてたたむ
 view.collapseAll.accesskey=l
 view.expandAll.label=分割されたペインをすべてひろげる
 view.expandAll.accesskey=x
-
-add.label=ブラウズ領域を分割
-add.top.label=上に分割
-add.bottom.label=下に分割
-add.right.label=右に分割
-add.left.label=左に分割
 
 frame.add.label=このフレームからブラウズ領域を分割
 frame.add.top.label=上に分割
