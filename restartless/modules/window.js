@@ -184,6 +184,12 @@ FoxSplitterWindow.prototype = {
 		return !this._window ? [] :
 			(this.browser.visibleTabs || this.allTabs);
 	},
+	get selectedTabs()
+	{
+		return this.visibleTabs.filter(function(aTab) {
+			return aTab.getAttribute('multiselected') == 'true';
+		});
+	},
 	get allTabs()
 	{
 		return !this.browser ? [] :
@@ -765,10 +771,7 @@ FoxSplitterWindow.prototype = {
 
 	tileSelectedTabs : function FSW_tileSelectedTabs(aMode)
 	{
-		var tabs = this.visibleTabs.filter(function(aTab) {
-				return aTab.getAttribute('multiselected') == 'true';
-			});
-		return this.tileTabs(tabs, aMode);
+		return this.tileTabs(this.selectedTabs, aMode);
 	},
 
 

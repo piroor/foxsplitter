@@ -314,7 +314,24 @@ ToolbarItem.XULNS = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.x
  */
 ToolbarItem.create = function(aXML, aOwner, aOptions) {
 	aOptions = aOptions || {};
+	var item = aXML;
+	if (!(aXML instanceof Ci.nsIDOMElement)) {
+		let fragment = this.toDOMDocumentFragment(aXML, aOwner);
+		item = fragment.querySelector('*');
+	}
+	aOptions.node = item.parentNode.removeChild(item);
+	if (aOwner instanceof Ci.nsIDOMElement && aOwner.localName == 'toolbar')
+		aOptions.toolbar = aOwner;
+	return new ToolbarItem(aOptions);
+};
 
+/**
+ * @param {XML} aXML
+ *   A source of a XUL document fragment as an E4X object (XML object).
+ * @param {nsIDOMNode} aOwner
+ *   A owner document or a XUL element which becomes to the parent of the created document fragment.
+ */
+ToolbarItem.toDOMDocumentFragment = function(aXML, aOwner) {
 	var doc = aOwner.ownerDocument || aOwner;
 	var range = doc.createRange();
 	range.selectNodeContents(aOwner);
@@ -326,13 +343,8 @@ ToolbarItem.create = function(aXML, aOwner, aOptions) {
 	XML.setSettings(originalSettings);
 
 	range.detach();
-	var item = fragment.querySelector('*');
 
-	aOptions.node = item.parentNode.removeChild(item);
-	if (aOwner instanceof Ci.nsIDOMElement && aOwner.localName == 'toolbar')
-		aOptions.toolbar = aOwner;
-
-	return new ToolbarItem(aOptions);
+	return fragment;
 };
 
 /** A handler for bootstrap.js */

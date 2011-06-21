@@ -1,4 +1,5 @@
 load('lib/jsdeferred');
+load('lib/prefs');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
 
@@ -9,11 +10,13 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 						.getService(Ci.nsIWindowWatcher);
 
+var FoxSplitterConst = require('const');
+
 function FoxSplitterBase() 
 {
 }
 FoxSplitterBase.prototype = {
-	__proto__ : require('const'),
+	__proto__ : FoxSplitterConst,
 
 	newMemberFactor : 0.5,
 	normalExpandFactor : 1.2,
@@ -21,6 +24,9 @@ FoxSplitterBase.prototype = {
 	{
 		return this.maximized ? 1 : this.normalExpandFactor ;
 	},
+
+	get shouldDuplicateOnSplit() { return FoxSplitterBase.shouldDuplicateOnSplit; },
+	set shouldDuplicateOnSplit(aValue) { return FoxSplitterBase.shouldDuplicateOnSplit = aValue; },
 
 	isGroup : false,
 
@@ -274,7 +280,7 @@ FoxSplitterBase.prototype = {
 
 	// commands to create new pane
 
-	_openWindow : function FSW_openWindow(aURIOrTab, aPositionAndSize)
+	_openWindow : function FSB_openWindow(aURIOrTab, aPositionAndSize)
 	{
 		var options = [
 				'chrome,dialog=no,all',
@@ -319,7 +325,7 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinksAt : function FSW_openLinksAt(aURIs, aPosition)
+	openLinksAt : function FSB_openLinksAt(aURIs, aPosition)
 	{
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
@@ -352,12 +358,12 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinkAt : function FSW_openLinkAt(aURIOrTab, aPosition)
+	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition)
 	{
 		return this.openLinksAt([aURIOrTab], aPosition);
 	},
 
-	duplicateTabsAt : function FSW_duplicateTabsAt(aTabs, aPosition)
+	duplicateTabsAt : function FSB_duplicateTabsAt(aTabs, aPosition)
 	{
 		return this.openLinkAt('about:blank', aPosition)
 				.next(function(aWindow) {
@@ -368,12 +374,12 @@ FoxSplitterBase.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
-	duplicateTabAt : function FSW_duplicateTabAt(aTab, aPosition)
+	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition)
 	{
 		return this.duplicateTabsAt([aTab], aPosition);
 	},
 
-	moveTabsTo : function FSW_moveTabsTo(aTabs, aPosition)
+	moveTabsTo : function FSB_moveTabsTo(aTabs, aPosition)
 	{
 		aTabs = aTabs.slice(0);
 
@@ -386,9 +392,22 @@ FoxSplitterBase.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
-	moveTabTo : function FSW_moveTabTo(aTab, aPosition)
+	moveTabTo : function FSB_moveTabTo(aTab, aPosition)
 	{
 		return this.moveTabsTo([aTab], aPosition);
+	},
+
+	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition)
+	{
+		if (this.shouldDuplicateOnSplit)
+			return this.duplicateTabsAt(aTabs, aPosition);
+		else
+			return this.moveTabsTo(aTabs, aPosition);
+	},
+
+	splitTabTo : function FSB_splitTabTo(aTab, aPosition)
+	{
+		return this.splitTabsTo([aTab], aPosition);
 	},
 
 
@@ -584,3 +603,25 @@ FoxSplitterBase.prototype = {
 	}
 };
 
+FoxSplitterBase.shouldDuplicateOnSplit = prefs.getPref(FoxSplitterConst.domain+'shouldDuplicateOnSplit');
+
+var prefListener = {
+		domain : FoxSplitterConst.domain,
+		observe : function FSWPL_observe(aSubject, aTopic, aData) {
+			if (aTopic != 'nsPref:changed')
+				return;
+
+			var prefName = aData.replace(FoxSplitterConst.domain, '');
+			if (prefName in FoxSplitterBase)
+				FoxSplitterBase[prefName] = prefs.getPref(aData);
+		}
+	};
+
+prefs.addPrefListener(prefListener);
+
+function shutdown()
+{
+	prefs.removePrefListener(prefListener);
+	prefs = undefined;
+	FoxSplitterConst = undefined;
+}

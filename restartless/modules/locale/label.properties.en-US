@@ -67,6 +67,22 @@ hiddenUIInInactiveWindow.extra=Extra Toolbars
 ui.split.short=Split
 ui.split.long=Split Browsing Window
 
+ui.split.top.short=Split to Above
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
+
+ui.split.right.short=Split to Right
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
+
+ui.split.bottom.short=Split to Below
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
+
+ui.split.left.short=Split to Left
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
+
 ui.grid.short=Tile
 ui.grid.long=Tile all tabs
 ui.grid.accesskey=t

@@ -70,6 +70,23 @@ hiddenUIInInactiveWindow.extra=その他のツールバー
 ui.split.short=分割
 ui.split.long=ウィンドウを分割する
 
+ui.split.top.short=上に分割
+ui.split.top.long=タブを上のウィンドウとして分割
+ui.split.top.accesskey=a
+
+ui.split.right.short=右に分割
+ui.split.right.long=タブを右のウィンドウとして分割
+ui.split.right.accesskey=r
+
+ui.split.bottom.short=下に分割
+ui.split.bottom.long=タブを下のウィンドウとして分割
+ui.split.bottom.accesskey=b
+
+ui.split.left.short=左に分割
+ui.split.left.long=タブを左のウィンドウとして分割
+ui.split.left.accesskey=l
+
+
 ui.grid.short=並べる
 ui.grid.long=すべてのタブを平面に並べる
 ui.grid.accesskey=t
