@@ -7,6 +7,7 @@ var exports = {
 
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	ACTIVE            : 'foxsplitter-active',
+	MEMBER            : 'foxsplitter-member-window',
 	HOVER             : 'foxsplitter-hover',
 	STATE             : 'foxsplitter-state',
 	ID                : 'foxsplitter-id',

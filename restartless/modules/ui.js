@@ -74,6 +74,9 @@ FoxSplitterUI.prototype = {
 			-moz-image-region: rect(0 24px 24px 0);
 		}
 
+		:root:not([MEMBER="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button {
+			visibility: collapse;
+		}
 		#foxsplitter-syncScroll-button {
 			-moz-image-region: rect(0 112px 16px 96px);
 		}
@@ -145,8 +148,9 @@ FoxSplitterUI.prototype = {
 		var styles = this.BASE_STYLESHEET
 						.replace(/ACTIVE/g, this.ACTIVE)
 						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
-						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM)
-						.replace(/MIN_OPACITY/g, this.MIN_OPACITY);
+						.replace(/MEMBER/g, this.MEMBER)
+						.replace(/MIN_OPACITY/g, this.MIN_OPACITY)
+						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
 		this.document.insertBefore(this._styleSheet, this.documentElement);
@@ -313,7 +317,7 @@ FoxSplitterUI.prototype = {
 			case 'foxsplitter-general-button-popup':
 				let (separator = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll-separator'),
 					item = this.generalButton.node.querySelector('#foxsplitter-general-menubutton-syncScroll')) {
-					if (this.syncScrollButton.inserted) {
+					if (this.syncScrollButton.inserted && this.syncScrollButton.boxObject.width) {
 						if (separator) separator.setAttribute('hidden', true);
 						if (item) item.setAttribute('hidden', true);
 					}

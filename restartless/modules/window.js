@@ -1575,11 +1575,13 @@ FoxSplitterWindow.prototype = {
 	// called by the parent group
 	setGroupedAppearance : function FSW_setGroupedAppearance()
 	{
+		this.documentElement.setAttribute(this.MEMBER, true);
 		if (this.ui)
 			this.ui.setGroupedAppearance();
 	},
 	clearGroupedAppearance : function FSW_clearGroupedAppearance(aForce)
 	{
+		this.documentElement.removeAttribute(this.MEMBER);
 		if (this.ui)
 			this.ui.clearGroupedAppearance(aForce);
 	},
