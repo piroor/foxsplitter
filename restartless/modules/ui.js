@@ -82,7 +82,7 @@ FoxSplitterUI.prototype = {
 			-moz-image-region: rect(0 16px 16px 0);
 		}
 
-		toolbox[iconsize="large"] .toolbarbutton-1.TOOLBAR_ITEM {
+		toolbox[iconsize="large"] .toolbarbutton-1.TOOLBAR_ITEM.platform-Linux {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png");
 			-moz-image-region: rect(0 24px 24px 0);
 		}
