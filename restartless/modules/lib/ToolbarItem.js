@@ -28,10 +28,30 @@ function ToolbarItem(aDefinition) {
 	this.init(aDefinition);
 }
 ToolbarItem.prototype = {
+	get id()
+	{
+		return this.node.id;
+	},
 	get inserted()
 	{
 		const nsIDOMNode = Ci.nsIDOM3Node || Ci.nsIDOMNode; // on Firefox 7, nsIDOM3Node was merged to nsIDOMNode.
 		return this._document.compareDocumentPosition(this.node) & nsIDOMNode.DOCUMENT_POSITION_CONTAINED_BY;
+	},
+	get defaultToolbar()
+	{
+		return this._definition.toolbar ? this._document.getElementById(this._definition.toolbar) : null ;
+	},
+	get defaultCustomizableToolbar()
+	{
+		return this._getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
+	},
+	get palette()
+	{
+		var toolbar = this.defaultToolbar || this.defaultCustomizableToolbar;
+		return (
+			(toolbar.toolbox && toolbar.toolbox.palette) ||
+			this._getNodeByXPath('ancestor::*[local-name()="toolbox"]/descendant::*[local-name()="toolbarpalette"]', toolbar)
+		);
 	},
 
 	init : function(aDefinition)
@@ -64,6 +84,7 @@ ToolbarItem.prototype = {
 			return;
 
 		this._onBeforeCustomization();
+		this._removeFromDefaultSet();
 
 		this._window.removeEventListener('beforecustomization', this, false);
 		this._window.removeEventListener('aftercustomization', this, false);
@@ -119,24 +140,17 @@ ToolbarItem.prototype = {
 
 	_initialInsert : function()
 	{
-		var toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.node.id.quote()+')]');
-		if (toolbar) { // when inserted into another toolbar
-			if (!this.inserted) {
-				let items = (toolbar.getAttribute('currentset') || '').split(',');
-				let index = items.indexOf(this.node.id) + 1;
-				if (index < items.length)
-					toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
-			}
+		this._appendToDefaultSet();
+		if (this._checkInsertedInOtherPlace())
 			return;
-		}
 
-		toolbar = this.definition.toolbar ? this._document.getElementById(this.definition.toolbar) : null ;
+		var toolbar = this.defaultToolbar;
 		if (toolbar && !toolbar.toolbox)
 			return;
 
 		const Prefs = Cc['@mozilla.org/preferences;1']
 						.getService(Ci.nsIPrefBranch);
-		const key = 'extensions.restartless@piro.sakura.ne.jp.toolbaritem.'+this.node.id+'.initialized';
+		const key = 'extensions.restartless@piro.sakura.ne.jp.toolbaritem.'+this.id+'.initialized';
 
 		var done = false;
 		try {
@@ -146,28 +160,92 @@ ToolbarItem.prototype = {
 		}
 
 		if (done || !toolbar) {
-			if (!toolbar) // if no toolbar is specified, insert to the palette of the main toolbox.
-				toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
-			let palette = toolbar.toolbox.palette || this._getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbar.toolbox);
+			let palette = this.palette;
 			if (palette)
 				palette.appendChild(this.node);
 		}
 		else {
-			let refNode = this._getNodeByXPath('descendant::*[@id="fullscreenflex"]') ||
-						this._getNodeByXPath('descendant::*[@id="window-controls"]');
-			toolbar.insertBefore(this.node, refNode);
-
-			let currentset = toolbar.currentSet.replace(/__empty/, '');
-			currentset = currentset ? currentset.split(',') : [] ;
-			currentset.push(this.node.id);
-			currentset = currentset.join(',');
-			toolbar.currentSet = currentset;
-			toolbar.setAttribute('currentset', currentset);
-			this._document.persist(toolbar.id, 'currentset');
+			this._insertToDefaultToolbar();
 		}
 
 		if (!done)
 			Prefs.setBoolPref(key, true);
+	},
+
+	_appendToDefaultSet : function()
+	{
+		var toolbar = this.defaultToolbar;
+		if (!toolbar)
+			return;
+
+		var items = (toolbar.getAttribute('defaultset') || '').split(',');
+		if (items.indexOf(this.id) > -1)
+			return;
+
+		var lastItem = this._getLastItemInToolbar(toolbar);
+		if (lastItem) {
+			let index = items.indexOf(lastItem.id);
+			if (index > -1) {
+				items.splice(index, 0, this.id);
+			}
+			else {
+				items.push(this.id);
+			}
+		}
+		else {
+			items.push(this.id);
+		}
+		toolbar.setAttribute('defaultset', items.join(','));
+	},
+
+	_removeFromDefaultSet : function()
+	{
+		var toolbar = this.defaultToolbar;
+
+		var items = (toolbar.getAttribute('defaultset') || '').split(',');
+		var index = items.indexOf(this.id);
+		if (index < 0)
+			return;
+
+		items.splice(index, 1);
+		toolbar.setAttribute('defaultset', items.join(','));
+	},
+
+	_checkInsertedInOtherPlace : function()
+	{
+		var toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.id.quote()+')]');
+		if (!toolbar)
+			return false;
+
+		if (!this.inserted) {
+			let items = (toolbar.getAttribute('currentset') || '').split(',');
+			let index = items.indexOf(this.id) + 1;
+			if (index < items.length)
+				toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
+		}
+		return true;
+	},
+
+	_insertToDefaultToolbar : function()
+	{
+		var toolbar = this.defaultToolbar;
+		if (!toolbar)
+			return;
+
+		toolbar.insertBefore(this.node, this._getLastItemInToolbar(toolbar));
+
+		var currentset = toolbar.currentSet.replace(/__empty/, '');
+		currentset = currentset ? currentset.split(',') : [] ;
+		currentset.push(this.id);
+		currentset = currentset.join(',');
+		toolbar.currentSet = currentset;
+		toolbar.setAttribute('currentset', currentset);
+		this._document.persist(toolbar.id, 'currentset');
+	},
+
+	_getLastItemInToolbar : function(aToolbar)
+	{
+		return this._getNodeByXPath('descendant::*[@id="fullscreenflex" or @id="window-controls"][1]', aToolbar);
 	},
 
 	_getNodeByXPath : function(aExpression, aContext)
@@ -199,14 +277,14 @@ ToolbarItem.prototype = {
 
 	_onBeforeCustomization : function()
 	{
-		if (this.definition && this.definition.destroy && this.inserted)
-			this.definition.destroy();
+		if (this._definition && this._definition.destroy && this.inserted)
+			this._definition.destroy();
 	},
 
 	_onAfterCustomization : function()
 	{
-		if (this.definition && this.definition.destroy && this.inserted)
-			this.definition.init();
+		if (this._definition && this._definition.destroy && this.inserted)
+			this._definition.init();
 	},
 
 
