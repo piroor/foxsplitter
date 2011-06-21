@@ -3,6 +3,9 @@ load('lib/prefs');
 load('lib/ToolbarItem');
 load('base');
 
+var bundle = require('lib/locale')
+				.get(resolve('locale/label.properties'));
+
 var EXPORTED_SYMBOLS = ['FoxSplitterUI'];
 
 var FoxSplitterConst = require('const');
@@ -152,14 +155,29 @@ FoxSplitterUI.prototype = {
 
 	_initToolbarItems : function FSUI_initToolbarItems()
 	{
-		var button = this.document.createElement('toolbarbutton');
-		button.setAttribute('id', 'foxsplitter-test');
-		button.setAttribute('label', 'test');
-		button.setAttribute('class', ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM);
-		this.button = new ToolbarItem({
-						node    : button,
-						toolbar : 'nav-bar'
-					});
+		var toolbar = this.document.getElementById('nav-bar');
+		this.button = ToolbarItem.create(
+			<>
+				<toolbarbutton id="foxsplitter-general-button"
+					type="menu-button"
+					label={bundle.getString('button.split.label')}
+					tooltip={bundle.getString('button.split.tooltip')}
+					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}>
+					<menupopup>
+						<menuitem/>
+						<menuitem/>
+						<menuitem/>
+					</menupopup>
+				</toolbarbutton>
+			</>,
+			toolbar,
+			{
+				onInit : function() {
+				},
+				onDestroy : function() {
+				}
+			}
+		);
 	},
 
 	_destroyToolbarItems : function FSUI_destroyToolbarItems()

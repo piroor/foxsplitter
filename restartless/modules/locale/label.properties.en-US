@@ -65,6 +65,36 @@ hiddenUIInInactiveWindow.extra=Extra Toolbars
 
 
 
+button.split.label=Split
+button.split.tooltip=Split Browsing Window
+
+button.layout.grid.label=Tile
+button.layout.grid.tooltip=Tile all tabs
+button.layout.menu.grid.label=Tile all tabs
+button.layout.menu.grid.accesskey=t
+button.layout.menu.x.label=Tile all tabs Vertically
+button.layout.menu.x.accesskey=v
+button.layout.menu.y.label=Tile all tabs Horizontally
+button.layout.menu.y.accesskey=h
+button.layout.menu.gather.label=Gather all windows as tabs
+button.layout.menu.gather.accesskey=g
+
+button.gather.label=Gather
+button.gather.tooltip=Gather panes to the main area as tabs
+button.collapseAll.label=Collapse
+button.collapseAll.tooltip=Collapse all of panes
+button.expandAll.label=Expand
+button.expandAll.tooltip=Expand all of panes
+button.removeAll.label=Close All
+button.removeAll.tooltip=Close all of panes
+
+
+
+
+
+
+
+
 
 subbrowser.autoFocus=Auto-focus to panes on mouseover
 delay.subbrowser.autoFocus.before=Focus to the pane after 
@@ -187,14 +217,6 @@ menu.add.top.label=Above
 menu.add.bottom.label=Below
 menu.add.right.label=Right
 menu.add.left.label=Left
-menu.layout.grid.label=Tile all tabs
-menu.layout.grid.accesskey=t
-menu.layout.x.label=Tile all tabs Vertically
-menu.layout.x.accesskey=v
-menu.layout.y.label=Tile all tabs Horizontally
-menu.layout.y.accesskey=h
-menu.gather.label=Gather all panes here as tabs
-menu.gather.accesskey=g
 menu.syncScroll.label=Synchronize Scroll of Split Panes to the main area
 menu.syncScroll.accesskey=s
 
@@ -224,20 +246,6 @@ subbrowser.menu.collapse=Collapse
 subbrowser.menu.expand=Expand
 subbrowser.menu.close=Close
 subbrowser.menu.syncScroll=Synchronize Scroll
-
-
-button.menu.label=Split
-button.menu.tooltip=Split Browsing Area
-button.layout.grid.label=Tile
-button.layout.grid.tooltip=Tile all tabs
-button.gather.label=Gather
-button.gather.tooltip=Gather panes to the main area as tabs
-button.collapseAll.label=Collapse
-button.collapseAll.tooltip=Collapse all of panes
-button.expandAll.label=Expand
-button.expandAll.tooltip=Expand all of panes
-button.removeAll.label=Close All
-button.removeAll.tooltip=Close all of panes
 
 
 

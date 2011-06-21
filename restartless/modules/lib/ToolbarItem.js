@@ -300,7 +300,40 @@ ToolbarItem.prototype = {
 };
 
 ToolbarItem.instances = [];
+
 ToolbarItem.BASIC_ITEM_CLASS = 'toolbarbutton-1 chromeclass-toolbar-additional';
+ToolbarItem.XULNS = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
+
+/**
+ * @param {XML} aXML
+ *   A source of a XUL element for a toolbar item as an E4X object (XML object).
+ * @param {nsIDOMNode} aOwner
+ *   A owner document or a toolbar element which becomes to the parent of the created item.
+ * @param {Object} aOptions
+ *   A options for the ToolbarItem constructor.
+ */
+ToolbarItem.create = function(aXML, aOwner, aOptions) {
+	aOptions = aOptions || {};
+
+	var doc = aOwner.ownerDocument || aOwner;
+	var range = doc.createRange();
+	range.selectNodeContents(aOwner);
+
+	var originalSettings = XML.settings();
+	XML.ignoreWhitespace = true;
+	XML.prettyPrinting = false;
+	var fragment = range.createContextualFragment(aXML.toXMLString());
+	XML.setSettings(originalSettings);
+
+	range.detach();
+	var item = fragment.querySelector('*');
+
+	aOptions.node = item.parentNode.removeChild(item);
+	if (aOwner instanceof Ci.nsIDOMElement && aOwner.localName == 'toolbar')
+		aOptions.toolbar = aOwner;
+
+	return new ToolbarItem(aOptions);
+};
 
 /** A handler for bootstrap.js */
 function shutdown()

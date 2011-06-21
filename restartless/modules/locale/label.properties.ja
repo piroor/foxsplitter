@@ -66,6 +66,32 @@ hiddenUIInInactiveWindow.extra=その他のツールバー
 
 
 
+button.split.label=分割
+button.split.tooltip=ウィンドウを分割する
+
+button.layout.grid.label=並べる
+button.layout.grid.tooltip=タブを平面に並べる
+button.layout.menu.grid.label=すべてのタブを平面に並べる
+button.layout.menu.grid.accesskey=t
+button.layout.menu.x.label=すべてのタブを横に並べる
+button.layout.menu.x.accesskey=v
+button.layout.menu.y.label=すべてのタブを縦に並べる
+button.layout.menu.y.accesskey=h
+button.layout.menu.gather.label=すべての分割されたウィンドウをタブに集める
+button.layout.menu.gather.accesskey=g
+
+button.gather.label=集める
+button.gather.tooltip=分割されたペインをタブに集める
+button.collapseAll.label=たたむ
+button.collapseAll.tooltip=分割されたペインをすべてたたむ
+button.expandAll.label=ひろげる
+button.expandAll.tooltip=分割されたペインをすべてひろげる
+button.removeAll.label=分割を解除
+button.removeAll.tooltip=分割されたペインをすべて閉じる
+
+
+
+
 
 show.syncScroll=分割されたペインのツールバーに「スクロールを同期」ボタンを表示する
 show.collapseexpand=分割されたペインのツールバーに「たたむ」「ひろげる」ボタンを表示する
@@ -160,14 +186,6 @@ menu.add.top.label=上に分割
 menu.add.bottom.label=下に分割
 menu.add.right.label=右に分割
 menu.add.left.label=左に分割
-menu.layout.grid.label=すべてのタブを平面に並べる
-menu.layout.grid.accesskey=t
-menu.layout.x.label=すべてのタブを横に並べる
-menu.layout.x.accesskey=v
-menu.layout.y.label=すべてのタブを縦に並べる
-menu.layout.y.accesskey=h
-menu.gather.label=すべての分割されたペインをタブに集める
-menu.gather.accesskey=g
 menu.syncScroll.label=分割されたペインのスクロールをメイン領域と同期させる
 menu.syncScroll.accesskey=s
 
@@ -198,18 +216,4 @@ subbrowser.menu.collapse=たたむ
 subbrowser.menu.expand=ひろげる
 subbrowser.menu.close=閉じる
 subbrowser.menu.syncScroll=スクロールを同期させる
-
-
-button.menu.label=分割
-button.menu.tooltip=ブラウズ領域の分割
-button.layout.grid.label=並べる
-button.layout.grid.tooltip=タブを平面に並べる
-button.gather.label=集める
-button.gather.tooltip=分割されたペインをタブに集める
-button.collapseAll.label=たたむ
-button.collapseAll.tooltip=分割されたペインをすべてたたむ
-button.expandAll.label=ひろげる
-button.expandAll.tooltip=分割されたペインをすべてひろげる
-button.removeAll.label=分割を解除
-button.removeAll.tooltip=分割されたペインをすべて閉じる
 
