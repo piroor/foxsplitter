@@ -226,44 +226,25 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="context.splitFromTab.duplicate"
 				name={domain+'context.splitFromTab.duplicate'}
 				type="bool"/>
+			<preference id="context.gatherWindows"
+				name={domain+'context.gatherWindows'}
+				type="bool"/>
 		</preferences>
 
-		<checkbox label={[
-				bundle.getString('appMenu.split.before'),
-				bundle.getString('ui.split.app.label'),
-				bundle.getString('appMenu.split.after')
-			].join('')}
+		<checkbox label={bundle.getFormattedString('appMenu.split.before', [bundle.getString('ui.split.app.label')])}
 			preference="appMenu.split"/>
-		<checkbox label={[
-				bundle.getString('viewMenu.split.before'),
-				bundle.getString('ui.split.view.label'),
-				bundle.getString('viewMenu.split.after')
-			].join('')}
+		<checkbox label={bundle.getFormattedString('viewMenu.split.before', [bundle.getString('ui.split.view.label')])}
 			preference="viewMenu.split"/>
-		<checkbox label={[
-				bundle.getString('context.splitFromLink.before'),
-				bundle.getString('ui.split.link.label'),
-				bundle.getString('context.splitFromLink.after')
-			].join('')}
+		<checkbox label={bundle.getFormattedString('context.splitFromLink.before', [bundle.getString('ui.split.link.label')])}
 			preference="context.splitFromLink"/>
-		<checkbox label={[
-				bundle.getString('context.splitFromFrame.before'),
-				bundle.getString('ui.split.frame.label'),
-				bundle.getString('context.splitFromFrame.after')
-			].join('')}
+		<checkbox label={bundle.getFormattedString('context.splitFromFrame.before', [bundle.getString('ui.split.frame.label')])}
 			preference="context.splitFromFrame"/>
-		<checkbox label={[
-				bundle.getString('context.splitFromTab.move.before'),
-				bundle.getString('ui.split.tab.move.label'),
-				bundle.getString('context.splitFromTab.move.after')
-			].join('')}
+		<checkbox label={bundle.getFormattedString('context.splitFromTab.move.before', [bundle.getString('ui.split.tab.move.label')])}
 			preference="context.splitFromTab.move"/>
-		<checkbox label={[
-				bundle.getString('context.splitFromTab.duplicate.before'),
-				bundle.getString('ui.split.tab.duplicate.label'),
-				bundle.getString('context.splitFromTab.duplicate.after')
-			].join('')}
-			preference="context.splitFromTab.duplicate"/>
+		<checkbox label={bundle.getFormattedString('context.splitFromTab.duplicate.before', [bundle.getString('ui.split.tab.duplicate.label')])}
+			preference="context.gather"/>
+		<checkbox label={bundle.getFormattedString('context.gatherWindows.before', [bundle.getString('ui.gather.long')])}
+			preference="context.gatherWindows"/>
 	</prefpane>
 
 	<!-- This must be created as an XHTML script element, not XUL one, because

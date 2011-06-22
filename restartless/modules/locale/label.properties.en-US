@@ -76,18 +76,13 @@ hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menu
 
-appMenu.split.before=Append "
-appMenu.split.after=" to the Firefox menu
-viewMenu.split.before=Append "
-viewMenu.split.after=" to the "View" menu
-context.splitFromLink.before=Append "
-context.splitFromLink.after=" to the context menu on web pages
-context.splitFromFrame.before=Append "
-context.splitFromFrame.after=" to the context menu on frames
-context.splitFromTab.move.before=Append "
-context.splitFromTab.move.after=" to the context menu on tabs
-context.splitFromTab.duplicate.before=Append "
-context.splitFromTab.duplicate.after=" to the context menu on tabs
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+context.splitFromTab.move=Append "%S" to the context menu on tabs
+context.splitFromTab.duplicate=Append "%S" to the context menu on tabs
+context.gatherWindows=Append "%S" to the context menu on tabs
 
 
 

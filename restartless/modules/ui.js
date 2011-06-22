@@ -524,7 +524,18 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 			tabContextPopup.insertBefore(this.tabContextDuplicateItem, (this.tabContextMoveItem || this.document.getElementById('context_openTabInWindow')).nextSibling);
 		}
-		if (this.tabContextMoveItem || this.tabContextDuplicateItem)
+		if (prefs.getPref(this.domain+'context.gatherWindows')) {
+			let popup = this.document.querySelector('#tabContextMenu');
+			this.tabContextGatherItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menuitem id="foxsplitter-context-tab-gather"
+						class={iconicClass+'gather grouped'}
+						label={bundle.getString('ui.gather.long')}
+						accesskey={bundle.getString('ui.gather.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);"/>
+				</>, tabContextPopup).querySelector('*');
+			tabContextPopup.insertBefore(this.tabContextGatherItem, this.document.getElementById('context_bookmarkAllTabs').nextSibling);
+		}
+		if (this.tabContextMoveItem || this.tabContextDuplicateItem || this.tabContextGatherItem)
 			tabContextPopup.addEventListener('popupshowing', this, false);
 	},
 
@@ -557,7 +568,7 @@ FoxSplitterUI.prototype = {
 			delete this.contextFrameItem;
 		}
 
-		if (this.tabContextMoveItem || this.tabContextDuplicateItem) {
+		if (this.tabContextMoveItem || this.tabContextDuplicateItem || this.tabContextGatherItem) {
 			let popup = this.document.querySelector('#tabContextMenu');
 			popup.removeEventListener('popupshowing', this, false);
 
@@ -568,6 +579,10 @@ FoxSplitterUI.prototype = {
 			if (this.tabContextDuplicateItem && this.tabContextDuplicateItem.parentNode)
 				this.tabContextDuplicateItem.parentNode.removeChild(this.tabContextDuplicateItem);
 			delete this.tabContextDuplicateItem;
+
+			if (this.tabContextGatherItem && this.tabContextGatherItem.parentNode)
+				this.tabContextGatherItem.parentNode.removeChild(this.tabContextGatherItem);
+			delete this.tabContextGatherItem;
 		}
 	},
 
@@ -708,6 +723,7 @@ FoxSplitterUI.prototype = {
 						owner.tileAllTabs(this.TILE_MODE_Y_AXIS) ;
 
 			case 'foxsplitter-general-menubutton-gather':
+			case 'foxsplitter-context-tab-gather':
 				return owner.gatherWindows();
 
 			case 'foxsplitter-general-menubutton-closeAll':
@@ -794,6 +810,13 @@ FoxSplitterUI.prototype = {
 				this.tabContextDuplicateItem.removeAttribute('hidden');
 			else
 				this.tabContextDuplicateItem.setAttribute('hidden', true);
+		}
+
+		if (this.tabContextGatherItem) {
+			if (this.owner.parent)
+				this.tabContextGatherItem.removeAttribute('disabled');
+			else
+				this.tabContextGatherItem.setAttribute('disabled', true);
 		}
 	},
 
@@ -999,6 +1022,7 @@ var prefListener = {
 					case 'context.splitFromFrame':
 					case 'context.splitFromTab.move':
 					case 'context.splitFromTab.duplicate':
+					case 'context.gatherWindows':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetMenuItems();
 						});

@@ -32,6 +32,7 @@ config.setDefault(domain+'context.splitFromLink', true);
 config.setDefault(domain+'context.splitFromFrame', true);
 config.setDefault(domain+'context.splitFromTab.move', true);
 config.setDefault(domain+'context.splitFromTab.duplicate', true);
+config.setDefault(domain+'context.gatherWindows', true);
 
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-grid', true);
 config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-x',    true);
