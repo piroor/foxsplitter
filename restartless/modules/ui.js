@@ -161,14 +161,14 @@ FoxSplitterUI.prototype = {
 
 		this._installStyleSheet();
 		this._initToolbarItems();
-		this.initMenuItems();
+		this._initMenuItems();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
-		this.destroyMenuItems();
+		this._destroyMenuItems();
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
@@ -317,7 +317,7 @@ FoxSplitterUI.prototype = {
 	},
 
 
-	initMenuItems : function FSUI_initMenuItems()
+	_initMenuItems : function FSUI_initMenuItems()
 	{
 		var iconicClass = 'menuitem-iconic ' + this.MENU_ITEM+' ';
 
@@ -394,45 +394,79 @@ FoxSplitterUI.prototype = {
 			popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
 		}
 
-		if (prefs.getPref(this.domain+'context.splitFromTab')) {
-			let popup = this.document.querySelector('#tabContextMenu');
-			this.tabContextItem = ToolbarItem.toDOMDocumentFragment(<>
-					<menu id="foxsplitter-context-tab-split"
+		let tabContextPopup = this.document.querySelector('#tabContextMenu');
+		if (prefs.getPref(this.domain+'context.splitFromTab.move')) {
+			this.tabContextMoveItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menu id="foxsplitter-context-tab-split-move"
 						class={'menu-iconic split '+this.MENU_ITEM}
-						label={bundle.getString('ui.split.tab.label')}
-						accesskey={bundle.getString('ui.split.tab.accesskey')}
-						oncommand="FoxSplitter.ui.handleEvent(event);"
-						onclick="FoxSplitter.ui.handleEvent(event);">
+						label={bundle.getString('ui.split.tab.move.label')}
+						accesskey={bundle.getString('ui.split.tab.move.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);">
 						<menupopup>
-							<menuitem id="foxsplitter-context-tab-split-top"
+							<menuitem id="foxsplitter-context-tab-split-move-top"
 								class={iconicClass+'split-top'}
 								label={bundle.getString('ui.split.top.short')}
 								accesskey={bundle.getString('ui.split.top.accesskey')}
 								foxsplitter-acceptmiddleclick="true"/>
-							<menuitem id="foxsplitter-context-tab-split-right"
+							<menuitem id="foxsplitter-context-tab-split-move-right"
 								class={iconicClass+'split-right'}
 								label={bundle.getString('ui.split.right.short')}
 								accesskey={bundle.getString('ui.split.right.accesskey')}
 								foxsplitter-acceptmiddleclick="true"/>
-							<menuitem id="foxsplitter-context-tab-split-bottom"
+							<menuitem id="foxsplitter-context-tab-split-move-bottom"
 								class={iconicClass+'split-bottom'}
 								label={bundle.getString('ui.split.bottom.short')}
 								accesskey={bundle.getString('ui.split.bottom.accesskey')}
 								foxsplitter-acceptmiddleclick="true"/>
-							<menuitem id="foxsplitter-context-tab-split-left"
+							<menuitem id="foxsplitter-context-tab-split-move-left"
 								class={iconicClass+'split-left'}
 								label={bundle.getString('ui.split.left.short')}
 								accesskey={bundle.getString('ui.split.left.accesskey')}
 								foxsplitter-acceptmiddleclick="true"/>
 						</menupopup>
 					</menu>
-				</>, popup).querySelector('*');
-			popup.insertBefore(this.tabContextItem, this.document.getElementById('context_openTabInWindow').nextSibling);
-			popup.addEventListener('popupshowing', this, false);
+				</>, tabContextPopup).querySelector('*');
+			tabContextPopup.insertBefore(this.tabContextMoveItem, this.document.getElementById('context_openTabInWindow').nextSibling);
 		}
+		if (prefs.getPref(this.domain+'context.splitFromTab.duplicate')) {
+			let popup = this.document.querySelector('#tabContextMenu');
+			this.tabContextDuplicateItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menu id="foxsplitter-context-tab-split-duplicate"
+						class={this.tabContextMoveItem ? '' : 'menu-iconic split '+this.MENU_ITEM }
+						label={bundle.getString('ui.split.tab.duplicate.label')}
+						accesskey={bundle.getString('ui.split.tab.duplicate.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);">
+						<menupopup>
+							<menuitem id="foxsplitter-context-tab-split-duplicate-top"
+								class={iconicClass+'split-top'}
+								label={bundle.getString('ui.split.top.short')}
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-duplicate-right"
+								class={iconicClass+'split-right'}
+								label={bundle.getString('ui.split.right.short')}
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-duplicate-bottom"
+								class={iconicClass+'split-bottom'}
+								label={bundle.getString('ui.split.bottom.short')}
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-duplicate-left"
+								class={iconicClass+'split-left'}
+								label={bundle.getString('ui.split.left.short')}
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+						</menupopup>
+					</menu>
+				</>, tabContextPopup).querySelector('*');
+			tabContextPopup.insertBefore(this.tabContextDuplicateItem, (this.tabContextMoveItem || this.document.getElementById('context_openTabInWindow')).nextSibling);
+		}
+		if (this.tabContextMoveItem || this.tabContextDuplicateItem)
+			tabContextPopup.addEventListener('popupshowing', this, false);
 	},
 
-	destroyMenuItems : function FSUI_destroyMenuItems()
+	_destroyMenuItems : function FSUI_destroyMenuItems()
 	{
 		if (this.contextLinkItem) {
 			if (this.contextLinkItem.parentNode)
@@ -443,18 +477,37 @@ FoxSplitterUI.prototype = {
 		if (this.contextFrameItem) {
 			let popup = this.document.getElementById('contentAreaContextMenu');
 			popup.removeEventListener('popupshowing', this, false);
+
 			if (this.contextFrameItem.parentNode)
 				this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
 			delete this.contextFrameItem;
 		}
 
-		if (this.tabContextItem) {
-			let popup = this.document.getElementById('tabContextMenu');
+		if (this.tabContextMoveItem || this.tabContextDuplicateItem) {
+			let popup = this.document.querySelector('#tabContextMenu');
 			popup.removeEventListener('popupshowing', this, false);
-			if (this.tabContextItem.parentNode)
-				this.tabContextItem.parentNode.removeChild(this.tabContextItem);
-			delete this.tabContextItem;
+
+			if (this.tabContextMoveItem && this.tabContextMoveItem.parentNode)
+				this.tabContextMoveItem.parentNode.removeChild(this.tabContextMoveItem);
+			delete this.tabContextMoveItem;
+
+			if (this.tabContextDuplicateItem && this.tabContextDuplicateItem.parentNode)
+				this.tabContextDuplicateItem.parentNode.removeChild(this.tabContextDuplicateItem);
+			delete this.tabContextDuplicateItem;
 		}
+	},
+
+	resetMenuItems : function FSUI_resetMenuItems()
+	{
+		if (this._deferredResetMenuItems)
+			return;
+
+		var self = this;
+		this._deferredResetMenuItems = Deferred.next(function() {
+			delete self._deferredResetMenuItems;
+			self._destroyMenuItems();
+			self._initMenuItems();
+		});
 	},
 
 
@@ -506,18 +559,32 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-menubutton-split-top':
-			case 'foxsplitter-context-tab-split-top':
 				return owner.splitTabsTo(tabs, this.POSITION_TOP, aEvent);
 			case 'foxsplitter-general-button':
 			case 'foxsplitter-general-menubutton-split-right':
-			case 'foxsplitter-context-tab-split-right':
 				return owner.splitTabsTo(tabs, this.POSITION_RIGHT, aEvent);
 			case 'foxsplitter-general-menubutton-split-bottom':
-			case 'foxsplitter-context-tab-split-bottom':
 				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM, aEvent);
 			case 'foxsplitter-general-menubutton-split-left':
-			case 'foxsplitter-context-tab-split-left':
 				return owner.splitTabsTo(tabs, this.POSITION_LEFT, aEvent);
+
+			case 'foxsplitter-context-tab-split-move-top':
+				return owner.moveTabsTo(tabs, this.POSITION_TOP);
+			case 'foxsplitter-context-tab-split-move-right':
+				return owner.moveTabsTo(tabs, this.POSITION_RIGHT);
+			case 'foxsplitter-context-tab-split-move-bottom':
+				return owner.moveTabsTo(tabs, this.POSITION_BOTTOM);
+			case 'foxsplitter-context-tab-split-move-left':
+				return owner.moveTabsTo(tabs, this.POSITION_LEFT);
+
+			case 'foxsplitter-context-tab-split-duplicate-top':
+				return owner.duplicateTabsAt(tabs, this.POSITION_TOP);
+			case 'foxsplitter-context-tab-split-duplicate-right':
+				return owner.duplicateTabsAt(tabs, this.POSITION_RIGHT);
+			case 'foxsplitter-context-tab-split-duplicate-bottom':
+				return owner.duplicateTabsAt(tabs, this.POSITION_BOTTOM);
+			case 'foxsplitter-context-tab-split-duplicate-left':
+				return owner.duplicateTabsAt(tabs, this.POSITION_LEFT);
 
 			case 'foxsplitter-context-link-split-top':
 				return owner.openContextLinkAt(this.POSITION_TOP);
@@ -620,17 +687,23 @@ FoxSplitterUI.prototype = {
 	},
 	_updateTabContextPopup : function FSUI_updateTabContextPopup()
 	{
-		if (this.tabContextItem) {
+		if (this.tabContextMoveItem) {
 			if (this.window.TabContextMenu.contextTab)
-				this.contextLinkItem.removeAttribute('hidden');
+				this.tabContextMoveItem.removeAttribute('hidden');
 			else
-				this.contextLinkItem.setAttribute('hidden', true);
+				this.tabContextMoveItem.setAttribute('hidden', true);
 
-			if (this.owner.visibleTabs.length > 1 ||
-				this.owner.shouldDuplicateOnSplit)
-				this.contextLinkItem.removeAttribute('disabled');
+			if (this.owner.visibleTabs.length > 1)
+				this.tabContextMoveItem.removeAttribute('disabled');
 			else
-				this.contextLinkItem.setAttribute('disabled', true);
+				this.tabContextMoveItem.setAttribute('disabled', true);
+		}
+
+		if (this.tabContextDuplicateItem) {
+			if (this.window.TabContextMenu.contextTab)
+				this.tabContextDuplicateItem.removeAttribute('hidden');
+			else
+				this.tabContextDuplicateItem.setAttribute('hidden', true);
 		}
 	},
 
@@ -744,7 +817,6 @@ FoxSplitterUI.prototype = {
 	},
 
 
-	// called by the parent group
 	clearGroupedAppearance : function FSUI_clearGroupedAppearance(aForce)
 	{
 		if (!this._window)
@@ -822,10 +894,10 @@ var prefListener = {
 				{
 					case 'context.splitFromLink':
 					case 'context.splitFromFrame':
-					case 'context.splitFromTab':
+					case 'context.splitFromTab.move':
+					case 'context.splitFromTab.duplicate':
 						FoxSplitterUI.instances.forEach(function(aUI) {
-							aUI.destroyMenuItems();
-							aUI.initMenuItems();
+							aUI.resetMenuItems();
 						});
 						break;
 				}
