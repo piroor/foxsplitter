@@ -152,21 +152,26 @@ FoxSplitterUI.prototype = {
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
 	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
 	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
+	get shortcuts() { return FoxSplitterUI.shortcuts; },
+	set shortcuts(aValue) { return FoxSplitterUI.shortcuts = aValue; },
 
 
 	init : function FSUI_init(aFSWindow)
 	{
 		this.owner = aFSWindow;
+		this._keyStrokes = '';
 
 		FoxSplitterUI.instances.push(this);
 
 		this._installStyleSheet();
 		this._initToolbarItems();
 		this._initMenuItems();
+		this.owner.window.addEventListener('keypress', this, true);
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
+		this.owner.window.removeEventListener('keypress', this, true);
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
@@ -668,6 +673,8 @@ FoxSplitterUI.prototype = {
 				return;
 			case 'popupshowing':
 				return this.onPopupShowing(aEvent);
+			case 'keypress':
+				return this.onKeyPress(aEvent);
 			default:
 				return;
 		}
@@ -690,11 +697,10 @@ FoxSplitterUI.prototype = {
 	onCommand : function FSUI_onCommand(aEvent, aTargetId)
 	{
 		var owner = this.owner;
-		var b = this.browser;
 		var tabs = owner.selectedTabs;
 		var selected = tabs.length;
 		if (!selected)
-			tabs.push(b.selectedTab);
+			tabs.push(this.browser.selectedTab);
 
 		switch (aTargetId || aEvent.target.id)
 		{
@@ -888,6 +894,68 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
+	onKeyPress : function FSUI_onKeyPress(aEvent)
+	{
+		var stroke = [];
+		if (aEvent.altKey) stroke.push('alt');
+		if (aEvent.ctrlKey) stroke.push('ctrl');
+		if (aEvent.metaKey) stroke.push('meta');
+		if (aEvent.shiftKey) stroke.push('shift');
+		if (aEvent.charCode) stroke.push(String.fromCharCode(aEvent.charCode));
+		if (aEvent.keyCode) stroke.push(this._keyNameFromKeyCode(aEvent.keyCode));
+		stroke = stroke.join('-').toLowerCase();
+
+		if (!this._keyStrokes) {
+			if (!(new RegExp('^'+stroke+'\\s', 'm')).test(this.shortcuts))
+				return;
+			this._keyStrokes = stroke;
+		}
+		else {
+			this._keyStrokes += ' ' + stroke;
+			if (!(new RegExp('^'+this._keyStrokes+'\\s', 'm')).test(this.shortcuts)) {
+				this._keyStrokes = '';
+				return;
+			}
+		}
+
+		var matchedCommand = this.shortcuts.match(new RegExp('^'+this._keyStrokes+'\t(.+)$', 'm'));
+		if (matchedCommand) {
+			this._keyStrokes = '';
+			this._fireKeyboardShortcut(matchedCommand[1]);
+		}
+		aEvent.stopPropagation();
+		aEvent.preventDefault();
+	},
+	_keyNameFromKeyCode : function FSUI_keyNameFromKeyCode(aCode)
+	{
+		for (let prop in Ci.nsIDOMKeyEvent)
+		{
+			if (Ci.nsIDOMKeyEvent[prop] == aCode)
+				return prop.replace(/^DOM_VK_/, '').replace(/_/g, '');
+		}
+		return 'unknown';
+	},
+	_fireKeyboardShortcut : function FSUI_fireKeyboardShortcut(aCommand)
+	{
+		var owner = this.owner;
+		var tabs = owner.selectedTabs;
+		var selected = tabs.length;
+		if (!selected)
+			tabs.push(this.browser.selectedTab);
+
+		switch (aCommand)
+		{
+			case 'splitTabToTop':
+				return owner.splitTabsTo(tabs, this.POSITION_TOP);
+			case 'splitTabToRight':
+				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
+			case 'splitTabToBottom':
+				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM);
+			case 'splitTabToLeft':
+				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
+		}
+	},
+
 
 	splitTabsFromToolbarButton : function FSUI_splitTabsFromToolbarButton(aTabs, aEvent)
 	{
@@ -1057,6 +1125,26 @@ FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 
+FoxSplitterUI.loadKeyboardShortcuts = function() {
+	var shortcuts = [];
+	var prefix = domain+'shortcut.';
+	prefs.getChildren(prefix).forEach(function(aPref) {
+		var definition = (prefs.getPref(aPref) || '')
+							.replace(/^\s+|\s+$/g, '')
+							.replace(/\s+/g, ' ')
+							.replace(/control/gi, 'ctrl')
+							.replace(/command/gi, 'meta')
+							.replace(/(?:(?:alt|ctrl|meta|shift)-)+/g, function(aModifiers) {
+								return aModifiers.replace(/-$/, '').split('-').sort().join('-')+'-';
+							})
+							.toLowerCase();
+		if (definition)
+			shortcuts.push(definition+'\t'+aPref.replace(prefix, ''));
+	}, this);
+	this.shortcuts = shortcuts.join('\n');
+};
+FoxSplitterUI.loadKeyboardShortcuts();
+
 var prefListener = {
 		domain : domain,
 		observe : function FSUIPL_observe(aSubject, aTopic, aData) {
@@ -1083,6 +1171,13 @@ var prefListener = {
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetMenuItems();
 						});
+						break;
+
+					case 'shortcut.splitTabToTop':
+					case 'shortcut.splitTabToRight':
+					case 'shortcut.splitTabToBottom':
+					case 'shortcut.splitTabToLeft':
+						FoxSplitterUI.loadKeyboardShortcuts();
 						break;
 				}
 			}

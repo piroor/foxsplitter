@@ -37,6 +37,11 @@ config.setDefault(domain+'selection.grid', true);
 config.setDefault(domain+'selection.x', true);
 config.setDefault(domain+'selection.y', true);
 
+config.setDefault(domain+'shortcut.splitTabToTop', '');
+config.setDefault(domain+'shortcut.splitTabToRight', 'ctrl-x 3');
+config.setDefault(domain+'shortcut.splitTabToBottom', 'ctrl-x 2');
+config.setDefault(domain+'shortcut.splitTabToLeft', '');
+
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',    true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-y',    true);
