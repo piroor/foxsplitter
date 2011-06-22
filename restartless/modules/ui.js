@@ -161,14 +161,14 @@ FoxSplitterUI.prototype = {
 
 		this._installStyleSheet();
 		this._initToolbarItems();
-		this._initMenuItems();
+		this.initMenuItems();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
-		this._destroyMenuItems();
+		this.destroyMenuItems();
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
@@ -316,128 +316,144 @@ FoxSplitterUI.prototype = {
 	},
 
 
-	_initMenuItems : function FSUI_initMenuItems()
+	initMenuItems : function FSUI_initMenuItems()
 	{
 		var iconicClass = 'menuitem-iconic ' + this.MENU_ITEM+' ';
 
-		var popup = this.document.getElementById('contentAreaContextMenu');
-		this.contextLinkItem = ToolbarItem.toDOMDocumentFragment(<>
-				<menu id="foxsplitter-context-link-split"
-					class={'menu-iconic split '+this.MENU_ITEM}
-					label={bundle.getString('ui.split.link.label')}
-					accesskey={bundle.getString('ui.split.link.accesskey')}
-					oncommand="FoxSplitter.ui.handleEvent(event);"
-					onclick="FoxSplitter.ui.handleEvent(event);">
-					<menupopup>
-						<menuitem id="foxsplitter-context-link-split-top"
-							class={iconicClass+'split-top'}
-							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-link-split-right"
-							class={iconicClass+'split-right'}
-							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-link-split-bottom"
-							class={iconicClass+'split-bottom'}
-							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-link-split-left"
-							class={iconicClass+'split-left'}
-							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-					</menupopup>
-				</menu>
-			</>, popup).querySelector('*');
-		popup.insertBefore(this.contextLinkItem, this.document.getElementById('context-openlink').nextSibling);
-		popup.addEventListener('popupshowing', this, false);
+		if (prefs.getPref(this.domain+'context.splitFromLink')) {
+			let popup = this.document.getElementById('contentAreaContextMenu');
+			this.contextLinkItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menu id="foxsplitter-context-link-split"
+						class={'menu-iconic split '+this.MENU_ITEM}
+						label={bundle.getString('ui.split.link.label')}
+						accesskey={bundle.getString('ui.split.link.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);"
+						onclick="FoxSplitter.ui.handleEvent(event);">
+						<menupopup>
+							<menuitem id="foxsplitter-context-link-split-top"
+								class={iconicClass+'split-top'}
+								label={bundle.getString('ui.split.top.short')}
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-link-split-right"
+								class={iconicClass+'split-right'}
+								label={bundle.getString('ui.split.right.short')}
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-link-split-bottom"
+								class={iconicClass+'split-bottom'}
+								label={bundle.getString('ui.split.bottom.short')}
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-link-split-left"
+								class={iconicClass+'split-left'}
+								label={bundle.getString('ui.split.left.short')}
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+						</menupopup>
+					</menu>
+				</>, popup).querySelector('*');
+			popup.insertBefore(this.contextLinkItem, this.document.getElementById('context-openlink').nextSibling);
+			popup.addEventListener('popupshowing', this, false);
+		}
 
-		popup = popup.querySelector('#frame menupopup');
-		this.contextFrameItem = ToolbarItem.toDOMDocumentFragment(<>
-				<menu id="foxsplitter-context-frame-split"
-					class={'menu-iconic split '+this.MENU_ITEM}
-					label={bundle.getString('ui.split.frame.label')}
-					accesskey={bundle.getString('ui.split.frame.accesskey')}
-					oncommand="FoxSplitter.ui.handleEvent(event);"
-					onclick="FoxSplitter.ui.handleEvent(event);">
-					<menupopup>
-						<menuitem id="foxsplitter-context-frame-split-top"
-							class={iconicClass+'split-top'}
-							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-frame-split-right"
-							class={iconicClass+'split-right'}
-							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-frame-split-bottom"
-							class={iconicClass+'split-bottom'}
-							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-frame-split-left"
-							class={iconicClass+'split-left'}
-							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-					</menupopup>
-				</menu>
-			</>, popup).querySelector('*');
-		popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
+		if (prefs.getPref(this.domain+'context.splitFromFrame')) {
+			let popup = this.document.querySelector('#frame menupopup');
+			this.contextFrameItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menu id="foxsplitter-context-frame-split"
+						class={'menu-iconic split '+this.MENU_ITEM}
+						label={bundle.getString('ui.split.frame.label')}
+						accesskey={bundle.getString('ui.split.frame.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);"
+						onclick="FoxSplitter.ui.handleEvent(event);">
+						<menupopup>
+							<menuitem id="foxsplitter-context-frame-split-top"
+								class={iconicClass+'split-top'}
+								label={bundle.getString('ui.split.top.short')}
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-frame-split-right"
+								class={iconicClass+'split-right'}
+								label={bundle.getString('ui.split.right.short')}
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-frame-split-bottom"
+								class={iconicClass+'split-bottom'}
+								label={bundle.getString('ui.split.bottom.short')}
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-frame-split-left"
+								class={iconicClass+'split-left'}
+								label={bundle.getString('ui.split.left.short')}
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+						</menupopup>
+					</menu>
+				</>, popup).querySelector('*');
+			popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
+		}
 
-		popup = this.document.querySelector('#tabContextMenu');
-		this.tabContextItem = ToolbarItem.toDOMDocumentFragment(<>
-				<menu id="foxsplitter-context-tab-split"
-					class={'menu-iconic split '+this.MENU_ITEM}
-					label={bundle.getString('ui.split.tab.label')}
-					accesskey={bundle.getString('ui.split.tab.accesskey')}
-					oncommand="FoxSplitter.ui.handleEvent(event);"
-					onclick="FoxSplitter.ui.handleEvent(event);">
-					<menupopup>
-						<menuitem id="foxsplitter-context-tab-split-top"
-							class={iconicClass+'split-top'}
-							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-tab-split-right"
-							class={iconicClass+'split-right'}
-							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-tab-split-bottom"
-							class={iconicClass+'split-bottom'}
-							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-						<menuitem id="foxsplitter-context-tab-split-left"
-							class={iconicClass+'split-left'}
-							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}
-							foxsplitter-acceptmiddleclick="true"/>
-					</menupopup>
-				</menu>
-			</>, popup).querySelector('*');
-		popup.insertBefore(this.tabContextItem, this.document.getElementById('context_openTabInWindow').nextSibling);
-		popup.addEventListener('popupshowing', this, false);
+		if (prefs.getPref(this.domain+'context.splitFromTab')) {
+			let popup = this.document.querySelector('#tabContextMenu');
+			this.tabContextItem = ToolbarItem.toDOMDocumentFragment(<>
+					<menu id="foxsplitter-context-tab-split"
+						class={'menu-iconic split '+this.MENU_ITEM}
+						label={bundle.getString('ui.split.tab.label')}
+						accesskey={bundle.getString('ui.split.tab.accesskey')}
+						oncommand="FoxSplitter.ui.handleEvent(event);"
+						onclick="FoxSplitter.ui.handleEvent(event);">
+						<menupopup>
+							<menuitem id="foxsplitter-context-tab-split-top"
+								class={iconicClass+'split-top'}
+								label={bundle.getString('ui.split.top.short')}
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-right"
+								class={iconicClass+'split-right'}
+								label={bundle.getString('ui.split.right.short')}
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-bottom"
+								class={iconicClass+'split-bottom'}
+								label={bundle.getString('ui.split.bottom.short')}
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+							<menuitem id="foxsplitter-context-tab-split-left"
+								class={iconicClass+'split-left'}
+								label={bundle.getString('ui.split.left.short')}
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								foxsplitter-acceptmiddleclick="true"/>
+						</menupopup>
+					</menu>
+				</>, popup).querySelector('*');
+			popup.insertBefore(this.tabContextItem, this.document.getElementById('context_openTabInWindow').nextSibling);
+			popup.addEventListener('popupshowing', this, false);
+		}
 	},
 
-	_destroyMenuItems : function FSUI_destroyMenuItems()
+	destroyMenuItems : function FSUI_destroyMenuItems()
 	{
-		var popup = this.document.getElementById('contentAreaContextMenu');
-		popup.removeEventListener('popupshowing', this, false);
-		popup = this.document.getElementById('tabContextMenu');
-		popup.removeEventListener('popupshowing', this, false);
+		if (this.contextLinkItem) {
+			if (this.contextLinkItem.parentNode)
+				this.contextLinkItem.parentNode.removeChild(this.contextLinkItem);
+			delete this.contextLinkItem;
+		}
 
-		if (this.contextLinkItem.parentNode)
-			this.contextLinkItem.parentNode.removeChild(this.contextLinkItem);
-		if (this.contextFrameItem.parentNode)
-			this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
-		if (this.tabContextItem.parentNode)
-			this.tabContextItem.parentNode.removeChild(this.tabContextItem);
+		if (this.contextFrameItem) {
+			let popup = this.document.getElementById('contentAreaContextMenu');
+			popup.removeEventListener('popupshowing', this, false);
+			if (this.contextFrameItem.parentNode)
+				this.contextFrameItem.parentNode.removeChild(this.contextFrameItem);
+			delete this.contextFrameItem;
+		}
+
+		if (this.tabContextItem) {
+			let popup = this.document.getElementById('tabContextMenu');
+			popup.removeEventListener('popupshowing', this, false);
+			if (this.tabContextItem.parentNode)
+				this.tabContextItem.parentNode.removeChild(this.tabContextItem);
+			delete this.tabContextItem;
+		}
 	},
 
 
@@ -791,8 +807,22 @@ var prefListener = {
 				return;
 
 			var prefName = aData.replace(domain, '');
-			if (prefName in FoxSplitterUI)
+			if (prefName in FoxSplitterUI) {
 				FoxSplitterUI[prefName] = prefs.getPref(aData);
+			}
+			else {
+				switch (prefName)
+				{
+					case 'context.splitFromLink':
+					case 'context.splitFromFrame':
+					case 'context.splitFromTab':
+						FoxSplitterUI.instances.forEach(function(aUI) {
+							aUI.destroyMenuItems();
+							aUI.initMenuItems();
+						});
+						break;
+				}
+			}
 		}
 	};
 
