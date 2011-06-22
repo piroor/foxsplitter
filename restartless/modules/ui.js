@@ -216,7 +216,7 @@ FoxSplitterUI.prototype = {
 				<toolbarbutton id="foxsplitter-general-button"
 					type="menu-button"
 					label={bundle.getString('ui.split.short')}
-					tooltip={bundle.getString('ui.split.long')}
+					tooltiptext={bundle.getString('ui.split.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
 					oncommand="FoxSplitter.ui.handleEvent(event);"
 					onclick="FoxSplitter.ui.handleEvent(event);"
@@ -294,7 +294,7 @@ FoxSplitterUI.prototype = {
 					type="checkbox"
 					autoCheck="false"
 					label={bundle.getString('ui.syncScroll.short')}
-					tooltip={bundle.getString('ui.syncScroll.long')}
+					tooltiptext={bundle.getString('ui.syncScroll.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
 					oncommand="FoxSplitter.ui.handleEvent(event);"/>
 			</>,
