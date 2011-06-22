@@ -543,8 +543,8 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileGridItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-grid"
 						class={iconicClass+'tile-grid'}
-						label={bundle.getString('ui.gather.long')}
-						accesskey={bundle.getString('ui.gather.accesskey')}
+						label={bundle.getString('ui.grid.selection')}
+						accesskey={bundle.getString('ui.grid.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
 			selectionPopup.appendChild(this.tabSelectionTileGridItem);
@@ -553,7 +553,7 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileXItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-x"
 						class={iconicClass+'tile-x grouped'}
-						label={bundle.getString('ui.x.long')}
+						label={bundle.getString('ui.x.selection')}
 						accesskey={bundle.getString('ui.x.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
@@ -563,7 +563,7 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileYItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-y"
 						class={iconicClass+'tile-y grouped'}
-						label={bundle.getString('ui.y.long')}
+						label={bundle.getString('ui.y.selection')}
 						accesskey={bundle.getString('ui.y.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
