@@ -1,7 +1,7 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      7
+ * @version      8
  *
  * @license
  *   The MIT License, Copyright (c) 2011 SHIMODA "Piro" Hiroshi.
@@ -53,7 +53,7 @@ var config = {
 
 		var source = Cc['@mozilla.org/variant;1']
 						.createInstance(Ci.nsIWritableVariant);
-		source.setFromVariant([this._builder.toSource(), current.source]);
+		source.setFromVariant([this._builder.toSource(), current.source, aURI]);
 
 		if (aOwner) {
 			let parent = aOwner.top
@@ -71,7 +71,14 @@ var config = {
 				aOwner = null;
 		}
 
-		current.openedWindow = Cc['@mozilla.org/embedcomp/window-watcher;1']
+		var features = 'chrome,titlebar,toolbar,centerscreen' +
+						(Prefs.getBoolPref('browser.preferences.instantApply') ?
+							',dialog=no' :
+						aOwner ?
+							',modal' :
+							''
+						);
+		var window = Cc['@mozilla.org/embedcomp/window-watcher;1']
 							.getService(Ci.nsIWindowWatcher)
 							.openWindow(
 								aOwner || null,
@@ -79,24 +86,11 @@ var config = {
 									current.container
 								),
 								'_blank',
-								'chrome,titlebar,toolbar,centerscreen' +
-								(Prefs.getBoolPref('browser.preferences.instantApply') ?
-									',dialog=no' :
-								aOwner ?
-									',modal' :
-									''
-								),
+								features,
 								source
 							);
-		current.openedWindow.addEventListener('load', function() {
-			current.openedWindow.removeEventListener('load', arguments.callee, false);
-			current.openedWindow._sourceURI = aURI;
-			current.openedWindow.addEventListener('unload', function() {
-				current.openedWindow.removeEventListener('unload', arguments.callee, false);
-				current.openedWindow = null;
-			}, false);
-		}, false);
-		return current.openedWindow;
+		if (features.indexOf('modal') < 0)
+			return window;
 	},
 
 	/**
@@ -146,16 +140,17 @@ var config = {
 	},
 	_loader : <![CDATA[
 		eval('f='+arguments[0][0]);
-		f(document, arguments[0][1]);
+		f(document, arguments[0][1], arguments[0][2]);
 	]]>.toString()
 		.replace(/\s\s+/g, ' '),
-	_builder : function(aDocument, aSource)
+	_builder : function(aDocument, aSource, aSourceURI)
 	{
 		var root = aDocument.documentElement;
 		var range = aDocument.createRange();
 		range.selectNode(root);
 		aDocument.replaceChild(range.createContextualFragment(aSource), root);
 		range.detach();
+		aDocument.defaultView._sourceURI = aSourceURI;
 	},
 
 	/**
