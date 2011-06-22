@@ -41,6 +41,8 @@ tab.general=全般
 shouldDuplicateOnSplit=ウィンドウを分割した時の既定の挙動
 shouldDuplicateOnSplit.true=選択されたタブを新しいウィンドウに複製する
 shouldDuplicateOnSplit.false=選択されたタブを新しいウィンドウに移動する
+generalButton.split.position=ツールバーの「分割」ボタンをクリックした時
+appMenu.split.position=Firefoxメニューの「ウィンドウを分割」ボタンをクリックした時
 importTabsFromClosedSibling=分割されたウィンドウを閉じた時の挙動
 importTabsFromClosedSibling.nothing=そのままウィンドウを閉じる
 importTabsFromClosedSibling.hidden=非表示になっているタブを隣のウィンドウに移動する
@@ -73,7 +75,7 @@ hiddenUIInInactiveWindow.status=ステータスバー
 hiddenUIInInactiveWindow.extra=その他のツールバー
 hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツールバー項目
 
-tab.appearance=メニュー
+tab.menu=メニュー
 
 appMenu.split.before=Firefoxメニューに「
 appMenu.split.after=」を追加する

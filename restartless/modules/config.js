@@ -42,6 +42,12 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldDuplicateOnSplit"
 				name={domain+'shouldDuplicateOnSplit'}
 				type="bool"/>
+			<preference id="generalButton.split.position"
+				name={domain+'generalButton.split.position'}
+				type="bool"/>
+			<preference id="appMenu.split.position"
+				name={domain+'appMenu.split.position'}
+				type="bool"/>
 			<preference id="importTabsFromClosedSibling"
 				name={domain+'importTabsFromClosedSibling'}
 				type="int"/>
@@ -56,6 +62,34 @@ config.register('about:blank?foxsplitter-config', <>
 				preference="shouldDuplicateOnSplit">
 				<radio value="false" label={bundle.getString('shouldDuplicateOnSplit.false')}/>
 				<radio value="true" label={bundle.getString('shouldDuplicateOnSplit.true')}/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label={bundle.getString('generalButton.split.position')}/>
+			<radiogroup orient="horizontal"
+				preference="generalButton.split.position">
+				<radio value={FoxSplitterConst.POSITION_TOP}
+					label={bundle.getString('ui.split.top.short')}/>
+				<radio value={FoxSplitterConst.POSITION_BOTTOM}
+					label={bundle.getString('ui.split.bottom.short')}/>
+				<radio value={FoxSplitterConst.POSITION_RIGHT}
+					label={bundle.getString('ui.split.right.short')}/>
+				<radio value={FoxSplitterConst.POSITION_LEFT}
+					label={bundle.getString('ui.split.left.short')}/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label={bundle.getString('appMenu.split.position')}/>
+			<radiogroup orient="horizontal"
+				preference="appMenu.split.position">
+				<radio value={FoxSplitterConst.POSITION_TOP}
+					label={bundle.getString('ui.split.top.short')}/>
+				<radio value={FoxSplitterConst.POSITION_BOTTOM}
+					label={bundle.getString('ui.split.bottom.short')}/>
+				<radio value={FoxSplitterConst.POSITION_RIGHT}
+					label={bundle.getString('ui.split.right.short')}/>
+				<radio value={FoxSplitterConst.POSITION_LEFT}
+					label={bundle.getString('ui.split.left.short')}/>
 			</radiogroup>
 		</groupbox>
 		<groupbox>

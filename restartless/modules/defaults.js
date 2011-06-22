@@ -22,7 +22,10 @@ config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUB
                                                      FoxSplitterConst.HIDE_BOOKMARKS |
                                                      FoxSplitterConst.HIDE_EXTRA |
                                                      FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS);
+
+config.setDefault(domain+'generalButton.split.position', FoxSplitterConst.POSITION_RIGHT);
 config.setDefault(domain+'appMenu.split', true);
+config.setDefault(domain+'appMenu.split.position', FoxSplitterConst.POSITION_RIGHT);
 config.setDefault(domain+'viewMenu.split', true);
 config.setDefault(domain+'context.splitFromLink', true);
 config.setDefault(domain+'context.splitFromFrame', true);

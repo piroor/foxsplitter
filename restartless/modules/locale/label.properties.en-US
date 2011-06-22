@@ -40,6 +40,8 @@ tab.general=General
 shouldDuplicateOnSplit=Default behavior of split windows
 shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
 shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
 importTabsFromClosedSibling=When a split window is closed
 importTabsFromClosedSibling.nothing=Simply close the window
 importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
@@ -72,7 +74,7 @@ hiddenUIInInactiveWindow.status=Status Bar
 hiddenUIInInactiveWindow.extra=Extra Toolbars
 hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
-tab.appearance=Menu
+tab.menu=Menu
 
 appMenu.split.before=Append "
 appMenu.split.after=" to the Firefox menu
