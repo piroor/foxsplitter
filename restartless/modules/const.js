@@ -3,7 +3,8 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.QueryInterface(Ci.nsIXULRuntime);
 
 var exports = {
-	domain : 'extensions.foxsplitter@piro.sakura.ne.jp.',
+	domain         : 'extensions.foxsplitter@piro.sakura.ne.jp.',
+	IMAGES_VERSION : 1,
 
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	ACTIVE            : 'foxsplitter-active',

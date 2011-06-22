@@ -78,18 +78,18 @@ FoxSplitterUI.prototype = {
 
 		.toolbarbutton-1.TOOLBAR_ITEM,
 		#foxsplitter-syncScroll-button {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png?IMAGES_VERSION");
 			-moz-image-region: rect(0 16px 16px 0);
 		}
 
 		toolbox[iconsize="large"] .toolbarbutton-1.TOOLBAR_ITEM.platform-Linux {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png");
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png?IMAGES_VERSION");
 			-moz-image-region: rect(0 24px 24px 0);
 		}
 
 		.MENU_ITEM.menuitem-iconic,
 		.MENU_ITEM.menu-iconic {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png");
+			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png?IMAGES_VERSION");
 			-moz-image-region: rect(0 16px 16px 0);
 		}
 		.MENU_ITEM.split                         { -moz-image-region: rect(0 16px 16px 0); }
@@ -188,7 +188,8 @@ FoxSplitterUI.prototype = {
 						.replace(/MEMBER/g, this.MEMBER)
 						.replace(/MENU_ITEM/g, this.MENU_ITEM)
 						.replace(/MIN_OPACITY/g, this.MIN_OPACITY)
-						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM);
+						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM)
+						.replace(/IMAGES_VERSION/g, this.IMAGES_VERSION);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
 			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
 		this.document.insertBefore(this._styleSheet, this.documentElement);
