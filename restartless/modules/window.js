@@ -39,6 +39,8 @@ FoxSplitterWindow.prototype = {
 
 	get shouldDuplicateOnDrop() { return FoxSplitterWindow.shouldDuplicateOnDrop; },
 	set shouldDuplicateOnDrop(aValue) { return FoxSplitterWindow.shouldDuplicateOnDrop = aValue; },
+	get acceptDropDelay() { return FoxSplitterWindow.acceptDropDelay; },
+	set acceptDropDelay(aValue) { return FoxSplitterWindow.acceptDropDelay = aValue; },
 	get dropZoneSize() { return FoxSplitterWindow.dropZoneSize; },
 	set dropZoneSize(aValue) { return FoxSplitterWindow.dropZoneSize = aValue; },
 	get handleDragWithShiftKey() { return FoxSplitterWindow.handleDragWithShiftKey; },
@@ -1715,7 +1717,7 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		var self = this;
-		this._reservedHandleDragOver = Deferred.wait(0.25);
+		this._reservedHandleDragOver = Deferred.wait(this.acceptDropDelay / 1000);
 		this._reservedHandleDragOver
 			.next(function() {
 				delete self._reservedHandleDragOver;
@@ -1744,7 +1746,11 @@ FoxSplitterWindow.prototype = {
 			aFSWindow.hideDropIndicator();
 		});
 
-		if (!(position & this.POSITION_VALID))
+		if (
+			!(position & this.POSITION_VALID) ||
+			!this._dropIndicator ||
+			this._dropIndicator.state != 'open'
+			)
 			return;
 
 		aEvent.stopPropagation();
@@ -2165,6 +2171,7 @@ FoxSplitterWindow.resizing = 0;
 FoxSplitterWindow.raising = 0;
 
 FoxSplitterWindow.shouldDuplicateOnDrop = prefs.getPref(FoxSplitterConst.domain+'shouldDuplicateOnDrop');
+FoxSplitterWindow.acceptDropDelay = prefs.getPref(FoxSplitterConst.domain+'acceptDropDelay');
 FoxSplitterWindow.dropZoneSize = prefs.getPref(FoxSplitterConst.domain+'dropZoneSize');
 FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(FoxSplitterConst.domain+'handleDragWithShiftKey');
 FoxSplitterWindow.syncScrollX = prefs.getPref(FoxSplitterConst.domain+'syncScrollX');
