@@ -216,25 +216,31 @@ FoxSplitterUI.prototype = {
 					label={bundle.getString('ui.split.short')}
 					tooltip={bundle.getString('ui.split.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
-					oncommand="FoxSplitter.ui.onCommand(event);">
+					oncommand="FoxSplitter.ui.handleEvent(event);"
+					onclick="FoxSplitter.ui.handleEvent(event);"
+					foxsplitter-acceptmiddleclick="true">
 					<menupopup id="foxsplitter-general-button-popup"
 						onpopupshowing="FoxSplitter.ui.onPopupShowing(event);">
 						<menuitem id="foxsplitter-general-menubutton-split-top"
 							class={iconicClass+'split-top'}
 							label={bundle.getString('ui.split.top.long')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+							accesskey={bundle.getString('ui.split.top.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-general-menubutton-split-right"
 							class={iconicClass+'split-right'}
 							label={bundle.getString('ui.split.right.long')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+							accesskey={bundle.getString('ui.split.right.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-general-menubutton-split-bottom"
 							class={iconicClass+'split-bottom'}
 							label={bundle.getString('ui.split.bottom.long')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-general-menubutton-split-left"
 							class={iconicClass+'split-left'}
 							label={bundle.getString('ui.split.left.long')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+							accesskey={bundle.getString('ui.split.left.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-tile-grid"
 							class={iconicClass+'tile-grid tabs'}
@@ -288,7 +294,7 @@ FoxSplitterUI.prototype = {
 					label={bundle.getString('ui.syncScroll.short')}
 					tooltip={bundle.getString('ui.syncScroll.long')}
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
-					oncommand="FoxSplitter.ui.onCommand(event);"/>
+					oncommand="FoxSplitter.ui.handleEvent(event);"/>
 			</>,
 			toolbar,
 			{
@@ -320,24 +326,29 @@ FoxSplitterUI.prototype = {
 					class={'menu-iconic split '+this.MENU_ITEM}
 					label={bundle.getString('ui.split.link.label')}
 					accesskey={bundle.getString('ui.split.link.accesskey')}
-					oncommand="FoxSplitter.ui.onCommand(event);">
+					oncommand="FoxSplitter.ui.handleEvent(event);"
+					onclick="FoxSplitter.ui.handleEvent(event);">
 					<menupopup>
 						<menuitem id="foxsplitter-context-link-split-top"
 							class={iconicClass+'split-top'}
 							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+							accesskey={bundle.getString('ui.split.top.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-link-split-right"
 							class={iconicClass+'split-right'}
 							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+							accesskey={bundle.getString('ui.split.right.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-link-split-bottom"
 							class={iconicClass+'split-bottom'}
 							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-link-split-left"
 							class={iconicClass+'split-left'}
 							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+							accesskey={bundle.getString('ui.split.left.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 					</menupopup>
 				</menu>
 			</>, popup).querySelector('*');
@@ -350,24 +361,29 @@ FoxSplitterUI.prototype = {
 					class={'menu-iconic split '+this.MENU_ITEM}
 					label={bundle.getString('ui.split.frame.label')}
 					accesskey={bundle.getString('ui.split.frame.accesskey')}
-					oncommand="FoxSplitter.ui.onCommand(event);">
+					oncommand="FoxSplitter.ui.handleEvent(event);"
+					onclick="FoxSplitter.ui.handleEvent(event);">
 					<menupopup>
 						<menuitem id="foxsplitter-context-frame-split-top"
 							class={iconicClass+'split-top'}
 							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+							accesskey={bundle.getString('ui.split.top.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-frame-split-right"
 							class={iconicClass+'split-right'}
 							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+							accesskey={bundle.getString('ui.split.right.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-frame-split-bottom"
 							class={iconicClass+'split-bottom'}
 							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-frame-split-left"
 							class={iconicClass+'split-left'}
 							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+							accesskey={bundle.getString('ui.split.left.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 					</menupopup>
 				</menu>
 			</>, popup).querySelector('*');
@@ -379,24 +395,29 @@ FoxSplitterUI.prototype = {
 					class={'menu-iconic split '+this.MENU_ITEM}
 					label={bundle.getString('ui.split.tab.label')}
 					accesskey={bundle.getString('ui.split.tab.accesskey')}
-					oncommand="FoxSplitter.ui.onCommand(event);">
+					oncommand="FoxSplitter.ui.handleEvent(event);"
+					onclick="FoxSplitter.ui.handleEvent(event);">
 					<menupopup>
 						<menuitem id="foxsplitter-context-tab-split-top"
 							class={iconicClass+'split-top'}
 							label={bundle.getString('ui.split.top.short')}
-							accesskey={bundle.getString('ui.split.top.accesskey')}/>
+							accesskey={bundle.getString('ui.split.top.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-tab-split-right"
 							class={iconicClass+'split-right'}
 							label={bundle.getString('ui.split.right.short')}
-							accesskey={bundle.getString('ui.split.right.accesskey')}/>
+							accesskey={bundle.getString('ui.split.right.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-tab-split-bottom"
 							class={iconicClass+'split-bottom'}
 							label={bundle.getString('ui.split.bottom.short')}
-							accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+							accesskey={bundle.getString('ui.split.bottom.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 						<menuitem id="foxsplitter-context-tab-split-left"
 							class={iconicClass+'split-left'}
 							label={bundle.getString('ui.split.left.short')}
-							accesskey={bundle.getString('ui.split.left.accesskey')}/>
+							accesskey={bundle.getString('ui.split.left.accesskey')}
+							foxsplitter-acceptmiddleclick="true"/>
 					</menupopup>
 				</menu>
 			</>, popup).querySelector('*');
@@ -426,10 +447,33 @@ FoxSplitterUI.prototype = {
 		{
 			case 'command':
 				return this.onCommand(aEvent);
+			case 'click':
+				if (aEvent.target.getAttribute('foxsplitter-acceptmiddleclick') == 'true' &&
+					this.owner.isMiddleClick(aEvent)) {
+					aEvent.stopPropagation();
+					aEvent.preventDefault();
+					this.onCommand(aEvent);
+					this._closePopup(aEvent);
+				}
+				return;
 			case 'popupshowing':
 				return this.onPopupShowing(aEvent);
 			default:
 				return;
+		}
+	},
+	_closePopup : function FSUI_closePopup(aEvent)
+	{
+		var popups = this.document.evaluate(
+				'ancestor-or-self::*[local-name()="menupopup" or local-name()="popup"]',
+				aEvent.target,
+				null,
+				Ci.nsIDOMXPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+				null
+			);
+		for (let i = popups.snapshotLength; i > -1; i--)
+		{
+			popups.snapshotItem(i).hidePopup();
 		}
 	},
 
@@ -441,41 +485,40 @@ FoxSplitterUI.prototype = {
 		var selected = tabs.length;
 		if (!selected)
 			tabs.push(b.selectedTab);
-		var gCM = this.window.gContextMenu;
 
 		switch (aEvent.target.id)
 		{
 			case 'foxsplitter-general-menubutton-split-top':
 			case 'foxsplitter-context-tab-split-top':
-				return owner.splitTabsTo(tabs, this.POSITION_TOP);
+				return owner.splitTabsTo(tabs, this.POSITION_TOP, aEvent);
 			case 'foxsplitter-general-button':
 			case 'foxsplitter-general-menubutton-split-right':
 			case 'foxsplitter-context-tab-split-right':
-				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
+				return owner.splitTabsTo(tabs, this.POSITION_RIGHT, aEvent);
 			case 'foxsplitter-general-menubutton-split-bottom':
 			case 'foxsplitter-context-tab-split-bottom':
-				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM);
+				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM, aEvent);
 			case 'foxsplitter-general-menubutton-split-left':
 			case 'foxsplitter-context-tab-split-left':
-				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
+				return owner.splitTabsTo(tabs, this.POSITION_LEFT, aEvent);
 
 			case 'foxsplitter-context-link-split-top':
-				return owner.openLinkAt(gCM.linkURL, this.POSITION_TOP);
+				return owner.openContextLinkAt(this.POSITION_TOP);
 			case 'foxsplitter-context-link-split-right':
-				return owner.openLinkAt(gCM.linkURL, this.POSITION_RIGHT);
+				return owner.openContextLinkAt(this.POSITION_RIGHT);
 			case 'foxsplitter-context-link-split-bottom':
-				return owner.openLinkAt(gCM.linkURL, this.POSITION_BOTTOM);
+				return owner.openContextLinkAt(this.POSITION_BOTTOM);
 			case 'foxsplitter-context-link-split-left':
-				return owner.openLinkAt(gCM.linkURL, this.POSITION_LEFT);
+				return owner.openContextLinkAt(this.POSITION_LEFT);
 
 			case 'foxsplitter-context-frame-split-top':
-				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_TOP);
+				return owner.openContextFrameAt(this.POSITION_TOP);
 			case 'foxsplitter-context-frame-split-right':
-				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_RIGHT);
+				return owner.openContextFrameAt(this.POSITION_RIGHT);
 			case 'foxsplitter-context-frame-split-bottom':
-				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_BOTTOM);
+				return owner.openContextFrameAt(this.POSITION_BOTTOM);
 			case 'foxsplitter-context-frame-split-left':
-				return owner.openLinkAt(gCM.target.ownerDocument.defaultView.location.href, this.POSITION_LEFT);
+				return owner.openContextFrameAt(this.POSITION_LEFT);
 
 			case 'foxsplitter-general-menubutton-tile-grid':
 				return selected ?

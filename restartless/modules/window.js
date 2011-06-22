@@ -925,7 +925,7 @@ FoxSplitterWindow.prototype = {
 			this.browser.moveTabTo(newTab, aPosition);
 
 		// we cannot import collapsed tree!
-		var sourceBrowser = this._getTabBrowserFromTab(aTab);
+		var sourceBrowser = this.getTabBrowserFromTab(aTab);
 		if ('treeStyleTab' in sourceBrowser &&
 			sourceBrowser.treeStyleTab.isCollapsed(aTab)) {
 			sourceBrowser.treeStyleTab.collapseExpandSubtree(aTab, false, true);
@@ -1053,6 +1053,26 @@ FoxSplitterWindow.prototype = {
 	{
 		if (this.parent)
 			this.root.closeExcept(this);
+	},
+
+
+	openContextLinkAt : function FSW_openContextLinkAt(aPosition)
+	{
+		var gContextMenu = this.window.gContextMenu;
+		if (!gContextMenu)
+			return Deferred.next(function() {});
+
+		return this.openLinkAt(gContextMenu.linkURL, aPosition);
+	},
+
+	openContextFrameAt : function FSW_openContextFrameAt(aPosition)
+	{
+		var gContextMenu = this.window.gContextMenu;
+		if (!gContextMenu)
+			return Deferred.next(function() {});
+
+		var uri = gContextMenu.target.ownerDocument.defaultView.location.href;
+		return this.openLinkAt(uri, aPosition);
 	},
 
 
@@ -1726,41 +1746,10 @@ FoxSplitterWindow.prototype = {
 		aEvent.preventDefault();
 
 		if (tabs.length) {
-			let browser = this._getTabBrowserFromTab(tabs[0]);
-			let allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
-
-			let windowMove = allTabs.length == tabs.length;
-			let selected;
-			let allSelected = tabs.some(function(aTab) {
-					if (aTab.getAttribute('multiselected') == 'true')
-						return selected = true;
-					return false;
-				});
-
-			// Multiple Tab Handler moves/duplicates selected tabs, so we should process only one tab.
-			if (
-				'MultipleTabService' in browser.ownerDocument.defaultView &&
-				allSelected
-				)
-				tabs = [tabs[0]];
-
-			// Tree Style Tabs tries to move the dragged tab with descendant tabs.
-			if ('treeStyleTab' in browser && !selected) {
-				tabs = [tabs[0]].concat(browser.treeStyleTab.getDescendantTabs(tabs[0]));
-				windowMove = allTabs.length == tabs.length;
-			}
-
-			if (this.isAccelKeyPressed(aEvent) != this.shouldDuplicateOnDrop) {
+			if (this.isAccelKeyPressed(aEvent) != this.shouldDuplicateOnDrop)
 				target.duplicateTabsAt(tabs, position);
-			}
-			else if (windowMove) {
-				let window = tabs[0].ownerDocument.defaultView;
-				window.FoxSplitter.unbind();
-				window.FoxSplitter.bindWith(target, position);
-			}
-			else {
+			else
 				target.moveTabsTo(tabs, position);
-			}
 		}
 		else {
 			links = this._filterOnlySafeLinks(links);
@@ -1905,11 +1894,6 @@ FoxSplitterWindow.prototype = {
 				return [fileHandler.getURLSpecFromFile(aData)];
 		}
 		return [];
-	},
-
-	_getTabBrowserFromTab : function FSW_getTabBrowserFromTab(aTab)
-	{
-		return aTab.ownerDocument.defaultView.FoxSplitter.browser;
 	},
 
 	_getDropPosition : function FSW_getDropPosition(aEvent)

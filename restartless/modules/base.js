@@ -383,6 +383,12 @@ FoxSplitterBase.prototype = {
 	{
 		aTabs = aTabs.slice(0);
 
+		var movedTabs = {};
+		var windowMove = this.shouldMoveWindow(aTabs, movedTabs);
+		aTabs = movedTabs.value;
+		if (windowMove)
+			return this.moveWindowTo(aTabs[0].ownerDocument.defaultView, aPosition);
+
 		return this.openLinkAt('about:blank', aPosition)
 				.next(function(aWindow) {
 					var firstTab = aWindow.gBrowser.selectedTab;
@@ -397,17 +403,28 @@ FoxSplitterBase.prototype = {
 		return this.moveTabsTo([aTab], aPosition);
 	},
 
-	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition)
+	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition)
 	{
-		if (this.shouldDuplicateOnSplit)
+		if (aDOMWindow.FoxSplitter != this) {
+			aDOMWindow.FoxSplitter.unbind();
+			aDOMWindow.FoxSplitter.bindWith(this, aPosition);
+		}
+		return Deferred.next(function() {
+			return aDOMWindow;
+		});
+	},
+
+	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aEvent)
+	{
+		if (this.shouldDuplicateOnSplit != this.isMiddleClick(aEvent))
 			return this.duplicateTabsAt(aTabs, aPosition);
 		else
 			return this.moveTabsTo(aTabs, aPosition);
 	},
 
-	splitTabTo : function FSB_splitTabTo(aTab, aPosition)
+	splitTabTo : function FSB_splitTabTo(aTab, aPosition, aEvent)
 	{
-		return this.splitTabsTo([aTab], aPosition);
+		return this.splitTabsTo([aTab], aPosition, aEvent);
 	},
 
 
@@ -587,7 +604,58 @@ FoxSplitterBase.prototype = {
 
 	isAccelKeyPressed : function FSB_isAccelKeyPressed(aEvent)
 	{
-		return XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey ;
+		return aEvent && (XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey );
+	},
+
+	isMiddleClick : function FSB_isMiddleClick(aEvent)
+	{
+		return (
+			aEvent &&
+			aEvent.type == 'click' &&
+			(
+				aEvent.button == 1 ||
+				(aEvent.button == 0 && this.owner.isAccelKeyPressed(aEvent))
+			)
+		);
+	},
+
+	getTabBrowserFromTab : function FSB_getTabBrowserFromTab(aTab)
+	{
+		return aTab.ownerDocument.defaultView.FoxSplitter.browser;
+	},
+
+	shouldMoveWindow : function FSB_shouldMoveWindow(aTabs, aTabsShouldBeMoved)
+	{
+		var tabs = aTabs.slice(0);
+
+		var browser = this.getTabBrowserFromTab(tabs[0]);
+		var allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
+
+		var windowMove = allTabs.length == tabs.length;
+		var selected;
+		var allSelected = tabs.some(function(aTab) {
+				if (aTab.getAttribute('multiselected') == 'true')
+					return selected = true;
+				return false;
+			});
+
+		// Multiple Tab Handler moves/duplicates selected tabs, so we should process only one tab.
+		if (
+			'MultipleTabService' in browser.ownerDocument.defaultView &&
+			allSelected
+			)
+			tabs = [tabs[0]];
+
+		// Tree Style Tabs tries to move the dragged tab with descendant tabs.
+		if ('treeStyleTab' in browser && !selected) {
+			tabs = [tabs[0]].concat(browser.treeStyleTab.getDescendantTabs(tabs[0]));
+			windowMove = allTabs.length == tabs.length;
+		}
+
+		if (aTabsShouldBeMoved)
+			aTabsShouldBeMoved.value = tabs;
+
+		return windowMove;
 	},
 
 	defaultHandleError : function FSB_defaultHandleError(aError)
