@@ -159,7 +159,7 @@ FoxSplitterUI.prototype = {
 	init : function FSUI_init(aFSWindow)
 	{
 		this.owner = aFSWindow;
-		this._keyStrokes = '';
+		this._bufferedKeyStrokes = '';
 
 		FoxSplitterUI.instances.push(this);
 
@@ -905,23 +905,23 @@ FoxSplitterUI.prototype = {
 		if (aEvent.keyCode) stroke.push(this._keyNameFromKeyCode(aEvent.keyCode));
 		stroke = stroke.join('-').toLowerCase();
 
-		if (!this._keyStrokes) {
+		if (!this._bufferedKeyStrokes) {
 			if (!(new RegExp('^'+stroke+'\\s', 'm')).test(this.shortcuts))
 				return;
-			this._keyStrokes = stroke;
+			this._bufferedKeyStrokes = stroke;
 		}
 		else {
-			this._keyStrokes += ' ' + stroke;
-			if (!(new RegExp('^'+this._keyStrokes+'\\s', 'm')).test(this.shortcuts)) {
-				this._keyStrokes = '';
+			this._bufferedKeyStrokes += ' ' + stroke;
+			if (!(new RegExp('^'+this._bufferedKeyStrokes+'\\s', 'm')).test(this.shortcuts)) {
+				this._bufferedKeyStrokes = '';
 				return;
 			}
 		}
 
-		var matchedCommand = this.shortcuts.match(new RegExp('^'+this._keyStrokes+'\t(.+)$', 'm'));
+		var matchedCommand = this.shortcuts.match(new RegExp('^'+this._bufferedKeyStrokes+'\t(.+)$', 'm'));
 		if (matchedCommand) {
-			this._keyStrokes = '';
-			this._fireKeyboardShortcut(matchedCommand[1]);
+			this._bufferedKeyStrokes = '';
+			this._doKeyboardCommand(matchedCommand[1]);
 		}
 		aEvent.stopPropagation();
 		aEvent.preventDefault();
@@ -935,7 +935,7 @@ FoxSplitterUI.prototype = {
 		}
 		return 'unknown';
 	},
-	_fireKeyboardShortcut : function FSUI_fireKeyboardShortcut(aCommand)
+	_doKeyboardCommand : function FSUI_doKeyboardCommand(aCommand)
 	{
 		var owner = this.owner;
 		var tabs = owner.selectedTabs;
