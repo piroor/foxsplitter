@@ -675,8 +675,14 @@ FoxSplitterUI.prototype = {
 		if (this._originalChromeHidden === undefined)
 			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
 
-		if (this.owner.active || !this.owner.parent)
-			this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
+		if (this.owner.active || !this.owner.parent || aForceRestore) {
+			if (this._originalChromeHidden)
+				this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
+			else
+				this.documentElement.removeAttribute('chromehidden');
+
+			delete this._originalChromeHidden;
+		}
 		else
 			this.documentElement.setAttribute('chromehidden', hiddenItems);
 	},
@@ -744,7 +750,7 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		this.updateChromeHidden();
+		this.updateChromeHidden(aForce);
 
 		this._restoreToolbarState(aForce);
 
