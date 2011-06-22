@@ -34,6 +34,10 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Firefoxを再起動しますか？
+disableOldVersion.text=Fox Splitterの古いバージョンを検出したため、自動的に無効化しました。今すぐFirefoxを再起動しますか？
+
+
 title=Fox Splitterの設定
 
 tab.general=全般

@@ -6,17 +6,20 @@ load('config');
 load('window');
 load('group');
 
+const TYPE_BROWSER = 'navigator:browser';
+
 
 // disable old Fox Splitter
 const OLD_ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
 
-function onDisabled()
+function restart()
 {
 	Cc['@mozilla.org/toolkit/app-startup;1']
 		.getService(Ci.nsIAppStartup)
 		.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
 }
 
+var shouldShowRestartPrompt = false;
 if ('@mozilla.org/extensions/manager;1' in Cc) { // Firefox 3.6
 	let EM = Cc['@mozilla.org/extensions/manager;1']
 				.getService(Ci.nsIExtensionManager);
@@ -50,7 +53,7 @@ if ('@mozilla.org/extensions/manager;1' in Cc) { // Firefox 3.6
 
 		if (!appDisabled && !userDisabled) {
 			EM.disableItem(OLD_ID);
-			onDisabled();
+			restart();
 		}
 	}
 }
@@ -59,14 +62,26 @@ else {
 	AddonManager.getAddonByID(OLD_ID, function(aAddon) {
 		if (aAddon && !aAddon.userDisabled) {
 			aAddon.userDisabled = true;
-			onDisabled();
+			var bundle = require('lib/locale')
+							.get(resolve('locale/label.properties'));
+			if (Cc['@mozilla.org/embedcomp/prompt-service;1']
+					.getService(Ci.nsIPromptService)
+					.confirmEx(
+						null,
+						bundle.getString('disableOldVersion.title'),
+						bundle.getString('disableOldVersion.text'),
+						Ci.nsIPromptService.STD_YES_NO_BUTTONS,
+						null,
+						null,
+						null,
+						null,
+						{}
+					) == 0)
+				return restart();
 		}
 	})
 }
 
-
-
-const TYPE_BROWSER = 'navigator:browser';
 
 function handleWindow(aWindow, aInitialization)
 {
