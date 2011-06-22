@@ -231,19 +231,19 @@ config.register('about:blank?foxsplitter-config', <>
 				type="bool"/>
 		</preferences>
 
-		<checkbox label={bundle.getFormattedString('appMenu.split.before', [bundle.getString('ui.split.app.label')])}
+		<checkbox label={bundle.getFormattedString('appMenu.split', [bundle.getString('ui.split.app.label')])}
 			preference="appMenu.split"/>
-		<checkbox label={bundle.getFormattedString('viewMenu.split.before', [bundle.getString('ui.split.view.label')])}
+		<checkbox label={bundle.getFormattedString('viewMenu.split', [bundle.getString('ui.split.view.label')])}
 			preference="viewMenu.split"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromLink.before', [bundle.getString('ui.split.link.label')])}
+		<checkbox label={bundle.getFormattedString('context.splitFromLink', [bundle.getString('ui.split.link.label')])}
 			preference="context.splitFromLink"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromFrame.before', [bundle.getString('ui.split.frame.label')])}
+		<checkbox label={bundle.getFormattedString('context.splitFromFrame', [bundle.getString('ui.split.frame.label')])}
 			preference="context.splitFromFrame"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromTab.move.before', [bundle.getString('ui.split.tab.move.label')])}
+		<checkbox label={bundle.getFormattedString('context.splitFromTab.move', [bundle.getString('ui.split.tab.move.label')])}
 			preference="context.splitFromTab.move"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromTab.duplicate.before', [bundle.getString('ui.split.tab.duplicate.label')])}
-			preference="context.gather"/>
-		<checkbox label={bundle.getFormattedString('context.gatherWindows.before', [bundle.getString('ui.gather.long')])}
+		<checkbox label={bundle.getFormattedString('context.splitFromTab.duplicate', [bundle.getString('ui.split.tab.duplicate.label')])}
+			preference="context.splitFromTab.duplicate"/>
+		<checkbox label={bundle.getFormattedString('context.gatherWindows', [bundle.getString('ui.gather.long')])}
 			preference="context.gatherWindows"/>
 	</prefpane>
 
