@@ -33,8 +33,11 @@ config.setDefault(domain+'context.splitFromFrame', true);
 config.setDefault(domain+'context.splitFromTab.move', true);
 config.setDefault(domain+'context.splitFromTab.duplicate', true);
 config.setDefault(domain+'context.gatherWindows', true);
+config.setDefault(domain+'selection.grid', true);
+config.setDefault(domain+'selection.x', true);
+config.setDefault(domain+'selection.y', true);
 
-config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-grid', true);
-config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-x',    true);
-config.setDefault('extensions.multipletab.show.multipletab-selection-foxsplitter-layout-y',    true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',    true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-y',    true);
 

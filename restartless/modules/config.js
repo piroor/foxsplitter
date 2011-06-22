@@ -229,6 +229,15 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="context.gatherWindows"
 				name={domain+'context.gatherWindows'}
 				type="bool"/>
+			<preference id="selection.grid"
+				name={domain+'selection.grid'}
+				type="bool"/>
+			<preference id="selection.x"
+				name={domain+'selection.x'}
+				type="bool"/>
+			<preference id="selection.y"
+				name={domain+'selection.y'}
+				type="bool"/>
 		</preferences>
 
 		<checkbox label={bundle.getFormattedString('appMenu.split', [bundle.getString('ui.split.app.label')])}
@@ -239,12 +248,35 @@ config.register('about:blank?foxsplitter-config', <>
 			preference="context.splitFromLink"/>
 		<checkbox label={bundle.getFormattedString('context.splitFromFrame', [bundle.getString('ui.split.frame.label')])}
 			preference="context.splitFromFrame"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromTab.move', [bundle.getString('ui.split.tab.move.label')])}
-			preference="context.splitFromTab.move"/>
-		<checkbox label={bundle.getFormattedString('context.splitFromTab.duplicate', [bundle.getString('ui.split.tab.duplicate.label')])}
-			preference="context.splitFromTab.duplicate"/>
-		<checkbox label={bundle.getFormattedString('context.gatherWindows', [bundle.getString('ui.gather.long')])}
-			preference="context.gatherWindows"/>
+		<groupbox orient="horizontal">
+			<caption label={bundle.getString('tabContextMenu')}/>
+			<vbox>
+				<checkbox label={bundle.getString('ui.split.tab.move.label')}
+					preference="context.splitFromTab.move"/>
+				<checkbox label={bundle.getString('ui.split.tab.duplicate.label')}
+					preference="context.splitFromTab.duplicate"/>
+			</vbox>
+			<vbox>
+				<checkbox label={bundle.getString('ui.gather.long')}
+					preference="context.gatherWindows"/>
+			</vbox>
+		</groupbox>
+		<groupbox orient="vertical">
+			<caption label={bundle.getString('tabSelectionMenu')}/>
+			<description value={bundle.getString('tabSelectionMenu.note')}/>
+			<hbox>
+				<vbox>
+					<checkbox label={bundle.getString('ui.grid.selection')}
+						preference="selection.grid"/>
+					<checkbox label={bundle.getString('ui.x.selection')}
+						preference="selection.x"/>
+				</vbox>
+				<vbox>
+					<checkbox label={bundle.getString('ui.y.selection')}
+						preference="selection.y"/>
+				</vbox>
+			</hbox>
+		</groupbox>
 	</prefpane>
 
 	<!-- This must be created as an XHTML script element, not XUL one, because

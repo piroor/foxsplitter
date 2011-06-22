@@ -81,9 +81,9 @@ appMenu.split=Firefoxメニューに「%S」を追加する
 viewMenu.split=「表示」メニューに「%S」を追加する
 context.splitFromLink=Webページ上でのコンテキストメニューに「%S」を追加する
 context.splitFromFrame=フレーム上でのコンテキストメニューに「%S」を追加する
-context.splitFromTab.move=タブのコンテキストメニューに「%S」を追加する
-context.splitFromTab.duplicate=タブのコンテキストメニューに「%S」を追加する
-context.gatherWindows=タブのコンテキストメニューに「%S」を追加する
+tabContextMenu=タブのコンテキストメニューに以下の項目を追加する
+tabSelectionMenu=複数タブ選択時のメニューに以下の項目を追加する
+tabSelectionMenu.note=※註：別のアドオン「マルチプルタブハンドラ」が必要です
 
 
 
@@ -130,14 +130,17 @@ ui.split.tab.duplicate.accesskey=u
 
 ui.grid.short=並べる
 ui.grid.long=すべてのタブを平面に並べる
+ui.grid.selection=平面に並べる
 ui.grid.accesskey=t
 
 ui.x.short=横に並べる
 ui.x.long=すべてのタブを横に並べる
+ui.x.selection=横に並べる
 ui.x.accesskey=v
 
 ui.y.short=縦に並べる
 ui.y.long=すべてのタブを縦に並べる
+ui.y.selection=縦に並べる
 ui.y.accesskey=h
 
 ui.gather.short=集める

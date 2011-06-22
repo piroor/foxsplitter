@@ -80,9 +80,9 @@ appMenu.split=Append "%S" to the Firefox menu
 viewMenu.split=Append "%S" to the "View" menu
 context.splitFromLink=Append "%S" to the context menu on web pages
 context.splitFromFrame=Append "%S" to the context menu on frames
-context.splitFromTab.move=Append "%S" to the context menu on tabs
-context.splitFromTab.duplicate=Append "%S" to the context menu on tabs
-context.gatherWindows=Append "%S" to the context menu on tabs
+tabContextMenu=Append following items to the context menu on tabs
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
 
 
@@ -126,14 +126,17 @@ ui.split.tab.duplicate.accesskey=u
 
 ui.grid.short=Tile
 ui.grid.long=Tile all tabs
+ui.grid.selection=Tile tabs
 ui.grid.accesskey=t
 
 ui.x.short=Tile Vertically
 ui.x.long=Tile all tabs Vertically
+ui.x.selection=Tile tabs Vertically
 ui.x.accesskey=v
 
 ui.y.short=Tile Horizontally
 ui.y.long=Tile all tabs Horizontally
+ui.y.selection=Tile tabs Horizontally
 ui.y.accesskey=h
 
 ui.gather.short=Gather
