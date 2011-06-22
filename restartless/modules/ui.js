@@ -1,6 +1,7 @@
 load('lib/jsdeferred');
 load('lib/prefs');
 load('lib/ToolbarItem');
+load('lib/KeyCombination');
 load('base');
 
 var bundle = require('lib/locale')
@@ -17,6 +18,8 @@ function FoxSplitterUI(aFSWindow)
 }
 FoxSplitterUI.prototype = {
 	__proto__ : FoxSplitterConst,
+
+	EVENT_TYPE_KEY_COMBINATION_COMMAND : KeyCombination.EVENT_TYPE_COMMAND + domain,
 
 	BASE_STYLESHEET : <![CDATA[
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
@@ -152,8 +155,6 @@ FoxSplitterUI.prototype = {
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
 	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
 	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
-	get shortcuts() { return FoxSplitterUI.shortcuts; },
-	set shortcuts(aValue) { return FoxSplitterUI.shortcuts = aValue; },
 
 
 	init : function FSUI_init(aFSWindow)
@@ -673,8 +674,11 @@ FoxSplitterUI.prototype = {
 				return;
 			case 'popupshowing':
 				return this.onPopupShowing(aEvent);
-			case 'keypress':
-				return this.onKeyPress(aEvent);
+			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop':
+			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight':
+			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom':
+			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft':
+				return this.onKeyCombinationCommand(aEvent);
 			default:
 				return;
 		}
@@ -894,48 +898,7 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
-	onKeyPress : function FSUI_onKeyPress(aEvent)
-	{
-		var stroke = [];
-		if (aEvent.altKey) stroke.push('alt');
-		if (aEvent.ctrlKey) stroke.push('ctrl');
-		if (aEvent.metaKey) stroke.push('meta');
-		if (aEvent.shiftKey) stroke.push('shift');
-		if (aEvent.charCode) stroke.push(String.fromCharCode(aEvent.charCode));
-		if (aEvent.keyCode) stroke.push(this._keyNameFromKeyCode(aEvent.keyCode));
-		stroke = stroke.join('-').toLowerCase();
-
-		if (!this._bufferedKeyStrokes) {
-			if (!(new RegExp('^'+stroke+'\\s', 'm')).test(this.shortcuts))
-				return;
-			this._bufferedKeyStrokes = stroke;
-		}
-		else {
-			this._bufferedKeyStrokes += ' ' + stroke;
-			if (!(new RegExp('^'+this._bufferedKeyStrokes+'\\s', 'm')).test(this.shortcuts)) {
-				this._bufferedKeyStrokes = '';
-				return;
-			}
-		}
-
-		var matchedCommand = this.shortcuts.match(new RegExp('^'+this._bufferedKeyStrokes+'\t(.+)$', 'm'));
-		if (matchedCommand) {
-			this._bufferedKeyStrokes = '';
-			this._doKeyboardCommand(matchedCommand[1]);
-		}
-		aEvent.stopPropagation();
-		aEvent.preventDefault();
-	},
-	_keyNameFromKeyCode : function FSUI_keyNameFromKeyCode(aCode)
-	{
-		for (let prop in Ci.nsIDOMKeyEvent)
-		{
-			if (Ci.nsIDOMKeyEvent[prop] == aCode)
-				return prop.replace(/^DOM_VK_/, '').replace(/_/g, '');
-		}
-		return 'unknown';
-	},
-	_doKeyboardCommand : function FSUI_doKeyboardCommand(aCommand)
+	onKeyCombinationCommand : function FSUI_onKeyCombinationCommand(aEvent)
 	{
 		var owner = this.owner;
 		var tabs = owner.selectedTabs;
@@ -943,7 +906,7 @@ FoxSplitterUI.prototype = {
 		if (!selected)
 			tabs.push(this.browser.selectedTab);
 
-		switch (aCommand)
+		switch (aEvent.type.replace(this.EVENT_TYPE_KEY_COMBINATION_COMMAND, ''))
 		{
 			case 'splitTabToTop':
 				return owner.splitTabsTo(tabs, this.POSITION_TOP);
@@ -1125,25 +1088,20 @@ FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 
-FoxSplitterUI.loadKeyboardShortcuts = function() {
-	var shortcuts = [];
+FoxSplitterUI.updateKeyboardShortcuts = function() {
 	var prefix = domain+'shortcut.';
 	prefs.getChildren(prefix).forEach(function(aPref) {
-		var definition = (prefs.getPref(aPref) || '')
-							.replace(/^\s+|\s+$/g, '')
-							.replace(/\s+/g, ' ')
-							.replace(/control/gi, 'ctrl')
-							.replace(/command/gi, 'meta')
-							.replace(/(?:(?:alt|ctrl|meta|shift)-)+/g, function(aModifiers) {
-								return aModifiers.replace(/-$/, '').split('-').sort().join('-')+'-';
-							})
-							.toLowerCase();
-		if (definition)
-			shortcuts.push(definition+'\t'+aPref.replace(prefix, ''));
+		var command = domain + aPref.replace(prefix, '');
+		var combination = prefs.getPref(aPref) || '';
+		this.instances.forEach(function(aUI) {
+			if (combination)
+				KeyCombination.registerCommand(aUI.window, command, combination);
+			else
+				KeyCombination.unregisterCommand(aUI.window, command);
+		});
 	}, this);
-	this.shortcuts = shortcuts.join('\n');
 };
-FoxSplitterUI.loadKeyboardShortcuts();
+FoxSplitterUI.updateKeyboardShortcuts();
 
 var prefListener = {
 		domain : domain,
@@ -1177,7 +1135,7 @@ var prefListener = {
 					case 'shortcut.splitTabToRight':
 					case 'shortcut.splitTabToBottom':
 					case 'shortcut.splitTabToLeft':
-						FoxSplitterUI.loadKeyboardShortcuts();
+						FoxSplitterUI.updateKeyboardShortcuts();
 						break;
 				}
 			}
@@ -1191,4 +1149,5 @@ function shutdown()
 	prefs.removePrefListener(prefListener);
 	prefs = undefined;
 	FoxSplitterConst = undefined;
+	KeyCombination = undefined;
 }
