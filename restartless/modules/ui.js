@@ -1,7 +1,7 @@
 load('lib/jsdeferred');
 load('lib/prefs');
 load('lib/ToolbarItem');
-load('lib/KeyCombination');
+load('lib/KeyboardShortcut');
 load('base');
 
 var bundle = require('lib/locale')
@@ -18,8 +18,6 @@ function FoxSplitterUI(aFSWindow)
 }
 FoxSplitterUI.prototype = {
 	__proto__ : FoxSplitterConst,
-
-	EVENT_TYPE_KEY_COMBINATION_COMMAND : KeyCombination.EVENT_TYPE_COMMAND + domain,
 
 	BASE_STYLESHEET : <![CDATA[
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
@@ -160,31 +158,22 @@ FoxSplitterUI.prototype = {
 	init : function FSUI_init(aFSWindow)
 	{
 		this.owner = aFSWindow;
-		this._bufferedKeyStrokes = '';
+		this.shortcuts = {};
 
 		FoxSplitterUI.instances.push(this);
 
 		this._installStyleSheet();
 		this._initToolbarItems();
+		this._initKeyboardShortcuts();
 		this._initMenuItems();
-
-		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop', this, false);
-		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight', this, false);
-		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom', this, false);
-		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft', this, false);
-		FoxSplitterUI.updateKeyboardShortcuts();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
-		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop', this, false);
-		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight', this, false);
-		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom', this, false);
-		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft', this, false);
-
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
+		this._destroyKeyboardShortcuts();
 		this._uninstallStyleSheet();
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
@@ -350,19 +339,23 @@ FoxSplitterUI.prototype = {
 							<menuitem id="foxsplitter-app-split-right"
 								class={iconicClass+'split-right'}
 								label={bundle.getString('ui.split.right.short')}
-								accesskey={bundle.getString('ui.split.right.accesskey')}/>
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								key="foxsplitter-key-splitTabToRight"/>
 							<menuitem id="foxsplitter-app-split-left"
 								class={iconicClass+'split-left'}
 								label={bundle.getString('ui.split.left.short')}
-								accesskey={bundle.getString('ui.split.left.accesskey')}/>
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								key="foxsplitter-key-splitTabToLeft"/>
 							<menuitem id="foxsplitter-app-split-top"
 								class={iconicClass+'split-top'}
 								label={bundle.getString('ui.split.top.short')}
-								accesskey={bundle.getString('ui.split.top.accesskey')}/>
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								key="foxsplitter-key-splitTabToTop"/>
 							<menuitem id="foxsplitter-app-split-bottom"
 								class={iconicClass+'split-bottom'}
 								label={bundle.getString('ui.split.bottom.short')}
-								accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								key="foxsplitter-key-splitTabToBottom"/>
 						</menupopup>
 					</splitmenu>
 				</>, appMenuPopup).querySelector('*');
@@ -382,19 +375,23 @@ FoxSplitterUI.prototype = {
 							<menuitem id="foxsplitter-view-split-right"
 								class={iconicClass+'split-right'}
 								label={bundle.getString('ui.split.right.short')}
-								accesskey={bundle.getString('ui.split.right.accesskey')}/>
+								accesskey={bundle.getString('ui.split.right.accesskey')}
+								key="foxsplitter-key-splitTabToRight"/>
 							<menuitem id="foxsplitter-view-split-left"
 								class={iconicClass+'split-left'}
 								label={bundle.getString('ui.split.left.short')}
-								accesskey={bundle.getString('ui.split.left.accesskey')}/>
+								accesskey={bundle.getString('ui.split.left.accesskey')}
+								key="foxsplitter-key-splitTabToLeft"/>
 							<menuitem id="foxsplitter-view-split-top"
 								class={iconicClass+'split-top'}
 								label={bundle.getString('ui.split.top.short')}
-								accesskey={bundle.getString('ui.split.top.accesskey')}/>
+								accesskey={bundle.getString('ui.split.top.accesskey')}
+								key="foxsplitter-key-splitTabToTop"/>
 							<menuitem id="foxsplitter-view-split-bottom"
 								class={iconicClass+'split-bottom'}
 								label={bundle.getString('ui.split.bottom.short')}
-								accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+								accesskey={bundle.getString('ui.split.bottom.accesskey')}
+								key="foxsplitter-key-splitTabToBottom"/>
 						</menupopup>
 					</menu>
 				</>, popup).querySelector('*');
@@ -592,64 +589,37 @@ FoxSplitterUI.prototype = {
 
 	_destroyMenuItems : function FSUI_destroyMenuItems()
 	{
-		if (this.appMenuItem) {
-			this._removeMenuItem(this.appMenuItem);
-			delete this.appMenuItem;
-		}
-
-		if (this.viewMenuItem) {
-			this._removeMenuItem(this.viewMenuItem);
-			delete this.viewMenuItem;
-		}
-
-		if (this.contextLinkItem) {
-			this._removeMenuItem(this.contextLinkItem);
-			delete this.contextLinkItem;
-		}
-
 		if (this.contextFrameItem) {
 			let popup = this.document.getElementById('contentAreaContextMenu');
 			popup.removeEventListener('popupshowing', this, false);
-
-			this._removeMenuItem(this.contextFrameItem);
-			delete this.contextFrameItem;
 		}
 
 		if (this.tabContextMoveItem || this.tabContextDuplicateItem || this.tabContextGatherItem) {
 			let popup = this.document.querySelector('#tabContextMenu');
 			popup.removeEventListener('popupshowing', this, false);
-
-			this._removeMenuItem(this.tabContextMoveItem);
-			delete this.tabContextMoveItem;
-
-			this._removeMenuItem(this.tabContextDuplicateItem);
-			delete this.tabContextDuplicateItem;
-
-			this._removeMenuItem(this.tabContextGatherItem);
-			delete this.tabContextGatherItem;
 		}
 
-		if (this.tabSelectionTileGridItem) {
-			this._removeMenuItem(this.tabSelectionTileGridItem);
-			delete this.tabSelectionTileGridItem;
-		}
-		if (this.tabSelectionTileXItem) {
-			this._removeMenuItem(this.tabSelectionTileXItem);
-			delete this.tabSelectionTileXItem;
-		}
-		if (this.tabSelectionTileYItem) {
-			this._removeMenuItem(this.tabSelectionTileYItem);
-			delete this.tabSelectionTileYItem;
-		}
-		if (this.tabSelectionSeparator) {
-			this._removeMenuItem(this.tabSelectionSeparator);
-			delete this.tabSelectionSeparator;
-		}
-	},
-	_removeMenuItem : function FSUI_removeMenuItem(aItem)
-	{
-		if (aItem.parentNode)
-			aItem.parentNode.removeChild(aItem);
+		<![CDATA[
+			appMenuItem
+			viewMenuItem
+			contextLinkItem
+			contextFrameItem
+			tabContextMoveItem
+			tabContextDuplicateItem
+			tabContextGatherItem
+			tabSelectionTileGridItem
+			tabSelectionTileXItem
+			tabSelectionTileYItem
+			tabSelectionSeparator
+		]]>.toString().replace(/^\s+|\s+$/g, '').split(/\s+/)
+			.forEach(function(aItem) {
+				var item = this[aItem];
+				if (item) {
+					if (item.parentNode)
+						item.parentNode.removeChild(item);
+					delete this[aItem];
+				}
+			}, this);
 	},
 
 	resetMenuItems : function FSUI_resetMenuItems()
@@ -662,6 +632,55 @@ FoxSplitterUI.prototype = {
 			delete self._deferredResetMenuItems;
 			self._destroyMenuItems();
 			self._initMenuItems();
+		});
+	},
+
+
+	_initKeyboardShortcuts : function FSUI_initKeyboardShortcuts()
+	{
+		var keyset = this.document.getElementById('mainKeyset');
+
+		var commands = {
+				splitTabToTop    : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_TOP);',
+				splitTabToRight  : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_RIGHT);',
+				splitTabToBottom : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_BOTTOM);',
+				splitTabToLeft   : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_LEFT);'
+			};
+		for (let command in commands)
+		{
+			if (!commands.hasOwnProperty(command)) continue;
+			let pref = prefs.getPref(domain+'shortcut.'+command);
+			if (!pref) continue;
+
+			this.shortcuts[command] = KeyboardShortcut.create({
+				id        : 'foxsplitter-key-'+command,
+				oncommand : commands[command],
+				shortcut  : pref
+			}, keyset);
+		}
+	},
+
+	_destroyKeyboardShortcuts : function FSUI_destroyKeyboardShortcuts()
+	{
+		for (let command in this.shortcuts)
+		{
+			if (!this.shortcuts.hasOwnProperty(command)) continue;
+
+			this.shortcuts[command].destroy();
+		}
+		this.shortcuts = {};
+	},
+
+	resetKeyboardShortcuts : function FSUI_resetKeyboardShortcuts()
+	{
+		if (this._deferredKeyboardShortcuts)
+			return;
+
+		var self = this;
+		this._deferredKeyboardShortcuts = Deferred.next(function() {
+			delete self._deferredKeyboardShortcuts;
+			self._destroyKeyboardShortcuts();
+			self._initKeyboardShortcuts();
 		});
 	},
 
@@ -687,7 +706,7 @@ FoxSplitterUI.prototype = {
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight':
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom':
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft':
-				return this.onKeyCombinationCommand(aEvent);
+				return this.onKeyboardShortcutCommand(aEvent);
 			default:
 				return;
 		}
@@ -907,7 +926,7 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
-	onKeyCombinationCommand : function FSUI_onKeyCombinationCommand(aEvent)
+	onKeyboardShortcutCommand : function FSUI_onKeyboardShortcutCommand(aEvent)
 	{
 		var owner = this.owner;
 		var tabs = owner.selectedTabs;
@@ -1097,21 +1116,6 @@ FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 
-FoxSplitterUI.updateKeyboardShortcuts = function() {
-	var prefix = domain+'shortcut.';
-	prefs.getChildren(prefix).forEach(function(aPref) {
-		var command = domain + aPref.replace(prefix, '');
-		var combination = prefs.getPref(aPref) || '';
-		this.instances.forEach(function(aUI) {
-			if (combination)
-				KeyCombination.registerCommand(aUI.window, command, combination);
-			else
-				KeyCombination.unregisterCommand(aUI.window, command);
-		});
-	}, this);
-};
-FoxSplitterUI.updateKeyboardShortcuts();
-
 var prefListener = {
 		domain : domain,
 		observe : function FSUIPL_observe(aSubject, aTopic, aData) {
@@ -1144,7 +1148,9 @@ var prefListener = {
 					case 'shortcut.splitTabToRight':
 					case 'shortcut.splitTabToBottom':
 					case 'shortcut.splitTabToLeft':
-						FoxSplitterUI.updateKeyboardShortcuts();
+						FoxSplitterUI.instances.forEach(function(aUI) {
+							aUI.resetKeyboardShortcuts();
+						});
 						break;
 				}
 			}
@@ -1158,5 +1164,4 @@ function shutdown()
 	prefs.removePrefListener(prefListener);
 	prefs = undefined;
 	FoxSplitterConst = undefined;
-	KeyCombination = undefined;
 }

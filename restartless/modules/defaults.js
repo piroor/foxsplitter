@@ -3,6 +3,10 @@ var config = require('lib/config');
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
+const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
+					.getService(Ci.nsIXULAppInfo)
+					.QueryInterface(Ci.nsIXULRuntime);
+
 config.setDefault(domain+'shouldDuplicateOnSplit', true);
 config.setDefault(domain+'shouldDuplicateOnDrop', false);
 
@@ -38,8 +42,14 @@ config.setDefault(domain+'selection.x', true);
 config.setDefault(domain+'selection.y', true);
 
 config.setDefault(domain+'shortcut.splitTabToTop', '');
-config.setDefault(domain+'shortcut.splitTabToRight', 'ctrl-x 3');
-config.setDefault(domain+'shortcut.splitTabToBottom', 'ctrl-x 2');
+config.setDefault(domain+'shortcut.splitTabToRight',
+	XULAppInfo.OS == 'Darwin' ? 'ctrl-"' : // compatible to XCode's one
+	''
+);
+config.setDefault(domain+'shortcut.splitTabToBottom',
+	XULAppInfo.OS == 'Darwin' ? 'alt-ctrl-"' : // compatible to XCode's one
+	''
+);
 config.setDefault(domain+'shortcut.splitTabToLeft', '');
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
