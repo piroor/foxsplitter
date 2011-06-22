@@ -476,6 +476,19 @@ FoxSplitterUI.prototype = {
 								class={iconicClass+'split-bottom'}
 								label={bundle.getString('ui.split.bottom.short')}
 								accesskey={bundle.getString('ui.split.bottom.accesskey')}/>
+							<menuseparator/>
+							<menuitem id="foxsplitter-context-tab-tile-grid"
+								class={iconicClass+'tile-grid tabs'}
+								label={bundle.getString('ui.grid.long')}
+								accesskey={bundle.getString('ui.grid.accesskey')}/>
+							<menuitem id="foxsplitter-context-tab-tile-x"
+								class={iconicClass+'tile-x tabs'}
+								label={bundle.getString('ui.x.long')}
+								accesskey={bundle.getString('ui.x.accesskey')}/>
+							<menuitem id="foxsplitter-context-tab-tile-y"
+								class={iconicClass+'tile-y tabs'}
+								label={bundle.getString('ui.y.long')}
+								accesskey={bundle.getString('ui.y.accesskey')}/>
 						</menupopup>
 					</menu>
 				</>, tabContextPopup).querySelector('*');
@@ -679,14 +692,17 @@ FoxSplitterUI.prototype = {
 				return owner.openContextFrameAt(this.POSITION_LEFT);
 
 			case 'foxsplitter-general-menubutton-tile-grid':
+			case 'foxsplitter-context-tab-tile-grid':
 				return selected ?
 						owner.tileSelectedTabs(this.TILE_MODE_GRID) :
 						owner.tileAllTabs(this.TILE_MODE_GRID) ;
 			case 'foxsplitter-general-menubutton-tile-x':
+			case 'foxsplitter-context-tab-tile-x':
 				return selected ?
 						owner.tileSelectedTabs(this.TILE_MODE_X_AXIS) :
 						owner.tileAllTabs(this.TILE_MODE_X_AXIS) ;
 			case 'foxsplitter-general-menubutton-tile-y':
+			case 'foxsplitter-context-tab-tile-y':
 				return selected ?
 						owner.tileSelectedTabs(this.TILE_MODE_Y_AXIS) :
 						owner.tileAllTabs(this.TILE_MODE_Y_AXIS) ;
