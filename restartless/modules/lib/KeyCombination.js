@@ -37,7 +37,7 @@ var KeyCombination = {
 					.toLowerCase();
 	},
 
-	registerCommand : function(aCommand, aKeyCombination)
+	registerCommand : function(aDOMWindow, aCommand, aKeyCombination)
 	{
 		if (!aDOMWindow || !aCommand)
 			return;
@@ -88,8 +88,8 @@ var KeyCombination = {
 		this._managedCommands.forEach(function(aCommand) {
 			this.unregisterCommand(aDOMWindow, aCommand, true);
 		}, this);
-		aWindow.removeEventListener('keypress', this, true);
-		aWindow.removeEventListener('unload', this, false);
+		aDOMWindow.removeEventListener('keypress', this, true);
+		aDOMWindow.removeEventListener('unload', this, false);
 	},
 
 	handleEvent : function(aEvent)
@@ -105,6 +105,8 @@ var KeyCombination = {
 
 	_onKeyPress : function(aEvent)
 	{
+		var window = aEvent.currentTarget;
+
 		var stroke = [];
 		if (aEvent.altKey) stroke.push('alt');
 		if (aEvent.ctrlKey) stroke.push('ctrl');
@@ -115,7 +117,6 @@ var KeyCombination = {
 		stroke = stroke.join('-').toLowerCase();
 
 		var shortcuts = window[this.COMMANDS] || '';
-		var window = (aEvent.target.ownerDocument || aEvent.target).defaultView;
 		if (!window[this.BUFFER]) {
 			if (!(new RegExp('^'+stroke+'\\s', 'm')).test(shortcuts))
 				return;

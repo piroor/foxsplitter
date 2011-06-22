@@ -167,12 +167,21 @@ FoxSplitterUI.prototype = {
 		this._installStyleSheet();
 		this._initToolbarItems();
 		this._initMenuItems();
-		this.owner.window.addEventListener('keypress', this, true);
+
+		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop', this, false);
+		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight', this, false);
+		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom', this, false);
+		this.owner.window.addEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft', this, false);
+		FoxSplitterUI.updateKeyboardShortcuts();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
-		this.owner.window.removeEventListener('keypress', this, true);
+		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop', this, false);
+		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight', this, false);
+		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom', this, false);
+		this.owner.window.removeEventListener(this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft', this, false);
+
 		this.clearGroupedAppearance(aOnQuit);
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
