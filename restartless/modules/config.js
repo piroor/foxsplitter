@@ -28,6 +28,25 @@ var script = (function() {
 			});
 			pref.value = prefValue;
 		}
+		function updateShortcut(aEvent) {
+			var field = aEvent.target;
+			var shortcut = KeyboardShortcut.toKeyboardShortcut(aEvent);
+			if (shortcut) {
+				field.value = shortcut;
+				document.getElementById(field.getAttribute('preference')).value = shortcut;
+				aEvent.stopPropagation()
+				aEvent.preventDefault();
+			}
+		}
+		function clearPref(aField) {
+			document.getElementById(aField.getAttribute('preference')).value = '';
+			aField.value = '';
+		}
+		function resetPref(aField) {
+			var pref = document.getElementById(aField.getAttribute('preference'));
+			pref.value = pref.defaultValue;
+			aField.value = pref.defaultValue;
+		}
 	}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '');
 
 config.register('about:blank?foxsplitter-config', <>
@@ -279,10 +298,100 @@ config.register('about:blank?foxsplitter-config', <>
 		</groupbox>
 	</prefpane>
 
+	<prefpane id="prefpane-shortcut"
+		label={bundle.getString('tab.shortcut')}>
+		<preferences>
+			<preference id="shortcut.splitTabToTop"
+				name={domain+'shortcut.splitTabToTop'}
+				type="string"/>
+			<preference id="shortcut.splitTabToRight"
+				name={domain+'shortcut.splitTabToRight'}
+				type="string"/>
+			<preference id="shortcut.splitTabToBottom"
+				name={domain+'shortcut.splitTabToBottom'}
+				type="string"/>
+			<preference id="shortcut.splitTabToLeft"
+				name={domain+'shortcut.splitTabToLeft'}
+				type="string"/>
+		</preferences>
+		<grid>
+			<columns>
+				<column/>
+				<column/>
+				<column/>
+				<column/>
+			</columns>
+			<rows>
+				<row align="center">
+					<label value={bundle.getString('ui.split.right.long')}
+						control="shortcut.splitTabToRight-textbox"/>
+					<textbox id="shortcut.splitTabToRight-textbox"
+						preference="shortcut.splitTabToRight"
+						onkeydown="updateShortcut(event)"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.split.left.long')}
+						control="shortcut.splitTabToLeft-textbox"/>
+					<textbox id="shortcut.splitTabToLeft-textbox"
+						preference="shortcut.splitTabToLeft"
+						onkeydown="updateShortcut(event)"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.split.top.long')}
+						control="shortcut.splitTabToTop-textbox"/>
+					<textbox id="shortcut.splitTabToTop-textbox"
+						preference="shortcut.splitTabToTop"
+						onkeydown="updateShortcut(event)"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.split.bottom.long')}
+						control="shortcut.splitTabToBottom-textbox"/>
+					<textbox id="shortcut.splitTabToBottom-textbox"
+						preference="shortcut.splitTabToBottom"
+						onkeydown="updateShortcut(event)"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+			</rows>
+		</grid>
+	</prefpane>
+
 	<!-- This must be created as an XHTML script element, not XUL one, because
 	     XUL script elements are not evaluated when they are dynamically inserted. -->
-	<script type="application/javascript"
+	<script type="application/javascript;version=1.8"
 		xmlns="http://www.w3.org/1999/xhtml">{script}</script>
+
+	<script type="application/javascript;version=1.8"
+		xmlns="http://www.w3.org/1999/xhtml"><![CDATA[
+		var Cc = Components.classes;
+		var Ci = Components.interfaces;
+	]]></script>
+	<script type="application/javascript;version=1.8"
+		xmlns="http://www.w3.org/1999/xhtml"
+		src="resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js"/>
+
 </prefwindow>
 
 </>);

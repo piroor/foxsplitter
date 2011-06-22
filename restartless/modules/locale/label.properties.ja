@@ -85,6 +85,10 @@ tabContextMenu=タブのコンテキストメニューに以下の項目を追�
 tabSelectionMenu=複数タブ選択時のメニューに以下の項目を追加する
 tabSelectionMenu.note=※註：別のアドオン「マルチプルタブハンドラ」が必要です
 
+tab.shortcut=ショートカット
+
+shortcut.clear=消去
+shortcut.reset=リセット
 
 
 

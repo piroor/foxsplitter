@@ -1150,6 +1150,7 @@ var prefListener = {
 					case 'shortcut.splitTabToLeft':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetKeyboardShortcuts();
+							aUI.resetMenuItems();
 						});
 						break;
 				}

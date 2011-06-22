@@ -40,7 +40,7 @@ KeyboardShortcut.prototype = {
 		this._document = aKeySet.ownerDocument || aKeySet;
 		this._window = this._document.defaultView;
 		this._window.addEventListener('unload', this, false);
-		this.node = this._createKeyIn(aKeySet);
+		this._createKeyIn(aKeySet);
 
 		KeyboardShortcut.instances.push(this);
 	},
@@ -52,12 +52,13 @@ KeyboardShortcut.prototype = {
 
 		this._window.removeEventListener('unload', this, false);
 
-		if (this.node.parentNode)
-			this.node.parentNode.removeChild(this.node);
+		if (this._keyset.parentNode)
+			this._keyset.parentNode.removeChild(this._keyset);
 
 		delete this._definition;
 		delete this._document;
 		delete this._window;
+		delete this._keyset;
 		delete this.node;
 
 		KeyboardShortcut.instances = KeyboardShortcut.instances.filter(function(aKey) {
@@ -113,10 +114,10 @@ KeyboardShortcut.prototype = {
 
 		var keyMatch = shortcut.match(/-(.)$/);
 		var keyCodeMatch = shortcut.match(/-([^\-]+)$/);
-		if (keyMatch = keyMatch[1]) {
+		if (keyMatch = (keyMatch && keyMatch[1])) {
 			key.setAttribute('key', keyMatch);
 		}
-		else if (keyCodeMatch = KeyboardShortcut._keyCodeFromKeyName(keyCodeMatch[1])) {
+		else if (keyCodeMatch = (keyCodeMatch && KeyboardShortcut._keyCodeFromKeyName(keyCodeMatch[1]))) {
 			key.setAttribute('keycode', keyCodeMatch);
 		}
 		else {
@@ -131,14 +132,30 @@ KeyboardShortcut.prototype = {
 			key.setAttribute(attr, this._definition[attr]);
 		}
 
-		aKeySet.appendChild(key);
-		return key;
+		/**
+		 * <key/> must be inserted with new <keyset/>, because <key/>s
+		 * inserted into existing <keyset/> doesn't work due to Gecko's bug.
+		 * http://d.hatena.ne.jp/onozaty/20080204/p1
+		 * https://bugzilla.mozilla.org/show_bug.cgi?id=399604
+		 * https://bugzilla.mozilla.org/show_bug.cgi?id=101116
+		 */
+		this._keyset = this._document.createElement('keyset');
+		this._keyset.appendChild(key);
+
+		aKeySet.appendChild(this._keyset);
+		this.node = key;
 	}
 };
 
 KeyboardShortcut.instances = [];
 
 KeyboardShortcut.toKeyboardShortcut = function(aEvent) {
+	if (aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_ALT ||
+		aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_CONTROL ||
+		aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_META ||
+		aEvent.keyCode == Ci.nsIDOMKeyEvent.DOM_VK_SHIFT)
+		return '';
+
 	var shortcut = [];
 	if (aEvent.altKey) shortcut.push('Alt');
 	if (aEvent.ctrlKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? 'Control' : 'Ctrl');

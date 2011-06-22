@@ -84,6 +84,11 @@ tabContextMenu=Append following items to the context menu on tabs
 tabSelectionMenu=Append following items to the tab selection menu
 tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
+tab.shortcut=Keyboard Shortcuts
+
+shortcut.clear=Clear
+shortcut.reset=Reset
+
 
 
 ui.split.short=Split
