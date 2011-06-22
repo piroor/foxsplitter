@@ -614,7 +614,7 @@ FoxSplitterBase.prototype = {
 			aEvent.type == 'click' &&
 			(
 				aEvent.button == 1 ||
-				(aEvent.button == 0 && this.owner.isAccelKeyPressed(aEvent))
+				(aEvent.button == 0 && this.isAccelKeyPressed(aEvent))
 			)
 		);
 	},
