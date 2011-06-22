@@ -1471,6 +1471,7 @@ FoxSplitterWindow.prototype = {
 
 		var scrolledFrame = aEvent.originalTarget.defaultView;
 		if (
+			!scrolledFrame ||
 			// ignore scrolling in Firefox UI
 			scrolledFrame.top == this.window ||
 			// ignore scrolling in background tabs
