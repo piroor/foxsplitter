@@ -171,6 +171,49 @@ config.register('about:blank?foxsplitter-config', <>
 		</groupbox>
 	</prefpane>
 
+	<prefpane id="prefpane-menu"
+		label={bundle.getString('tab.menu')}>
+		<preferences>
+			<preference id="context.splitFromLink"
+				name={domain+'context.splitFromLink'}
+				type="bool"/>
+			<preference id="context.splitFromFrame"
+				name={domain+'context.splitFromFrame'}
+				type="bool"/>
+			<preference id="context.splitFromTab.move"
+				name={domain+'context.splitFromTab.move'}
+				type="bool"/>
+			<preference id="context.splitFromTab.duplicate"
+				name={domain+'context.splitFromTab.duplicate'}
+				type="bool"/>
+		</preferences>
+
+		<checkbox label={[
+				bundle.getString('context.splitFromLink.before'),
+				bundle.getString('ui.split.link.label'),
+				bundle.getString('context.splitFromLink.after')
+			].join('')}
+			preference="context.splitFromLink"/>
+		<checkbox label={[
+				bundle.getString('context.splitFromFrame.before'),
+				bundle.getString('ui.split.frame.label'),
+				bundle.getString('context.splitFromFrame.after')
+			].join('')}
+			preference="context.splitFromFrame"/>
+		<checkbox label={[
+				bundle.getString('context.splitFromTab.move.before'),
+				bundle.getString('ui.split.tab.move.label'),
+				bundle.getString('context.splitFromTab.move.after')
+			].join('')}
+			preference="context.splitFromTab.move"/>
+		<checkbox label={[
+				bundle.getString('context.splitFromTab.duplicate.before'),
+				bundle.getString('ui.split.tab.duplicate.label'),
+				bundle.getString('context.splitFromTab.duplicate.after')
+			].join('')}
+			preference="context.splitFromTab.duplicate"/>
+	</prefpane>
+
 	<!-- This must be created as an XHTML script element, not XUL one, because
 	     XUL script elements are not evaluated when they are dynamically inserted. -->
 	<script type="application/javascript"

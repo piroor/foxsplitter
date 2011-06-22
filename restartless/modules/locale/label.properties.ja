@@ -73,6 +73,17 @@ hiddenUIInInactiveWindow.status=ステータスバー
 hiddenUIInInactiveWindow.extra=その他のツールバー
 hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツールバー項目
 
+tab.appearance=メニュー
+
+context.splitFromLink.before=Webページ上でのコンテキストメニューに「
+context.splitFromLink.after=」を追加する
+context.splitFromFrame.before=フレーム上でのコンテキストメニューに「
+context.splitFromFrame.after=」を追加する
+context.splitFromTab.move.before=タブのコンテキストメニューに「
+context.splitFromTab.move.after=」を追加する
+context.splitFromTab.duplicate.before=タブのコンテキストメニューに「
+context.splitFromTab.duplicate.after=」を追加する
+
 
 
 

@@ -72,6 +72,17 @@ hiddenUIInInactiveWindow.status=Status Bar
 hiddenUIInInactiveWindow.extra=Extra Toolbars
 hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
+tab.appearance=Menu
+
+context.splitFromLink.before=Append "
+context.splitFromLink.after=" to the context menu on web pages
+context.splitFromFrame.before=Append "
+context.splitFromFrame.after=" to the context menu on frames
+context.splitFromTab.move.before=Append "
+context.splitFromTab.move.after=" to the context menu on tabs
+context.splitFromTab.duplicate.before=Append "
+context.splitFromTab.duplicate.after=" to the context menu on tabs
+
 
 
 ui.split.short=Split
