@@ -325,7 +325,7 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinksAt : function FSB_openLinksAt(aURIs, aPosition)
+	openLinksAt : function FSB_openLinksAt(aURIs, aPosition) /* PUBLIC API */
 	{
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
@@ -358,12 +358,12 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition)
+	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition) /* PUBLIC API */
 	{
 		return this.openLinksAt([aURIOrTab], aPosition);
 	},
 
-	duplicateTabsAt : function FSB_duplicateTabsAt(aTabs, aPosition)
+	duplicateTabsAt : function FSB_duplicateTabsAt(aTabs, aPosition) /* PUBLIC API */
 	{
 		return this.openLinkAt('about:blank', aPosition)
 				.next(function(aWindow) {
@@ -374,12 +374,12 @@ FoxSplitterBase.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
-	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition)
+	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition) /* PUBLIC API */
 	{
 		return this.duplicateTabsAt([aTab], aPosition);
 	},
 
-	moveTabsTo : function FSB_moveTabsTo(aTabs, aPosition)
+	moveTabsTo : function FSB_moveTabsTo(aTabs, aPosition) /* PUBLIC API */
 	{
 		aTabs = aTabs.slice(0);
 
@@ -398,12 +398,12 @@ FoxSplitterBase.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
-	moveTabTo : function FSB_moveTabTo(aTab, aPosition)
+	moveTabTo : function FSB_moveTabTo(aTab, aPosition) /* PUBLIC API */
 	{
 		return this.moveTabsTo([aTab], aPosition);
 	},
 
-	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition)
+	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition) /* PUBLIC API */
 	{
 		if (aDOMWindow.FoxSplitter != this) {
 			aDOMWindow.FoxSplitter.unbind();
@@ -414,7 +414,7 @@ FoxSplitterBase.prototype = {
 		});
 	},
 
-	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aEvent)
+	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aEvent) /* PUBLIC API */
 	{
 		if (this.shouldDuplicateOnSplit != this.isMiddleClick(aEvent))
 			return this.duplicateTabsAt(aTabs, aPosition);
@@ -422,7 +422,7 @@ FoxSplitterBase.prototype = {
 			return this.moveTabsTo(aTabs, aPosition);
 	},
 
-	splitTabTo : function FSB_splitTabTo(aTab, aPosition, aEvent)
+	splitTabTo : function FSB_splitTabTo(aTab, aPosition, aEvent) /* PUBLIC API */
 	{
 		return this.splitTabsTo([aTab], aPosition, aEvent);
 	},

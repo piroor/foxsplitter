@@ -625,7 +625,7 @@ FoxSplitterWindow.prototype = {
 
 
 
-	tileTabs : function FSW_tileTabs(aTabs, aMode)
+	tileTabs : function FSW_tileTabs(aTabs, aMode) /* PUBLIC API */
 	{
 		var isAllTabs = aTabs.length == this.visibleTabs.length;
 		if (
@@ -785,18 +785,18 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	tileAllTabs : function FSW_tileAllTabs(aMode)
+	tileAllTabs : function FSW_tileAllTabs(aMode) /* PUBLIC API */
 	{
 		return this.tileTabs(this.visibleTabs, aMode);
 	},
 
-	tileSelectedTabs : function FSW_tileSelectedTabs(aMode)
+	tileSelectedTabs : function FSW_tileSelectedTabs(aMode) /* PUBLIC API */
 	{
 		return this.tileTabs(this.selectedTabs, aMode);
 	},
 
 
-	gatherWindows : function FSW_gatherWindows()
+	gatherWindows : function FSW_gatherWindows() /* PUBLIC API */
 	{
 		if (!this.parent || !this._window)
 			return Deferred.next(function() {
@@ -834,7 +834,7 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	importTabsFrom : function FSW_importTabsFrom(aWindow, aOffset)
+	importTabsFrom : function FSW_importTabsFrom(aWindow, aOffset) /* PUBLIC API */
 	{
 		if (!this.parent || !this._window || !aWindow.FoxSplitter)
 			return Deferred.next(function() {
@@ -880,7 +880,7 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	importTabs : function FSW_importTabs(aTabs, aPosition)
+	importTabs : function FSW_importTabs(aTabs, aPosition) /* PUBLIC API */
 	{
 		var groupInfos = aTabs.map(function(aTab) {
 				if (aTab.hidden)
@@ -903,7 +903,7 @@ FoxSplitterWindow.prototype = {
 		}, this);
 	},
 
-	importTab : function FSW_importTab(aTab, aPosition)
+	importTab : function FSW_importTab(aTab, aPosition) /* PUBLIC API */
 	{
 		if (!this._window)
 			return Deferred.next(function() {
@@ -1016,7 +1016,7 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	duplicateTabs : function FSW_duplicateTabs(aTabs)
+	duplicateTabs : function FSW_duplicateTabs(aTabs) /* PUBLIC API */
 	{
 		if (this.browser.treeStyleTab && this.browser.treeStyleTab.duplicateTab)
 			return this.browser.treeStyleTab.duplicateTabs(aTabs);
@@ -1038,13 +1038,13 @@ FoxSplitterWindow.prototype = {
 		return this.window.WindowIsClosing();
 	},
 
-	close : function FSW_close(aForce)
+	close : function FSW_close(aForce) /* PUBLIC API */
 	{
 		if (aForce || this.canClose())
 			this.window.close();
 	},
 
-	closeAll : function FSW_closeAll()
+	closeAll : function FSW_closeAll() /* PUBLIC API */
 	{
 		if (this.parent)
 			this.root.close();
@@ -1052,7 +1052,7 @@ FoxSplitterWindow.prototype = {
 			this.close();
 	},
 
-	closeOther : function FSW_closeOther()
+	closeOther : function FSW_closeOther() /* PUBLIC API */
 	{
 		if (this.parent)
 			this.root.closeExcept(this);
@@ -1076,6 +1076,21 @@ FoxSplitterWindow.prototype = {
 
 		var uri = gContextMenu.target.ownerDocument.defaultView.location.href;
 		return this.openLinkAt(uri, aPosition);
+	},
+
+	splitCurrentTabTo : function FSW_splitCurrentTabTo(aPosition) /* PUBLIC API */
+	{
+		return this.splitTabTo(this.browser.selectedTab, aPosition);
+	},
+
+	moveCurrentTabTo : function FSW_moveCurrentTabTo(aPosition) /* PUBLIC API */
+	{
+		return this.moveTabTo(this.browser.selectedTab, aPosition);
+	},
+
+	duplicateCurrentTabAt : function FSW_duplicateCurrentTabAt(aPosition) /* PUBLIC API */
+	{
+		return this.duplicateTabAt(this.browser.selectedTab, aPosition);
 	},
 
 
