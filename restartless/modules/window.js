@@ -219,6 +219,7 @@ FoxSplitterWindow.prototype = {
 		this.resizing    = 0;
 		this.raising     = 0;
 		this.scrolling   = 0;
+		this.scrollPositionSynching = 0;
 		this.windowStateUpdating = 0;
 
 		this.id = 'window-' + Date.now() + '-' + parseInt(Math.random() * 65000);
@@ -1463,7 +1464,7 @@ FoxSplitterWindow.prototype = {
 
 	onScroll : function FSW_onScroll(aEvent)
 	{
-		if (!this._window || !this.parent || this.scrolling || !this.syncScroll)
+		if (!this._window || !this.parent || this.scrolling || this.scrollPositionSynching || !this.syncScroll)
 			return;
 
 		var scrolledFrame = aEvent.originalTarget.defaultView;
@@ -1491,7 +1492,10 @@ FoxSplitterWindow.prototype = {
 			this.dumpError(e, 'FoxSplitter: FAILED TO SYNC SCROLL!');
 		}
 
-		this.scrolling--;
+		var self = this;
+		Deferred.next(function() {
+			self.scrolling--;
+		});
 	},
 
 	_collectAllFrames : function FSW_getAllFrames(aFrame)
@@ -1506,10 +1510,10 @@ FoxSplitterWindow.prototype = {
 
 	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor, aFrameIndex)
 	{
-		if (!this._window || this.scrolling)
+		if (!this._window || this.scrollPositionSynching)
 			return;
 
-		this.scrolling++;
+		this.scrollPositionSynching++;
 
 		var frames = this._collectAllFrames(this.browser.contentWindow);
 		if (!aFrameIndex || aFrameIndex >= frames.length)
@@ -1520,9 +1524,10 @@ FoxSplitterWindow.prototype = {
 			(this.syncScrollX ? (aXFactor * frame.scrollMaxX) : frame.scrollX ),
 			(this.syncScrollY ? (aYFactor * frame.scrollMaxY) : frame.scrollY )
 		);
+
 		var self = this;
 		Deferred.next(function() {
-			self.scrolling--;
+			self.scrollPositionSynching--;
 		});
 	},
 
