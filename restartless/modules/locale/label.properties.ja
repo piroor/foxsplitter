@@ -75,6 +75,10 @@ hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツ�
 
 tab.appearance=メニュー
 
+appMenu.split.before=Firefoxメニューに「
+appMenu.split.after=」を追加する
+viewMenu.split.before=「表示」メニューに「
+viewMenu.split.after=」を追加する
 context.splitFromLink.before=Webページ上でのコンテキストメニューに「
 context.splitFromLink.after=」を追加する
 context.splitFromFrame.before=フレーム上でのコンテキストメニューに「
@@ -107,6 +111,12 @@ ui.split.left.short=左に分割
 ui.split.left.long=タブを左のウィンドウとして分割
 ui.split.left.accesskey=l
 
+
+ui.split.app.label=ウィンドウを分割
+ui.split.app.accesskey=s
+
+ui.split.view.label=ウィンドウを分割
+ui.split.view.accesskey=s
 
 ui.split.link.label=分割されたウィンドウでリンク先を開く
 ui.split.link.accesskey=s

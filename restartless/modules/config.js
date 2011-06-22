@@ -174,6 +174,12 @@ config.register('about:blank?foxsplitter-config', <>
 	<prefpane id="prefpane-menu"
 		label={bundle.getString('tab.menu')}>
 		<preferences>
+			<preference id="appMenu.split"
+				name={domain+'appMenu.split'}
+				type="bool"/>
+			<preference id="viewMenu.split"
+				name={domain+'viewMenu.split'}
+				type="bool"/>
 			<preference id="context.splitFromLink"
 				name={domain+'context.splitFromLink'}
 				type="bool"/>
@@ -188,6 +194,18 @@ config.register('about:blank?foxsplitter-config', <>
 				type="bool"/>
 		</preferences>
 
+		<checkbox label={[
+				bundle.getString('appMenu.split.before'),
+				bundle.getString('ui.split.app.label'),
+				bundle.getString('appMenu.split.after')
+			].join('')}
+			preference="appMenu.split"/>
+		<checkbox label={[
+				bundle.getString('viewMenu.split.before'),
+				bundle.getString('ui.split.view.label'),
+				bundle.getString('viewMenu.split.after')
+			].join('')}
+			preference="viewMenu.split"/>
 		<checkbox label={[
 				bundle.getString('context.splitFromLink.before'),
 				bundle.getString('ui.split.link.label'),

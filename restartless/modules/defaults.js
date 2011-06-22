@@ -22,6 +22,8 @@ config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUB
                                                      FoxSplitterConst.HIDE_BOOKMARKS |
                                                      FoxSplitterConst.HIDE_EXTRA |
                                                      FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS);
+config.setDefault(domain+'appMenu.split', true);
+config.setDefault(domain+'viewMenu.split', true);
 config.setDefault(domain+'context.splitFromLink', true);
 config.setDefault(domain+'context.splitFromFrame', true);
 config.setDefault(domain+'context.splitFromTab.move', true);

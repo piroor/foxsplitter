@@ -74,6 +74,10 @@ hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.appearance=Menu
 
+appMenu.split.before=Append "
+appMenu.split.after=" to the Firefox menu
+viewMenu.split.before=Append "
+viewMenu.split.after=" to the "View" menu
 context.splitFromLink.before=Append "
 context.splitFromLink.after=" to the context menu on web pages
 context.splitFromFrame.before=Append "
@@ -104,6 +108,11 @@ ui.split.left.short=Split to Left
 ui.split.left.long=Split tab as Left window
 ui.split.left.accesskey=l
 
+
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
 ui.split.link.label=Open Link in New Split Window
 ui.split.link.accesskey=s
