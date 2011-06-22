@@ -327,7 +327,8 @@ config.register('about:blank?foxsplitter-config', <>
 						control="shortcut.splitTabToRight-textbox"/>
 					<textbox id="shortcut.splitTabToRight-textbox"
 						preference="shortcut.splitTabToRight"
-						onkeydown="updateShortcut(event)"/>
+						onkeydown="updateShortcut(event)"
+						size="12"/>
 					<button label={bundle.getString('shortcut.clear')}
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
@@ -340,7 +341,8 @@ config.register('about:blank?foxsplitter-config', <>
 						control="shortcut.splitTabToLeft-textbox"/>
 					<textbox id="shortcut.splitTabToLeft-textbox"
 						preference="shortcut.splitTabToLeft"
-						onkeydown="updateShortcut(event)"/>
+						onkeydown="updateShortcut(event)"
+						size="12"/>
 					<button label={bundle.getString('shortcut.clear')}
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
@@ -353,7 +355,8 @@ config.register('about:blank?foxsplitter-config', <>
 						control="shortcut.splitTabToTop-textbox"/>
 					<textbox id="shortcut.splitTabToTop-textbox"
 						preference="shortcut.splitTabToTop"
-						onkeydown="updateShortcut(event)"/>
+						onkeydown="updateShortcut(event)"
+						size="12"/>
 					<button label={bundle.getString('shortcut.clear')}
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
@@ -366,7 +369,8 @@ config.register('about:blank?foxsplitter-config', <>
 						control="shortcut.splitTabToBottom-textbox"/>
 					<textbox id="shortcut.splitTabToBottom-textbox"
 						preference="shortcut.splitTabToBottom"
-						onkeydown="updateShortcut(event)"/>
+						onkeydown="updateShortcut(event)"
+						size="12"/>
 					<button label={bundle.getString('shortcut.clear')}
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
