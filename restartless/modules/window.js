@@ -1242,7 +1242,7 @@ FoxSplitterWindow.prototype = {
 				}
 
 			case 'sizemode':
-				return this.onSizeModeChange(aEvent.newValue);
+				return this._onWindowStateChange();
 		}
 	},
 
@@ -1281,6 +1281,7 @@ FoxSplitterWindow.prototype = {
 
 		this.windowStateUpdating++;
 
+		var deferred;
 		try {
 			switch (state)
 			{
@@ -1289,11 +1290,21 @@ FoxSplitterWindow.prototype = {
 					 * When the active window is minimized, another member can be focused.
 					 * So we have to minimize other windows with a delay.
 					 */
-					let self = this;
-					Deferred.next(function() {
-						self.root.minimize(this);
-					})
-					.error(this.defaultHandleError);
+					let (self = this) {
+						deferred = Deferred
+							.next(function() {
+								self.root.minimize(this);
+							})
+							.error(this.defaultHandleError);
+					}
+					break;
+
+				case this.STATE_MAXIMIZED:
+					deferred = this._onMaximized(false);
+					break;
+
+				case this.STATE_FULLSCREEN:
+					deferred = this._onMaximized(true);
 					break;
 
 				default:
@@ -1307,9 +1318,17 @@ FoxSplitterWindow.prototype = {
 			this.dumpError(e, 'FoxSplitter: FAILED TO MINIMIZE/RESTORE WINDOWS!');
 		}
 
-		this.windowStateUpdating--;
-
-		this.document.dispatchEvent(event);
+		if (deferred) {
+			let self = this;
+			deferred.next(function() {
+				self.windowStateUpdating--;
+				self.document.dispatchEvent(event);
+			});
+		}
+		else {
+			this.windowStateUpdating--;
+			this.document.dispatchEvent(event);
+		}
 	},
 
 	onMove : function FSW_onMove()
@@ -1319,7 +1338,8 @@ FoxSplitterWindow.prototype = {
 			this.lastX === null ||
 			this.lastY === null ||
 			this.positioning ||
-			this.minimized
+			this.minimized ||
+			this.maximizing
 			)
 			return;
 
@@ -1360,21 +1380,7 @@ FoxSplitterWindow.prototype = {
 		if (!this._window || this.resizing || this.minimized || this.maximizing)
 			return;
 
-		if (this.width == this.window.screen.availWidth ||
-			this.height == this.window.screen.availHeight) {
-			// possible maximized. do it after the "sizemode" is updated.
-			let selt = this;
-			Deferred.next(function() {
-				self._resizeOtherMembers();
-			});
-		}
-		else {
-			this._resizeOtherMembers();
-		}
-	},
-	_resizeOtherMembers : function FSW_resizeOtherMembers()
-	{
-		if (!this._window || this.resizing || this.minimized)
+		if (this.maximized ? this.stillMaximizedYet : this.notMaximizedYet )
 			return;
 
 		var x = this.x;
@@ -1550,21 +1556,10 @@ FoxSplitterWindow.prototype = {
 		});
 	},
 
-	onSizeModeChange : function FSW_onSizeModeChange(aMode)
-	{
-		switch (aMode)
-		{
-			case 'maximized':
-				return this._onMaximized(false);
-			case 'fullscreen':
-				return this._onMaximized(true);
-		}
-	},
-
 	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
 		if (!this._window || !this.parent || this.maximizing)
-			return;
+			return Deferred.next(function() {});
 
 		this.resizing++;
 		this.positioning++;
@@ -1579,7 +1574,7 @@ FoxSplitterWindow.prototype = {
 			this.resizing--;
 			this.positioning--;
 			this.maximizing--;
-			return;
+			return Deferred.next(function() {});
 		}
 
 		var waitMaximized = this.notMaximizedYet ?
@@ -1591,7 +1586,7 @@ FoxSplitterWindow.prototype = {
 
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
-		Deferred
+		return Deferred
 			.next(function() {
 				return waitMaximized;
 			})
