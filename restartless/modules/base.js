@@ -707,9 +707,18 @@ FoxSplitterBase.offsetHeight = prefs.getPref(domain+'platformOffset.height');
  * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
  */
 FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
+	var self = this;
 	if (!prefs.getPref(domain+'platformOffset.needToBeUpdated'))
-		return;
+		return Deferred.next(function() {
+			return {
+				x : self.offsetX,
+				y : self.offsetY,
+				width : self.offsetWidth,
+				heigh : self.offsetHeight
+			};
+		});
 
+	var deferred = new Deferred();
 	prefs.setPref(domain+'platformOffset.needToBeUpdated', false);
 	var window = WindowWatcher.openWindow(
 			null,
@@ -718,7 +727,6 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 			'chrome,dialog=no,all,screenX=100,screenY=100,outerWidth=100,outerHeight=100',
 			null
 		);
-	var self = this;
 	window.addEventListener('load', function() {
 		window.removeEventListener('load', arguments.callee, false);
 		Deferred.next(function() {
@@ -732,9 +740,16 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - window.outerWidth);
 				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - window.outerHeight);
 				window.close();
+				deferred.call(
+					x : self.offsetX,
+					y : self.offsetY,
+					width : self.offsetWidth,
+					heigh : self.offsetHeight
+				});
 			});
 		});
 	}, false);
+	return deferred;
 };
 FoxSplitterBase.updatePlatformOffset();
 
