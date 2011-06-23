@@ -724,7 +724,7 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - window.outerWidth);
 				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - window.outerHeight);
 				window.close();
-				deferred.call(
+				deferred.call({
 					x : self.offsetX,
 					y : self.offsetY,
 					width : self.offsetWidth,
