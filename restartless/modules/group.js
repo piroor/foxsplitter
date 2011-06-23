@@ -199,7 +199,7 @@ FoxSplitterGroup.prototype = {
 	raise : function FSG_raise(aFinallyRaised)
 	{
 		var deferreds = [];
-		this.members.forEach(function(aMember) {
+		this.allWindows.forEach(function(aMember) {
 			if (aFinallyRaised == aMember)
 				return;
 			var deferred = aMember.raise(aFinallyRaised);
