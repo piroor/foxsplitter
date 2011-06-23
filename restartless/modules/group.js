@@ -159,11 +159,12 @@ FoxSplitterGroup.prototype = {
 
 	resizeTo : function FSG_resizeTo(aW, aH)
 	{
-		this.resizeBy(aW - this.width, aH - this.height);
+		return this.resizeBy(aW - this.width, aH - this.height);
 	},
 
 	resizeBy : function FSG_resizeBy(aDW, aDH)
 	{
+		var deferreds = [];
 		if (aDW) {
 			let right = this.rightMember;
 			if (right) {
@@ -171,11 +172,11 @@ FoxSplitterGroup.prototype = {
 				let halfDW = Math.round(aDW / 2);
 				this.leftMember.resizeBy(halfDW, 0);
 				right.moveBy(halfDW, 0);
-				right.resizeBy(aDW - halfDW, 0);
+				deferreds.push(right.resizeBy(aDW - halfDW, 0));
 			}
 			else {
 				this.members.forEach(function(aMember) {
-					aMember.resizeBy(aDW, 0);
+					deferreds.push(aMember.resizeBy(aDW, 0));
 				});
 			}
 		}
@@ -186,14 +187,17 @@ FoxSplitterGroup.prototype = {
 				let halfDH = Math.round(aDH / 2);
 				this.topMember.resizeBy(0, halfDH);
 				bottom.moveBy(0, halfDH);
-				bottom.resizeBy(0, aDH - halfDH);
+				deferreds.push(bottom.resizeBy(0, aDH - halfDH));
 			}
 			else {
 				this.members.forEach(function(aMember) {
-					aMember.resizeBy(0, aDH);
+					deferreds.push(aMember.resizeBy(0, aDH));
 				});
 			}
 		}
+		return deferreds.length ?
+				Deferred.parallel(deferreds) :
+				Deferred.next(function() {});
 	},
 
 	raise : function FSG_raise(aFinallyRaised)
@@ -350,6 +354,7 @@ FoxSplitterGroup.prototype = {
 				base.resetPositionAndSize(aBaseMember, aForce);
 			if (another.isGroup)
 				another.resetPositionAndSize(aBaseMember, aForce);
+
 
 			var expectedX = base.position & this.POSITION_VERTICAL ?
 							base.x :

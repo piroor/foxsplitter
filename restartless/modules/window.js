@@ -1053,6 +1053,8 @@ FoxSplitterWindow.prototype = {
 
 		this._collapsedWindowToolbar = this.document.createElement('box');
 		this._collapsedWindowToolbar.setAttribute('id', this.COLLAPSED_BAR);
+		this._collapsedWindowToolbar.setAttribute('ondblclick', 'FoxSplitter.expand();');
+		this._collapsedWindowToolbar.setAttribute('onclick', 'if (FoxSplitter.isMiddleClick(event)) FoxSplitter.expand();');
 		this.documentElement.appendChild(this._collapsedWindowToolbar);
 
 		var width = this.width;
@@ -1071,11 +1073,11 @@ FoxSplitterWindow.prototype = {
 
 			if (this.position & this.POSITION_HORIZONTAL) {
 				deferreds.push(this.resizeBy(-deltaX, 0));
-				sibling.resizeBy(deltaX, 0);
+				deferreds.push(sibling.resizeBy(deltaX, 0));
 			}
 			else {
 				deferreds.push(this.resizeBy(0, -deltaY));
-				sibling.resizeBy(0, deltaY);
+				deferreds.push(sibling.resizeBy(0, deltaY));
 			}
 
 			switch (this.position)
@@ -1095,9 +1097,11 @@ FoxSplitterWindow.prototype = {
 			}
 		}
 
-		return deferreds.length ?
-				Deferred.parallel(deferreds) :
-				Deferred.next(function() {});
+		var self = this;
+		return (deferreds.length ? Deferred.parallel(deferreds) : Deferred )
+				.next(function() {
+					self.parent.resetPositionAndSize(self);
+				});
 	},
 
 	expand : function FSW_expand()
@@ -1116,11 +1120,11 @@ FoxSplitterWindow.prototype = {
 
 			if (this.position & this.POSITION_HORIZONTAL) {
 				deferreds.push(this.resizeBy(deltaX, 0));
-				sibling.resizeBy(-deltaX, 0);
+				deferreds.push(sibling.resizeBy(-deltaX, 0));
 			}
 			else {
 				deferreds.push(this.resizeBy(0, deltaY));
-				sibling.resizeBy(0, -deltaY);
+				deferreds.push(sibling.resizeBy(0, -deltaY));
 			}
 
 			switch (this.position)
@@ -1146,9 +1150,11 @@ FoxSplitterWindow.prototype = {
 		this.setWindowValue(this.COLLAPSED_ORIGINAL_WIDTH, '');
 		this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, '');
 
-		return deferreds.length ?
-				Deferred.parallel(deferreds) :
-				Deferred.next(function() {});
+		var self = this;
+		return (deferreds.length ? Deferred.parallel(deferreds) : Deferred )
+				.next(function() {
+					self.parent.resetPositionAndSize(self);
+				});
 	},
 
 
