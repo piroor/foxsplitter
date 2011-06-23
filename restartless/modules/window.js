@@ -1104,7 +1104,7 @@ FoxSplitterWindow.prototype = {
 				});
 	},
 
-	expand : function FSW_expand()
+	expand : function FSW_expand(aManuallyResized)
 	{
 		if (!this._collapsedWindowToolbar || !this.parent)
 			return Deferred.next(function() {});
@@ -1115,7 +1115,7 @@ FoxSplitterWindow.prototype = {
 		var deltaY = this.position & this.POSITION_VERTICAL ? height - this.COLLAPSED_WINDOW_SIZE : 0 ;
 
 		var deferreds = [];
-		if (deltaX || deltaY) {
+		if (!aManuallyResized && (deltaX || deltaY)) {
 			let sibling = this.sibling;
 
 			if (this.position & this.POSITION_HORIZONTAL) {
@@ -1503,6 +1503,9 @@ FoxSplitterWindow.prototype = {
 
 		if (this.windowState == this.STATE_MAXIMIZED && this.stillMaximizedYet)
 			return;
+
+		if (this.collapsed)
+			this.expand(true);
 
 		var x = this.x;
 		var y = this.y;
