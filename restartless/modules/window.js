@@ -354,6 +354,8 @@ FoxSplitterWindow.prototype = {
 			FoxSplitterWindow.raising--;
 		}
 
+		this._onTabViewHidden();
+
 		this.hideDropIndicator();
 		this.unwatchWindowState();
 		this.clearGroupedAppearance(true);
@@ -1272,6 +1274,8 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('dragleave', this, true);
 		this.window.addEventListener('drop', this, true);
 		this.window.addEventListener('dragend', this, true);
+		this.window.addEventListener('tabviewshown', this, true);
+		this.window.addEventListener('tabviewhidden', this, true);
 		this._listening = true;
 	},
 	_listening : false,
@@ -1288,6 +1292,8 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('dragleave', this, true);
 		this.window.removeEventListener('drop', this, true);
 		this.window.removeEventListener('dragend', this, true);
+		this.window.removeEventListener('tabviewshown', this, true);
+		this.window.removeEventListener('tabviewhidden', this, true);
 		this._listening = false;
 	},
 
@@ -1350,6 +1356,13 @@ FoxSplitterWindow.prototype = {
 
 			case 'dragend':
 				return this._onDragEnd(aEvent);
+
+
+			case 'tabviewshown':
+				return this._onTabViewShown();
+
+			case 'tabviewhidden':
+				return this._onTabViewHidden();
 		}
 	},
 
@@ -1507,8 +1520,10 @@ FoxSplitterWindow.prototype = {
 			var root = self.root;
 			if (root && FoxSplitterWindow.positioning == 1) {
 				root.moveBy(newX - prevX, newY - prevY, self);
-				// for safety
-				self.parent.resetPositionAndSize(self);
+				if (!self._inTabView) {
+					// for safety
+					self.parent.resetPositionAndSize(self);
+				}
 				Deferred.next(function() {
 					FoxSplitterWindow.positioning--;
 				});
@@ -1521,7 +1536,13 @@ FoxSplitterWindow.prototype = {
 
 	onResize : function FSW_onResize()
 	{
-		if (!this._window || this.resizing || this.minimized || this.maximizing)
+		if (
+			!this._window ||
+			this.resizing ||
+			this.minimized ||
+			this.maximizing ||
+			this._inTabView
+			)
 			return;
 
 		if (this.windowState == this.STATE_MAXIMIZED && this.stillMaximizedYet)
@@ -2319,6 +2340,52 @@ FoxSplitterWindow.prototype = {
 	set _reservedHideAllDropIndicator(aValue)
 	{
 		return FoxSplitterWindow._reservedHideAllDropIndicator = aValue;
+	},
+
+
+	_onTabViewShown : function FSW_onTabViewShown()
+	{
+		if (!this.parent)
+			return;
+
+		this._inTabView = true;
+		this._beforeTabViewX = this.x;
+		this._beforeTabViewY = this.y;
+		this._beforeTabViewWidth = this.width;
+		this._beforeTabViewHeight = this.height;
+
+		var root = this.root;
+		var x = root.x;
+		var y = root.y;
+		var width = root.width;
+		var height = root.height;
+		this._beforeTabViewRootX = root.x;
+		this._beforeTabViewRootY = root.y;
+		this.moveTo(x, y);
+		this.resizeTo(width, height);
+	},
+
+	_onTabViewHidden : function FSW_onTabViewHidden()
+	{
+		if (
+			!this.parent ||
+			!this._inTabView
+			)
+			return;
+
+		var x = this._beforeTabViewRootX - this.x;
+		var y = this._beforeTabViewRootY - this.y;
+		this.resizeTo(this._beforeTabViewWidth, this._beforeTabViewHeight);
+		this.moveTo(this._beforeTabViewX - x, this._beforeTabViewY - y);
+		this.parent.resetPositionAndSize(this);
+
+		delete this._beforeTabViewRootX;
+		delete this._beforeTabViewRootY;
+		delete this._beforeTabViewX;
+		delete this._beforeTabViewY;
+		delete this._beforeTabViewWidth;
+		delete this._beforeTabViewHeight;
+		this._inTabView = false;
 	},
 
 
