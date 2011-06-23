@@ -47,7 +47,9 @@ ToolbarItem.prototype = {
 	},
 	get toolbox()
 	{
-		return (this.defaultToolbar || this.defaultCustomizableToolbar).toolbox;
+		var toolbar = this.defaultToolbar || this.defaultCustomizableToolbar;
+		return toolbar.toolbox ||
+			this._getNodeByXPath('ancestor::*[local-name()="toolbox"][1]', toolbar); // for Firefox 3.6
 	},
 	get palette()
 	{
