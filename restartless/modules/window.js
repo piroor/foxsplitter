@@ -443,41 +443,57 @@ FoxSplitterWindow.prototype = {
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
 		if (this.minimized || !this._window)
-			return;
+			return Deferred.next(function() {});
 
 		this.resizing++;
 
 		aW = Math.max(this.MIN_WIDTH, Math.round(aW)) - this.offsetWidth;
 		aH = Math.max(this.MIN_HEIGHT, Math.round(aH)) - this.offsetHeight;
+		var waitResizeEvent = this._waitDOMEvent(this.window, 'resize')
+								.next(function() {
+									waitResizeEvent = null;
+								});
 		this.window.resizeTo(aW, aH);
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		Deferred.next(function() {
-			self.updateLastPositionAndSize();
-			self.resizing--;
-		})
-		.error(this.defaultHandleError);
+		return Deferred
+				.next(function() {
+					return waitResizeEvent;
+				})
+				.next(function() {
+					self.updateLastPositionAndSize();
+					self.resizing--;
+				})
+				.error(this.defaultHandleError);
 	},
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
 		if (this.minimized || !this._window)
-			return;
+			return Deferred.next(function() {});
 
 		this.resizing++;
 
 		aDW = Math.max(-this.window.innerWidth+this.MIN_WIDTH, Math.round(aDW));
 		aDH = Math.max(-this.window.innerHeight+this.MIN_HEIGHT, Math.round(aDH));
+		var waitResizeEvent = this._waitDOMEvent(this.window, 'resize')
+								.next(function() {
+									waitResizeEvent = null;
+								});
 		this.window.resizeBy(aDW, aDH);
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		Deferred.next(function() {
-			self.updateLastPositionAndSize();
-			self.resizing--;
-		})
-		.error(this.defaultHandleError);
+		return Deferred
+				.next(function() {
+					return waitResizeEvent;
+				})
+				.next(function() {
+					self.updateLastPositionAndSize();
+					self.resizing--;
+				})
+				.error(this.defaultHandleError);
 	},
 
 	raise : function FSW_raise()
@@ -553,22 +569,30 @@ FoxSplitterWindow.prototype = {
 
 	restore : function FSW_restore()
 	{
-		var deferred = new Deferred();
-
 		var window = this.window;
 		if (window.fullScreen) {
+			let deferred = new Deferred();
 			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
 				window.removeEventListener(aEvent.type, arguments.callee, false);
 				deferred.call();
 			}, false);
-			window.fullScreen = false;this.EVENT_TYPE_WINDOW_STATE_CHANGED
+			window.fullScreen = false;
+			return Deferred.parallel(
+				deferred,
+				this._waitDOMEvent(window, 'resize')
+			);
 		}
 		else if (this.windowState == this.STATE_MAXIMIZED) {
+			let deferred = new Deferred();
 			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
 				window.removeEventListener(aEvent.type, arguments.callee, false);
 				deferred.call();
 			}, false);
 			window.restore();
+			return Deferred.parallel(
+				deferred,
+				this._waitDOMEvent(window, 'resize')
+			);
 		}
 		else if (this.root && (this.root.minimized || this.root.maximized)) {
 			return this.root.restore();
@@ -576,8 +600,6 @@ FoxSplitterWindow.prototype = {
 		else {
 			return Deferred.next(function() {});
 		}
-
-		return deferred;
 	},
 
 
@@ -1564,10 +1586,8 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		Deferred
 			.next(function() {
-				if (self.width < self.window.screen.availWidth * 0.8) {
-					// new window size is not applied yet!
+				if (self.notMaximizedYet)
 					return self._waitDOMEvent(self.window, 'resize');
-				}
 			})
 			.next(function() {
 				maximizedX = self.x;
@@ -1579,12 +1599,9 @@ FoxSplitterWindow.prototype = {
 					self.window.fullScreen = false;
 				else
 					self.window.restore();
-			})
-			.next(function() {
-				if (self.width >= self.window.screen.availWidth) {
-					// new window size is not applied yet!
+
+				if (self.stillMaximizedYet)
 					return self._waitDOMEvent(self.window, 'resize');
-				}
 			})
 			.error(function(aError) {
 				self.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
@@ -1607,6 +1624,15 @@ FoxSplitterWindow.prototype = {
 				self.maximizing--;
 			})
 			.error(this.defaultHandleError);
+	},
+
+	get notMaximizedYet()
+	{
+		return this.width < this.window.screen.availWidth * 0.8;
+	},
+	get stillMaximizedYet()
+	{
+		return this.width >= this.window.screen.availWidth * 0.8;
 	},
 
 	// called by the parent group

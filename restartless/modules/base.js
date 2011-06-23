@@ -86,7 +86,9 @@ FoxSplitterBase.prototype = {
 	bindWith : function FSB_bindWith(aSibling, aPosition, aSilent)
 	{
 		if (!aSibling || !(aPosition & this.POSITION_VALID))
-			return;
+			return Deferred.next(function() {});
+
+		var deferreds = [];
 
 		if (this.parent)
 			this.unbind();
@@ -113,22 +115,26 @@ FoxSplitterBase.prototype = {
 		aSibling.position = this.opposite[aPosition];
 
 		if (!aSilent)
-			this._initPositionAndSize();
+			deferreds.push(this._initPositionAndSize());
 
 		if (!this.isGroup) {
 			this.setGroupedAppearance();
 			this.saveState();
 
 			let self = this;
-			Deferred.next(function() {
+			deferreds.push(Deferred.next(function() {
 				self.active = self.active; // update status of grouped windows
-			});
+			}));
 		}
 
 		if (!aSibling.isGroup) {
 			aSibling.setGroupedAppearance();
 			aSibling.saveState();
 		}
+
+		return deferreds.length ?
+				Deferred.parallel(deferreds) :
+				Deferred.next(function() {}) ;
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -136,17 +142,25 @@ FoxSplitterBase.prototype = {
 		var base = this.sibling;
 		var positionAndSize = base.calculatePositionAndSizeFor(this.position);
 
+		var deferreds = [];
 		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
 			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
 		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
-			base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight);
+			deferreds.push(base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight));
 
 		if (this.x != positionAndSize.x || this.y != positionAndSize.y)
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
-			this.resizeTo(positionAndSize.width, positionAndSize.height);
+			deferreds.push(this.resizeTo(positionAndSize.width, positionAndSize.height));
 
-		this.parent.reserveResetPositionAndSize(this);
+		var self = this;
+		return deferreds.length ?
+				Deferred
+					.parallel(deferreds)
+					.next(function() {
+						return self.parent.reserveResetPositionAndSize(self);
+					}) :
+				this.parent.reserveResetPositionAndSize(this);
 	},
 
 	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
@@ -351,15 +365,26 @@ FoxSplitterBase.prototype = {
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {
-					aWindow.FoxSplitter.bindWith(self, aPosition);
+					return aWindow.FoxSplitter.bindWith(self, aPosition)
+								.next(function() {
+									return aWindow;
+								});
+				})
+				.next(function(aWindow) {
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
 
-					if (maximized)
-						aWindow.maximize();
+					if (!maximized)
+						return aWindow;
 
-					return aWindow;
+					var waitMaximized = self._waitDOMEvent(self.window, self.EVENT_TYPE_WINDOW_STATE_CHANGED)
+							.next(function() {
+								waitMaximized = null;
+								return aWindow;
+							});
+					self.maximize();
+					return waitMaximized || aWindow;
 				})
 				.error(this.defaultHandleError);
 	},
