@@ -270,8 +270,9 @@ FoxSplitterBase.prototype = {
 	{
 		var sibling = this.sibling;
 		if (!sibling)
-			return;
+			return Deferred.next(function() {});
 
+		var deferred;
 		if (sibling.position & this.POSITION_HORIZONTAL) {
 			let totalWidth = this.parent.width;
 			let deltaX = this.maximized ? 0 : Math.round(totalWidth - (totalWidth / this.expandFactor)) ;
@@ -280,7 +281,7 @@ FoxSplitterBase.prototype = {
 				let deltaXToMove = sibling.parent.parent ? 0 : deltaX ;
 				sibling.moveBy(-this.width + deltaXToMove, 0);
 			}
-			sibling.resizeBy(this.width - deltaX, 0);
+			deferred = sibling.resizeBy(this.width - deltaX, 0);
 		}
 		else {
 			let totalHeight = this.parent.height;
@@ -290,11 +291,17 @@ FoxSplitterBase.prototype = {
 				let deltaYToMove = sibling.parent.parent ? 0 : deltaY ;
 				sibling.moveBy(0, -this.height + deltaYToMove);
 			}
-			sibling.resizeBy(0, this.height - deltaY);
+			deferred = sibling.resizeBy(0, this.height - deltaY);
 		}
 
-		if (sibling.parent.parent)
-			sibling.parent.parent.reserveResetPositionAndSize(sibling);
+		if (sibling.parent.parent) {
+			if (deferred)
+				deferred.next(function() {
+					return sibling.parent.parent.reserveResetPositionAndSize(sibling);
+				});
+			else
+				return sibling.parent.parent.reserveResetPositionAndSize(sibling);
+		}
 	},
 
 

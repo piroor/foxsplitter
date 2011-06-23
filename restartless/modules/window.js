@@ -301,6 +301,8 @@ FoxSplitterWindow.prototype = {
 
 		this.bindWith(sibling, lastState.position, true);
 		this.parent.resetPositionAndSize(this);
+		if (lastState.collapsed)
+			this.collapse();
 
 		delete this._lastState;
 		this._restored = true;
@@ -354,6 +356,7 @@ FoxSplitterWindow.prototype = {
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
+		this.clearGroupedAppearance(true);
 
 		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
@@ -1038,6 +1041,117 @@ FoxSplitterWindow.prototype = {
 	},
 
 
+	get collapsed()
+	{
+		return !!this._collapsedWindowToolbar;
+	},
+
+	collapse : function FSW_collapse()
+	{
+		if (this._collapsedWindowToolbar || !this.parent)
+			return Deferred.next(function() {});
+
+		this._collapsedWindowToolbar = this.document.createElement('box');
+		this._collapsedWindowToolbar.setAttribute('id', this.COLLAPSED_BAR);
+		this.documentElement.appendChild(this._collapsedWindowToolbar);
+
+		var width = this.width;
+		if (!this.getWindowValue(this.COLLAPSED_ORIGINAL_WIDTH))
+			this.setWindowValue(this.COLLAPSED_ORIGINAL_WIDTH, width);
+		var height = this.height;
+		if (!this.getWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT))
+			this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, height);
+
+		var deltaX = this.position & this.POSITION_HORIZONTAL ? width - this.COLLAPSED_WINDOW_SIZE : 0 ;
+		var deltaY = this.position & this.POSITION_VERTICAL ? height - this.COLLAPSED_WINDOW_SIZE : 0 ;
+
+		var deferreds = [];
+		if (deltaX || deltaY) {
+			let sibling = this.sibling;
+
+			if (this.position & this.POSITION_HORIZONTAL) {
+				deferreds.push(this.resizeBy(-deltaX, 0));
+				sibling.resizeBy(deltaX, 0);
+			}
+			else {
+				deferreds.push(this.resizeBy(0, -deltaY));
+				sibling.resizeBy(0, deltaY);
+			}
+
+			switch (this.position)
+			{
+				case this.POSITION_TOP:
+					sibling.moveBy(0, -deltaY);
+					break;
+				case this.POSITION_RIGHT:
+					this.moveBy(deltaX, 0);
+					break;
+				case this.POSITION_BOTTOM:
+					this.moveBy(0, deltaY);
+					break;
+				case this.POSITION_LEFT:
+					sibling.moveBy(-deltaX, 0);
+					break;
+			}
+		}
+
+		return deferreds.length ?
+				Deferred.parallel(deferreds) :
+				Deferred.next(function() {});
+	},
+
+	expand : function FSW_expand()
+	{
+		if (!this._collapsedWindowToolbar || !this.parent)
+			return Deferred.next(function() {});
+
+		var width = parseInt(this.getWindowValue(this.COLLAPSED_ORIGINAL_WIDTH) || this.width);
+		var height = parseInt(this.getWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT) || this.height);
+		var deltaX = this.position & this.POSITION_HORIZONTAL ? width - this.COLLAPSED_WINDOW_SIZE : 0 ;
+		var deltaY = this.position & this.POSITION_VERTICAL ? height - this.COLLAPSED_WINDOW_SIZE : 0 ;
+
+		var deferreds = [];
+		if (deltaX || deltaY) {
+			let sibling = this.sibling;
+
+			if (this.position & this.POSITION_HORIZONTAL) {
+				deferreds.push(this.resizeBy(deltaX, 0));
+				sibling.resizeBy(-deltaX, 0);
+			}
+			else {
+				deferreds.push(this.resizeBy(0, deltaY));
+				sibling.resizeBy(0, -deltaY);
+			}
+
+			switch (this.position)
+			{
+				case this.POSITION_TOP:
+					sibling.moveBy(0, deltaY);
+					break;
+				case this.POSITION_RIGHT:
+					this.moveBy(-deltaX, 0);
+					break;
+				case this.POSITION_BOTTOM:
+					this.moveBy(0, -deltaY);
+					break;
+				case this.POSITION_LEFT:
+					sibling.moveBy(deltaX, 0);
+					break;
+			}
+		}
+
+		this._collapsedWindowToolbar.parentNode.removeChild(this._collapsedWindowToolbar);
+		delete this._collapsedWindowToolbar;
+
+		this.setWindowValue(this.COLLAPSED_ORIGINAL_WIDTH, '');
+		this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, '');
+
+		return deferreds.length ?
+				Deferred.parallel(deferreds) :
+				Deferred.next(function() {});
+	},
+
+
 	openContextLinkAt : function FSW_openContextLinkAt(aPosition)
 	{
 		var gContextMenu = this.window.gContextMenu;
@@ -1104,7 +1218,8 @@ FoxSplitterWindow.prototype = {
 			width    : this.width,
 			height   : this.height,
 			sibling  : (this.sibling ? this.sibling.id : null ),
-			position : this.position
+			position : this.position,
+			collapsed : this.collapsed
 		};
 	},
 
@@ -1647,11 +1762,14 @@ FoxSplitterWindow.prototype = {
 		if (this.ui)
 			this.ui.setGroupedAppearance();
 	},
-	clearGroupedAppearance : function FSW_clearGroupedAppearance(aForce)
+	clearGroupedAppearance : function FSW_clearGroupedAppearance(aOnQuit)
 	{
+		if (!aOnQuit)
+			this.expand();
+
 		this.documentElement.removeAttribute(this.MEMBER);
 		if (this.ui)
-			this.ui.clearGroupedAppearance(aForce);
+			this.ui.clearGroupedAppearance(aOnQuit);
 	},
 
 

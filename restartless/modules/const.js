@@ -13,10 +13,13 @@ var exports = {
 	STATE             : 'foxsplitter-state',
 	ID                : 'foxsplitter-id',
 	SYNC_SCROLL       : 'foxsplitter-syncScroll',
+	COLLAPSED_ORIGINAL_WIDTH  : 'foxsplitter-collapsed-window-original-width',
+	COLLAPSED_ORIGINAL_HEIGHT : 'foxsplitter-collapsed-window-original-height',
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',
 	MENU_ITEM      : 'foxsplitter-menuitem',
+	COLLAPSED_BAR  : 'foxsplitter-collapsed-window-toolbar',
 
 	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
@@ -67,6 +70,8 @@ var exports = {
 	MIN_WIDTH : 16,
 	MIN_HEIGHT : 16,
 
+	COLLAPSED_WINDOW_SIZE : 24,
+
 
 	STYLESHEET : <![CDATA[
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
@@ -87,6 +92,16 @@ var exports = {
 		:root[chromehidden~="toolbar-non-navigation-items"] #sync-button,
 		:root[chromehidden~="toolbar-non-navigation-items"] #feed-button {
 			visibility: collapse;
+		}
+
+		#%COLLAPSED_BAR% {
+			background: ThreeDFace;
+			height: 5000px;
+			left: 0;
+			position: fixed;
+			top: 0;
+			width: 5000px;
+			-moz-binding: url('chrome://global/content/bindings/toolbar.xml#toolbar-drag');
 		}
 
 		.%DROP_INDICATOR% {
