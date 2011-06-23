@@ -467,13 +467,13 @@ FoxSplitterGroup.prototype = {
 		Deferred
 			.next(function() {
 				aFSWindow.moveTo(x, y);
-				aFSWindow.resizeTo(width, height);
+				return aFSWindow.resizeTo(width, height);
 			})
 			.next(function() {
 				if (fullscreen)
-					aFSWindow.window.fullScreen = true;
+					return aFSWindow.fullscreen();
 				else
-					aFSWindow.window.maximize();
+					return aFSWindow.maximize();
 			})
 			.error(this.defaultHandleError);
 	},

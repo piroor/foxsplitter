@@ -364,10 +364,7 @@ FoxSplitterBase.prototype = {
 
 		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
 		var self = this;
-		return Deferred
-				.next(function() {
-					return deferred;
-				})
+		return (deferred || Deferred.next(function() {}))
 				.next(function() {
 					return self._openWindow(first, positionAndSize)
 				})

@@ -562,7 +562,18 @@ FoxSplitterWindow.prototype = {
 
 	maximize : function FSW_maximize()
 	{
-		this.window.maximize();
+		var window = this.window;
+		return this._doChangeWindowStateOperation(function() {
+			window.maximize();
+		});
+	},
+
+	fullscreen : function FSW_fullscreen()
+	{
+		var window = this.window;
+		return this._doChangeWindowStateOperation(function() {
+			window.fullScreen = true;
+		});
 	},
 
 	minimize : function FSW_minimize()
@@ -573,29 +584,13 @@ FoxSplitterWindow.prototype = {
 	restore : function FSW_restore()
 	{
 		var window = this.window;
-		if (window.fullScreen) {
-			let deferred = new Deferred();
-			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
-				window.removeEventListener(aEvent.type, arguments.callee, false);
-				deferred.call();
-			}, false);
-			window.fullScreen = false;
-			return Deferred.parallel(
-				deferred,
-				this._waitDOMEvent(window, 'resize')
-			);
-		}
-		else if (this.windowState == this.STATE_MAXIMIZED) {
-			let deferred = new Deferred();
-			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
-				window.removeEventListener(aEvent.type, arguments.callee, false);
-				deferred.call();
-			}, false);
-			window.restore();
-			return Deferred.parallel(
-				deferred,
-				this._waitDOMEvent(window, 'resize')
-			);
+		if (window.fullScreen || this.windowState == this.STATE_MAXIMIZED) {
+			return this._doChangeWindowStateOperation(function() {
+				if (window.fullScreen)
+					window.fullScreen = false;
+				else
+					window.restore();
+			});
 		}
 		else if (this.root && (this.root.minimized || this.root.maximized)) {
 			return this.root.restore();
@@ -603,6 +598,30 @@ FoxSplitterWindow.prototype = {
 		else {
 			return Deferred.next(function() {});
 		}
+	},
+
+	_doChangeWindowStateOperation : function FSW_doChangeWindowStateOperation(aOperation)
+	{
+		var window = this.window;
+		var waitStateChanged = new Deferred();
+		window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
+			window.removeEventListener(aEvent.type, arguments.callee, false);
+			waitStateChanged.call();
+			waitStateChanged = null;
+		}, false);
+		var waitRestored = this._waitDOMEvent(window, 'resize')
+							.next(function() {
+								waitRestored = null;
+							});
+
+		aOperation();
+
+		var deferreds = [Deferred.next(function() {})];
+		if (waitStateChanged) deferreds.push(waitStateChanged);
+		if (waitRestored) deferreds.push(waitRestored);
+		return deferreds.length > 1 ?
+				Deferred.parallel(deferreds) :
+				Deferred.next(function() {});
 	},
 
 
