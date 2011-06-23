@@ -1502,10 +1502,10 @@ FoxSplitterWindow.prototype = {
 			if (root && FoxSplitterWindow.positioning == 1) {
 				root.moveBy(newX - prevX, newY - prevY, self);
 				// for safety
-				self.parent.resetPositionAndSize(self)
-					.next(function() {
-						FoxSplitterWindow.positioning--;
-					});
+				self.parent.resetPositionAndSize(self);
+				Deferred.next(function() {
+					FoxSplitterWindow.positioning--;
+				});
 			}
 			else {
 				FoxSplitterWindow.positioning--;
@@ -1763,6 +1763,13 @@ FoxSplitterWindow.prototype = {
 						height     : maximizedHeight,
 						fullScreen : aFullScreen
 					});
+			})
+			.next(function() {
+				// fix broken rendering on Windows (workaround)
+				return self.resizeBy(0, 1)
+						.next(function() {
+							return self.resizeBy(0, -1);
+						});
 			})
 			.next(function() {
 				self.maximizing--;

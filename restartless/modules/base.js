@@ -382,6 +382,7 @@ FoxSplitterBase.prototype = {
 					if (!maximized)
 						return aWindow;
 
+					self.root.readyToMaximize();
 					var waitMaximized = self._waitDOMEvent(self.window, self.EVENT_TYPE_WINDOW_STATE_CHANGED)
 							.next(function() {
 								waitMaximized = null;

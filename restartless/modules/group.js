@@ -418,7 +418,15 @@ FoxSplitterGroup.prototype = {
 
 	readyToMaximize : function FSG_readyToMaximize()
 	{
-		if (this.maximized)
+		if (
+			this.maximized ||
+			(
+				'_normalX' in this &&
+				'_normalY' in this &&
+				'_normalWidth' in this &&
+				'_normalHeight' in this
+			)
+			)
 			return;
 
 		this._normalX = this.x;
