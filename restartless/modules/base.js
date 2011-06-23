@@ -11,6 +11,7 @@ const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 						.getService(Ci.nsIWindowWatcher);
 
 var FoxSplitterConst = require('const');
+var domain = FoxSplitterConst.domain;
 
 function FoxSplitterBase() 
 {
@@ -27,6 +28,27 @@ FoxSplitterBase.prototype = {
 
 	get shouldDuplicateOnSplit() { return FoxSplitterBase.shouldDuplicateOnSplit; },
 	set shouldDuplicateOnSplit(aValue) { return FoxSplitterBase.shouldDuplicateOnSplit = aValue; },
+
+	get offsetX() { return FoxSplitterBase.offsetX; },
+	set offsetX(aValue) {
+		prefs.setPref(domain+'platformOffset.x', aValue);
+		return FoxSplitterBase.offsetX = aValue;
+	},
+	get offsetY() { return FoxSplitterBase.offsetY; },
+	set offsetY(aValue) {
+		prefs.setPref(domain+'platformOffset.y', aValue);
+		return FoxSplitterBase.offsetY = aValue;
+	},
+	get offsetWidth() { return FoxSplitterBase.offsetWidth; },
+	set offsetWidth(aValue) {
+		prefs.setPref(domain+'platformOffset.width', aValue);
+		return FoxSplitterBase.offsetWidth = aValue;
+	},
+	get offsetHeight() { return FoxSplitterBase.offsetHeight; },
+	set offsetHeight(aValue) {
+		prefs.setPref(domain+'platformOffset.height', aValue);
+		return FoxSplitterBase.offsetHeight = aValue;
+	},
 
 	isGroup : false,
 
@@ -286,8 +308,8 @@ FoxSplitterBase.prototype = {
 				'chrome,dialog=no,all',
 				'screenX='+aPositionAndSize.x,
 				'screenY='+aPositionAndSize.y,
-				'outerWidth='+aPositionAndSize.width,
-				'outerHeight='+aPositionAndSize.height
+				'outerWidth='+aPositionAndSize.width - (this.offsetWidth || 0),
+				'outerHeight='+aPositionAndSize.height - (this.offsetHeight || 0)
 			].join(',');
 		var deferred = new Deferred();
 
@@ -671,17 +693,64 @@ FoxSplitterBase.prototype = {
 	}
 };
 
-FoxSplitterBase.shouldDuplicateOnSplit = prefs.getPref(FoxSplitterConst.domain+'shouldDuplicateOnSplit');
+FoxSplitterBase.shouldDuplicateOnSplit = prefs.getPref(domain+'shouldDuplicateOnSplit');
+FoxSplitterBase.offsetX = prefs.getPref(domain+'platformOffset.x');
+FoxSplitterBase.offsetY = prefs.getPref(domain+'platformOffset.y');
+FoxSplitterBase.offsetWidth = prefs.getPref(domain+'platformOffset.width');
+FoxSplitterBase.offsetHeight = prefs.getPref(domain+'platformOffset.height');
+
+/**
+ * Due to Firefox's bug 581863 and bug 581866, windows are mispositioned.
+ * We have to calculate offset values for positioning and sizing.
+ * https://github.com/piroor/foxsplitter/issues/26
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
+ * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
+ */
+FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
+	if (!prefs.getPref(domain+'platformOffset.needToBeUpdated'))
+		return;
+
+	prefs.setPref(domain+'platformOffset.needToBeUpdated', false);
+	var window = WindowWatcher.openWindow(
+			null,
+			'about:blank?'+Math.random(),
+			'_blank',
+			'chrome,dialog=no,all,screenX=100,screenY=100,outerWidth=100,outerHeight=100',
+			null
+		);
+	var self = this;
+	window.addEventListener('load', function() {
+		window.removeEventListener('load', arguments.callee, false);
+		Deferred.next(function() {
+			prefs.setPref(domain+'platformOffset.x', self.offsetX = window.screenX - 100);
+			prefs.setPref(domain+'platformOffset.y', self.offsetY = window.screenY - 100);
+			var width = window.screen.availWidth;
+			var height = window.screen.availHeight;
+			window.moveTo(0, 0);
+			window.resizeTo(width, height);
+			Deferred.next(function() {
+				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - window.outerWidth);
+				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - window.outerHeight);
+				window.close();
+			});
+		});
+	}, false);
+};
+FoxSplitterBase.updatePlatformOffset();
 
 var prefListener = {
-		domain : FoxSplitterConst.domain,
+		domain : domain,
 		observe : function FSWPL_observe(aSubject, aTopic, aData) {
 			if (aTopic != 'nsPref:changed')
 				return;
 
-			var prefName = aData.replace(FoxSplitterConst.domain, '');
-			if (prefName in FoxSplitterBase)
+			var prefName = aData.replace(domain, '');
+			if (prefName in FoxSplitterBase) {
 				FoxSplitterBase[prefName] = prefs.getPref(aData);
+			}
+			else if (prefName == 'platformOffset.needToBeUpdated') {
+				FoxSplitterBase.updatePlatformOffset();
+			}
 		}
 	};
 

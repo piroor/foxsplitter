@@ -56,26 +56,38 @@ FoxSplitterWindow.prototype = {
 
 	get x()
 	{
-		return this.window.screenX - (this._xOffset || 0);
+		return this.internalX - (this.offsetX || 0);
 	},
 	get y()
 	{
-		return this.window.screenY - (this._yOffset || 0);
+		return this.internalY - (this.offsetY || 0);
 	},
 	get width()
 	{
-		return this.window.outerWidth + (this._widthOffset || 0);
+		return this.internalWidth + (this.offsetWidth || 0);
 	},
 	get height()
 	{
-		return this.window.outerHeight + (this._heightOffset || 0);
+		return this.internalHeight + (this.offsetHeight || 0);
 	},
-	_xOffset : null,
-	_yOffset : null,
-	_widthOffset : null,
-	_heightOffset : null,
+	get internalX()
+	{
+		return this.window.screenX;
+	},
+	get internalY()
+	{
+		return this.window.screenY;
+	},
+	get internalWidth()
+	{
+		return this.window.outerWidth;
+	},
+	get internalHeight()
+	{
+		return this.window.outerHeight;
+	},
 
-	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aNewValue)
+	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aExpected)
 	{
 		if (!this._window)
 			return;
@@ -86,18 +98,15 @@ FoxSplitterWindow.prototype = {
 		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
 		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
 		 */
-		if (aNewValue && this.fixMispositoning) {
-			if (this._xOffset === null && 'x' in aNewValue && aNewValue.x != this.window.screenX)
-				this._xOffset = this.window.screenX - aNewValue.x;
-			if (this._yOffset === null && 'y' in aNewValue && aNewValue.y != this.window.screenY)
-				this._yOffset = this.window.screenY - aNewValue.y;
-			if (this._widthOffset === null && 'width' in aNewValue && aNewValue.width != this.window.outerWidth)
-				this._widthOffset = this.window.outerWidth - aNewValue.width;
-			if (this._heightOffset === null && 'height' in aNewValue && aNewValue.height != this.window.outerHeight)
-				this._heightOffset = this.window.outerHeight - aNewValue.height;
-		}
-		else {
-			aNewValue = {};
+		if (aExpected && this.fixMispositoning) {
+			if (this.offsetX === null && 'x' in aExpected && aExpected.x != this.internalX)
+				this.offsetX = this.internalX - aExpected.x;
+			if (this.offsetY === null && 'y' in aExpected && aExpected.y != this.internalY)
+				this.offsetY = this.internalY - aExpected.y;
+			if (this.offsetWidth === null && 'width' in aExpected && aExpected.width != this.internalWidth)
+				this.offsetWidth = aExpected.width - this.internalWidth;
+			if (this.offsetHeight === null && 'height' in aExpected && aExpected.height != this.internalHeight)
+				this.offsetHeight = aExpected.height - this.internalHeight;
 		}
 
 		this.lastX      = this.x;
@@ -255,7 +264,6 @@ FoxSplitterWindow.prototype = {
 			self.resizeBy(0, 1);
 
 			self._restoreState();
-			self.updateLastPositionAndSize();
 			self.startListen();
 			self.watchWindowState();
 
@@ -416,12 +424,14 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		// Fix to mispositioning on Linux
-		aX = Math.round(aX) - (this._xOffset || 0);
-		aY = Math.round(aY) - (this._yOffset || 0);
+		aX = Math.round(aX);
+		aY = Math.round(aY);
 
 		this.window.moveTo(aX, aY);
-		this.updateLastPositionAndSize({ x : aX, y : aY });
+		this.updateLastPositionAndSize({
+			x : aX,
+			y : aY
+		});
 
 		var self = this;
 		Deferred.next(function() {
@@ -442,12 +452,13 @@ FoxSplitterWindow.prototype = {
 		var x = this.x;
 		var y = this.y;
 
-		// Fix to mispositioning on Linux
-		var actualDX = aDX - (this._xOffset || 0);
-		var actualDY = aDY - (this._yOffset || 0);
+		var actualDX = aDX - (this.offsetX || 0);
+		var actualDY = aDY - (this.offsetY || 0);
 		this.window.moveBy(actualDX, actualDY);
-		// this.window.moveBy(aDX, aDY);
-		this.updateLastPositionAndSize({ x : x + aDX, y : y + aDY });
+		this.updateLastPositionAndSize({
+			x : x + aDX,
+			y : y + aDY
+		});
 
 		var self = this;
 		Deferred.next(function() {
@@ -463,11 +474,14 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		var newWidth = Math.max(this.MIN_WIDTH, Math.round(aW) + (this._widthOffset || 0));
-		var newHeight = Math.max(this.MIN_HEIGHT, Math.round(aH) + (this._heightOffset || 0));
+		aW = Math.max(this.MIN_WIDTH, Math.round(aW));
+		aH = Math.max(this.MIN_HEIGHT, Math.round(aH));
 
-		this.window.resizeTo(newWidth, newHeight);
-		this.updateLastPositionAndSize({ width : newWidth, height : newHeight });
+		this.window.resizeTo(aW - (this.offsetWidth || 0), aH - (this.offsetHeight || 0));
+		this.updateLastPositionAndSize({
+			width : aW,
+			height : aH
+		});
 
 		var self = this;
 		Deferred.next(function() {
@@ -489,7 +503,10 @@ FoxSplitterWindow.prototype = {
 		aDH = Math.max(-this.window.innerHeight+this.MIN_HEIGHT, Math.round(aDH));
 
 		this.window.resizeBy(aDW, aDH);
-		this.updateLastPositionAndSize({ width : width + aDW, height : height + aDH });
+		this.updateLastPositionAndSize({
+			width : width + aDW,
+			height : height + aDH
+		});
 
 		var self = this;
 		Deferred.next(function() {
