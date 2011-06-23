@@ -1582,12 +1582,18 @@ FoxSplitterWindow.prototype = {
 			return;
 		}
 
+		var waitMaximized = this.notMaximizedYet ?
+								this._waitDOMEvent(this.window, 'resize')
+									.next(function() {
+										waitMaximized = null;
+									}) :
+								null ;
+
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
 		Deferred
 			.next(function() {
-				if (self.notMaximizedYet)
-					return self._waitDOMEvent(self.window, 'resize');
+				return waitMaximized;
 			})
 			.next(function() {
 				maximizedX = self.x;
@@ -1595,13 +1601,17 @@ FoxSplitterWindow.prototype = {
 				maximizedWidth = self.width;
 				maximizedHeight = self.height;
 
+				var waitRestored = self._waitDOMEvent(self.window, 'resize')
+										.next(function() {
+											waitRestored = null;
+										});
+
 				if (aFullScreen)
 					self.window.fullScreen = false;
 				else
 					self.window.restore();
 
-				if (self.stillMaximizedYet)
-					return self._waitDOMEvent(self.window, 'resize');
+				return waitRestored;
 			})
 			.error(function(aError) {
 				self.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
