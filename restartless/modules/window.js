@@ -1481,6 +1481,13 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
+		var self = this;
+		if (this.parent && this.root.maximized)
+			return this.root.restore()
+					.next(function() {
+						self.parent.resetPositionAndSize(self)
+					});
+
 		this.positioning++;
 		FoxSplitterWindow.positioning++;
 
@@ -1490,7 +1497,6 @@ FoxSplitterWindow.prototype = {
 		var newX = this.x;
 		var newY = this.y;
 
-		var self = this;
 		Deferred.wait(0.1).next(function() {
 			self.positioning--;
 			/**
