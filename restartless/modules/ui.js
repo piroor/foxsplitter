@@ -352,7 +352,8 @@ FoxSplitterUI.prototype = {
 			popup.insertBefore(this.contextFrameItem, this.document.getElementById('context-openframe').nextSibling);
 		}
 
-		let tabContextPopup = this.document.querySelector('#tabContextMenu');
+		let tabContextPopup = this.document.querySelector('#tabContextMenu') ||
+								this.document.getAnonymousElementByAttribute(this.browser, 'anonid', 'tabContextMenu'); // Firefox 3.6
 		if (tabContextPopup && prefs.getPref(this.domain+'context.splitFromTab.move')) {
 			this.tabContextMoveItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menu id="foxsplitter-context-tab-split-move"
@@ -484,7 +485,8 @@ FoxSplitterUI.prototype = {
 		}
 
 		if (this.tabContextMoveItem || this.tabContextDuplicateItem || this.tabContextGatherItem) {
-			let popup = this.document.querySelector('#tabContextMenu');
+			let popup = this.document.querySelector('#tabContextMenu') ||
+						this.document.getAnonymousElementByAttribute(this.browser, 'anonid', 'tabContextMenu'); // Firefox 3.6
 			popup.removeEventListener('popupshowing', this, false);
 		}
 

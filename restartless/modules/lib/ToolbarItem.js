@@ -366,18 +366,28 @@ ToolbarItem.create = function(aXML, aOwner, aOptions) {
  *   A owner document or a XUL element which becomes to the parent of the created document fragment.
  */
 ToolbarItem.toDOMDocumentFragment = function(aXML, aOwner) {
+try{
 	var doc = aOwner.ownerDocument || aOwner;
 	var range = doc.createRange();
-	range.selectNodeContents(aOwner);
 
 	var originalSettings = XML.settings();
 	XML.ignoreWhitespace = true;
 	XML.prettyPrinting = false;
-	var fragment = range.createContextualFragment(aXML.toXMLString());
+	var fragment;
+	try {
+		range.selectNodeContents(aOwner);
+		fragment = range.createContextualFragment(aXML.toXMLString());
+	}
+	catch(e) {
+		// createContextualFragment failes when the range is in an anonymous content.
+		// so, we have to fallback to the document element.
+		range.selectNodeContents(doc.documentElement);
+		fragment = range.createContextualFragment(aXML.toXMLString());
+	}
 	XML.setSettings(originalSettings);
 
 	range.detach();
-
+}catch(e){dump(e+'\n\n'+aXML.toXMLString()+'\n');}
 	return fragment;
 };
 
