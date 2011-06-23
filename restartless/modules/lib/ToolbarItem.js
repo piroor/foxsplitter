@@ -369,21 +369,13 @@ ToolbarItem.toDOMDocumentFragment = function(aXML, aOwner) {
 try{
 	var doc = aOwner.ownerDocument || aOwner;
 	var range = doc.createRange();
+	// createContextualFragment failes when the range is in an anonymous content.
+	range.selectNodeContents(doc.getBindingParent(aOwner) || aOwner);
 
 	var originalSettings = XML.settings();
 	XML.ignoreWhitespace = true;
 	XML.prettyPrinting = false;
-	var fragment;
-	try {
-		range.selectNodeContents(aOwner);
-		fragment = range.createContextualFragment(aXML.toXMLString());
-	}
-	catch(e) {
-		// createContextualFragment failes when the range is in an anonymous content.
-		// so, we have to fallback to the document element.
-		range.selectNodeContents(doc.documentElement);
-		fragment = range.createContextualFragment(aXML.toXMLString());
-	}
+	var fragment = range.createContextualFragment(aXML.toXMLString());
 	XML.setSettings(originalSettings);
 
 	range.detach();
