@@ -584,20 +584,19 @@ FoxSplitterWindow.prototype = {
 	restore : function FSW_restore()
 	{
 		var window = this.window;
-		if (window.fullScreen || this.windowState == this.STATE_MAXIMIZED) {
+		if (window.fullScreen || this.windowState == this.STATE_MAXIMIZED)
 			return this._doChangeWindowStateOperation(function() {
 				if (window.fullScreen)
 					window.fullScreen = false;
 				else
 					window.restore();
 			});
-		}
-		else if (this.root && (this.root.minimized || this.root.maximized)) {
-			return this.root.restore();
-		}
-		else {
-			return Deferred.next(function() {});
-		}
+
+		var root = this.root;
+		if (root && (root.minimized || root.maximized))
+			return root.restore();
+
+		return Deferred.next(function() {});
 	},
 
 	_doChangeWindowStateOperation : function FSW_doChangeWindowStateOperation(aOperation)
@@ -1448,9 +1447,8 @@ FoxSplitterWindow.prototype = {
 					break;
 
 				default:
-					if (lastState == this.STATE_MINIMIZED) {
+					if (lastState == this.STATE_MINIMIZED)
 						this.root.restore(this);
-					}
 					break;
 			}
 		}
@@ -1504,10 +1502,10 @@ FoxSplitterWindow.prototype = {
 			if (root && FoxSplitterWindow.positioning == 1) {
 				root.moveBy(newX - prevX, newY - prevY, self);
 				// for safety
-				self.parent.resetPositionAndSize(self);
-				Deferred.next(function() {
-					FoxSplitterWindow.positioning--;
-				});
+				self.parent.resetPositionAndSize(self)
+					.next(function() {
+						FoxSplitterWindow.positioning--;
+					});
 			}
 			else {
 				FoxSplitterWindow.positioning--;
@@ -1729,10 +1727,7 @@ FoxSplitterWindow.prototype = {
 
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
-		return Deferred
-			.next(function() {
-				return waitMaximized;
-			})
+		return (waitMaximized || Deferred)
 			.next(function() {
 				maximizedX = self.x;
 				maximizedY = self.y;
@@ -1759,16 +1754,17 @@ FoxSplitterWindow.prototype = {
 				self.positioning--;
 
 				if (root.maximized)
-					root.restore();
+					return root.restore();
 				else
-					root.maximizeTo({
+					return root.maximizeTo({
 						x          : maximizedX,
 						y          : maximizedY,
 						width      : maximizedWidth,
 						height     : maximizedHeight,
 						fullScreen : aFullScreen
 					});
-
+			})
+			.next(function() {
 				self.maximizing--;
 			})
 			.error(this.defaultHandleError);
