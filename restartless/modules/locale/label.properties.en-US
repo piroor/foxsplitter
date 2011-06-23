@@ -58,6 +58,8 @@ shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
 shouldDuplicateOnDrop.false=Move dragged tab to the new window
 dropZoneSize.before=Drop zone:
 dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
 handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Appearance

@@ -59,6 +59,8 @@ shouldDuplicateOnDrop.true=ドロップしたタブを新しいウィンドウ�
 shouldDuplicateOnDrop.false=ドロップしたタブを新しいウィンドウに移動する
 dropZoneSize.before=ドロップを受け付ける領域：ウィンドウの端から
 dropZoneSize.after=ピクセルの範囲
+acceptDropDelay.before=ドロップを受け付けるまでの遅延：
+acceptDropDelay.after=ミリ秒
 handleDragWithShiftKey=Shiftキーを押しながらドラッグした時だけドロップを受け付ける
 
 tab.appearance=外観

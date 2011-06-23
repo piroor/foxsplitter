@@ -131,6 +131,9 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="dropZoneSize"
 				name={domain+'dropZoneSize'}
 				type="int"/>
+			<preference id="acceptDropDelay"
+				name={domain+'acceptDropDelay'}
+				type="int"/>
 			<preference id="handleDragWithShiftKey"
 				name={domain+'handleDragWithShiftKey'}
 				type="bool"/>
@@ -154,6 +157,18 @@ config.register('about:blank?foxsplitter-config', <>
 				increment="1"/>
 			<label value={bundle.getString('dropZoneSize.after')}
 				control="dropZoneSize-textbox"/>
+		</hbox>
+		<hbox align="center">
+			<label value={bundle.getString('acceptDropDelay.before')}
+				control="acceptDropDelay-textbox"/>
+			<textbox id="acceptDropDelay-textbox"
+				preference="acceptDropDelay"
+				type="number"
+				size="3"
+				min="0"
+				increment="1"/>
+			<label value={bundle.getString('acceptDropDelay.after')}
+				control="acceptDropDelay-textbox"/>
 		</hbox>
 		<checkbox label={bundle.getString('handleDragWithShiftKey')}
 			preference="handleDragWithShiftKey"/>
