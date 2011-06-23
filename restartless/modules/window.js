@@ -994,8 +994,7 @@ FoxSplitterWindow.prototype = {
 
 	_generateTemporaryNameForAnonymousGroup : function FSW_generateTemporaryNameForAnonymousGroup(aGroupInfo)
 	{
-		// XXX need to be localized!
-		return 'imported anonymous group '+aGroupInfo.id+' from window '+aGroupInfo.window;
+		return bundle.getFormattedString('tabView.importedGroup', [aGroupInfo.window + '-' + aGroupInfo.id]);
 	},
 
 	_moveImportedTabToNamedGroup : function FSW_moveImportedTabToNamedGroup(aTab, aTargetGroupInfo)

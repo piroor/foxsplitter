@@ -183,6 +183,9 @@ ui.syncScroll.long=Synchronize scroll state
 ui.syncScroll.accesskey=s
 
 
+tabView.importedGroup=Imported from other windows (%S)
+
+
 
 
 

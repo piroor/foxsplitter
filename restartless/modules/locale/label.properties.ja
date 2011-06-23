@@ -186,6 +186,10 @@ ui.syncScroll.long=スクロールを同期させる
 ui.syncScroll.accesskey=s
 
 
+tabView.importedGroup=他のウィンドウから移動されたグループ（%S）
+
+
+
 
 
 show.context.caption=タブのコンテキストメニューに以下の項目を追加する：
