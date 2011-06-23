@@ -1380,7 +1380,7 @@ FoxSplitterWindow.prototype = {
 		if (!this._window || this.resizing || this.minimized || this.maximizing)
 			return;
 
-		if (this.maximized ? this.stillMaximizedYet : this.notMaximizedYet )
+		if (this.windowState == this.STATE_MAXIMIZED && this.stillMaximizedYet)
 			return;
 
 		var x = this.x;
