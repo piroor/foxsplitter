@@ -216,6 +216,7 @@ FoxSplitterWindow.prototype = {
 		this.scrolling   = 0;
 		this.scrollPositionSynching = 0;
 		this.windowStateUpdating = 0;
+		this.maximizing  = 0;
 
 		this.id = 'window-' + Date.now() + '-' + parseInt(Math.random() * 65000);
 		this.parent = null;
@@ -509,7 +510,7 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		Deferred
 			.parallel(
-				this._waitWindowActivated(this.window),
+				this._waitDOMEvent(this.window, 'activate', 'deactivate'),
 				Deferred.next(function() {})
 			)
 			.next(function() {
@@ -539,31 +540,6 @@ FoxSplitterWindow.prototype = {
 
 		return deferred;
 	},
-	_waitWindowActivated : function FSW_waitWindowActivated(aDOMWindow)
-	{
-		var deferred = new Deferred();
-
-		var handleEvent = function() {
-				aDOMWindow.removeEventListener('activate', handleEvent, true);
-				aDOMWindow.removeEventListener('deactivate', handleEvent, true);
-				if (timer) timer.cancel();
-				deferred.call();
-			};
-
-		aDOMWindow.addEventListener('activate', handleEvent, true);
-		aDOMWindow.addEventListener('deactivate', handleEvent, true);
-
-		// timeout (for safety)
-		let timer = Deferred.wait(0.5);
-		timer
-			.next(function() {
-				timer = null;
-				handleEvent();
-			})
-			.error(this.defaultHandleError);
-
-		return deferred;
-	},
 
 	maximize : function FSW_maximize()
 	{
@@ -585,7 +561,7 @@ FoxSplitterWindow.prototype = {
 				window.removeEventListener(aEvent.type, arguments.callee, false);
 				deferred.call();
 			}, false);
-			window.fullScreen = false;
+			window.fullScreen = false;this.EVENT_TYPE_WINDOW_STATE_CHANGED
 		}
 		else if (this.windowState == this.STATE_MAXIMIZED) {
 			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
@@ -1236,7 +1212,12 @@ FoxSplitterWindow.prototype = {
 		{
 			case 'screenX':
 			case 'screenY':
-				return this.onMove();
+				// possible maximized. do it after the "sizemode" is updated.
+				let (self = this) {
+					return Deferred.next(function() {
+						self.onMove();
+					});
+				}
 
 			case 'sizemode':
 				return this.onSizeModeChange(aEvent.newValue);
@@ -1353,6 +1334,23 @@ FoxSplitterWindow.prototype = {
 	},
 
 	onResize : function FSW_onResize()
+	{
+		if (!this._window || this.resizing || this.minimized || this.maximizing)
+			return;
+
+		if (this.width == this.window.screen.availWidth ||
+			this.height == this.window.screen.availHeight) {
+			// possible maximized. do it after the "sizemode" is updated.
+			let selt = this;
+			Deferred.next(function() {
+				self._resizeOtherMembers();
+			});
+		}
+		else {
+			this._resizeOtherMembers();
+		}
+	},
+	_resizeOtherMembers : function FSW_resizeOtherMembers()
 	{
 		if (!this._window || this.resizing || this.minimized)
 			return;
@@ -1543,11 +1541,12 @@ FoxSplitterWindow.prototype = {
 
 	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
-		if (!this._window || !this.parent)
+		if (!this._window || !this.parent || this.maximizing)
 			return;
 
 		this.resizing++;
 		this.positioning++;
+		this.maximizing++;
 
 		var root = this.root;
 		try {
@@ -1557,12 +1556,19 @@ FoxSplitterWindow.prototype = {
 			this.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
 			this.resizing--;
 			this.positioning--;
+			this.maximizing--;
 			return;
 		}
 
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
 		Deferred
+			.next(function() {
+				if (self.width < self.window.screen.availWidth * 0.8) {
+					// new window size is not applied yet!
+					return self._waitDOMEvent(self.window, 'resize');
+				}
+			})
 			.next(function() {
 				maximizedX = self.x;
 				maximizedY = self.y;
@@ -1574,14 +1580,19 @@ FoxSplitterWindow.prototype = {
 				else
 					self.window.restore();
 			})
+			.next(function() {
+				if (self.width >= self.window.screen.availWidth) {
+					// new window size is not applied yet!
+					return self._waitDOMEvent(self.window, 'resize');
+				}
+			})
 			.error(function(aError) {
 				self.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
 			})
 			.next(function() {
 				self.resizing--;
 				self.positioning--;
-			})
-			.next(function() {
+
 				if (root.maximized)
 					root.restore();
 				else
@@ -1592,6 +1603,8 @@ FoxSplitterWindow.prototype = {
 						height     : maximizedHeight,
 						fullScreen : aFullScreen
 					});
+
+				self.maximizing--;
 			})
 			.error(this.defaultHandleError);
 	},

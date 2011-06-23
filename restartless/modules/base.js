@@ -664,6 +664,35 @@ FoxSplitterBase.prototype = {
 		return windowMove;
 	},
 
+	_waitDOMEvent : function FSB_waitDOMEvent(aTarget)
+	{
+		var deferred = new Deferred();
+		var eventTypes = Array.slice(arguments, 1);
+
+		var handleEvent = function() {
+				eventTypes.forEach(function(aType) {
+					aTarget.removeEventListener(aType, handleEvent, true);
+				});
+				if (timer) timer.cancel();
+				deferred.call();
+			};
+
+		eventTypes.forEach(function(aType) {
+			aTarget.addEventListener(aType, handleEvent, true);
+		});
+
+		// timeout (for safety)
+		let timer = Deferred.wait(0.5);
+		timer
+			.next(function() {
+				timer = null;
+				handleEvent();
+			})
+			.error(this.defaultHandleError);
+
+		return deferred;
+	},
+
 	defaultHandleError : function FSB_defaultHandleError(aError)
 	{
 		dump(aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
