@@ -51,18 +51,15 @@ importTabsFromClosedSibling=分割されたウィンドウを閉じた時の挙�
 importTabsFromClosedSibling.nothing=そのままウィンドウを閉じる
 importTabsFromClosedSibling.hidden=非表示になっているタブを隣のウィンドウに移動する
 importTabsFromClosedSibling.all=すべてのタブを隣のウィンドウに移動する
-syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
 
 tab.drag=ドラッグ＆ドロップ
 
 shouldDuplicateOnDrop=タブをドラッグ＆ドロップしてウィンドウを分割した時の既定の挙動
 shouldDuplicateOnDrop.true=ドロップしたタブを新しいウィンドウに複製する
 shouldDuplicateOnDrop.false=ドロップしたタブを新しいウィンドウに移動する
-dropZoneSize.before=ウィンドウの端から
-dropZoneSize.after=ピクセルの範囲にタブやリンクをドロップした時にウィンドウを分割する
-handleDragWithShiftKey=ウィンドウの端にタブやリンクをドラッグ＆ドロップした時
-handleDragWithShiftKey.false=通常のドラッグ操作でウィンドウを分割する
-handleDragWithShiftKey.true=Shift-ドラッグした時だけウィンドウを分割する
+dropZoneSize.before=ドロップを受け付ける領域：ウィンドウの端から
+dropZoneSize.after=ピクセルの範囲
+handleDragWithShiftKey=Shiftキーを押しながらドラッグした時だけドロップを受け付ける
 
 tab.appearance=外観
 
@@ -96,6 +93,7 @@ shortcut.reset=リセット
 
 tab.advanced=詳細
 
+syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
 platformOffset.needToBeUpdated=配置とサイズ指定のオフセット値
 platformOffset.description=Firefox自身のプラットフォーム依存のバグを回避するため、Fox Splitterはウィンドウの位置とサイズを正しく計算するためのオフセット値を必要とする場合があります。これらの値は通常は初回起動時に自動的に計算されます。もし分割されたウィンドウの位置や大きさがずれている場合は、手動でオフセット値を修正して下さい。
 platformOffset.forceUpdate=オフセット値を再計算する

@@ -70,9 +70,6 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="importTabsFromClosedSibling"
 				name={domain+'importTabsFromClosedSibling'}
 				type="int"/>
-			<preference id="syncScrollX"
-				name={domain+'syncScrollX'}
-				type="bool"/>
 		</preferences>
 
 		<groupbox>
@@ -123,8 +120,6 @@ config.register('about:blank?foxsplitter-config', <>
 					label={bundle.getString('importTabsFromClosedSibling.all')}/>
 			</radiogroup>
 		</groupbox>
-		<checkbox label={bundle.getString('syncScrollX')}
-			preference="syncScrollX"/>
 	</prefpane>
 
 	<prefpane id="prefpane-drag"
@@ -148,10 +143,9 @@ config.register('about:blank?foxsplitter-config', <>
 				<radio value="true" label={bundle.getString('shouldDuplicateOnDrop.true')}/>
 			</radiogroup>
 		</groupbox>
-		<label value={bundle.getString('dropZoneSize.before')}
-			control="dropZoneSize-textbox"/>
 		<hbox align="center">
-			<spacer style="width:2em;"/>
+			<label value={bundle.getString('dropZoneSize.before')}
+				control="dropZoneSize-textbox"/>
 			<textbox id="dropZoneSize-textbox"
 				preference="dropZoneSize"
 				type="number"
@@ -161,14 +155,8 @@ config.register('about:blank?foxsplitter-config', <>
 			<label value={bundle.getString('dropZoneSize.after')}
 				control="dropZoneSize-textbox"/>
 		</hbox>
-		<groupbox>
-			<caption label={bundle.getString('handleDragWithShiftKey')}/>
-			<radiogroup orient="vertical"
-				preference="handleDragWithShiftKey">
-				<radio value="false" label={bundle.getString('handleDragWithShiftKey.false')}/>
-				<radio value="true" label={bundle.getString('handleDragWithShiftKey.true')}/>
-			</radiogroup>
-		</groupbox>
+		<checkbox label={bundle.getString('handleDragWithShiftKey')}
+			preference="handleDragWithShiftKey"/>
 	</prefpane>
 
 	<prefpane id="prefpane-appearance"
@@ -386,6 +374,9 @@ config.register('about:blank?foxsplitter-config', <>
 		label={bundle.getString('tab.advanced')}
 		flex="1">
 		<preferences>
+			<preference id="syncScrollX"
+				name={domain+'syncScrollX'}
+				type="bool"/>
 			<preference id="platformOffset.needToBeUpdated"
 				name={domain+'platformOffset.needToBeUpdated'}
 				type="bool"
@@ -407,6 +398,8 @@ config.register('about:blank?foxsplitter-config', <>
 				type="int"
 				instantApply="true"/>
 		</preferences>
+		<checkbox label={bundle.getString('syncScrollX')}
+			preference="syncScrollX"/>
 		<groupbox orient="vertical">
 			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
 			<hbox style="max-width:40em">

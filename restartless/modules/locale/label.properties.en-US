@@ -50,18 +50,15 @@ importTabsFromClosedSibling=When a split window is closed
 importTabsFromClosedSibling.nothing=Simply close the window
 importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
 importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
-syncScrollX=Enable synchronized scroll for horizontal scrolls
 
 tab.drag=Drag and Drop
 
 shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
 shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
 shouldDuplicateOnDrop.false=Move dragged tab to the new window
-dropZoneSize.before=Split the window if tabs and links are dropped on the area
-dropZoneSize.after=pixels from each window edge
-handleDragWithShiftKey=Drag and drop of tabs and links onto window edges
-handleDragWithShiftKey.false=Split the window by normal drag
-handleDragWithShiftKey.true=Split the window only by Shift-drag
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Appearance
 
@@ -95,6 +92,7 @@ shortcut.reset=Reset
 
 tab.advanced=Advanced
 
+syncScrollX=Enable synchronized scroll for horizontal scrolls
 platformOffset.needToBeUpdated=Offset of positioning and resizing
 platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
 platformOffset.forceUpdate=Re-calculate offsets now
