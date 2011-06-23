@@ -760,19 +760,24 @@ FoxSplitterBase.offsetHeight = prefs.getPref(domain+'platformOffset.height');
  * And,
  * 
  *  1. openDialog() with features "screenX", "screenY", "outerWidth", "outerHeight"
- *     => Specify "screenX" and "screenY" without offsets.
- *     => Specify "outerWidth" and "outerHeight" with negative offsets.
+ *     => "screenX" and "screenY" work correctly.  Specify them without offsets.
+ *     => "outerWidth" and "outerHeight" doesn't work. The opened window becomes
+ *        larger than the specified size. So, you need to specify them with
+ *        negative offsets.
  *        (expectedWidth - offsetWidth, expectedHeight - offsetHeight)
  *  2. moveTo(x, y)
- *     => Specify x and y without offsets.
+ *     => Works correctly. Specify them without offsets.
  *  3. moveBy(deltaX, deltaY)
- *     => Specify deltaX and deltaY with nevative offsets.
+ *     => Does't work as we expect. The window is wrongly moved from the
+ *        position (0, 0) of the root element. You need to specify deltaX and
+ *        deltaY with nevative offsets.
  *        (deltaX - offsetX, deltaY - offsetY)
  *  4. resizeTo(width, height)
- *     => Specify "outerWidth" and "outerHeight" with nevative offsets.
+ *     => Doesn't work as we expect. The window becomes larger than we expected.
+ *        So, you have to specify them with nevative offsets.
  *        (expectedWidth - offsetWidth, expectedHeight - offsetHeight)
  *  5. resizeBy(deltaWidth, deltaHeight)
- *     => Specify "outerWidth" and "outerHeight" without offsets.
+ *     => Works correctly. Specify "deltaWidth" and "deltaHeight" without offsets.
  */
 FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 	var self = this;
