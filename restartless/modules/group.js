@@ -290,7 +290,7 @@ FoxSplitterGroup.prototype = {
 	},
 
 
-	reserveResetPositionAndSize : function FSG_reserveResetPositionAndSize(aBaseMember)
+	reserveResetPositionAndSize : function FSG_reserveResetPositionAndSize(aBaseMember, aForce)
 	{
 		var deferred = new Deferred();
 
@@ -304,13 +304,18 @@ FoxSplitterGroup.prototype = {
 			delete this._lastDeferred;
 		}
 
+		if (aForce)
+			this._lastReserveResetPositionAndSizeForce = true;
+
 		var self = this;
 		this._reservedResetPositionAndSize = Deferred.wait(0.5);
 		this._reservedResetPositionAndSize
 			.next(function() {
+				var force = self._lastReserveResetPositionAndSizeForce;
 				delete self._reservedResetPositionAndSize;
 				delete self._lastReserveResetPositionAndSize;
-				self.resetPositionAndSize(aBaseMember);
+				delete self._lastReserveResetPositionAndSizeForce;
+				self.resetPositionAndSize(aBaseMember, force);
 				deferred.call();
 			})
 			.error(this.defaultHandleError);
@@ -321,7 +326,7 @@ FoxSplitterGroup.prototype = {
 	},
 
 	// reposition/resize grouped windows based on their relations
-	resetPositionAndSize : function FSG_resetPositionAndSize(aBaseMember)
+	resetPositionAndSize : function FSG_resetPositionAndSize(aBaseMember, aForce)
 	{
 		if (
 			this.resetting ||
@@ -342,9 +347,9 @@ FoxSplitterGroup.prototype = {
 			another.updateLastPositionAndSize();
 
 			if (base.isGroup)
-				base.resetPositionAndSize();
+				base.resetPositionAndSize(aBaseMember, aForce);
 			if (another.isGroup)
-				another.resetPositionAndSize();
+				another.resetPositionAndSize(aBaseMember, aForce);
 
 			var expectedX = base.position & this.POSITION_VERTICAL ?
 							base.x :
@@ -356,18 +361,18 @@ FoxSplitterGroup.prototype = {
 						base.position & this.POSITION_TOP ?
 							base.y + base.height :
 							base.y - another.height ;
-			if (another.x != expectedX || another.y != expectedY)
+			if (aForce || another.x != expectedX || another.y != expectedY)
 				another.moveTo(expectedX, expectedY);
 
 			var expectedWidth = base.position & this.POSITION_VERTICAL ?
 								base.width : another.width ;
 			var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
 								base.height : another.height ;
-			if (another.width != expectedWidth || another.height != expectedHeight)
+			if (aForce || another.width != expectedWidth || another.height != expectedHeight)
 				another.resizeTo(expectedWidth, expectedHeight);
 
 			if (this.parent)
-				this.parent.resetPositionAndSize(this);
+				this.parent.resetPositionAndSize(this, aForce);
 		}
 		catch(e) {
 			this.dumpError(e, 'FoxSplitter: FAILED TO RESET POSITION AND SIZE!');

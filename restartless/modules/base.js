@@ -747,8 +747,12 @@ var prefListener = {
 			if (prefName in FoxSplitterBase) {
 				FoxSplitterBase[prefName] = prefs.getPref(aData);
 			}
-			else if (prefName == 'platformOffset.needToBeUpdated') {
-				FoxSplitterBase.updatePlatformOffset();
+			else {
+				switch (prefName)
+				{
+					case 'platformOffset.needToBeUpdated':
+						return FoxSplitterBase.updatePlatformOffset();
+				}
 			}
 		}
 	};

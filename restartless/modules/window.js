@@ -11,6 +11,7 @@ const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
 
 var FoxSplitterConst = require('const');
+var domain = FoxSplitterConst.domain;
 
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
@@ -2166,28 +2167,43 @@ FoxSplitterWindow.positioning = 0;
 FoxSplitterWindow.resizing = 0;
 FoxSplitterWindow.raising = 0;
 
-FoxSplitterWindow.shouldDuplicateOnDrop = prefs.getPref(FoxSplitterConst.domain+'shouldDuplicateOnDrop');
-FoxSplitterWindow.acceptDropDelay = prefs.getPref(FoxSplitterConst.domain+'acceptDropDelay');
-FoxSplitterWindow.dropZoneSize = prefs.getPref(FoxSplitterConst.domain+'dropZoneSize');
-FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(FoxSplitterConst.domain+'handleDragWithShiftKey');
-FoxSplitterWindow.syncScrollX = prefs.getPref(FoxSplitterConst.domain+'syncScrollX');
-FoxSplitterWindow.syncScrollY = prefs.getPref(FoxSplitterConst.domain+'syncScrollY');
-FoxSplitterWindow.fixMispositoning = prefs.getPref(FoxSplitterConst.domain+'fixMispositoning');
+FoxSplitterWindow.shouldDuplicateOnDrop = prefs.getPref(domain+'shouldDuplicateOnDrop');
+FoxSplitterWindow.acceptDropDelay = prefs.getPref(domain+'acceptDropDelay');
+FoxSplitterWindow.dropZoneSize = prefs.getPref(domain+'dropZoneSize');
+FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(domain+'handleDragWithShiftKey');
+FoxSplitterWindow.syncScrollX = prefs.getPref(domain+'syncScrollX');
+FoxSplitterWindow.syncScrollY = prefs.getPref(domain+'syncScrollY');
+FoxSplitterWindow.fixMispositoning = prefs.getPref(domain+'fixMispositoning');
 
 FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterConst.IMPORT_NOTHING;
 FoxSplitterWindow.IMPORT_ALL         = FoxSplitterConst.IMPORT_ALL;
 FoxSplitterWindow.IMPORT_ONLY_HIDDEN = FoxSplitterConst.IMPORT_ONLY_HIDDEN;
-FoxSplitterWindow.importTabsFromClosedSibling = prefs.getPref(FoxSplitterConst.domain+'importTabsFromClosedSibling');
+FoxSplitterWindow.importTabsFromClosedSibling = prefs.getPref(domain+'importTabsFromClosedSibling');
 
 var prefListener = {
-		domain : FoxSplitterConst.domain,
+		domain : domain,
 		observe : function FSWPL_observe(aSubject, aTopic, aData) {
 			if (aTopic != 'nsPref:changed')
 				return;
 
-			var prefName = aData.replace(FoxSplitterConst.domain, '');
-			if (prefName in FoxSplitterWindow)
+			var prefName = aData.replace(domain, '');
+			if (prefName in FoxSplitterWindow) {
 				FoxSplitterWindow[prefName] = prefs.getPref(aData);
+			}
+			else {
+				switch (prefName)
+				{
+					case 'platformOffset.x':
+					case 'platformOffset.y':
+					case 'platformOffset.width':
+					case 'platformOffset.height':
+						return FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+							var root = aFSWindow.root;
+							if (root)
+								root.reserveResetPositionAndSize(null, true);
+						});
+				}
+			}
 		}
 	};
 

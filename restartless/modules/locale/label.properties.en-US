@@ -93,6 +93,16 @@ tab.shortcut=Keyboard Shortcuts
 shortcut.clear=Clear
 shortcut.reset=Reset
 
+tab.advanced=Advanced
+
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
+
 
 
 ui.split.short=Split

@@ -382,6 +382,74 @@ config.register('about:blank?foxsplitter-config', <>
 		</grid>
 	</prefpane>
 
+	<prefpane id="prefpane-advanced"
+		label={bundle.getString('tab.advanced')}>
+		<preferences>
+			<preference id="platformOffset.needToBeUpdated"
+				name={domain+'platformOffset.needToBeUpdated'}
+				type="bool"
+				instantApply="true"/>
+			<preference id="platformOffset.x"
+				name={domain+'platformOffset.x'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.y"
+				name={domain+'platformOffset.y'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.width"
+				name={domain+'platformOffset.width'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.height"
+				name={domain+'platformOffset.height'}
+				type="int"
+				instantApply="true"/>
+		</preferences>
+		<groupbox orient="vertical">
+			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
+			<hbox style="max-width:40em">
+				<description flex="1">{bundle.getString('platformOffset.description')}</description>
+			</hbox>
+			<hbox align="center">
+				<spacer flex="1"/>
+				<button label={bundle.getString('platformOffset.forceUpdate')}
+					oncommand="document.getElementById('platformOffset.needToBeUpdated').value=true;"/>
+				<spacer flex="1"/>
+			</hbox>
+			<hbox align="center">
+				<label value={bundle.getString('platformOffset.x')}
+					control="platformOffset.x-textbox"/>
+				<textbox id="platformOffset.x-textbox"
+					preference="platformOffset.x"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.y')}
+					control="platformOffset.y-textbox"/>
+				<textbox id="platformOffset.y-textbox"
+					preference="platformOffset.y"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.width')}
+					control="platformOffset.width-textbox"/>
+				<textbox id="platformOffset.width-textbox"
+					preference="platformOffset.width"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.height')}
+					control="platformOffset.height-textbox"/>
+				<textbox id="platformOffset.height-textbox"
+					preference="platformOffset.height"
+					type="number"
+					increment="1"
+					size="5"/>
+			</hbox>
+		</groupbox>
+	</prefpane>
+
 	<!-- This must be created as an XHTML script element, not XUL one, because
 	     XUL script elements are not evaluated when they are dynamically inserted. -->
 	<script type="application/javascript;version=1.8"

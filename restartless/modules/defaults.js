@@ -53,6 +53,10 @@ config.setDefault(domain+'shortcut.splitTabToBottom',
 config.setDefault(domain+'shortcut.splitTabToLeft', '');
 
 config.setDefault(domain+'platformOffset.needToBeUpdated', XULAppInfo.OS == 'Linux');
+config.setDefault(domain+'platformOffset.x', 0);
+config.setDefault(domain+'platformOffset.y', 0);
+config.setDefault(domain+'platformOffset.width', 0);
+config.setDefault(domain+'platformOffset.height', 0);
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',    true);
