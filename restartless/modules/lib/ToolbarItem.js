@@ -60,7 +60,7 @@ ToolbarItem.prototype = {
 		var toolbox = this.toolbox;
 		return (
 			(toolbox && toolbox.palette) ||
-			this._getNodeByXPath('ancestor::*[local-name()="toolbox"]/descendant::*[local-name()="toolbarpalette"]', toolbar)
+			this._getNodeByXPath('descendant::*[local-name()="toolbarpalette"]', toolbox)
 		);
 	},
 
