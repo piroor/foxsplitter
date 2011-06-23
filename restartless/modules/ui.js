@@ -19,109 +19,6 @@ function FoxSplitterUI(aFSWindow)
 FoxSplitterUI.prototype = {
 	__proto__ : FoxSplitterConst,
 
-	BASE_STYLESHEET : <![CDATA[
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
-		:root[chromehidden~="toolbar-non-navigation-items"] #home-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #bookmarks-menu-button-container,
-		:root[chromehidden~="toolbar-non-navigation-items"] #search-container,
-		:root[chromehidden~="toolbar-non-navigation-items"] #print-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #downloads-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #history-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #bookarmks-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #new-window-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #cut-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #copy-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #paste-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #fullscreen-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #zoom-controls,
-		:root[chromehidden~="toolbar-non-navigation-items"] #sync-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #feed-button {
-			visibility: collapse;
-		}
-
-		.DROP_INDICATOR {
-			background: rgba(0, 0, 0, 0.75);
-			border: 0 solid rgba(255, 255, 255, 0.75);
-			border-radius: 0;
-			line-height: 0;
-			margin: 0;
-			opacity: MIN_OPACITY;
-			padding: 0;
-			-moz-appearance: none;
-			-moz-border-radius: 0;
-			-moz-box-align: center;
-			-moz-box-pack: center;
-			-moz-transition: opacity 0.25s ease-in;
-		}
-
-		.DROP_INDICATOR.top {
-			border-top-width: 1px;
-		}
-		.DROP_INDICATOR.right {
-			border-right-width: 1px;
-		}
-		.DROP_INDICATOR.bottom {
-			border-bottom-width: 1px;
-		}
-		.DROP_INDICATOR.left {
-			border-left-width: 1px;
-		}
-
-		.DROP_INDICATOR label {
-			color: white;
-			line-height: 0;
-			margin: 0;
-			min-height: 0;
-			min-width: 0;
-			padding: 0;
-		}
-
-		.toolbarbutton-1.TOOLBAR_ITEM,
-		#foxsplitter-syncScroll-button {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png?IMAGES_VERSION");
-			-moz-image-region: rect(0 16px 16px 0);
-		}
-
-		toolbox[iconsize="large"] .toolbarbutton-1.TOOLBAR_ITEM.platform-Linux {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon24.png?IMAGES_VERSION");
-			-moz-image-region: rect(0 24px 24px 0);
-		}
-
-		.MENU_ITEM.menuitem-iconic,
-		.MENU_ITEM.menu-iconic,
-		.MENU_ITEM[iconic="true"] {
-			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png?IMAGES_VERSION");
-			-moz-image-region: rect(0 16px 16px 0);
-		}
-		.MENU_ITEM.split                         { -moz-image-region: rect(0 16px 16px 0); }
-		.MENU_ITEM.split[disabled="true"]        { -moz-image-region: rect(16px 16px 32px 0); }
-		.MENU_ITEM.closeAll                      { -moz-image-region: rect(0 32px 16px 16px); }
-		.MENU_ITEM.closeAll[disabled="true"]     { -moz-image-region: rect(16px 32px 32px 16px); }
-		.MENU_ITEM.gather                        { -moz-image-region: rect(0 48px 16px 32px); }
-		.MENU_ITEM.gather[disabled="true"]       { -moz-image-region: rect(16px 48px 32px 32px); }
-		.MENU_ITEM.tile-grid                     { -moz-image-region: rect(0 64px 16px 48px); }
-		.MENU_ITEM.tile-grid[disabled="true"]    { -moz-image-region: rect(16px 64px 32px 48px); }
-		.MENU_ITEM.tile-x                        { -moz-image-region: rect(0 80px 16px 64px); }
-		.MENU_ITEM.tile-x[disabled="true"]       { -moz-image-region: rect(16px 80px 32px 64px); }
-		.MENU_ITEM.tile-y                        { -moz-image-region: rect(0 96px 16px 80px); }
-		.MENU_ITEM.tile-y[disabled="true"]       { -moz-image-region: rect(16px 96px 32px 80px); }
-		.MENU_ITEM.split-top                     { -moz-image-region: rect(0 144px 16px 128px); }
-		.MENU_ITEM.split-top[disabled="true"]    { -moz-image-region: rect(16px 144px 32px 128px); }
-		.MENU_ITEM.split-right                   { -moz-image-region: rect(0 160px 16px 144px); }
-		.MENU_ITEM.split-right[disabled="true"]  { -moz-image-region: rect(16px 160px 32px 144px); }
-		.MENU_ITEM.split-bottom                  { -moz-image-region: rect(0 176px 16px 160px); }
-		.MENU_ITEM.split-bottom[disabled="true"] { -moz-image-region: rect(16px 176px 32px 160px); }
-		.MENU_ITEM.split-left                    { -moz-image-region: rect(0 192px 16px 176px); }
-		.MENU_ITEM.split-left[disabled="true"]   { -moz-image-region: rect(16px 192px 32px 176px); }
-
-		:root:not([MEMBER="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button {
-			visibility: collapse;
-		}
-		#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
-		#foxsplitter-syncScroll-button[checked="true"] { -moz-image-region: rect(0 128px 16px 112px); }
-	]]>.toString(),
-
 	get _window()
 	{
 		return this.owner._window;
@@ -187,16 +84,8 @@ FoxSplitterUI.prototype = {
 	{
 		if (this._styleSheet)
 			return;
-		var styles = this.BASE_STYLESHEET
-						.replace(/ACTIVE/g, this.ACTIVE)
-						.replace(/DROP_INDICATOR/g, this.DROP_INDICATOR)
-						.replace(/MEMBER/g, this.MEMBER)
-						.replace(/MENU_ITEM/g, this.MENU_ITEM)
-						.replace(/MIN_OPACITY/g, this.MIN_OPACITY)
-						.replace(/TOOLBAR_ITEM/g, this.TOOLBAR_ITEM)
-						.replace(/IMAGES_VERSION/g, this.IMAGES_VERSION);
 		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
-			'type="text/css" href="data:text/css,'+encodeURIComponent(styles)+'"');
+			'type="text/css" href="data:text/css,'+encodeURIComponent(this.STYLESHEET)+'"');
 		this.document.insertBefore(this._styleSheet, this.documentElement);
 	},
 

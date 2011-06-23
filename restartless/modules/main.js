@@ -1,5 +1,6 @@
 load('lib/WindowManager');
 
+FoxSplitterConst = require('const');
 load('defaults');
 load('config');
 
@@ -7,6 +8,7 @@ load('window');
 load('group');
 
 const TYPE_BROWSER = 'navigator:browser';
+const TOOLBAR_CUSTOMIZE = 'CustomizeToolbarWindow';
 
 
 // disable old Fox Splitter
@@ -86,27 +88,39 @@ else {
 function handleWindow(aWindow, aInitialization)
 {
 	var doc = aWindow.document;
-	if (doc.documentElement.getAttribute('windowtype') != TYPE_BROWSER)
-		return;
-
-	aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
-	// aWindow.SplitBrowser = aWindow.FoxSplitter;
+	if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
+		aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
+		// aWindow.SplitBrowser = aWindow.FoxSplitter;
+	}
+	else if (doc.documentElement.getAttribute('id') == TOOLBAR_CUSTOMIZE) {
+		doc.__foxsplitter__style = doc.createProcessingInstruction('xml-stylesheet',
+			'type="text/css" href="data:text/css,'+encodeURIComponent(FoxSplitterConst.STYLESHEET)+'"');
+		doc.insertBefore(doc.__foxsplitter__style, doc.documentElement);
+	}
 }
 
-WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
+WindowManager.getWindows(null).forEach(function(aWindow) {
 	handleWindow(aWindow, true);
 });
 WindowManager.addHandler(handleWindow);
 
 function shutdown()
 {
-	WindowManager.getWindows(TYPE_BROWSER).forEach(function(aWindow) {
-		aWindow.FoxSplitter.destroy(true);
-		delete aWindow.FoxSplitter;
-		// delete aWindow.SplitBrowser;
+	WindowManager.getWindows(null).forEach(function(aWindow) {
+		var doc = aWindow.document;
+		if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
+			aWindow.FoxSplitter.destroy(true);
+			delete aWindow.FoxSplitter;
+			// delete aWindow.SplitBrowser;
+		}
+		else if (doc.documentElement.getAttribute('id') == TOOLBAR_CUSTOMIZE) {
+			doc.removeChild(doc.__foxsplitter__style);
+			delete doc.__foxsplitter__style;
+		}
 	});
 
 	WindowManager = undefined;
 	FoxSplitterWindow = undefined;
 	FoxSplitterGroup = undefined;
+	FoxSplitterConst = undefined;
 }
