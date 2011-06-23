@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      1
+ * @version      2
  *
  * @license
  *   The MIT License, Copyright (c) 2011 SHIMODA "Piro" Hiroshi.
@@ -49,7 +49,11 @@ ToolbarItem.prototype = {
 	{
 		var toolbar = this.defaultToolbar || this.defaultCustomizableToolbar;
 		return toolbar.toolbox ||
-			this._getNodeByXPath('ancestor::*[local-name()="toolbox"][1]', toolbar); // for Firefox 3.6
+			this._getOwnerToolbox(toolbar); // for Firefox 3.6
+	},
+	_getOwnerToolbox : function(aToolbar)
+	{
+		return this._getNodeByXPath('ancestor::*[local-name()="toolbox"][1]', aToolbar);
 	},
 	get palette()
 	{
@@ -160,14 +164,6 @@ ToolbarItem.prototype = {
 
 	_initialInsert : function()
 	{
-		this._appendToDefaultSet();
-		if (this._checkInsertedInOtherPlace())
-			return;
-
-		var toolbar = this.defaultToolbar;
-		if (toolbar && !toolbar.toolbox)
-			return;
-
 		const Prefs = Cc['@mozilla.org/preferences;1']
 						.getService(Ci.nsIPrefBranch);
 		const key = 'extensions.restartless@piro.sakura.ne.jp.toolbaritem.'+this.id+'.initialized';
@@ -179,13 +175,16 @@ ToolbarItem.prototype = {
 		catch(e) {
 		}
 
-		if (done || !toolbar) {
-			let palette = this.palette;
-			if (palette)
-				palette.appendChild(this.node);
-		}
-		else {
-			this._insertToDefaultToolbar();
+		this._appendToDefaultSet();
+
+		let palette = this.palette;
+		if (palette)
+			palette.appendChild(this.node);
+
+		if (!this._checkInsertedInOtherPlace()) {
+			let toolbar = this.defaultToolbar;
+			if (!done && toolbar && this.toolbox)
+				this._insertToDefaultToolbar();
 		}
 
 		if (!done)
@@ -244,10 +243,9 @@ ToolbarItem.prototype = {
 			do {
 				index++;
 			}
-			while (!this._document.getElementById(items[index]));
+			while (index < items.length - 1 && !this._document.getElementById(items[index]));
 
-			if (index < items.length)
-				toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
+			toolbar.insertBefore(this.node, this._document.getElementById(items[index]));
 		}
 		return true;
 	},
@@ -258,8 +256,6 @@ ToolbarItem.prototype = {
 		if (!toolbar)
 			return;
 
-		toolbar.insertBefore(this.node, this._getLastItemInToolbar(toolbar));
-
 		var currentset = toolbar.currentSet.replace(/__empty/, '');
 		currentset = currentset ? currentset.split(',') : [] ;
 		currentset.push(this.id);
@@ -267,6 +263,8 @@ ToolbarItem.prototype = {
 		toolbar.currentSet = currentset;
 		toolbar.setAttribute('currentset', currentset);
 		this._document.persist(toolbar.id, 'currentset');
+
+		toolbar.insertBefore(this.node, this._getLastItemInToolbar(toolbar));
 	},
 
 	_getLastItemInToolbar : function(aToolbar)
