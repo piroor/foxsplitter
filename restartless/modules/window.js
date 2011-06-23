@@ -13,6 +13,9 @@ const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
+var bundle = require('lib/locale')
+				.get(resolve('locale/label.properties'));
+
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
 	this.init(aWindow, aOnInit);
