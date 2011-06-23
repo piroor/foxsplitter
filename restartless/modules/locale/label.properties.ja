@@ -139,8 +139,8 @@ ui.split.link.accesskey=s
 ui.split.frame.label=分割されたウィンドウでフレームを開く
 ui.split.frame.accesskey=s
 
-ui.split.tab.label=ウィンドウを分割してタブを移動
-ui.split.tab.accesskey=s
+ui.split.tab.move.label=ウィンドウを分割してタブを移動
+ui.split.tab.move.accesskey=s
 
 ui.split.tab.duplicate.label=ウィンドウを分割してタブを複製
 ui.split.tab.duplicate.accesskey=u

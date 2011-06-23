@@ -383,7 +383,8 @@ config.register('about:blank?foxsplitter-config', <>
 	</prefpane>
 
 	<prefpane id="prefpane-advanced"
-		label={bundle.getString('tab.advanced')}>
+		label={bundle.getString('tab.advanced')}
+		flex="1">
 		<preferences>
 			<preference id="platformOffset.needToBeUpdated"
 				name={domain+'platformOffset.needToBeUpdated'}
