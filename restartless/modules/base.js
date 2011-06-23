@@ -30,25 +30,9 @@ FoxSplitterBase.prototype = {
 	set shouldDuplicateOnSplit(aValue) { return FoxSplitterBase.shouldDuplicateOnSplit = aValue; },
 
 	get offsetX() { return FoxSplitterBase.offsetX; },
-	set offsetX(aValue) {
-		prefs.setPref(domain+'platformOffset.x', aValue);
-		return FoxSplitterBase.offsetX = aValue;
-	},
 	get offsetY() { return FoxSplitterBase.offsetY; },
-	set offsetY(aValue) {
-		prefs.setPref(domain+'platformOffset.y', aValue);
-		return FoxSplitterBase.offsetY = aValue;
-	},
 	get offsetWidth() { return FoxSplitterBase.offsetWidth; },
-	set offsetWidth(aValue) {
-		prefs.setPref(domain+'platformOffset.width', aValue);
-		return FoxSplitterBase.offsetWidth = aValue;
-	},
 	get offsetHeight() { return FoxSplitterBase.offsetHeight; },
-	set offsetHeight(aValue) {
-		prefs.setPref(domain+'platformOffset.height', aValue);
-		return FoxSplitterBase.offsetHeight = aValue;
-	},
 
 	isGroup : false,
 

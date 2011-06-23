@@ -92,23 +92,6 @@ FoxSplitterWindow.prototype = {
 		if (!this._window)
 			return;
 
-		/**
-		 * Due to Firefox's bug 581863 and bug 581866, windows are mispositioned.
-		 * https://github.com/piroor/foxsplitter/issues/26
-		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
-		 * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
-		 */
-		if (aExpected && this.fixMispositoning) {
-			if (this.offsetX === null && 'x' in aExpected && aExpected.x != this.internalX)
-				this.offsetX = this.internalX - aExpected.x;
-			if (this.offsetY === null && 'y' in aExpected && aExpected.y != this.internalY)
-				this.offsetY = this.internalY - aExpected.y;
-			if (this.offsetWidth === null && 'width' in aExpected && aExpected.width != this.internalWidth)
-				this.offsetWidth = aExpected.width - this.internalWidth;
-			if (this.offsetHeight === null && 'height' in aExpected && aExpected.height != this.internalHeight)
-				this.offsetHeight = aExpected.height - this.internalHeight;
-		}
-
 		this.lastX      = this.x;
 		this.lastY      = this.y;
 		this.lastWidth  = this.width;
@@ -424,17 +407,12 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		aX = Math.round(aX);
-		aY = Math.round(aY);
-
-		this.window.moveTo(aX, aY);
-		this.updateLastPositionAndSize({
-			x : aX,
-			y : aY
-		});
+		this.window.moveTo(Math.round(aX), Math.round(aY));
+		this.updateLastPositionAndSize();
 
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.positioning--;
 		})
 		.error(this.defaultHandleError);
@@ -447,21 +425,14 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		aDX = Math.round(aDX);
-		aDY = Math.round(aDY);
-		var x = this.x;
-		var y = this.y;
-
-		var actualDX = aDX - (this.offsetX || 0);
-		var actualDY = aDY - (this.offsetY || 0);
-		this.window.moveBy(actualDX, actualDY);
-		this.updateLastPositionAndSize({
-			x : x + aDX,
-			y : y + aDY
-		});
+		var aDX = Math.round(aDX) - (this.offsetX || 0);
+		var aDY = Math.round(aDY) - (this.offsetY || 0);
+		this.window.moveBy(aDX, aDY);
+		this.updateLastPositionAndSize();
 
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.positioning--;
 		})
 		.error(this.defaultHandleError);
@@ -474,17 +445,14 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		aW = Math.max(this.MIN_WIDTH, Math.round(aW));
-		aH = Math.max(this.MIN_HEIGHT, Math.round(aH));
-
-		this.window.resizeTo(aW - (this.offsetWidth || 0), aH - (this.offsetHeight || 0));
-		this.updateLastPositionAndSize({
-			width : aW,
-			height : aH
-		});
+		aW = Math.max(this.MIN_WIDTH, Math.round(aW)) - (this.offsetWidth || 0);
+		aH = Math.max(this.MIN_HEIGHT, Math.round(aH)) - (this.offsetHeight || 0);
+		this.window.resizeTo(aW, aH);
+		this.updateLastPositionAndSize();
 
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.resizing--;
 		})
 		.error(this.defaultHandleError);
@@ -497,19 +465,14 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		var width = this.width;
-		var height = this.height;
 		aDW = Math.max(-this.window.innerWidth+this.MIN_WIDTH, Math.round(aDW));
 		aDH = Math.max(-this.window.innerHeight+this.MIN_HEIGHT, Math.round(aDH));
-
 		this.window.resizeBy(aDW, aDH);
-		this.updateLastPositionAndSize({
-			width : width + aDW,
-			height : height + aDH
-		});
+		this.updateLastPositionAndSize();
 
 		var self = this;
 		Deferred.next(function() {
+			self.updateLastPositionAndSize();
 			self.resizing--;
 		})
 		.error(this.defaultHandleError);
