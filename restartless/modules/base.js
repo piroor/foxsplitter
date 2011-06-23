@@ -743,6 +743,36 @@ FoxSplitterBase.offsetHeight = prefs.getPref(domain+'platformOffset.height');
  * https://github.com/piroor/foxsplitter/issues/26
  * https://bugzilla.mozilla.org/show_bug.cgi?id=581863
  * https://bugzilla.mozilla.org/show_bug.cgi?id=581866
+ *
+ * "window.screenX", "window.screenY", "window.outerWidth", and "window.outerHeight" return wrong values.
+ * On Linux they return the dimension of the root element, without window decorations.
+ * So...
+ * 
+ *  * offsetX => left window border (ex. 3px)
+ *      => actualScreenX = screenX - offsetX
+ *  * offsetY => window caption (ex. 20px)
+ *      => actualScreenY = screenY - offsetY
+ *  * offsetWidth => both left and right window borders (ex. 3px + 3px )
+ *      => actualOuterWidth = outerWidth - offsetWidth
+ *  * offsetHeight => both window caption and bottom window border (ex. 20px + 3px)
+ *      => actualOuterHeight = outerHeight - offsetHeight
+ * 
+ * And,
+ * 
+ *  1. openDialog() with features "screenX", "screenY", "outerWidth", "outerHeight"
+ *     => Specify "screenX" and "screenY" without offsets.
+ *     => Specify "outerWidth" and "outerHeight" with negative offsets.
+ *        (expectedWidth - offsetWidth, expectedHeight - offsetHeight)
+ *  2. moveTo(x, y)
+ *     => Specify x and y without offsets.
+ *  3. moveBy(deltaX, deltaY)
+ *     => Specify deltaX and deltaY with nevative offsets.
+ *        (deltaX - offsetX, deltaY - offsetY)
+ *  4. resizeTo(width, height)
+ *     => Specify "outerWidth" and "outerHeight" with nevative offsets.
+ *        (expectedWidth - offsetWidth, expectedHeight - offsetHeight)
+ *  5. resizeBy(deltaWidth, deltaHeight)
+ *     => Specify "outerWidth" and "outerHeight" without offsets.
  */
 FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 	var self = this;
