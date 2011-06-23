@@ -45,11 +45,15 @@ ToolbarItem.prototype = {
 	{
 		return this._getNodeByXPath('/descendant::*[local-name()="toolbar" and @customizable="true"][1]');
 	},
+	get toolbox()
+	{
+		return (this.defaultToolbar || this.defaultCustomizableToolbar).toolbox;
+	},
 	get palette()
 	{
-		var toolbar = this.defaultToolbar || this.defaultCustomizableToolbar;
+		var toolbox = this.toolbox;
 		return (
-			(toolbar.toolbox && toolbar.toolbox.palette) ||
+			(toolbox && toolbox.palette) ||
 			this._getNodeByXPath('ancestor::*[local-name()="toolbox"]/descendant::*[local-name()="toolbarpalette"]', toolbar)
 		);
 	},
@@ -67,8 +71,15 @@ ToolbarItem.prototype = {
 		this._document = this.node.ownerDocument || this.node;
 		this._window = this._document.defaultView;
 
-		this._window.addEventListener('beforecustomization', this, false);
-		this._window.addEventListener('aftercustomization', this, false);
+		if (Cc['@mozilla.org/xpcom/version-comparator;1']
+				.getService(Ci.nsIVersionComparator)
+				.compare(XULAppInfo.version, '4.0') < 0) { // Firefox 3.6
+			this.toolbox.addEventListener('DOMAttrModified', this, false);
+		}
+		else {
+			this._window.addEventListener('beforecustomization', this, false);
+			this._window.addEventListener('aftercustomization', this, false);
+		}
 		this._window.addEventListener('unload', this, false);
 
 		ToolbarItem.instances.push(this);
@@ -86,8 +97,15 @@ ToolbarItem.prototype = {
 		this._onBeforeCustomization();
 		this._removeFromDefaultSet();
 
-		this._window.removeEventListener('beforecustomization', this, false);
-		this._window.removeEventListener('aftercustomization', this, false);
+		if (Cc['@mozilla.org/xpcom/version-comparator;1']
+				.getService(Ci.nsIVersionComparator)
+				.compare(XULAppInfo.version, '4.0') < 0) { // Firefox 3.6
+			this.toolbox.removeEventListener('DOMAttrModified', this, false);
+		}
+		else {
+			this._window.removeEventListener('beforecustomization', this, false);
+			this._window.removeEventListener('aftercustomization', this, false);
+		}
 		this._window.removeEventListener('unload', this, false);
 
 		if (this.node.parentNode)
@@ -270,6 +288,16 @@ ToolbarItem.prototype = {
 	{
 		switch (aEvent.type)
 		{
+			case 'DOMAttrModified': // Firefox 3.6
+				if (aEvent.target == aEvent.currentTarget &&
+					aEvent.attrName == 'customizing') {
+					if (aEvent.newValue == 'true')
+						this._onBeforeCustomization();
+					else
+						this._onAfterCustomization();
+				}
+				return;
+
 			case 'beforecustomization':
 				return this._onBeforeCustomization();
 

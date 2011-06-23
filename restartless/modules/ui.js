@@ -464,7 +464,7 @@ FoxSplitterUI.prototype = {
 		}
 
 		let tabContextPopup = this.document.querySelector('#tabContextMenu');
-		if (prefs.getPref(this.domain+'context.splitFromTab.move')) {
+		if (tabContextPopup && prefs.getPref(this.domain+'context.splitFromTab.move')) {
 			this.tabContextMoveItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menu id="foxsplitter-context-tab-split-move"
 						class={'menu-iconic split '+this.MENU_ITEM}
@@ -506,7 +506,7 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 			tabContextPopup.insertBefore(this.tabContextMoveItem, this.document.getElementById('context_openTabInWindow').nextSibling);
 		}
-		if (prefs.getPref(this.domain+'context.splitFromTab.duplicate')) {
+		if (tabContextPopup && prefs.getPref(this.domain+'context.splitFromTab.duplicate')) {
 			let popup = this.document.querySelector('#tabContextMenu');
 			this.tabContextDuplicateItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menu id="foxsplitter-context-tab-split-duplicate"
@@ -536,7 +536,7 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 			tabContextPopup.insertBefore(this.tabContextDuplicateItem, (this.tabContextMoveItem || this.document.getElementById('context_openTabInWindow')).nextSibling);
 		}
-		if (prefs.getPref(this.domain+'context.gatherWindows')) {
+		if (tabContextPopup && prefs.getPref(this.domain+'context.gatherWindows')) {
 			let popup = this.document.querySelector('#tabContextMenu');
 			this.tabContextGatherItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-context-tab-gather"
