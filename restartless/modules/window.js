@@ -643,9 +643,11 @@ FoxSplitterWindow.prototype = {
 
 		aOperation();
 
-		var deferreds = [Deferred.next(function() {})];
+		var deferreds = [];
+
 		if (waitStateChanged) deferreds.push(waitStateChanged);
 		if (waitRestored) deferreds.push(waitRestored);
+
 		return deferreds.length > 1 ?
 				Deferred.parallel(deferreds) :
 			deferreds.length ?

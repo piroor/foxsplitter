@@ -394,11 +394,10 @@ FoxSplitterBase.prototype = {
 		var waitRestored = maximized ?
 						this.restore() :
 						null ;
-
-		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
 		var self = this;
 		return (waitRestored || Deferred)
 				.next(function() {
+					let positionAndSize = self.calculatePositionAndSizeFor(aPosition);
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {
@@ -423,8 +422,6 @@ FoxSplitterBase.prototype = {
 							});
 					self.maximize();
 					return waitMaximized || aWindow;
-				})
-				.next(function() {
 				})
 				.error(this.defaultHandleError);
 	},
