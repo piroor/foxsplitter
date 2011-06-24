@@ -843,7 +843,7 @@ FoxSplitterWindow.prototype = {
 				return;
 
 			var count = aFSWindow.allTabs.length;
-			deferreds.push(this.importTabsFrom(aFSWindow.window, offset));
+			deferreds.push(this.importAllTabsFrom(aFSWindow.window, offset));
 			offset += count;
 		}, this);
 
@@ -865,7 +865,7 @@ FoxSplitterWindow.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	importTabsFrom : function FSW_importTabsFrom(aWindow, aOffset) /* PUBLIC API */
+	importAllTabsFrom : function FSW_importAllTabsFrom(aWindow, aOffset) /* PUBLIC API */
 	{
 		if (!this.parent || !this._window || !aWindow.FoxSplitter)
 			return Deferred.next(function() {
