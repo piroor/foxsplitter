@@ -648,6 +648,8 @@ FoxSplitterWindow.prototype = {
 		if (waitRestored) deferreds.push(waitRestored);
 		return deferreds.length > 1 ?
 				Deferred.parallel(deferreds) :
+			deferreds.length ?
+				deferreds[0] :
 				Deferred.next(function() {});
 	},
 
@@ -1143,7 +1145,11 @@ FoxSplitterWindow.prototype = {
 		}
 
 		var self = this;
-		return (deferreds.length ? Deferred.parallel(deferreds) : Deferred )
+		return (deferreds.length > 1 ?
+					Deferred.parallel(deferreds) :
+				deferreds.length ?
+					deferreds[0] :
+					Deferred )
 				.next(function() {
 					self.parent.resetPositionAndSize(self);
 				});
@@ -1196,7 +1202,11 @@ FoxSplitterWindow.prototype = {
 		this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, '');
 
 		var self = this;
-		return (deferreds.length ? Deferred.parallel(deferreds) : Deferred )
+		return (deferreds.length > 1 ?
+					Deferred.parallel(deferreds) :
+				deferreds.length ?
+					deferreds[0] :
+					Deferred )
 				.next(function() {
 					self.parent.resetPositionAndSize(self);
 				});
