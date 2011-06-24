@@ -514,6 +514,14 @@ FoxSplitterWindow.prototype = {
 		this.raising++;
 
 		if (this.methodToRaiseWindow == this.RAISE_WINDOW_BY_RAISED_FLAG) {
+			/**
+			 * This works only on Windows and OS/2 due to Gecko's limitation.
+			 * See:
+			 *   https://bugzilla.mozilla.org/show_bug.cgi?id=453274#c2
+			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=91508
+			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=450576
+			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=117730#c25
+			 */
 			let XULWindow = this.window
 							.QueryInterface(Ci.nsIInterfaceRequestor)
 							.getInterface(Ci.nsIWebNavigation)

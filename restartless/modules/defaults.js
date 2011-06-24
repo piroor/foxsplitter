@@ -59,9 +59,9 @@ config.setDefault(domain+'platformOffset.width', 0);
 config.setDefault(domain+'platformOffset.height', 0);
 
 config.setDefault(domain+'methodToRaiseWindow',
-	XULAppInfo.OS == 'Linux' ?
-		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS :
-		FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG);
+	XULAppInfo.OS == 'WINNT' ?
+		FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG :
+		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',    true);
