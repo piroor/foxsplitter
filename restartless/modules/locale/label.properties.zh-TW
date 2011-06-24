@@ -34,186 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Fox Splitter 設定
 
 tab.general=一般
 
-subbrowser.autoFocus=滑鼠經過時自動切換焦點到瀏覽區
-delay.subbrowser.autoFocus.before=切換焦點到瀏覽區的延遲時間
-delay.subbrowser.autoFocus.after=毫秒
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Split Tab Behavior
-tab.closetab.move=Close the original tab (move the tab to the new pane)
-tab.closetab.clone=Keep the original tab open (clone the tab to the new pane)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=將主瀏覽區的捲動狀態與有勾選「同步捲動」的分割瀏覽區同步
-syncScroll.horizontal.true=垂直與水平方向
-syncScroll.horizontal.false=僅垂直方向
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=外觀
 
-show.toolbar.always=總是在分割瀏覽區顯示工具列
-show.syncScroll=在分割瀏覽區顯示「同步捲動」的工具列按鈕
-show.collapseexpand=在分割瀏覽區顯示「收摺」與「展開」的工具列按鈕
-tabs.autoHide=總是在分割瀏覽區顯示分頁列
-show.toolbar.navigation.always=總是在分割瀏覽區顯示瀏覽工具列
-
-show.addbuttons.caption=內容區的「分割」按鈕
-show.addbuttons.hover.type=滑鼠指到內容區邊緣時:
-show.addbuttons.hover.type.0=總是自動顯示「分割」按鈕。
-show.addbuttons.hover.type.1=如果按著 Shift 鍵，顯示「分割」按鈕。
-show.addbuttons.dragdrop=拖曳著鏈結、檔案……等的時候，顯示「分割」按鈕。
-addbuttons.size.before=Height of "Split" buttons:
-addbuttons.size.after=pixels
-addbuttons.area.before=Width of "Split" buttons:
-addbuttons.area.after=pixels
-
-
-tab.target=組合
-
-search.loadResultsIn=將搜尋結果載入到
-search.loadResultsIn.0=主瀏覽區 (Firefox 預設)
-search.loadResultsIn.1=現行窗格 (Active Pane)
-search.loadResultsIn.2=給搜尋結果使用的窗格
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=選單
-show.menu=在選單列顯示「Split」選單
-show.context.caption=分頁標籤上右鍵選單的項目:
-show.tab.context.split=分割這個分頁到…
-show.tab.context.layout.grid=鋪排所有分頁
-show.tab.context.layout.x=垂直排列所有分頁
-show.tab.context.layout.y=水平排列所有分頁
-show.tab.context.gather=集結此處所有的分割瀏覽區到各分頁
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=分頁標籤上右鍵選單的項目:
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=State
-state.restore=儲存分割瀏覽區狀態
-undo.max.before=Allow to reopen closed panes until 
-undo.max.after=times
-undo.clearCache=Clear cache
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-add.button.top.tooltip=分割到上方
-add.button.bottom.tooltip=分割到下方
-add.button.right.tooltip=分割到右方
-add.button.left.tooltip=分割到左方
-
-
-file.removeAll.label=關閉所有分割瀏覽區
-file.removeAll.accesskey=b
-view.collapseAll.label=收摺所有分割瀏覽區
-view.collapseAll.accesskey=l
-view.expandAll.label=展開所有分割瀏覽區
-view.expandAll.accesskey=x
-
-add.label=分割瀏覽區到
-add.top.label=上方
-add.bottom.label=下方
-add.right.label=右方
-add.left.label=左方
-
-frame.add.label=由此頁框分割瀏覽區到
-frame.add.top.label=上方
-frame.add.bottom.label=下方
-frame.add.right.label=右方
-frame.add.left.label=左方
-
-link.add.label=載入到分割瀏覽區
-link.add.top.label=上方
-link.add.bottom.label=下方
-link.add.right.label=右方
-link.add.left.label=左方
-
-tab.add.label=分割這個分頁到
-tab.add.top.label=上方
-tab.add.bottom.label=下方
-tab.add.right.label=右方
-tab.add.left.label=左方
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=鋪排所有分頁
-tab.layout.x.label=垂直排列所有分頁
-tab.layout.y.label=水平排列所有分頁
-tab.gather.label=集結此處所有的分割瀏覽區到各分頁
+ui.split.top.short=分割到上方
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=分割到右方
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=分割到下方
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Split
-menu.accesskey=p
-menu.removeAll.label=關閉所有分割瀏覽區
-menu.removeAll.accesskey=b
-menu.undo.label=Undo Close Pane
-menu.undo.accesskey=U
-menu.undoList.label=Recently Closed Panes
-menu.undoList.accesskey=R
-menu.collapseAll.label=收摺所有分割瀏覽區
-menu.collapseAll.accesskey=l
-menu.expandAll.label=展開所有分割瀏覽區
-menu.expandAll.accesskey=x
-menu.add.label=分割這個分頁到
-menu.add.top.label=上方
-menu.add.bottom.label=下方
-menu.add.right.label=右方
-menu.add.left.label=左方
-menu.layout.grid.label=鋪排所有分頁
-menu.layout.grid.accesskey=t
-menu.layout.x.label=垂直排列所有分頁
-menu.layout.x.accesskey=v
-menu.layout.y.label=水平排列所有分頁
-menu.layout.y.accesskey=h
-menu.gather.label=集結此處所有的分割瀏覽區到各分頁
-menu.gather.accesskey=g
-menu.syncScroll.label=令分割瀏覽區隨主瀏覽區同步捲動
-menu.syncScroll.accesskey=s
+ui.split.left.short=分割到左方
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=排列
-multipletab.layout.x.label=垂直排列
-multipletab.layout.y.label=水平排列
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(空)
-subbrowser.loading=載入中…
-subbrowser.syncScroll.tooltip=同步捲動
-subbrowser.goBack.tooltip=上一頁
-subbrowser.goForward.tooltip=下一頁
-subbrowser.reload.tooltip=重新整理
-subbrowser.stop.tooltip=停止
-subbrowser.go.label=前往
-subbrowser.go.tooltip=載入這個 URI
-subbrowser.collapse.tooltip=收摺
-subbrowser.expand.tooltip=展開
-subbrowser.close.tooltip=關閉
-
-subbrowser.menu.openNewTab=新分頁
-subbrowser.menu.collapse=收摺
-subbrowser.menu.expand=展開
-subbrowser.menu.close=關閉
-subbrowser.menu.syncScroll=同步捲動
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=分割
-button.menu.tooltip=分割瀏覽區
-button.layout.grid.label=鋪排
-button.layout.grid.tooltip=鋪排所有分頁
-button.gather.label=集結
-button.gather.tooltip=將分割的瀏覽區集結成分頁
-button.collapseAll.label=收摺
-button.collapseAll.tooltip=收摺所有分割瀏覽區
-button.expandAll.label=展開
-button.expandAll.tooltip=展開所有分割瀏覽區
-button.removeAll.label=全部關閉
-button.removeAll.tooltip=關閉所有分割瀏覽區
+ui.layout.grid.short=排列
+ui.layout.grid.long=鋪排所有分頁
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=垂直排列
+ui.layout.x.long=垂直排列所有分頁
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=水平排列
+ui.layout.y.long=水平排列所有分頁
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=收摺
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=展開
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=同步捲動
+ui.syncScroll.accesskey=s
 
 
-
-privacy.undoCache.label=Undo cahce for closed panes of Fox Splitter
-privacy.undoCache.accesskey=u
+tabView.importedGroup=Imported from other windows (%S)

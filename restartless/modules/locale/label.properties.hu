@@ -34,187 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Fox Splitter – Beállítások
 
 tab.general=Általános
 
-subbrowser.autoFocus=Automatikus előtérbe helyezés
-delay.subbrowser.autoFocus.before=Az előtérbe helyezés késleltetése 
-delay.subbrowser.autoFocus.after=ezredmásodperc.
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Lap felosztása
-tab.closetab.move=Eredeti lap bezárása (áthelyezés új panelbe)
-tab.closetab.clone=Eredeti lap megtartása (másolat új panelbe)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=Főlap csúszkájának szinkronizációja a felosztott lapok csúszkáival
-syncScroll.horizontal.true=Függőlegesen és vízszintesen
-syncScroll.horizontal.false=Csak függőlegesen
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Megjelenés
 
-
-show.toolbar.always=A felosztott lapok eszköztára mindig látható
-show.syncScroll=A "Csúszka-szinkron" gomb megjelenítése a felosztott lap eszköztárán
-show.collapseexpand=Az "Összecsukás"/"Kinyitás" gomb megjelenítése a felosztott lapokon
-tabs.autoHide=A fülek mindig láthatóak a felosztott lapokon
-show.toolbar.navigation.always=A navigációgombok mindig láthatóak a felosztott lapok eszköztárán
-
-show.addbuttons.caption="Felosztás" gomb megjelenítése a lapok szélein
-show.addbuttons.hover.type=Ha az egér kurzora a lap bármelyik széléhez ér:
-show.addbuttons.hover.type.0=A "Felosztás" gomb automatikus megjelenítése
-show.addbuttons.hover.type.1=A "Felosztás" gomb megjelenítése a "Shift" billentyű lenyomásakor
-show.addbuttons.dragdrop=A "Felosztás" gomb megjelenítése link, fájl, stb. áthúzásakor
-addbuttons.size.before="Felosztás" gombok magassága:
-addbuttons.size.after=képpont
-addbuttons.area.before="Felosztás" gombok szélessége:
-addbuttons.area.after=képpont
-
-
-tab.target=Kombináció
-
-search.loadResultsIn=Keresés eredményének megjelenítése
-search.loadResultsIn.0=a fő lapon (Firefox alapértelmezett)
-search.loadResultsIn.1=az aktív mezőben
-search.loadResultsIn.2=a keresés eredményének mezejében
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menü
-show.menu=A "Felosztás" menü megjelenítése a menüsorban
-show.context.caption=Lapok helyi menüjének bővítése a következőkkel:
-show.tab.context.split=Ablak felosztása...
-show.tab.context.layout.grid=Lapok mozaikszerű felosztása
-show.tab.context.layout.x=Lapok felosztása függőlegesen
-show.tab.context.layout.y=Lapok felosztása vízszintesen
-show.tab.context.gather=Felosztott ablakok összegyűjtése ide lapokként
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Lapok helyi menüjének bővítése a következőkkel:
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=Állapot
-state.restore=Felosztás állapotának mentése
-undo.max.before=Bezárt panel újranyitásának engedélyezése 
-undo.max.after=alkalommal
-undo.clearCache=Gyorstár törlése
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-add.button.top.tooltip=Felosztás felülre
-add.button.bottom.tooltip=Felosztás alulra
-add.button.right.tooltip=Felosztás jobbra
-add.button.left.tooltip=Felosztás balra
-
-
-file.removeAll.label=Minden felosztott ablak bezárása
-file.removeAll.accesskey=b
-view.collapseAll.label=Minden felosztott ablak összecsukása
-view.collapseAll.accesskey=l
-view.expandAll.label=Minden felosztott ablak kinyitása
-view.expandAll.accesskey=y
-
-add.label=Ablak felosztása...
-add.top.label=Felülre
-add.bottom.label=Alulra
-add.right.label=Jobbra
-add.left.label=Balra
-
-frame.add.label=Ablak felosztása innen...
-frame.add.top.label=Felülre
-frame.add.bottom.label=Alulra
-frame.add.right.label=Jobbra
-frame.add.left.label=Balra
-
-link.add.label=Megnyitás új felosztott ablakban
-link.add.top.label=Felülre
-link.add.bottom.label=Alulra
-link.add.right.label=Jobbra
-link.add.left.label=Balra
-
-tab.add.label=Lap felosztása...
-tab.add.top.label=Felülre
-tab.add.bottom.label=Alulra
-tab.add.right.label=Jobbra
-tab.add.left.label=Balra
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=Lapok mozaikszerű felosztása
-tab.layout.x.label=Lapok felosztása függőlegesen
-tab.layout.y.label=Lapok felosztása vízszintesen
-tab.gather.label=Felosztott ablakok összegyűjtése ide lapokként
+ui.split.top.short=Felosztás felülre
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=Felosztás jobbra
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=Felosztás alulra
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Felosztás
-menu.accesskey=L
-menu.removeAll.label=Minden felosztott ablak bezárása
-menu.removeAll.accesskey=b
-menu.undo.label=Panel bezárásának visszavonása
-menu.undo.accesskey=z
-menu.undoList.label=Mostanában bezárt panelek
-menu.undoList.accesskey=p
-menu.collapseAll.label=Minden felosztott ablak összecsukása
-menu.collapseAll.accesskey=l
-menu.expandAll.label=Minden felosztott ablak kinyitása
-menu.expandAll.accesskey=y
-menu.add.label=Jelenlegi lap felosztása...
-menu.add.top.label=Felülre
-menu.add.bottom.label=Alulra
-menu.add.right.label=Jobbra
-menu.add.left.label=Balra
-menu.layout.grid.label=Lapok mozaikszerű felosztása
-menu.layout.grid.accesskey=t
-menu.layout.x.label=Lapok felosztása függőlegesen
-menu.layout.x.accesskey=f
-menu.layout.y.label=Lapok felosztása vízszintesen
-menu.layout.y.accesskey=v
-menu.gather.label=Felosztott ablakok összegyűjtése ide lapokként
-menu.gather.accesskey=G
-menu.syncScroll.label=A főlap és az osztott lapok közötti csúszka-szinkron
-menu.syncScroll.accesskey=s
+ui.split.left.short=Felosztás balra
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=Lapok mozaikszerű felosztása
-multipletab.layout.x.label=Lapok felosztása függőlegesen
-multipletab.layout.y.label=Lapok felosztása vízszintesen
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(Üres)
-subbrowser.loading=Betöltés...
-subbrowser.syncScroll.tooltip=Csúszka-szinkron
-subbrowser.goBack.tooltip=Vissza
-subbrowser.goForward.tooltip=Előre
-subbrowser.reload.tooltip=Újratöltés
-subbrowser.stop.tooltip=Megállítás
-subbrowser.go.label=Indítás
-subbrowser.go.tooltip=Betöltés
-subbrowser.collapse.tooltip=Összecsukás
-subbrowser.expand.tooltip=Kinyitás
-subbrowser.close.tooltip=Bezárás
-
-subbrowser.menu.openNewTab=Új lap
-subbrowser.menu.collapse=Összecsukás
-subbrowser.menu.expand=Kinyitás
-subbrowser.menu.close=Bezárás
-subbrowser.menu.syncScroll=Csúszka-szinkron
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=Felosztás
-button.menu.tooltip=Böngésző terület felosztása
-button.layout.grid.label=Mozaik
-button.layout.grid.tooltip=Összes lap mozaikszerű felosztása
-button.gather.label=Összegyűjtés
-button.gather.tooltip=Felosztott ablakok összegyűjtése lapokként
-button.collapseAll.label=Összecsukás
-button.collapseAll.tooltip=Minden felosztott ablak összecsukása
-button.expandAll.label=Kinyitás
-button.expandAll.tooltip=Minden felosztott ablak kinyitása
-button.removeAll.label=Mindegyik bezárása
-button.removeAll.tooltip=Minden felosztott ablak bezárása
+ui.layout.grid.short=Lapok mozaikszerű felosztása
+ui.layout.grid.long=Lapok mozaikszerű felosztása
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Lapok felosztása függőlegesen
+ui.layout.x.long=Lapok felosztása függőlegesen
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Lapok felosztása vízszintesen
+ui.layout.y.long=Lapok felosztása vízszintesen
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Összecsukás
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Kinyitás
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Csúszka-szinkron
+ui.syncScroll.accesskey=s
 
 
-
-privacy.undoCache.label=Fox Splitter által bezárt panelek gyorsítótára
-privacy.undoCache.accesskey=p
+tabView.importedGroup=Imported from other windows (%S)

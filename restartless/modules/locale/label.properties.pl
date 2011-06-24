@@ -34,180 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Fox Splitter - ustawienia
 
 tab.general=Ogólne
 
-subbrowser.autoFocus=Uaktywniaj panele po wskazaniu kursorem myszy
-delay.subbrowser.autoFocus.before=Czas opóźnienia
-delay.subbrowser.autoFocus.after=ms
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Zachowanie dzielenia kart
-tab.closetab.move=Zamykaj oryginalną kartę (przenosi kartę do nowego panelu)
-tab.closetab.clone=Pozostaw oryginalną kartę otwartą (klonuje kartę do nowego panelu)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=Synchronizuj stan przewijania głównego obszaru z wydzielonymi panelami, które są wybrane do synchronizacji przewijania
-syncScroll.horizontal.true=Pionowe i poziome
-syncScroll.horizontal.false=Tylko pionowe
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Wygląd
 
-show.toolbar.always=Wyświetlaj pasek narzędzi w wydzielonych panelach
-show.syncScroll=Wyświetlaj przycisk „Synchronizuj przewijanie” w wydzielonych panelach
-show.collapseexpand=Wyświetlaj przycisk „Zwiń”/„Rozwiń” w wydzielonych panelach
-tabs.autoHide=Wyświetlaj pasek kart w wydzielonych panelach
-show.toolbar.navigation.always=Wyświetlaj pasek nawigacji w wydzielonych panelach
-
-show.addbuttons.caption=Przyciski „Wydziel” obszaru przeglądania
-show.addbuttons.hover.type=Jeśli jedna z krawędzi obszaru jest wskazana:
-show.addbuttons.hover.type.0=Automatycznie wyświetlaj przyciski „Wydziel”
-show.addbuttons.hover.type.1=Wyświetlaj przyciski „Wydziel” po naciśnięciu klawisza „Shift”
-show.addbuttons.dragdrop=Wyświetlaj przyciski „Wydziel” podczas przeciągania odnośników, plików, kart itp.
-addbuttons.size.before=Wysokość przycisków „Wydziel”:
-addbuttons.size.after=px
-addbuttons.area.before=Szerokość przycisków „Wydziel”:
-addbuttons.area.after=px
-
-tab.target=Różne
-
-search.loadResultsIn=Wczytuj wyniki wyszukiwania w
-search.loadResultsIn.0=głównym obszarze (domyślne Firefoksa)
-search.loadResultsIn.1=aktywnym panelu
-search.loadResultsIn.2=panelu wyników szukania
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menu
-show.menu=Wyświetlaj menu „Wydziel” na pasku menu
-show.context.caption=Wyświetlaj w menu kontekstowym paska kart elementy:
-show.tab.context.split=Wydziel kartę do…
-show.tab.context.layout.grid=Ułóż wszystkie karty sąsiadująco
-show.tab.context.layout.x=Ułóż wszystkie karty sąsiadująco w pionie
-show.tab.context.layout.y=Ułóż wszystkie karty sąsiadująco w poziomie
-show.tab.context.gather=Zbierz wszystkie wydzielone panele jako karty
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Wyświetlaj w menu kontekstowym paska kart elementy:
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=Stan
-state.restore=Zapisuj stan wydzielonych paneli
-undo.max.before=Zezwalaj na ponowne otwieranie zamkniętych paneli 
-undo.max.after=razy
-undo.clearCache=Wyczyść bufor
+tab.shortcut=Keyboard Shortcuts
 
-add.button.top.tooltip=Wydziel na górze
-add.button.bottom.tooltip=Wydziel na dole
-add.button.right.tooltip=Wydziel po prawej
-add.button.left.tooltip=Wydziel po lewej
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-file.removeAll.label=Zamknij wszystkie panele
-file.removeAll.accesskey=K
-view.collapseAll.label=Zwiń wszystkie panele
-view.collapseAll.accesskey=Z
-view.expandAll.label=Rozwiń wszystkie panele
-view.expandAll.accesskey=R
-
-add.label=Wydziel
-add.top.label=Na górze
-add.bottom.label=Na dole
-add.right.label=Po prawej
-add.left.label=Po lewej
-
-frame.add.label=Wydziel z tej ramki
-frame.add.top.label=Na górze
-frame.add.bottom.label=Na dole
-frame.add.right.label=Po prawej
-frame.add.left.label=Po lewej
-
-link.add.label=Wczytaj w nowym panelu
-link.add.top.label=Na górze
-link.add.bottom.label=Na dole
-link.add.right.label=Po prawej
-link.add.left.label=Po lewej
-
-tab.add.label=Wydziel kartę
-tab.add.top.label=Na górze
-tab.add.bottom.label=Na dole
-tab.add.right.label=Po prawej
-tab.add.left.label=Po lewej
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=Ułóż wszystkie karty sąsiadująco
-tab.layout.x.label=Ułóż wszystkie karty sąsiadująco w pionie
-tab.layout.y.label=Ułóż wszystkie karty sąsiadująco w poziomie
-tab.gather.label=Zbierz wszystkie wydzielone przeglądarki jako karty
+ui.split.top.short=Wydziel na górze
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=Wydziel po prawej
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=Wydziel na dole
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Wydziel
-menu.accesskey=D
-menu.removeAll.label=Zamknij wszystkie panele
-menu.removeAll.accesskey=K
-menu.undo.label=Przywróć zamknięty panel
-menu.undo.accesskey=P
-menu.undoList.label=Ostatnio zamknięte panele
-menu.undoList.accesskey=O
-menu.collapseAll.label=Zwiń wszystkie panele
-menu.collapseAll.accesskey=Z
-menu.expandAll.label=Rozwiń wszystkie panele
-menu.expandAll.accesskey=R
-menu.add.label=Wydziel aktywną kartę
-menu.add.top.label=Na górze
-menu.add.bottom.label=Na dole
-menu.add.right.label=Po prawej
-menu.add.left.label=Po lewej
-menu.layout.grid.label=Ułóż wszystkie karty sąsiadująco
-menu.layout.grid.accesskey=D
-menu.layout.x.label=Ułóż wszystkie karty sąsiadująco w pionie
-menu.layout.x.accesskey=N
-menu.layout.y.label=Ułóż wszystkie karty sąsiadująco w poziomie
-menu.layout.y.accesskey=M
-menu.gather.label=Zbierz wszystkie panele jako karty
-menu.gather.accesskey=B
-menu.syncScroll.label=Synchronizuj przewijanie wydzielonych paneli z obszarem głównym
-menu.syncScroll.accesskey=S
+ui.split.left.short=Wydziel po lewej
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=Sąsiadująco
-multipletab.layout.x.label=Sąsiadująco w pionie
-multipletab.layout.y.label=Sąsiadująco w poziomie
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(pusta)
-subbrowser.loading=Wczytywanie…
-subbrowser.syncScroll.tooltip=Synchronizuj przewijanie
-subbrowser.goBack.tooltip=Przejdź do poprzedniej strony
-subbrowser.goForward.tooltip=Przejdź do następnej strony
-subbrowser.reload.tooltip=Odśwież bieżącą stronę
-subbrowser.stop.tooltip=Stop
-subbrowser.go.label=Idź
-subbrowser.go.tooltip=Wczytaj ten adres URI
-subbrowser.collapse.tooltip=Zwiń
-subbrowser.expand.tooltip=Rozwiń
-subbrowser.close.tooltip=Zamknij kartę
-
-subbrowser.menu.openNewTab=Nowa karta
-subbrowser.menu.collapse=Zwiń
-subbrowser.menu.expand=Rozwiń
-subbrowser.menu.close=Zamknij
-subbrowser.menu.syncScroll=Synchronizuj przewijanie
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=Podziel
-button.menu.tooltip=Dzieli obszar przeglądania
-button.layout.grid.label=Sąsiadująco
-button.layout.grid.tooltip=Układa sąsiadująco wszystkie karty
-button.gather.label=Zbierz
-button.gather.tooltip=Zbiera panele do głównego obszaru przeglądania jako karty
-button.collapseAll.label=Zwiń
-button.collapseAll.tooltip=Zwija wszystkie panele
-button.expandAll.label=Rozwiń
-button.expandAll.tooltip=Rozwija wszystkie panele
-button.removeAll.label=Zamknij wszystkie
-button.removeAll.tooltip=Zamyka wszystkie panele
-privacy.undoCache.label=Przywróć bufor dla zamkniętych paneli Fox Splitter
-privacy.undoCache.accesskey=P
+ui.layout.grid.short=Sąsiadująco
+ui.layout.grid.long=Ułóż wszystkie karty sąsiadująco
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Sąsiadująco w pionie
+ui.layout.x.long=Ułóż wszystkie karty sąsiadująco w pionie
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Sąsiadująco w poziomie
+ui.layout.y.long=Ułóż wszystkie karty sąsiadująco w poziomie
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Zwiń
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Rozwiń
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Synchronizuj przewijanie
+ui.syncScroll.accesskey=s
+
+
+tabView.importedGroup=Imported from other windows (%S)

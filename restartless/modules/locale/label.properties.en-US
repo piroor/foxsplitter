@@ -143,20 +143,20 @@ ui.split.tab.duplicate.label=Duplicate in Split Window
 ui.split.tab.duplicate.accesskey=u
 
 
-ui.grid.short=Tile
-ui.grid.long=Tile all tabs
-ui.grid.selection=Tile tabs
-ui.grid.accesskey=t
+ui.layout.grid.short=Tile
+ui.layout.grid.long=Tile all tabs
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
 
-ui.x.short=Tile Vertically
-ui.x.long=Tile all tabs Vertically
-ui.x.selection=Tile tabs Vertically
-ui.x.accesskey=v
+ui.layout.x.short=Tile Vertically
+ui.layout.x.long=Tile all tabs Vertically
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
 
-ui.y.short=Tile Horizontally
-ui.y.long=Tile all tabs Horizontally
-ui.y.selection=Tile tabs Horizontally
-ui.y.accesskey=h
+ui.layout.y.short=Tile Horizontally
+ui.layout.y.long=Tile all tabs Horizontally
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
 
 ui.gather.short=Gather
 ui.gather.long=Gather all windows as tabs
@@ -184,167 +184,3 @@ ui.syncScroll.accesskey=s
 
 
 tabView.importedGroup=Imported from other windows (%S)
-
-
-
-
-
-
-
-
-
-subbrowser.autoFocus=Auto-focus to panes on mouseover
-delay.subbrowser.autoFocus.before=Focus to the pane after 
-delay.subbrowser.autoFocus.after=msec
-
-tab.closetab.caption=Split Tab Behavior
-tab.closetab.move=Close the original tab (move the tab to the new pane)
-tab.closetab.clone=Keep the original tab open (clone the tab to the new pane)
-
-syncScroll.mainArea=Synchronously scroll the main area and split panes which are checked to sync-scroll
-syncScroll.horizontal.true=Both vertically and horizontally
-syncScroll.horizontal.false=Only vertically
-
-
-show.toolbar.always=Always show toolbar in split panes
-show.syncScroll=Show "Synchronize Scroll" toolbar button in split panes
-show.collapseexpand=Show "Collapse"/"Expand" toolbar button in split panes
-tabs.autoHide=Always show tab bar in split panes
-show.toolbar.navigation.always=Always show navigations of the toolbar in split panes
-
-show.addbuttons.caption="Split" buttons of the content area
-show.addbuttons.hover.type=When one of edges of the content area is pointed:
-show.addbuttons.hover.type.0=Show "Split" buttons automatically.
-show.addbuttons.hover.type.1=Show "Split" buttons if the "Shift" key is pressed.
-show.addbuttons.dragdrop=Show "Split" buttons while dragging links, files, tabs, etc.
-addbuttons.size.before=Height of "Split" buttons:
-addbuttons.size.after=pixels
-addbuttons.area.before=Width of "Split" buttons:
-addbuttons.area.after=pixels
-
-
-tab.target=Combination
-
-search.loadResultsIn=Load search result of the search bar into
-search.loadResultsIn.0=the Main Area (Firefox Default)
-search.loadResultsIn.1=the Active Pane
-search.loadResultsIn.2=the Pane only for Search Results
-
-
-tab.menu=Menu
-show.menu=Show "Split" menu in the menu bar
-show.context.caption=Additional items of the context menu on tabs:
-show.tab.context.split=Split Tab to...
-show.tab.context.layout.grid=Tile all tabs
-show.tab.context.layout.x=Tile all tabs Vertically
-show.tab.context.layout.y=Tile all tabs Horizontally
-show.tab.context.gather=Gather all panes here as tabs
-
-
-tab.session=State
-state.restore=Save state of split panes
-undo.max.before=Allow to reopen closed panes until 
-undo.max.after=times
-undo.clearCache=Clear cache
-
-
-
-add.button.top.tooltip=Split to Above
-add.button.bottom.tooltip=Split to Below
-add.button.right.tooltip=Split to Right
-add.button.left.tooltip=Split to Left
-
-
-file.removeAll.label=Close All Panes
-file.removeAll.accesskey=b
-view.collapseAll.label=Collapse All Panes
-view.collapseAll.accesskey=l
-view.expandAll.label=Expand All Panes
-view.expandAll.accesskey=x
-
-add.label=Split to
-add.top.label=Above
-add.bottom.label=Below
-add.right.label=Right
-add.left.label=Left
-
-frame.add.label=Split from This Frame to
-frame.add.top.label=Above
-frame.add.bottom.label=Below
-frame.add.right.label=Right
-frame.add.left.label=Left
-
-link.add.label=Load in New Pane
-link.add.top.label=Above
-link.add.bottom.label=Below
-link.add.right.label=Right
-link.add.left.label=Left
-
-tab.add.label=Split Tab to
-tab.add.top.label=Above
-tab.add.bottom.label=Below
-tab.add.right.label=Right
-tab.add.left.label=Left
-
-
-
-
-tab.layout.grid.label=Tile all tabs
-tab.layout.x.label=Tile all tabs Vertically
-tab.layout.y.label=Tile all tabs Horizontally
-tab.gather.label=Gather all split browsers here as tabs
-
-
-
-
-menu.label=Split
-menu.accesskey=p
-menu.removeAll.label=Close All Panes
-menu.removeAll.accesskey=b
-menu.undo.label=Undo Close Pane
-menu.undo.accesskey=U
-menu.undoList.label=Recently Closed Panes
-menu.undoList.accesskey=R
-menu.collapseAll.label=Collapse All Panes
-menu.collapseAll.accesskey=l
-menu.expandAll.label=Expand All Panes
-menu.expandAll.accesskey=x
-menu.add.label=Split Current Tab to
-menu.add.top.label=Above
-menu.add.bottom.label=Below
-menu.add.right.label=Right
-menu.add.left.label=Left
-menu.syncScroll.label=Synchronize Scroll of Split Panes to the main area
-menu.syncScroll.accesskey=s
-
-
-
-multipletab.layout.grid.label=Tile
-multipletab.layout.x.label=Tile Vertically
-multipletab.layout.y.label=Tile Horizontally
-
-
-
-subbrowser.blank=(Blank)
-subbrowser.loading=Loading...
-subbrowser.syncScroll.tooltip=
-subbrowser.goBack.tooltip=Back
-subbrowser.goForward.tooltip=Forward
-subbrowser.reload.tooltip=Reload
-subbrowser.stop.tooltip=Stop
-subbrowser.go.label=Go
-subbrowser.go.tooltip=Load this URI
-subbrowser.collapse.tooltip=Collapse
-subbrowser.expand.tooltip=Expand
-subbrowser.close.tooltip=Close
-
-subbrowser.menu.openNewTab=New Tab
-subbrowser.menu.collapse=Collapse
-subbrowser.menu.expand=Expand
-subbrowser.menu.close=Close
-subbrowser.menu.syncScroll=Synchronize Scroll
-
-
-
-privacy.undoCache.label=Undo cahce for closed panes of Fox Splitter
-privacy.undoCache.accesskey=u

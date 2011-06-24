@@ -34,142 +34,158 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+
+
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Fox Splitter - nastavení
+
 tab.general=Hlavní
-subbrowser.autoFocus=Aktivovat subpanel po najetí kurzorem
-delay.subbrowser.autoFocus.before=Aktivovat subpanel po
-delay.subbrowser.autoFocus.after=msec
-tab.closetab.caption=Po otevření subpanelu
-tab.closetab.move=Zavřít původní panel (přesunout panel do nového subpanelu)
-tab.closetab.clone=Ponechat původní panel otevřený (kopírovat panel do nového subpanelu)
-syncScroll.mainArea=Synchronně posunovat hlavní panel a subpanel je-li zapnut synchronní posuv
-syncScroll.horizontal.true=Vertikálně i horizontálně
-syncScroll.horizontal.false=Pouze vertikálně
+
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
+
+tab.drag=Drag and Drop
+
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
+
 tab.appearance=Zobrazení
-show.toolbar.always=Zobrazovat lištu v subpanelech
-show.syncScroll=Zobrazovat tlačítko "Synchronní posuv" v subpanelech
-show.collapseexpand=Zobrazovat tlačitka "Minimalizovat"/"Maximalizovat" v subpanelech
-tabs.autoHide=Zobrazovat lištu panelů v subpanelech
-show.toolbar.navigation.always=Stále zobrazovat navigační řádek v subpanelech
-show.addbuttons.caption=Tlačítko "Subpanel" v panelu
-show.addbuttons.hover.type=Po najetí kurzorem na hranici panelu:
-show.addbuttons.hover.type.0=zobrazit tlačítko "Subpanel" automaticky
-show.addbuttons.hover.type.1=zobrazit tlačítko "Subpanel" pokud je stisknuta klávesa "Shift"
-show.addbuttons.dragdrop=Zobrazovat tlačítko "Subpanel" při přetahování odkazů, souborů, ...
-addbuttons.size.before=Výška tlačítka "Subpanel":
-addbuttons.size.after=pixelů
-addbuttons.area.before=Šířka tlačítka "Subpanel":
-addbuttons.area.after=pixelů
-tab.target=Ostatní
-search.loadResultsIn=Otevírat výsledky hledání v
-search.loadResultsIn.0=hlavním panelu (výchozí nastavení Firefox)
-search.loadResultsIn.1=aktivním panelu nebo subpanelu
-search.loadResultsIn.2=zvláštním subpanelu s výsledky vyhledávání
+
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
+
 tab.menu=Nabídka
-show.menu=Zobrazit nabídku "Subpanely" v hlavní nabídce
-show.context.caption=Doplňkové položky v kontextové nabídce panelů:
-show.tab.context.split=Rozdělit panel ...
-show.tab.context.layout.grid=Převést na subanely (dlaždice)
-show.tab.context.layout.x=Převést na subanely (vertikálně)
-show.tab.context.layout.y=Převést na subanely (horizontálně)
-show.tab.context.gather=Převést všechny subpanely na panely
-tab.session=Stav
-state.restore=Ukládat stav stav subpanelů
-undo.max.before=Zapamatovat stav posledních
-undo.max.after=subpanelů
-undo.clearCache=Vymazat paměť
-add.button.top.tooltip=Nahoru
-add.button.bottom.tooltip=Dolů
-add.button.right.tooltip=Vpravo
-add.button.left.tooltip=Vlevo
-file.removeAll.label=Zavřít všechny subpanely
-file.removeAll.accesskey=b
-view.collapseAll.label=Minimalizovat všechny subpanely
-view.collapseAll.accesskey=l
-view.expandAll.label=Maximalizovat všechny subpanely
-view.expandAll.accesskey=x
-add.label=Rozdělit 
-add.top.label=Nahoru
-add.bottom.label=Dolů
-add.right.label=Vpravo
-add.left.label=Vlevo
-frame.add.label=Otevřít v novém subpanelu
-frame.add.top.label=Nahoru
-frame.add.bottom.label=Dolů
-frame.add.right.label=Vpravo
-frame.add.left.label=Vlevo
-link.add.label=Otevřít v novém subpanelu
-link.add.top.label=Nahoru
-link.add.bottom.label=Dolů
-link.add.right.label=Vpravo
-link.add.left.label=Vlevo
-tab.add.label=Rozdělit panel 
-tab.add.top.label=Nahoru
-tab.add.bottom.label=Dolů
-tab.add.right.label=Vpravo
-tab.add.left.label=Vlevo
-tab.layout.grid.label=Převést všechny panely na subpanely (dlaždice)
-tab.layout.x.label=Převést všechny panely na subpanely (vertikálně)
-tab.layout.y.label=Převést všechny panely na subpanely (horizontálně)
-tab.gather.label=Převést všechny subpanely na panely
-menu.label=Subpanely
-menu.accesskey=p
-menu.removeAll.label=Zavřít všechny subpanely
-menu.removeAll.accesskey=b
-menu.undo.label=Zpět zavřít subpanel
-menu.undo.accesskey=U
-menu.undoList.label=Poslední zavřený subpanel
-menu.undoList.accesskey=R
-menu.collapseAll.label=Minimalizovat všechny subpanely
-menu.collapseAll.accesskey=l
-menu.expandAll.label=Maximalizovat všechny subpanely
-menu.expandAll.accesskey=x
-menu.add.label=Rozdělit panel
-menu.add.top.label=Nahoru
-menu.add.bottom.label=Dolů
-menu.add.right.label=Vpravo
-menu.add.left.label=Vlevo
-menu.layout.grid.label=Převést všechny panely (dlaždice)
-menu.layout.grid.accesskey=t
-menu.layout.x.label=Převést všechny panely (horizontálně)
-menu.layout.x.accesskey=v
-menu.layout.y.label=Převést všechny panely (vertikálně)
-menu.layout.y.accesskey=h
-menu.gather.label=Převést všechny subpanely na panely
-menu.gather.accesskey=g
-menu.syncScroll.label=Synchronní posuv subpanelů s hlavním panelem
-menu.syncScroll.accesskey=s
-multipletab.layout.grid.label=Dlaždice
-multipletab.layout.x.label=Dlaždice (vertikálně)
-multipletab.layout.y.label=Dlaždice (horizontálně)
-subbrowser.blank=Prázdný
-subbrowser.loading=Načítám...
-subbrowser.syncScroll.tooltip=Synchronní posuv
-subbrowser.goBack.tooltip=Zpět
-subbrowser.goForward.tooltip=Vpřed
-subbrowser.reload.tooltip=Obnovit
-subbrowser.stop.tooltip=Stop
-subbrowser.go.label=Jdi na
-subbrowser.go.tooltip=Otevřít adresu
-subbrowser.collapse.tooltip=Minimalizovat
-subbrowser.expand.tooltip=Maximalizovat
-subbrowser.close.tooltip=Zavřít
-subbrowser.menu.openNewTab=Nový panel
-subbrowser.menu.collapse=Minimalizovat
-subbrowser.menu.expand=Maximalizovat
-subbrowser.menu.close=Zavřít
-subbrowser.menu.syncScroll=Synchronní posuv
-button.menu.label=Subpanel
-button.menu.tooltip=Převést na subpanely
-button.layout.grid.label=Dlaždice
-button.layout.grid.tooltip=Převést všechny panely na subpanely (dlaždice)
-button.gather.label=Převést
-button.gather.tooltip=Převést všechny subpanely na panely
-button.collapseAll.label=Minimalizovat
-button.collapseAll.tooltip=Minimalizovat všechny subpanely
-button.expandAll.label=Maximalizovat
-button.expandAll.tooltip=Maximalizovat všechny subpanely
-button.removeAll.label=Zavřít vše
-button.removeAll.tooltip=Zavřít všechny subpanely
-privacy.undoCache.label=Krok zpět pro uzavřené subpanely
-privacy.undoCache.accesskey=u
+
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Doplňkové položky v kontextové nabídce panelů:
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
+
+tab.shortcut=Keyboard Shortcuts
+
+shortcut.clear=Clear
+shortcut.reset=Reset
+
+tab.advanced=Advanced
+
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
+
+
+
+ui.split.short=Split
+ui.split.long=Split Browsing Window
+
+ui.split.top.short=Nahoru
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
+
+ui.split.right.short=Vpravo
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
+
+ui.split.bottom.short=Dolů
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
+
+ui.split.left.short=Vlevo
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
+
+
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
+
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
+
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
+
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
+
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
+
+
+ui.layout.grid.short=Dlaždice
+ui.layout.grid.long=Převést všechny panely na subpanely (dlaždice)
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Dlaždice (vertikálně)
+ui.layout.x.long=Převést všechny panely na subpanely (vertikálně)
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Dlaždice (horizontálně)
+ui.layout.y.long=Převést všechny panely na subpanely (horizontálně)
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Minimalizovat
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Maximalizovat
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Synchronní posuv
+ui.syncScroll.accesskey=s
+
+
+tabView.importedGroup=Imported from other windows (%S)
+
+

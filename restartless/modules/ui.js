@@ -139,16 +139,16 @@ FoxSplitterUI.prototype = {
 						<menuseparator/>
 						<menuitem id="foxsplitter-general-menubutton-tile-grid"
 							class={iconicClass+'tile-grid tabs'}
-							label={bundle.getString('ui.grid.long')}
-							accesskey={bundle.getString('ui.grid.accesskey')}/>
+							label={bundle.getString('ui.layout.grid.long')}
+							accesskey={bundle.getString('ui.layout.grid.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-tile-x"
 							class={iconicClass+'tile-x tabs'}
-							label={bundle.getString('ui.x.long')}
-							accesskey={bundle.getString('ui.x.accesskey')}/>
+							label={bundle.getString('ui.layout.x.long')}
+							accesskey={bundle.getString('ui.layout.x.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-tile-y"
 							class={iconicClass+'tile-y tabs'}
-							label={bundle.getString('ui.y.long')}
-							accesskey={bundle.getString('ui.y.accesskey')}/>
+							label={bundle.getString('ui.layout.y.long')}
+							accesskey={bundle.getString('ui.layout.y.accesskey')}/>
 						<menuitem id="foxsplitter-general-menubutton-gather"
 							class={iconicClass+'gather grouped'}
 							label={bundle.getString('ui.gather.long')}
@@ -381,16 +381,16 @@ FoxSplitterUI.prototype = {
 							<menuseparator/>
 							<menuitem id="foxsplitter-context-tab-tile-grid"
 								class={iconicClass+'tile-grid tabs'}
-								label={bundle.getString('ui.grid.long')}
-								accesskey={bundle.getString('ui.grid.accesskey')}/>
+								label={bundle.getString('ui.layout.grid.long')}
+								accesskey={bundle.getString('ui.layout.grid.accesskey')}/>
 							<menuitem id="foxsplitter-context-tab-tile-x"
 								class={iconicClass+'tile-x tabs'}
-								label={bundle.getString('ui.x.long')}
-								accesskey={bundle.getString('ui.x.accesskey')}/>
+								label={bundle.getString('ui.layout.x.long')}
+								accesskey={bundle.getString('ui.layout.x.accesskey')}/>
 							<menuitem id="foxsplitter-context-tab-tile-y"
 								class={iconicClass+'tile-y tabs'}
-								label={bundle.getString('ui.y.long')}
-								accesskey={bundle.getString('ui.y.accesskey')}/>
+								label={bundle.getString('ui.layout.y.long')}
+								accesskey={bundle.getString('ui.layout.y.accesskey')}/>
 						</menupopup>
 					</menu>
 				</>, tabContextPopup).querySelector('*');
@@ -445,8 +445,8 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileGridItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-grid"
 						class={iconicClass+'tile-grid'}
-						label={bundle.getString('ui.grid.selection')}
-						accesskey={bundle.getString('ui.grid.accesskey')}
+						label={bundle.getString('ui.layout.grid.selection')}
+						accesskey={bundle.getString('ui.layout.grid.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
 			selectionPopup.appendChild(this.tabSelectionTileGridItem);
@@ -455,8 +455,8 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileXItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-x"
 						class={iconicClass+'tile-x grouped'}
-						label={bundle.getString('ui.x.selection')}
-						accesskey={bundle.getString('ui.x.accesskey')}
+						label={bundle.getString('ui.layout.x.selection')}
+						accesskey={bundle.getString('ui.layout.x.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
 			selectionPopup.appendChild(this.tabSelectionTileXItem);
@@ -465,8 +465,8 @@ FoxSplitterUI.prototype = {
 			this.tabSelectionTileYItem = ToolbarItem.toDOMDocumentFragment(<>
 					<menuitem id="foxsplitter-selection-tile-y"
 						class={iconicClass+'tile-y grouped'}
-						label={bundle.getString('ui.y.selection')}
-						accesskey={bundle.getString('ui.y.accesskey')}
+						label={bundle.getString('ui.layout.y.selection')}
+						accesskey={bundle.getString('ui.layout.y.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);"/>
 				</>, selectionPopup).querySelector('*');
 			selectionPopup.appendChild(this.tabSelectionTileYItem);

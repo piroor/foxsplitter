@@ -35,186 +35,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Fox Splitter 설정
 
 tab.general=일반
 
-subbrowser.autoFocus=마우스가 위치하면 자동으로 초점 맞추기
-delay.subbrowser.autoFocus.before=초점 맞추기 대기 시간: 
-delay.subbrowser.autoFocus.after=밀리초
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Split Tab Behavior
-tab.closetab.move=Close the original tab (move the tab to the new pane)
-tab.closetab.clone=Keep the original tab open (clone the tab to the new pane)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=스크롤-동기화 설정된 화면은 주 영역의 스크롤 상태 동기화
-syncScroll.horizontal.true=수직 및 수평 모두
-syncScroll.horizontal.false=수직만
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=모양
 
-show.toolbar.always=항상 분할된 화면에 도구 모음 보이기
-show.syncScroll=분할된 화면에 "스크롤 동기화" 도구 모음 버튼 보이기
-show.collapseexpand=분할된 화면에 "감추기"/"보이기" 도구 모음 버튼 보이기
-tabs.autoHide=항상 분할된 화면에 탭 도구 모음 보이기
-show.toolbar.navigation.always=항상 분할된 화면에 도구 모음 네비게이션 보이기
-
-show.addbuttons.caption=컨텐트 영역의 "분할" 버튼
-show.addbuttons.hover.type=마우스가 컨텐트 영역의 가장자리 중 한 곳에 위치하면:
-show.addbuttons.hover.type.0=항상 자동으로 "분할" 버튼 보이기
-show.addbuttons.hover.type.1="Shift" 키가 눌리면 "분할" 버튼 보이기
-show.addbuttons.dragdrop=링크, 파일 등을 드래그할 때 "분할" 버튼 보이기
-addbuttons.size.before=Height of "Split" buttons:
-addbuttons.size.after=pixels
-addbuttons.area.before=Width of "Split" buttons:
-addbuttons.area.after=pixels
-
-
-tab.target=조합
-
-search.loadResultsIn=검색 결과 열기
-search.loadResultsIn.0=주 영역 (Firefox 기본값)
-search.loadResultsIn.1=활성 창
-search.loadResultsIn.2=검색 결과 창
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=메뉴
-show.menu=메뉴 도구 모음에 "Split" 메뉴 보이기
-show.context.caption=탭 상에 추가할 컨텍스트 메뉴 항목:
-show.tab.context.split=화면 분할...
-show.tab.context.layout.grid=모든 탭을 바둑판식으로 보이기
-show.tab.context.layout.x=모든 탭을 수직 바둑판식으로 보이기
-show.tab.context.layout.y=모든 탭을 수평 바둑판식으로 보이기
-show.tab.context.gather=모든 분할 화면을 탭으로 보이기
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=탭 상에 추가할 컨텍스트 메뉴 항목:
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=State
-state.restore=화면 분할 상태 저장
-undo.max.before=Allow to reopen closed panes until 
-undo.max.after=times
-undo.clearCache=Clear cache
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-
-add.button.top.tooltip=위쪽으로 분할
-add.button.bottom.tooltip=아래쪽으로 분할
-add.button.right.tooltip=오른쪽으로 분할
-add.button.left.tooltip=왼쪽으로 분할
-
-
-file.removeAll.label=분할된 화면 모두 닫기
-file.removeAll.accesskey=b
-view.collapseAll.label=분할된 화면 모두 감추기
-view.collapseAll.accesskey=l
-view.expandAll.label=분할된 화면 모두 보이기
-view.expandAll.accesskey=x
-
-add.label=화면 분할
-add.top.label=위쪽
-add.bottom.label=아래쪽
-add.right.label=오른쪽
-add.left.label=왼쪽
-
-frame.add.label=현재 프레임에서의 화면 분할
-frame.add.top.label=위쪽
-frame.add.bottom.label=아래쪽
-frame.add.right.label=오른쪽
-frame.add.left.label=왼쪽
-
-link.add.label=분할 화면으로의 로드
-link.add.top.label=위쪽
-link.add.bottom.label=아래쪽
-link.add.right.label=오른쪽
-link.add.left.label=왼쪽
-
-tab.add.label=화면 분할
-tab.add.top.label=위쪽
-tab.add.bottom.label=아래쪽
-tab.add.right.label=오른쪽
-tab.add.left.label=왼쪽
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
-tab.layout.grid.label=모든 탭을 바둑판식으로 보이기
-tab.layout.x.label=모든 탭을 수직 바둑판식으로 보이기
-tab.layout.y.label=모든 탭을 수평 바둑판식으로 보이기
-tab.gather.label=모든 분할 화면을 탭으로 보이기
+ui.split.short=Split
+ui.split.long=Split Browsing Window
+
+ui.split.top.short=위쪽으로 분할
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
+
+ui.split.right.short=오른쪽으로 분할
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
+
+ui.split.bottom.short=아래쪽으로 분할
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
+
+ui.split.left.short=왼쪽으로 분할
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
+
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
+
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
+
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
+
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-menu.label=Split
-menu.accesskey=p
-menu.removeAll.label=분할된 화면 모두 닫기
-menu.removeAll.accesskey=b
-menu.undo.label=Undo Close Pane
-menu.undo.accesskey=U
-menu.undoList.label=Recently Closed Panes
-menu.undoList.accesskey=R
-menu.collapseAll.label=분할된 화면 모두 감추기
-menu.collapseAll.accesskey=l
-menu.expandAll.label=분할된 화면 모두 보이기
-menu.expandAll.accesskey=x
-menu.add.label=화면 분할
-menu.add.top.label=위쪽
-menu.add.bottom.label=아래쪽
-menu.add.right.label=오른쪽
-menu.add.left.label=왼쪽
-menu.layout.grid.label=모든 탭을 바둑판식으로 보이기
-menu.layout.grid.accesskey=t
-menu.layout.x.label=모든 탭을 수직 바둑판식으로 보이기
-menu.layout.x.accesskey=v
-menu.layout.y.label=모든 탭을 수평 바둑판식으로 보이기
-menu.layout.y.accesskey=h
-menu.gather.label=모든 분할 화면을 탭으로 보이기
-menu.gather.accesskey=g
-menu.syncScroll.label=주 영역으로 분할 화면 스크롤 동기화
-menu.syncScroll.accesskey=s
+ui.layout.grid.short=바둑판식으로 보이기
+ui.layout.grid.long=모든 탭을 바둑판식으로 보이기
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=수직 바둑판식으로 보이기
+ui.layout.x.long=모든 탭을 수직 바둑판식으로 보이기
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=수평 바둑판식으로 보이기
+ui.layout.y.long=모든 탭을 수평 바둑판식으로 보이기
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=감추기
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=보이기
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=스크롤 동기화
+ui.syncScroll.accesskey=s
 
 
-
-multipletab.layout.grid.label=바둑판식으로 보이기
-multipletab.layout.x.label=수직 바둑판식으로 보이기
-multipletab.layout.y.label=수평 바둑판식으로 보이기
-
-
-
-
-subbrowser.blank=(비어 있음)
-subbrowser.loading=로드 중...
-subbrowser.syncScroll.tooltip=스크롤 동기화
-subbrowser.goBack.tooltip=뒤로
-subbrowser.goForward.tooltip=앞으로
-subbrowser.reload.tooltip=새로 고침
-subbrowser.stop.tooltip=중지
-subbrowser.go.label=가기
-subbrowser.go.tooltip=현재 URI 로드
-subbrowser.collapse.tooltip=감추기
-subbrowser.expand.tooltip=보이기
-subbrowser.close.tooltip=닫기
-
-subbrowser.menu.openNewTab=새 탭
-subbrowser.menu.collapse=감추기
-subbrowser.menu.expand=보이기
-subbrowser.menu.close=닫기
-subbrowser.menu.syncScroll=스크롤 동기화
-
-button.menu.label=화면 분할
-button.menu.tooltip=브라우저 화면을 분할합니다.
-button.layout.grid.label=바둑판식으로 보이기
-button.layout.grid.tooltip=탭을 모두 바둑판식으로 보입니다.
-button.gather.label=모으기
-button.gather.tooltip=분할된 화면을 모두 탭으로 보입니다.
-button.collapseAll.label=감추기
-button.collapseAll.tooltip=분할된 화면을 모두 감춥니다
-button.expandAll.label=보이기
-button.expandAll.tooltip=분할된 화면을 모두 보입니다
-button.removeAll.label=모두 닫기
-button.removeAll.tooltip=분할된 화면을 모두 닫습니다
-
-
-
-privacy.undoCache.label=Undo cahce for closed panes of Fox Splitter
-privacy.undoCache.accesskey=u
+tabView.importedGroup=Imported from other windows (%S)

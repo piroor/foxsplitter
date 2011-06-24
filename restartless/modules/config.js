@@ -288,13 +288,13 @@ config.register('about:blank?foxsplitter-config', <>
 			<description value={bundle.getString('tabSelectionMenu.note')}/>
 			<hbox>
 				<vbox>
-					<checkbox label={bundle.getString('ui.grid.selection')}
+					<checkbox label={bundle.getString('ui.layout.grid.selection')}
 						preference="selection.grid"/>
-					<checkbox label={bundle.getString('ui.x.selection')}
+					<checkbox label={bundle.getString('ui.layout.x.selection')}
 						preference="selection.x"/>
 				</vbox>
 				<vbox>
-					<checkbox label={bundle.getString('ui.y.selection')}
+					<checkbox label={bundle.getString('ui.layout.y.selection')}
 						preference="selection.y"/>
 				</vbox>
 			</hbox>

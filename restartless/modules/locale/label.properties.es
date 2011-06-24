@@ -34,186 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Configuración de Fox Splitter
 
 tab.general=General
 
-subbrowser.autoFocus=Establecer foco automáticamente en las ventanas al colocar el ratón encima
-delay.subbrowser.autoFocus.before=Establecer foco luego de
-delay.subbrowser.autoFocus.after=mseg
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Comportamiento de dividir pestaña
-tab.closetab.move=Cerrar la pestaña original (mueve la pestaña al nuevo panel)
-tab.closetab.clone=Mantener intacta la pestaña original (clona la pestaña hacia el nuevo panel)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=Sincronizar el estado de desplazamiento del área de contenido en las ventanas divididas (sí está activado)
-syncScroll.horizontal.true=Vertical y horizontalmente
-syncScroll.horizontal.false=Solamente vertical
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Apariencia
 
-show.toolbar.always=Siempre mostrar la barra de herramientas en las ventanas divididas
-show.syncScroll=Mostrar el botón "Sincronizar desplazamiento" en las ventanas divididas
-show.collapseexpand=Mostrar el botón "Colapsar"/"Expandir" en las ventanas divididas
-tabs.autoHide=Siempre mostrar la barra de pestañas en las ventanas divididas
-show.toolbar.navigation.always=Siempre mostrar la barra de navegación en las ventanas divididas
-
-show.addbuttons.caption=Botones "Dividir" en el área de contenido
-show.addbuttons.hover.type=Cuando unos de los bordes del área de contenido es señalado
-show.addbuttons.hover.type.0=Mostrar los botones automáticamente
-show.addbuttons.hover.type.1=Mostrar los botones si es presionada la tecla "Shift"
-show.addbuttons.dragdrop=Mostrar botones mientras se arrastran archivos, enlaces, etc
-addbuttons.size.before=Altura de los botones "Dividir":
-addbuttons.size.after=pixeles
-addbuttons.area.before=Ancho de los botones "Dividir":
-addbuttons.area.after=pixeles
-
-
-tab.target=Combinación
-
-search.loadResultsIn=Cargar resultados de búsqueda dentro del
-search.loadResultsIn.0=Área de contenido (Predeterminado en Firefox)
-search.loadResultsIn.1=Panel activo
-search.loadResultsIn.2=Panel de resultados de búsqueda
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menú
-show.menu=Mostrar "Dividir" en la barra de menús
-show.context.caption=Elementos adicionales del menú contextual en las pestañas
-show.tab.context.split=Dividir Pestaña...
-show.tab.context.layout.grid=Mosaico todas las pestañas
-show.tab.context.layout.x=Mosaico vertical todas las pestañas
-show.tab.context.layout.y=Mosaico horizontal todas las pestañas
-show.tab.context.gather=Deshacer ventanas divididas
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Elementos adicionales del menú contextual en las pestañas
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=Estado
-state.restore=Guardar estado de las ventanas divididas
-undo.max.before=Permitir reabrir paneles cerrados hasta 
-undo.max.after=veces
-undo.clearCache=Limpiar cache
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-add.button.top.tooltip=Dividir Encima
-add.button.bottom.tooltip=Dividir Debajo
-add.button.right.tooltip=Dividir Derecha
-add.button.left.tooltip=Dividir Izquierda
-
-
-file.removeAll.label=Cerrar todas las ventanas divididas
-file.removeAll.accesskey=b
-view.collapseAll.label=Colapsar todas las ventanas divididas
-view.collapseAll.accesskey=l
-view.expandAll.label=Expandir todas las ventanas divididas
-view.expandAll.accesskey=x
-
-add.label=Dividir
-add.top.label=Encima
-add.bottom.label=Debajo
-add.right.label=Derecha
-add.left.label=Izquierda
-
-frame.add.label=Dividir este Marco
-frame.add.top.label=Encima
-frame.add.bottom.label=Debajo
-frame.add.right.label=Derecha
-frame.add.left.label=Izquierda
-
-link.add.label=Cargar Dividido
-link.add.top.label=Encima
-link.add.bottom.label=Debajo
-link.add.right.label=Derecha
-link.add.left.label=Izquierda
-
-tab.add.label=Dividir pestaña
-tab.add.top.label=Encima
-tab.add.bottom.label=Debajo
-tab.add.right.label=Derecha
-tab.add.left.label=Izquierda
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=Mosaico todas las pestañas
-tab.layout.x.label=Mosaico vertical todas las pestañas
-tab.layout.y.label=Mosaico horizontal todas las pestañas
-tab.gather.label=Deshacer ventanas divididas
+ui.split.top.short=Dividir Encima
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=Dividir Derecha
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=Dividir Debajo
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Dividir
-menu.accesskey=p
-menu.removeAll.label=Cerrar todas las ventanas divididas
-menu.removeAll.accesskey=b
-menu.undo.label=Deshacer cerrado de panel
-menu.undo.accesskey=U
-menu.undoList.label=Paneles cerrados recientemente
-menu.undoList.accesskey=R
-menu.collapseAll.label=Colapsar todas las ventanas divididas
-menu.collapseAll.accesskey=l
-menu.expandAll.label=Expandir todas las ventanas divididas
-menu.expandAll.accesskey=x
-menu.add.label=Dividir esta pestaña
-menu.add.top.label=Encima
-menu.add.bottom.label=Debajo
-menu.add.right.label=Derecha
-menu.add.left.label=Izquierda
-menu.layout.grid.label=Mosaico todas las pestañas
-menu.layout.grid.accesskey=t
-menu.layout.x.label=Mosaico vertical todas las pestañas
-menu.layout.x.accesskey=v
-menu.layout.y.label=Mosaico horizontal todas las pestañas
-menu.layout.y.accesskey=h
-menu.gather.label=Deshacer ventanas divididas
-menu.gather.accesskey=g
-menu.syncScroll.label=Sincronizar desplazamiento de las ventanas divididas con el área de contenido
-menu.syncScroll.accesskey=s
+ui.split.left.short=Dividir Izquierda
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=Mosaico
-multipletab.layout.x.label=Mosaico vertical
-multipletab.layout.y.label=Mosaico horizontal
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(about:blank)
-subbrowser.loading=Cargando...
-subbrowser.syncScroll.tooltip=Sincronizar desplazamiento
-subbrowser.goBack.tooltip=Anterior
-subbrowser.goForward.tooltip=Siguiente
-subbrowser.reload.tooltip=Recargar
-subbrowser.stop.tooltip=Parar
-subbrowser.go.label=Ir
-subbrowser.go.tooltip=Cargar esta URI
-subbrowser.collapse.tooltip=Colapsar
-subbrowser.expand.tooltip=Expandir
-subbrowser.close.tooltip=Cerrar
-
-subbrowser.menu.openNewTab=Nueva pestaña
-subbrowser.menu.collapse=Colapsar
-subbrowser.menu.expand=Expandir
-subbrowser.menu.close=Cerrar
-subbrowser.menu.syncScroll=Sincronizar desplazamiento
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=Dividir
-button.menu.tooltip=Área de navegador dividido
-button.layout.grid.label=Mosaico
-button.layout.grid.tooltip=Mosaico todas las pestañas
-button.gather.label=Deshacer
-button.gather.tooltip=Deshacer ventanas divididas
-button.collapseAll.label=Colapsar
-button.collapseAll.tooltip=Colapsar ventanas divididas
-button.expandAll.label=Expandir
-button.expandAll.tooltip=Expandir ventanas divididas
-button.removeAll.label=Cerrar todo
-button.removeAll.tooltip=Cerrar ventanas divididas
+ui.layout.grid.short=Mosaico
+ui.layout.grid.long=Mosaico todas las pestañas
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Mosaico vertical
+ui.layout.x.long=Mosaico vertical todas las pestañas
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Mosaico horizontal
+ui.layout.y.long=Mosaico horizontal todas las pestañas
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Colapsar
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Expandir
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Sincronizar desplazamiento
+ui.syncScroll.accesskey=s
 
 
-
-privacy.undoCache.label=Cache de deshacer para los paneles cerrados de Fox Splitter
-privacy.undoCache.accesskey=u
+tabView.importedGroup=Imported from other windows (%S)

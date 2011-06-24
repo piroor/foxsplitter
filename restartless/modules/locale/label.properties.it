@@ -34,186 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Configurazione di Fox Splitter
 
 tab.general=Generale
 
-subbrowser.autoFocus=Seleziona automaticamente i riquadri al passaggio del mouse
-delay.subbrowser.autoFocus.before=seleziona il riquadro dopo 
-delay.subbrowser.autoFocus.after=msec
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Comportamento suddivisione schede <!-- ????-->
-tab.closetab.move=Chiudi la scheda originale (sposta la scheda nel nuovo riquadro)
-tab.closetab.clone=Mantieni la scheda originale (copia la scheda nel nuovo riquadro)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=Scorri simultaneamente i riquadri impostati per sincronizzare il movimento
-syncScroll.horizontal.true=verticalmente e orizzontalmente
-syncScroll.horizontal.false=solo verticalmente
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Aspetto
 
-show.toolbar.always=Mostra sempre la barra degli strumenti nei riquadri
-show.syncScroll=Mostra il pulsante "Sincronizza scorrimento" nei riquadri
-show.collapseexpand=Mostra i pulsanti "Contrai"/"Espandi" nei riquadri
-tabs.autoHide=Mostra sempre la barra delle schede nei riquadri
-show.toolbar.navigation.always=Mostra sempre i pulsati di navigazione nei riquadri
-
-show.addbuttons.caption=Maniglia di suddivisione del riquadro
-show.addbuttons.hover.type=Al passaggio del mouse su uno dei bordi dell&apos;area attiva:
-show.addbuttons.hover.type.0=mostra la maniglia automaticamente
-show.addbuttons.hover.type.1=mostra la maniglia solo se viene premuto il tasto Maiusc
-show.addbuttons.dragdrop=Mostra la maniglia di suddivisione durante le operazioni di trascinamento
-addbuttons.size.before=Altezza del pulsante "Suddividi":
-addbuttons.size.after=pixel
-addbuttons.area.before=Larghezza del pulsante "Suddividi":
-addbuttons.area.after=pixel
-
-
-tab.target=Impostazioni speciali
-
-search.loadResultsIn=Carica i risultati delle ricerche
-search.loadResultsIn.0=nell&apos;area principale (comportamento predefinito di Firefox)
-search.loadResultsIn.1=nel riquadro attivo
-search.loadResultsIn.2=nel riquadro apposito
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menu
-show.menu=Mostra il menu "Suddivisione" nella barra dei menu
-show.context.caption=Voci aggiuntive nel menu contestuale delle schede
-show.tab.context.split=Suddividi la scheda verso..
-show.tab.context.layout.grid=Affianca tutte le schede
-show.tab.context.layout.x=Affianca tutte le schede verticalmente
-show.tab.context.layout.y=Affianca tutte le schede orizzontalmente
-show.tab.context.gather=Raggruppa qui come schede tutti i riquadri
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Voci aggiuntive nel menu contestuale delle schede
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=Cronologia
-state.restore=Salva la cronologia dei riquadri
-undo.max.before=Permetti di riaprire sino a 
-undo.max.after=riquadri
-undo.clearCache=Svuota la cache
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-add.button.top.tooltip=Suddividi verso l&apos;alto
-add.button.bottom.tooltip=Suddividi verso il basso
-add.button.right.tooltip=Suddividi verso la destra
-add.button.left.tooltip=Suddividi verso la sinistra
-
-
-file.removeAll.label=Chiudi tutti i riquadri
-file.removeAll.accesskey=C
-view.collapseAll.label=Contrai tutti i riquadri
-view.collapseAll.accesskey=o
-view.expandAll.label=Espandi tutti i riquadri
-view.expandAll.accesskey=E
-
-add.label=Suddividi la finestra verso
-add.top.label=l&apos;alto
-add.bottom.label=il basso
-add.right.label=la destra
-add.left.label=la sinistra
-
-frame.add.label=Suddividi la finestra da questo riquadro verso
-frame.add.top.label=l&apos;alto
-frame.add.bottom.label=il basso
-frame.add.right.label=la destra
-frame.add.left.label=la sinistra
-
-link.add.label=Apri in un riquadro verso
-link.add.top.label=l&apos;alto
-link.add.bottom.label=il basso
-link.add.right.label=la destra
-link.add.left.label=la sinistra
-
-tab.add.label=Suddividi la scheda verso
-tab.add.top.label=l&apos;alto
-tab.add.bottom.label=il basso
-tab.add.right.label=la destra
-tab.add.left.label=la sinistra
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=Affianca tutte le schede
-tab.layout.x.label=Affianca tutte le schede verticalmente
-tab.layout.y.label=Affianca tutte le schede orizzontalmente
-tab.gather.label=Raggruppa qui come schede tutti i riquadri
+ui.split.top.short=Suddividi verso l&apos;alto
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=Suddividi verso la destra
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=Suddividi verso il basso
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Suddivisione
-menu.accesskey=d
-menu.removeAll.label=Chiudi tutti i riquadri
-menu.removeAll.accesskey=C
-menu.undo.label=Riapri riquadro chiuso
-menu.undo.accesskey=u
-menu.undoList.label=Riquadri chiusi di recente
-menu.undoList.accesskey=s
-menu.collapseAll.label=Contrai tutti i riquadri
-menu.collapseAll.accesskey=t
-menu.expandAll.label=Espandi tutti i riquadri
-menu.expandAll.accesskey=E
-menu.add.label=Suddividi la scheda attuale verso
-menu.add.top.label=l&apos;alto
-menu.add.bottom.label=il basso
-menu.add.right.label=la destra
-menu.add.left.label=la sinistra
-menu.layout.grid.label=Affianca tutte le schede
-menu.layout.grid.accesskey=A
-menu.layout.x.label=Affianca tutte le schede verticalmente
-menu.layout.x.accesskey=v
-menu.layout.y.label=Affianca tutte le schede orizzontalmente
-menu.layout.y.accesskey=o
-menu.gather.label=Raggruppa come schede tutti i riquadri
-menu.gather.accesskey=R
-menu.syncScroll.label=Sincronizza lo scorrimento dei riquadri con quello della finestra principale
-menu.syncScroll.accesskey=s
+ui.split.left.short=Suddividi verso la sinistra
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=Affianca
-multipletab.layout.x.label=Affianca verticalmente
-multipletab.layout.y.label=Affianca orizzontalmente
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(Vuoto)
-subbrowser.loading=Caricamento in corso...
-subbrowser.syncScroll.tooltip=Sincronizza scorrimento
-subbrowser.goBack.tooltip=Indietro
-subbrowser.goForward.tooltip=Avanti
-subbrowser.reload.tooltip=Ricarica
-subbrowser.stop.tooltip=Interrompi
-subbrowser.go.label=Vai
-subbrowser.go.tooltip=Carica questo indirizzo
-subbrowser.collapse.tooltip=Contrai
-subbrowser.expand.tooltip=Espandi
-subbrowser.close.tooltip=Chiudi
-
-subbrowser.menu.openNewTab=Nuova scheda
-subbrowser.menu.collapse=Contrai
-subbrowser.menu.expand=Espandi
-subbrowser.menu.close=Chiudi
-subbrowser.menu.syncScroll=Sincronizza scorrimento
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=Suddividi
-button.menu.tooltip=Suddivide l&apos;area di navigazione
-button.layout.grid.label=Affianca
-button.layout.grid.tooltip=Affianca tutte le schede
-button.gather.label=Raggruppa
-button.gather.tooltip=Raggruppa come schede tutti i riquadri
-button.collapseAll.label=Contrai
-button.collapseAll.tooltip=Contrae tutti i riquadri
-button.expandAll.label=Espandi
-button.expandAll.tooltip=Espande tutti i riquadri
-button.removeAll.label=Chiudi tutti
-button.removeAll.tooltip=Chiude tutti i riquadri
+ui.layout.grid.short=Affianca
+ui.layout.grid.long=Affianca tutte le schede
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Affianca verticalmente
+ui.layout.x.long=Affianca tutte le schede verticalmente
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Affianca orizzontalmente
+ui.layout.y.long=Affianca tutte le schede orizzontalmente
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Contrai
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Espandi
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Sincronizza scorrimento
+ui.syncScroll.accesskey=s
 
 
-
-privacy.undoCache.label=Cache riquadri chiusi di Fox Splitter <!-- errore nella stringa inglese-->
-privacy.undoCache.accesskey=B
+tabView.importedGroup=Imported from other windows (%S)

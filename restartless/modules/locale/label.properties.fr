@@ -34,186 +34,154 @@
 # 
 # ***** END LICENSE BLOCK *****
 
+disableOldVersion.title=Do you want Firefox to be restarted?
+disableOldVersion.text=The old version of Fox Splitter has been detected and disabled automatically. Do you want Firefox to be restarted now?
+
+
 title=Options de configuration de Fox Splitter
 
 tab.general=Générales
 
-subbrowser.autoFocus=Autofocus sur les fenêtres selon la position de la souris
-delay.subbrowser.autoFocus.before=Mettre en avant la fenêtre après 
-delay.subbrowser.autoFocus.after=ms
+shouldDuplicateOnSplit=Default behavior of split windows
+shouldDuplicateOnSplit.true=Duplicate selected tab to the new window
+shouldDuplicateOnSplit.false=Move selected tabs to the new window
+generalButton.split.position=When the "Split" button in the toolbar is clicked
+appMenu.split.position=When the "Split window" in the Firefox menu is clicked
+importTabsFromClosedSibling=When a split window is closed
+importTabsFromClosedSibling.nothing=Simply close the window
+importTabsFromClosedSibling.hidden=Move hidden tabs to the beside window before the window is closed
+importTabsFromClosedSibling.all=Move all tabs to the beside window before the window is closed
 
-tab.closetab.caption=Split Tab Behavior
-tab.closetab.move=Close the original tab (move the tab to the new pane)
-tab.closetab.clone=Keep the original tab open (clone the tab to the new pane)
+tab.drag=Drag and Drop
 
-syncScroll.mainArea=Synchroniser l'état de défilement dans l'espace principal des fenêtres partagées qui sont choisies avec l'option de synchroniser le défilement
-syncScroll.horizontal.true=Verticalement et horizontalement ensemble
-syncScroll.horizontal.false=Seulement verticalement
-
+shouldDuplicateOnDrop=Default behavior of split windows from dragged tab
+shouldDuplicateOnDrop.true=Duplicate dragged tab to the new window
+shouldDuplicateOnDrop.false=Move dragged tab to the new window
+dropZoneSize.before=Drop zone:
+dropZoneSize.after=pixels from window edge
+acceptDropDelay.before=Delay to allow dropping:
+acceptDropDelay.after=msec.
+handleDragWithShiftKey=Allow to drop only for dragging with Shift key
 
 tab.appearance=Apparence
 
-show.toolbar.always=Toujours montrer la barre d'outils dans les fenêtres partagées.
-show.syncScroll=Montrer le bouton "Synchroniser le défilement" dans la barre d'outils des fenêtres partagées
-show.collapseexpand=Montrer les boutons "Réduire" / "Déployer" dans la barre d'outils des fenêtres partagées.
-tabs.autoHide=Toujours montrer la barre d'onglets dans les fenêtres partagées
-show.toolbar.navigation.always=Toujours montrer les boutons de navigation de la barre d'outils dans les fenêtres partagées.
-
-show.addbuttons.caption=Boutons "Partager" dans la fenêtre
-show.addbuttons.hover.type=Lorsqu'un des cotés de la fenêtre est pointé par la souris :
-show.addbuttons.hover.type.0=Toujours afficher automatiquement les boutons "Partager".
-show.addbuttons.hover.type.1=Montrer les boutons "Partager" si la touche "Maj." est aussi maintenue appuyée.
-show.addbuttons.dragdrop=Montrer les boutons "Partager" lorsque l'on fait glisser des liens, des fichiers, etc...
-addbuttons.size.before=Height of "Split" buttons:
-addbuttons.size.after=pixels
-addbuttons.area.before=Width of "Split" buttons:
-addbuttons.area.after=pixels
-
-
-tab.target=Combinaison
-
-search.loadResultsIn=Charger les résultats de recherche dans
-search.loadResultsIn.0=l"aire principale (le défaut avec Firefox)
-search.loadResultsIn.1=le panneau actif
-search.loadResultsIn.2=le panneau de résultats de recherche
-
+shouldMinimalizeUI=Minimalize toolbar buttons in split windows
+shouldAutoHideTabs=Hide tab bar automatically in split windows
+shouldAutoHideTabs.note=(*require other addons which provide such feature)
+hiddenUIInInactiveWindow=Available UIs in inactive windows
+hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInInactiveWindow.menubar=Menu Bar
+hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInInactiveWindow.location=Location Bar
+hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInInactiveWindow.status=Status Bar
+hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
 
 tab.menu=Menu
-show.menu=Montrer le menu "Partager" dans la barre de menu
-show.context.caption=Éléments additionnels du menu contextuel des onglets :
-show.tab.context.split=Partager l'onglet...
-show.tab.context.layout.grid=Arranger tous les onglets
-show.tab.context.layout.x=Disposer tous les onglets verticalement
-show.tab.context.layout.y=Disposer tous les onglets horizontalement
-show.tab.context.gather=Rassembler toutes les fenêtres partagées ici comme des onglets
 
+appMenu.split=Append "%S" to the Firefox menu
+viewMenu.split=Append "%S" to the "View" menu
+context.splitFromLink=Append "%S" to the context menu on web pages
+context.splitFromFrame=Append "%S" to the context menu on frames
+tabContextMenu=Éléments additionnels du menu contextuel des onglets :
+tabSelectionMenu=Append following items to the tab selection menu
+tabSelectionMenu.note=*Note: Another addon "Multiple Tab Handler" is required
 
-tab.session=State
-state.restore=Sauvegarder l'état des fenêtres partagées
-undo.max.before=Allow to reopen closed panes until 
-undo.max.after=times
-undo.clearCache=Clear cache
+tab.shortcut=Keyboard Shortcuts
 
+shortcut.clear=Clear
+shortcut.reset=Reset
 
+tab.advanced=Advanced
 
-add.button.top.tooltip=Partager au dessus
-add.button.bottom.tooltip=Partager au dessous
-add.button.right.tooltip=Partager à droite
-add.button.left.tooltip=Partager à gauche
-
-
-file.removeAll.label=Fermer toutes fenêtres partagées
-file.removeAll.accesskey=F
-view.collapseAll.label=Réduire toutes les fenêtres partagées
-view.collapseAll.accesskey=R
-view.expandAll.label=Déployer toutes les fenêtres partagées
-view.expandAll.accesskey=D
-
-add.label=Partager la fenêtre
-add.top.label=Au dessus
-add.bottom.label=Au dessous
-add.right.label=À droite
-add.left.label=À gauche
-
-frame.add.label=Partager la fenêtre à partir de ce cadre
-frame.add.top.label=Au dessus
-frame.add.bottom.label=Au dessous
-frame.add.right.label=À droite
-frame.add.left.label=À gauche
-
-link.add.label=Charger dans une fenêtre partagée
-link.add.top.label=Au dessus
-link.add.bottom.label=Au dessous
-link.add.right.label=À droite
-link.add.left.label=À gauche
-
-tab.add.label=Partager l'onglet
-tab.add.top.label=Au dessus
-tab.add.bottom.label=Au dessous
-tab.add.right.label=À droite
-tab.add.left.label=À gauche
+syncScrollX=Enable synchronized scroll for horizontal scrolls
+platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
+platformOffset.forceUpdate=Re-calculate offsets now
+platformOffset.x=Left
+platformOffset.y=Top
+platformOffset.width=Width
+platformOffset.height=Height
 
 
 
+ui.split.short=Split
+ui.split.long=Split Browsing Window
 
-tab.layout.grid.label=Arranger tous les onglets
-tab.layout.x.label=Disposer tous les onglets verticalement
-tab.layout.y.label=Disposer tous les onglets horizontalement
-tab.gather.label=Rassembler toutes les fenêtres partagées ici sous forme d'onglets
+ui.split.top.short=Partager au dessus
+ui.split.top.long=Split tab as Above window
+ui.split.top.accesskey=a
 
+ui.split.right.short=Partager à droite
+ui.split.right.long=Split tab as Right window
+ui.split.right.accesskey=r
 
+ui.split.bottom.short=Partager au dessous
+ui.split.bottom.long=Split tab as Below window
+ui.split.bottom.accesskey=b
 
-
-menu.label=Partager
-menu.accesskey=p
-menu.removeAll.label=Fermer toutes fenêtres partagées
-menu.removeAll.accesskey=F
-menu.undo.label=Undo Close Pane
-menu.undo.accesskey=U
-menu.undoList.label=Recently Closed Panes
-menu.undoList.accesskey=R
-menu.collapseAll.label=Réduire toutes les fenêtres partagées
-menu.collapseAll.accesskey=R
-menu.expandAll.label=Déployer toutes les fenêtres partagées
-menu.expandAll.accesskey=D
-menu.add.label=Partager l'onglet
-menu.add.top.label=Au dessus
-menu.add.bottom.label=Au dessous
-menu.add.right.label=À droite
-menu.add.left.label=À gauche
-menu.layout.grid.label=Arranger tous les onglets
-menu.layout.grid.accesskey=A
-menu.layout.x.label=Disposer tous les onglets verticalement
-menu.layout.x.accesskey=v
-menu.layout.y.label=Disposer tous les onglets horizontalement
-menu.layout.y.accesskey=h
-menu.gather.label=Rassembler toutes les fenêtres partagées ici sous forme d'onglets
-menu.gather.accesskey=O
-menu.syncScroll.label=Synchroniser le défillement des fenêtres partagées avec l'espace principal
-menu.syncScroll.accesskey=s
+ui.split.left.short=Partager à gauche
+ui.split.left.long=Split tab as Left window
+ui.split.left.accesskey=l
 
 
+ui.split.app.label=Split window
+ui.split.app.accesskey=s
+ui.split.view.label=Split window
+ui.split.view.accesskey=s
 
-multipletab.layout.grid.label=Arranger
-multipletab.layout.x.label=Disposer verticalement
-multipletab.layout.y.label=Disposer horizontalement
+ui.split.link.label=Open Link in New Split Window
+ui.split.link.accesskey=s
 
+ui.split.frame.label=Open Frame in New Split Window
+ui.split.frame.accesskey=s
 
+ui.split.tab.move.label=Move to Split Window
+ui.split.tab.move.accesskey=s
 
-subbrowser.blank=(Sans titre)
-subbrowser.loading=Chargement...
-subbrowser.syncScroll.tooltip=Synchroniser le défilement
-subbrowser.goBack.tooltip=Reculer d'une page
-subbrowser.goForward.tooltip=Avancer d'une page
-subbrowser.reload.tooltip=Actualiser la page courante
-subbrowser.stop.tooltip=Arrêter le chargement de la page
-subbrowser.go.label=Go
-subbrowser.go.tooltip=Se rendre à la page indiquée dans la barre d'adresse
-subbrowser.collapse.tooltip=Réduire
-subbrowser.expand.tooltip=Déployer
-subbrowser.close.tooltip=Fermer
-
-subbrowser.menu.openNewTab=Nouvel onglet
-subbrowser.menu.collapse=Réduire
-subbrowser.menu.expand=Déployer
-subbrowser.menu.close=Fermer
-subbrowser.menu.syncScroll=Synchroniser le défilement
+ui.split.tab.duplicate.label=Duplicate in Split Window
+ui.split.tab.duplicate.accesskey=u
 
 
-button.menu.label=Partager
-button.menu.tooltip=Partager la zone de navigation
-button.layout.grid.label=Arranger
-button.layout.grid.tooltip=Arranger tous les onglets
-button.gather.label=Rassembler
-button.gather.tooltip=Rassembler les fenêtres partagés sous forme d'onglets
-button.collapseAll.label=Réduire
-button.collapseAll.tooltip=Réduire toutes les fenêtres partagées
-button.expandAll.label=Déployer
-button.expandAll.tooltip=Déployer toutes les fenêtres partagées
-button.removeAll.label=Fermer tout
-button.removeAll.tooltip=Fermer toutes les fenêtres partagées
+ui.layout.grid.short=Arranger
+ui.layout.grid.long=Arranger tous les onglets
+ui.layout.grid.selection=Tile tabs
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=Disposer verticalement
+ui.layout.x.long=Disposer tous les onglets verticalement
+ui.layout.x.selection=Tile tabs Vertically
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=Disposer horizontalement
+ui.layout.y.long=Disposer tous les onglets horizontalement
+ui.layout.y.selection=Tile tabs Horizontally
+ui.layout.y.accesskey=h
+
+ui.gather.short=Gather
+ui.gather.long=Gather all windows as tabs
+ui.gather.accesskey=g
+
+ui.collapseAll.short=Réduire
+ui.collapseAll.long=Collapse all windows
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=Déployer
+ui.expandAll.long=Expand all windows
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=Close All
+ui.closeAll.long=Close all windows
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=Close Other
+ui.closeOther.long=Close other windows
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=Sync Scroll
+ui.syncScroll.long=Synchroniser le défilement
+ui.syncScroll.accesskey=s
 
 
-
-privacy.undoCache.label=Undo cahce for closed panes of Fox Splitter
-privacy.undoCache.accesskey=u
+tabView.importedGroup=Imported from other windows (%S)
