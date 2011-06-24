@@ -132,8 +132,10 @@ FoxSplitterBase.prototype = {
 			aSibling.saveState();
 		}
 
-		return deferreds.length ?
+		return deferreds.length > 1 ?
 				Deferred.parallel(deferreds) :
+			deferreds.length ?
+				deferreds[0] :
 				Deferred.next(function() {}) ;
 	},
 
@@ -154,13 +156,14 @@ FoxSplitterBase.prototype = {
 			deferreds.push(this.resizeTo(positionAndSize.width, positionAndSize.height));
 
 		var self = this;
-		return deferreds.length ?
-				Deferred
-					.parallel(deferreds)
+		return (deferreds.length > 1 ?
+					Deferred.parallel(deferreds) :
+				deferreds.length ?
+					deferreds[0] :
+					Deferred )
 					.next(function() {
-						return self.parent.reserveResetPositionAndSize(self);
-					}) :
-				this.parent.reserveResetPositionAndSize(this);
+						return base.parent.resetPositionAndSize(base);
+					});
 	},
 
 	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
@@ -313,8 +316,8 @@ FoxSplitterBase.prototype = {
 				'chrome,dialog=no,all',
 				'screenX='+aPositionAndSize.x,
 				'screenY='+aPositionAndSize.y,
-				'outerWidth='+aPositionAndSize.width - (this.offsetWidth || 0),
-				'outerHeight='+aPositionAndSize.height - (this.offsetHeight || 0)
+				'outerWidth='+aPositionAndSize.width - this.offsetWidth,
+				'outerHeight='+aPositionAndSize.height - this.offsetHeight
 			].join(',');
 		var deferred = new Deferred();
 
@@ -338,6 +341,21 @@ FoxSplitterBase.prototype = {
 				arg
 			);
 		var self = this;
+
+		/**
+		 * Browser windows inherits screenX/screenY/width/height from the last
+		 * browser window. We have to override them after those values are applied
+		 * from localstore.rdf.
+		 */
+		window.addEventListener('DOMContentLoaded', function(aEvent) {
+			window.removeEventListener(aEvent.type, arguments.callee, false);
+			var root = window.document.documentElement;
+			root.setAttribute('screenX', aPositionAndSize.x);
+			root.setAttribute('screenY', aPositionAndSize.y);
+			root.setAttribute('width', aPositionAndSize.width);
+			root.setAttribute('height', aPositionAndSize.height);
+		}, false);
+
 		window.addEventListener(this.EVENT_TYPE_READY, function(aEvent) {
 			if (window) {
 				window.removeEventListener(aEvent.type, arguments.callee, false);
@@ -348,7 +366,22 @@ FoxSplitterBase.prototype = {
 				deferred.fail(new Error(aEvent.type+' event is handled twice.'));
 			}
 		}, false);
+
 		return deferred
+				.next(function(aWindow) {
+					var sv = aWindow.FoxSplitter;
+
+					if (sv.x != aPositionAndSize.x || sv.y != aPositionAndSize.y)
+						sv.moveTo(aPositionAndSize.x, aPositionAndSize.y);
+
+					if (sv.width != aPositionAndSize.width || sv.height != aPositionAndSize.height)
+						return sv.resizeTo(aPositionAndSize.width, aPositionAndSize.height)
+								.next(function() {
+									return aWindow;
+								});
+
+					return aWindow;
+				})
 				.error(this.defaultHandleError);
 	},
 
@@ -358,14 +391,13 @@ FoxSplitterBase.prototype = {
 		var first = aURIs.shift(); // only the first element can be tab
 
 		var maximized = !this.parent && !this.isGroup && this.maximized;
-		var deferred = maximized ?
+		var waitRestored = maximized ?
 						this.restore() :
 						null ;
-
-		var positionAndSize = this.calculatePositionAndSizeFor(aPosition);
 		var self = this;
-		return (deferred || Deferred.next(function() {}))
+		return (waitRestored || Deferred)
 				.next(function() {
+					let positionAndSize = self.calculatePositionAndSizeFor(aPosition);
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {

@@ -64,6 +64,9 @@ var exports = {
 	HIDE_EXTRA     : (1 << 5),
 	HIDE_NON_NAVIGATION_ITEMS : (1 << 6),
 
+	RAISE_WINDOW_BY_FOCUS       : 0,
+	RAISE_WINDOW_BY_RAISED_FLAG : 1,
+
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
 	// too small window isn't shown on Linux
@@ -73,24 +76,27 @@ var exports = {
 	COLLAPSED_WINDOW_SIZE : 24,
 
 
+	NON_NAVIGATION_ITEM_CLASS : <![CDATA[
+		unified-back-forward-button
+		urlbar-container
+		reload-button
+		stop-button
+		fullscreenflex
+		window-controls
+		foxsplitter-general-button
+		foxsplitter-syncScroll-button
+	]]>.toString()
+		.replace(/^\s+|\s+$/g, '')
+		.split(/\s+/)
+		.map(function(aId) {
+			return ':not(#'+aId+')';
+		})
+		.join(''),
+
 	STYLESHEET : <![CDATA[
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
-		:root[chromehidden~="toolbar-non-navigation-items"] #home-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #bookmarks-menu-button-container,
-		:root[chromehidden~="toolbar-non-navigation-items"] #search-container,
-		:root[chromehidden~="toolbar-non-navigation-items"] #print-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #downloads-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #history-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #bookarmks-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #new-window-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #cut-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #copy-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #paste-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #fullscreen-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #zoom-controls,
-		:root[chromehidden~="toolbar-non-navigation-items"] #sync-button,
-		:root[chromehidden~="toolbar-non-navigation-items"] #feed-button {
+		:root[chromehidden~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS% {
 			visibility: collapse;
 		}
 
