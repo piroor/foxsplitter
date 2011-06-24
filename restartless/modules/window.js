@@ -586,7 +586,6 @@ FoxSplitterWindow.prototype = {
 
 		return deferred;
 	},
-	_raiseByWindowFlag : true,
 
 	maximize : function FSW_maximize()
 	{
