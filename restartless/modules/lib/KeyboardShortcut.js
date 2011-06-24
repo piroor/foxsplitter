@@ -93,7 +93,7 @@ KeyboardShortcut.prototype = {
 					.replace(/accel-/gi, XULAppInfo.OS == 'Darwin' ? 'meta' : 'ctrl' )
 					.replace(/option-/gi, 'alt-')
 					.replace(/control-/gi, 'ctrl-')
-					.replace(/command-/gi, 'meta-')
+					.replace(/(command|\u2318)-/gi, 'meta-')
 					.replace(/(?:(?:alt|ctrl|meta|shift)-)+/g, function(aModifiers) {
 						return aModifiers.replace(/-$/, '').split('-').sort().join('-')+'-';
 					})
@@ -159,7 +159,7 @@ KeyboardShortcut.toKeyboardShortcut = function(aEvent) {
 	var shortcut = [];
 	if (aEvent.altKey) shortcut.push('Alt');
 	if (aEvent.ctrlKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? 'Control' : 'Ctrl');
-	if (aEvent.metaKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? 'Command' : 'Meta' );
+	if (aEvent.metaKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? /* 'Command' */ '\u2318' : 'Meta' );
 	if (aEvent.shiftKey) shortcut.push('Shift');
 	if (aEvent.charCode) shortcut.push(String.fromCharCode(aEvent.charCode));
 	if (aEvent.keyCode) shortcut.push(this._keyNameFromKeyCode(aEvent.keyCode));
