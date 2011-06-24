@@ -64,6 +64,9 @@ var exports = {
 	HIDE_EXTRA     : (1 << 5),
 	HIDE_NON_NAVIGATION_ITEMS : (1 << 6),
 
+	RAISE_WINDOW_BY_FOCUS       : 0,
+	RAISE_WINDOW_BY_RAISED_FLAG : 1,
+
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),
 	// too small window isn't shown on Linux

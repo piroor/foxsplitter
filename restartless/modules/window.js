@@ -57,6 +57,8 @@ FoxSplitterWindow.prototype = {
 	set fixMispositoning(aValue) { return FoxSplitterWindow.fixMispositoning = aValue; },
 	get importTabsFromClosedSibling() { return FoxSplitterWindow.importTabsFromClosedSibling; },
 	set importTabsFromClosedSibling(aValue) { return FoxSplitterWindow.importTabsFromClosedSibling = aValue; },
+	get methodToRaiseWindow() { return FoxSplitterWindow.methodToRaiseWindow; },
+	set methodToRaiseWindow(aValue) { return FoxSplitterWindow.methodToRaiseWindow = aValue; },
 
 	get x()
 	{
@@ -506,15 +508,28 @@ FoxSplitterWindow.prototype = {
 
 	raise : function FSW_raise()
 	{
-		var deferred = new Deferred();
-		if (!this._window || this.raising || this.minimized) {
-			Deferred.next(function() {
-				deferred.call();
-			});
-			return deferred;
-		}
+		if (!this._window || this.raising || this.minimized)
+			return Deferred.next(function() {});
 
 		this.raising++;
+
+		if (this.methodToRaiseWindow == this.RAISE_WINDOW_BY_RAISED_FLAG) {
+			let XULWindow = this.window
+							.QueryInterface(Ci.nsIInterfaceRequestor)
+							.getInterface(Ci.nsIWebNavigation)
+							.QueryInterface(Ci.nsIDocShellTreeItem)
+							.treeOwner
+							.QueryInterface(Ci.nsIInterfaceRequestor)
+							.getInterface(Ci.nsIXULWindow);
+			let originalFlag = XULWindow.zLevel;
+			XULWindow.zLevel = Ci.nsIXULWindow.highestZ;
+
+			let self = this;
+			return Deferred.next(function() {
+					XULWindow.zLevel = originalFlag; // Ci.nsIXULWindow.normalZ;
+					self.raising--;
+				});
+		}
 
 		/**
 		 * on Windows:
@@ -532,15 +547,14 @@ FoxSplitterWindow.prototype = {
 		 * until this window is surely activated.
 		 */
 		var self = this;
-		Deferred
-			.parallel(
-				this._waitDOMEvent(this.window, 'activate', 'deactivate'),
-				Deferred.next(function() {})
-			)
-			.next(function() {
-				self.raising--;
-				deferred.call();
-			});
+		var deferred = Deferred
+						.parallel(
+							this._waitDOMEvent(this.window, 'activate', 'deactivate'),
+							Deferred.next(function() {})
+						)
+						.next(function() {
+							self.raising--;
+						});
 
 		try {
 			var fm = Cc['@mozilla.org/focus-manager;1'].getService(Ci.nsIFocusManager);
@@ -564,6 +578,7 @@ FoxSplitterWindow.prototype = {
 
 		return deferred;
 	},
+	_raiseByWindowFlag : true,
 
 	maximize : function FSW_maximize()
 	{
@@ -2442,6 +2457,7 @@ FoxSplitterWindow.handleDragWithShiftKey = prefs.getPref(domain+'handleDragWithS
 FoxSplitterWindow.syncScrollX = prefs.getPref(domain+'syncScrollX');
 FoxSplitterWindow.syncScrollY = prefs.getPref(domain+'syncScrollY');
 FoxSplitterWindow.fixMispositoning = prefs.getPref(domain+'fixMispositoning');
+FoxSplitterWindow.methodToRaiseWindow = prefs.getPref(domain+'methodToRaiseWindow');
 
 FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterConst.IMPORT_NOTHING;
 FoxSplitterWindow.IMPORT_ALL         = FoxSplitterConst.IMPORT_ALL;
