@@ -297,13 +297,12 @@ FoxSplitterBase.prototype = {
 			deferred = sibling.resizeBy(0, this.height - deltaY);
 		}
 
-		if (sibling.parent.parent) {
-			if (deferred)
-				deferred.next(function() {
-					return sibling.parent.parent.reserveResetPositionAndSize(sibling);
+		let parent = sibling.parent.parent;
+		if (parent) {
+			(deferred || Deferred)
+				.next(function() {
+					return parent.resetPositionAndSize(sibling);
 				});
-			else
-				return sibling.parent.parent.reserveResetPositionAndSize(sibling);
 		}
 	},
 
