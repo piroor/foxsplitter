@@ -2518,6 +2518,15 @@ FoxSplitterWindow.prototype = {
 		return null;
 	},
 
+	addSubBrowserFromTab : function FSW_addSubBrowser(aTab, aPosition, aPositionTarget, aCopy)
+	{
+		if (aCopy)
+			this.duplicateTabAt(aTab, aPosition);
+		else
+			this.moveTabTo(aTab, aPosition);
+		return null;
+	},
+
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
 		if (aFrame && this._window) {
