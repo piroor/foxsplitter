@@ -137,7 +137,7 @@ FoxSplitterBase.prototype = {
 
 			deferreds.push(Deferred.next(function() {
 				let event = aSibling.document.createEvent('Events');
-				event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
+				event.initEvent(aSibling.EVENT_TYPE_SPLIT, true, false);
 				aSibling.document.dispatchEvent(event);
 			}));
 		}
