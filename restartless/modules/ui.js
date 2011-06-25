@@ -43,6 +43,10 @@ FoxSplitterUI.prototype = {
 	{
 		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
 	},
+	get appButton()
+	{
+		return this.document.getElementById('appmenu-button');
+	},
 
 	get shouldMinimalizeUI() { return FoxSplitterUI.shouldMinimalizeUI; },
 	set shouldMinimalizeUI(aValue) { return FoxSplitterUI.shouldMinimalizeUI = aValue; },
@@ -63,11 +67,13 @@ FoxSplitterUI.prototype = {
 		this._initToolbarItems();
 		this._initKeyboardShortcuts();
 		this._initMenuItems();
+		this._makeAppButtonDraggable();
 	},
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.clearGroupedAppearance(aOnQuit);
+		this._makeAppButtonUndraggable();
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
 		this._destroyKeyboardShortcuts();
@@ -112,6 +118,8 @@ FoxSplitterUI.prototype = {
 					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
 					oncommand="FoxSplitter.ui.handleEvent(event);"
 					onclick="FoxSplitter.ui.handleEvent(event);"
+					ondragstart="FoxSplitter.ui.handleEvent(event);"
+					ondragend="FoxSplitter.ui.handleEvent(event);"
 					foxsplitter-acceptmiddleclick="true">
 					<menupopup id="foxsplitter-general-button-popup"
 						onpopupshowing="FoxSplitter.ui.handleEvent(event);">
@@ -639,6 +647,40 @@ FoxSplitterUI.prototype = {
 		});
 	},
 
+	_makeAppButtonDraggable : function FSUI_makeAppButtonDraggable()
+	{
+		if (
+			!this.appButton ||
+			this._appButtonDraggable ||
+			!prefs.getPref(domain+'draggableAppButton')
+			)
+			return;
+
+		this.appButton.addEventListener('dragstart', this, false);
+		this.appButton.addEventListener('dragend', this, false);
+		this._appButtonDraggable = true;
+	},
+	_appButtonDraggable : false,
+
+	_makeAppButtonUndraggable : function FSUI_makeAppButtonUndraggable()
+	{
+		if (
+			!this.appButton ||
+			!this._appButtonDraggable
+			)
+			return;
+
+		this.appButton.removeEventListener('dragstart', this, false);
+		this.appButton.removeEventListener('dragend', this, false);
+		this._appButtonDraggable = false;
+	},
+
+	resetDraggableAppButton : function FSUI_resetDraggableAppButton()
+	{
+		this._makeAppButtonUndraggable();
+		this._makeAppButtonDraggable();
+	},
+
 
 	handleEvent : function FSUI_handleEvent(aEvent)
 	{
@@ -656,12 +698,16 @@ FoxSplitterUI.prototype = {
 				}
 				return;
 			case 'popupshowing':
-				return this.onPopupShowing(aEvent);
+				return this._onPopupShowing(aEvent);
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToTop':
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToRight':
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToBottom':
 			case this.EVENT_TYPE_KEY_COMBINATION_COMMAND+'splitTabToLeft':
-				return this.onKeyboardShortcutCommand(aEvent);
+				return this._onKeyboardShortcutCommand(aEvent);
+			case 'dragstart':
+				return this._onDragStart(aEvent);
+			case 'dragend':
+				return this._onDragEnd(aEvent);
 			default:
 				return;
 		}
@@ -775,7 +821,7 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
-	onPopupShowing : function FSUI_onPopupShowing(aEvent)
+	_onPopupShowing : function FSUI_onPopupShowing(aEvent)
 	{
 		switch (aEvent.target.id)
 		{
@@ -886,7 +932,7 @@ FoxSplitterUI.prototype = {
 		}
 	},
 
-	onKeyboardShortcutCommand : function FSUI_onKeyboardShortcutCommand(aEvent)
+	_onKeyboardShortcutCommand : function FSUI_onKeyboardShortcutCommand(aEvent)
 	{
 		var owner = this.owner;
 		var tabs = owner.selectedTabs;
@@ -905,6 +951,43 @@ FoxSplitterUI.prototype = {
 			case 'splitTabToLeft':
 				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
 		}
+	},
+
+	_onDragStart : function FSUI_onDragStart(aEvent)
+	{
+		if (
+			aEvent.target != this.generalButton.node &&
+			aEvent.target != this.appButton
+			)
+			return;
+
+		var dt = aEvent.dataTransfer;
+		dt.setDragImage(this.documentElement, 0, 0);
+		dt.mozSetDataAt(this.WINDOW_DROP_TYPE, this.window, 0);
+
+		var tabs = this.owner.visibleTabs;
+		tabs.forEach(function(aTab, aIndex) {
+			dt.mozSetDataAt(this.TAB_DROP_TYPE, aTab, aIndex);
+			dt.mozSetDataAt('text/x-moz-text-internal', aTab.linkedBrowser.currentURI.spec, aIndex);
+		}, this);
+
+		// On Firefox 3.6 or older versions on Windows, drag feedback
+		// image isn't shown if there are multiple drag data...
+		if (tabs.length <= 1 ||
+			'mozSourceNode' in dt ||
+			Cc['@mozilla.org/xre/app-info;1']
+				.getService(Ci.nsIXULAppInfo)
+				.QueryInterface(Ci.nsIXULRuntime).OS != 'WINNT')
+			dt.mozCursor = 'default';
+
+		aEvent.stopPropagation();
+	},
+
+	_onDragEnd : function FSUI_onDragEnd(aEvent)
+	{
+		var dragInfo = this.owner.getDragInfo(aEvent);
+		if (!dragInfo.canDrop && dragInfo.allTabs)
+			this.owner.unbindAsIndependent(aEvent.screenX, aEvent.screenY);
 	},
 
 
@@ -1160,6 +1243,12 @@ var prefListener = {
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetKeyboardShortcuts();
 							aUI.resetMenuItems();
+						});
+						break;
+
+					case 'draggableAppButton':
+						FoxSplitterUI.instances.forEach(function(aUI) {
+							aUI.resetDraggableAppButton();
 						});
 						break;
 				}

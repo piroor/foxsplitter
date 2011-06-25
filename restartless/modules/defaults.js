@@ -21,6 +21,7 @@ config.setDefault(domain+'syncScrollX', true);
 config.setDefault(domain+'syncScrollY', true);
 
 config.setDefault(domain+'fixMispositoning', true);
+config.setDefault(domain+'draggableAppButton', true);
 
 config.setDefault(domain+'importTabsFromClosedSibling', FoxSplitterConst.IMPORT_ONLY_HIDDEN);
 config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUBAR |

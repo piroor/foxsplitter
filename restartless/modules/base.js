@@ -287,14 +287,14 @@ FoxSplitterBase.prototype = {
 		}
 	},
 
-	unbindAsIndependent : function FSB_unbindAsIndependent() /* PUBLIC API */
+	unbindAsIndependent : function FSB_unbindAsIndependent(aX, aY) /* PUBLIC API */
 	{
 		if (!this.parent)
 			return;
 
 		var root = this.root;
-		var x = root.x + 16;
-		var y = root.y + 16;
+		var x = aX !== undefined ? aX : root.x + 16 ;
+		var y = aY !== undefined ? aY : root.y + 16 ;
 		var width = Math.round(root.width / this.normalExpandFactor);
 		var height = Math.round(root.height / this.normalExpandFactor);
 		this.unbind();

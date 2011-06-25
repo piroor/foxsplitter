@@ -62,6 +62,7 @@ dropZoneSize.after=ピクセルの範囲
 acceptDropDelay.before=ドロップを受け付けるまでの遅延：
 acceptDropDelay.after=ミリ秒
 handleDragWithShiftKey=Shiftキーを押しながらドラッグした時だけドロップを受け付ける
+draggableAppButton=Firefoxボタンのドラッグ操作でウィンドウを切り放す/他のウィンドウにくっつける
 
 tab.appearance=外観
 

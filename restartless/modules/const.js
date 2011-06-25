@@ -4,7 +4,7 @@ const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 
 var exports = {
 	domain         : 'extensions.foxsplitter@piro.sakura.ne.jp.',
-	IMAGES_VERSION : 1,
+	IMAGES_VERSION : 2,
 
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	ACTIVE            : 'foxsplitter-active',
@@ -49,17 +49,14 @@ var exports = {
 	POSITION_OUTSIDE : (1 << 4),
 	POSITION_INSIDE  : (1 << 5),
 
-
 	// compatible to old implementation
 	TILE_MODE_GRID   : 0,
 	TILE_MODE_X_AXIS : (1 << 0),
 	TILE_MODE_Y_AXIS : (1 << 1),
 
-
 	IMPORT_NOTHING     : 0,
 	IMPORT_ALL         : 1,
 	IMPORT_ONLY_HIDDEN : 2,
-
 
 	HIDE_MENUBAR   : (1 << 0),
 	HIDE_TOOLBAR   : (1 << 1),
@@ -71,6 +68,16 @@ var exports = {
 
 	RAISE_WINDOW_BY_FOCUS       : 0,
 	RAISE_WINDOW_BY_RAISED_FLAG : 1,
+
+	WINDOW_DROP_TYPE : 'application/x-foxsplitter-window',
+	TAB_DROP_TYPE    : 'application/x-moz-tabbrowser-tab',
+	LINK_DROP_TYPES  : [
+		'text/uri-list',
+		'text/x-moz-text-internal',
+		'text/x-moz-url',
+		'text/plain',
+		'application/x-moz-file'
+	],
 
 	// opacity=0 panel isn't shown on Linux
 	MIN_OPACITY : (XULAppInfo.OS == 'Linux' ? '0.01' : '0' ),

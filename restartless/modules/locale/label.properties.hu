@@ -62,6 +62,7 @@ dropZoneSize.after=pixels from window edge
 acceptDropDelay.before=Delay to allow dropping:
 acceptDropDelay.after=msec.
 handleDragWithShiftKey=Allow to drop only for dragging with Shift key
+draggableAppButton=Unbind/bind windows by drag and drop of the Firefox Button
 
 tab.appearance=Megjelenés
 

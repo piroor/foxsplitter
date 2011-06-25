@@ -137,6 +137,9 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="handleDragWithShiftKey"
 				name={domain+'handleDragWithShiftKey'}
 				type="bool"/>
+			<preference id="draggableAppButton"
+				name={domain+'draggableAppButton'}
+				type="bool"/>
 		</preferences>
 		<groupbox>
 			<caption label={bundle.getString('shouldDuplicateOnDrop')}/>
@@ -172,6 +175,8 @@ config.register('about:blank?foxsplitter-config', <>
 		</hbox>
 		<checkbox label={bundle.getString('handleDragWithShiftKey')}
 			preference="handleDragWithShiftKey"/>
+		<checkbox label={bundle.getString('draggableAppButton')}
+			preference="draggableAppButton"/>
 	</prefpane>
 
 	<prefpane id="prefpane-appearance"

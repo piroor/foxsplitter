@@ -5,8 +5,6 @@ load('lib/prefs');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
-const TAB_DROP_TYPE = 'application/x-moz-tabbrowser-tab';
-
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
 
@@ -1866,7 +1864,7 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	_getDragInfo : function FSW_getDragInfo(aEvent)
+	getDragInfo : function FSW_getDragInfo(aEvent)
 	{
 		var dragInfo = {
 				tabs     : [],
@@ -1880,8 +1878,14 @@ FoxSplitterWindow.prototype = {
 		if (aEvent.shiftKey != this.handleDragWithShiftKey)
 			return dragInfo;
 
-		dragInfo.tabs  = this._getDraggedTabs(aEvent);
-		dragInfo.links = this._getDraggedLinks(aEvent);
+		var window = this._getDraggedWindow(aEvent);
+		if (window) {
+			dragInfo.tabs = window.FoxSplitter.visibleTabs;
+		}
+		else {
+			dragInfo.tabs  = this._getDraggedTabs(aEvent);
+			dragInfo.links = this._getDraggedLinks(aEvent);
+		}
 
 		var sourceFSWindow = dragInfo.tabs.length && dragInfo.tabs[0].ownerDocument.defaultView.FoxSplitter;
 		if (sourceFSWindow && sourceFSWindow.visibleTabs.length == dragInfo.tabs.length)
@@ -1947,7 +1951,7 @@ FoxSplitterWindow.prototype = {
 
 	_onDragOver : function FSW_onDragOver(aEvent)
 	{
-		var dragInfo = this._getDragInfo(aEvent);
+		var dragInfo = this.getDragInfo(aEvent);
 		if (!dragInfo.canDrop ||
 			!(dragInfo.position & this.POSITION_VALID)) {
 			this._reserveHideAllDropIndicator();
@@ -1985,7 +1989,7 @@ FoxSplitterWindow.prototype = {
 
 	_onDrop : function FSW_onDrop(aEvent)
 	{
-		var dragInfo = this._getDragInfo(aEvent);
+		var dragInfo = this.getDragInfo(aEvent);
 		if (!dragInfo.canDrop)
 			return;
 
@@ -2093,17 +2097,25 @@ FoxSplitterWindow.prototype = {
 			).booleanValue;
 	},
 
+	_getDraggedWindow : function FSW_getDraggedWindow(aEvent)
+	{
+		var dt = aEvent.dataTransfer;
+		if (dt.mozItemCount < 1 || !dt.mozTypesAt(0).contains(this.WINDOW_DROP_TYPE))
+			return null;
+
+		return dt.mozGetDataAt(this.WINDOW_DROP_TYPE, 0);
+	},
+
 	_getDraggedTabs : function FSW_getDraggedTabs(aEvent)
 	{
 		var dt = aEvent.dataTransfer;
 		var tabs = [];
-		if (dt.mozItemCount < 1 ||
-			!dt.mozTypesAt(0).contains(TAB_DROP_TYPE))
+		if (dt.mozItemCount < 1 || !dt.mozTypesAt(0).contains(this.TAB_DROP_TYPE))
 			return tabs;
 
 		for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 		{
-			tabs.push(dt.mozGetDataAt(TAB_DROP_TYPE, i));
+			tabs.push(dt.mozGetDataAt(this.TAB_DROP_TYPE, i));
 		}
 		return tabs.sort(function(aA, aB) { return aA._tPos - aB._tPos; });
 	},
@@ -2112,15 +2124,8 @@ FoxSplitterWindow.prototype = {
 	{
 		var dt = aEvent.dataTransfer;
 		var urls = [];
-		var types = [
-				'text/uri-list',
-				'text/x-moz-text-internal',
-				'text/x-moz-url',
-				'text/plain',
-				'application/x-moz-file'
-			];
-		for (let i = 0; i < types.length; i++) {
-			let dataType = types[i];
+		for (let i = 0; i < this.LINK_DROP_TYPES.length; i++) {
+			let dataType = this.LINK_DROP_TYPES[i];
 			for (let i = 0, maxi = dt.mozItemCount; i < maxi; i++)
 			{
 				let urlData = dt.mozGetDataAt(dataType, i);
