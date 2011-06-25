@@ -1051,6 +1051,14 @@ FoxSplitterWindow.prototype = {
 		if (this.browser.treeStyleTab && this.browser.treeStyleTab.duplicateTab)
 			return this.browser.treeStyleTab.duplicateTabs(aTabs);
 
+		// Multiple Tab Handler duplicates selected tabs, so we should process only one tab.
+		var selectedTabs = this._filterSelectedTabs(aTabs);
+		if (
+			'MultipleTabService' in aTabs[0].ownerDocument.defaultView &&
+			selectedTabs.length
+			)
+			aTabs = [selectedTabs[0]];
+
 		return aTabs.map(function(aTab) {
 			return this.browser.duplicateTab(aTab);
 		}, this);

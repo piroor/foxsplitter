@@ -37,6 +37,10 @@ config.setDefault(domain+'context.splitFromFrame', true);
 config.setDefault(domain+'context.splitFromTab.move', true);
 config.setDefault(domain+'context.splitFromTab.duplicate', true);
 config.setDefault(domain+'context.gatherWindows', true);
+config.setDefault(domain+'selection.splitToTop', true);
+config.setDefault(domain+'selection.splitToRight', true);
+config.setDefault(domain+'selection.splitToBottom', true);
+config.setDefault(domain+'selection.splitToLeft', true);
 config.setDefault(domain+'selection.grid', true);
 config.setDefault(domain+'selection.x', true);
 config.setDefault(domain+'selection.y', true);
@@ -63,7 +67,11 @@ config.setDefault(domain+'methodToRaiseWindow',
 		FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG :
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 
-config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid', true);
-config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',    true);
-config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-y',    true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-top',    true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-right',  true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-bottom', true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-left',   true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-grid',    true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-x',       true);
+config.setDefault('extensions.multipletab.show.foxsplitter-selection-tile-y',       true);
 

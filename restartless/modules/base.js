@@ -83,7 +83,7 @@ FoxSplitterBase.prototype = {
 		return new this.groupClass();
 	},
 
-	bindWith : function FSB_bindWith(aSibling, aPosition, aSilent)
+	bindWith : function FSB_bindWith(aSibling, aPosition, aSilent) /* PUBLIC API */
 	{
 		if (!aSibling || !(aPosition & this.POSITION_VALID))
 			return Deferred.next(function() {});
@@ -245,7 +245,7 @@ FoxSplitterBase.prototype = {
 		return this.parent._findBindTarget(aEvent, aPosition);
 	},
 
-	unbind : function FSB_unbind(aSilent)
+	unbind : function FSB_unbind(aSilent) /* PUBLIC API */
 	{
 		if (!this.parent)
 			return;
@@ -267,6 +267,21 @@ FoxSplitterBase.prototype = {
 			if (!aSilent)
 				sibling.saveState();
 		}
+	},
+
+	unbindAsIndependent : function FSB_unbindAsIndependent() /* PUBLIC API */
+	{
+		if (!this.parent)
+			return;
+
+		var root = this.root;
+		var x = root.x + 16;
+		var y = root.y + 16;
+		var width = Math.round(root.width / this.normalExpandFactor);
+		var height = Math.round(root.height / this.normalExpandFactor);
+		this.unbind();
+		this.resizeTo(width, height);
+		this.moveTo(x, y);
 	},
 
 	_expandSibling : function FSB_expandSibling()
@@ -450,9 +465,16 @@ FoxSplitterBase.prototype = {
 	{
 		aTabs = aTabs.slice(0);
 
-		var movedTabs = {};
-		var windowMove = this.shouldMoveWindow(aTabs, movedTabs);
-		aTabs = movedTabs.value;
+		var windowMove = this.shouldMoveWindow(aTabs);
+
+		// Multiple Tab Handler moves selected tabs, so we should process only one tab.
+		var selectedTabs = this._filterSelectedTabs(aTabs);
+		if (
+			'MultipleTabService' in aTabs[0].ownerDocument.defaultView &&
+			selectedTabs.length
+			)
+			aTabs = [selectedTabs[0]];
+
 		if (windowMove)
 			return this.moveWindowTo(aTabs[0].ownerDocument.defaultView, aPosition);
 
@@ -699,7 +721,7 @@ FoxSplitterBase.prototype = {
 		return aTab.ownerDocument.defaultView.FoxSplitter.browser;
 	},
 
-	shouldMoveWindow : function FSB_shouldMoveWindow(aTabs, aTabsShouldBeMoved)
+	shouldMoveWindow : function FSB_shouldMoveWindow(aTabs)
 	{
 		var tabs = aTabs.slice(0);
 
@@ -707,30 +729,22 @@ FoxSplitterBase.prototype = {
 		var allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
 
 		var windowMove = allTabs.length == tabs.length;
-		var selected;
-		var allSelected = tabs.some(function(aTab) {
-				if (aTab.getAttribute('multiselected') == 'true')
-					return selected = true;
-				return false;
-			});
-
-		// Multiple Tab Handler moves/duplicates selected tabs, so we should process only one tab.
-		if (
-			'MultipleTabService' in browser.ownerDocument.defaultView &&
-			allSelected
-			)
-			tabs = [tabs[0]];
+		var selectedTabs = this._filterSelectedTabs(tabs);
 
 		// Tree Style Tabs tries to move the dragged tab with descendant tabs.
-		if ('treeStyleTab' in browser && !selected) {
+		if ('treeStyleTab' in browser && !selectedTabs.length) {
 			tabs = [tabs[0]].concat(browser.treeStyleTab.getDescendantTabs(tabs[0]));
 			windowMove = allTabs.length == tabs.length;
 		}
 
-		if (aTabsShouldBeMoved)
-			aTabsShouldBeMoved.value = tabs;
-
 		return windowMove;
+	},
+
+	_filterSelectedTabs : function FSB_filterSelectedTabs(aTabs)
+	{
+		return aTabs.filter(function(aTab) {
+			return aTab.getAttribute('multiselected') == 'true';
+		});
 	},
 
 	_waitDOMEvent : function FSB_waitDOMEvent(aTarget)
