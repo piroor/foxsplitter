@@ -251,6 +251,18 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="context.gatherWindows"
 				name={domain+'context.gatherWindows'}
 				type="bool"/>
+			<preference id="selection.splitToTop"
+				name={domain+'selection.splitToTop'}
+				type="bool"/>
+			<preference id="selection.splitToRight"
+				name={domain+'selection.splitToRight'}
+				type="bool"/>
+			<preference id="selection.splitToBottom"
+				name={domain+'selection.splitToBottom'}
+				type="bool"/>
+			<preference id="selection.splitToLeft"
+				name={domain+'selection.splitToLeft'}
+				type="bool"/>
 			<preference id="selection.grid"
 				name={domain+'selection.grid'}
 				type="bool"/>
@@ -287,16 +299,22 @@ config.register('about:blank?foxsplitter-config', <>
 			<caption label={bundle.getString('tabSelectionMenu')}/>
 			<description value={bundle.getString('tabSelectionMenu.note')}/>
 			<hbox>
-				<vbox>
-					<checkbox label={bundle.getString('ui.layout.grid.selection')}
-						preference="selection.grid"/>
-					<checkbox label={bundle.getString('ui.layout.x.selection')}
-						preference="selection.x"/>
-				</vbox>
-				<vbox>
-					<checkbox label={bundle.getString('ui.layout.y.selection')}
-						preference="selection.y"/>
-				</vbox>
+				<checkbox label={bundle.getString('ui.split.right.short')}
+					preference="selection.splitToRight"/>
+				<checkbox label={bundle.getString('ui.split.left.short')}
+					preference="selection.splitToLeft"/>
+				<checkbox label={bundle.getString('ui.split.top.short')}
+					preference="selection.splitToTop"/>
+				<checkbox label={bundle.getString('ui.split.bottom.short')}
+					preference="selection.splitToBottom"/>
+			</hbox>
+			<hbox>
+				<checkbox label={bundle.getString('ui.layout.grid.selection')}
+					preference="selection.grid"/>
+				<checkbox label={bundle.getString('ui.layout.x.selection')}
+					preference="selection.x"/>
+				<checkbox label={bundle.getString('ui.layout.y.selection')}
+					preference="selection.y"/>
 			</hbox>
 		</groupbox>
 	</prefpane>
