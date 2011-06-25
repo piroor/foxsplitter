@@ -968,7 +968,6 @@ FoxSplitterUI.prototype = {
 		var tabs = this.owner.visibleTabs;
 		tabs.forEach(function(aTab, aIndex) {
 			dt.mozSetDataAt(this.TAB_DROP_TYPE, aTab, aIndex);
-			dt.mozSetDataAt('text/x-moz-text-internal', aTab.linkedBrowser.currentURI.spec, aIndex);
 		}, this);
 
 		// On Firefox 3.6 or older versions on Windows, drag feedback
