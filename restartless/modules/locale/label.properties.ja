@@ -185,5 +185,9 @@ ui.syncScroll.short=スクロールを同期
 ui.syncScroll.long=スクロールを同期させる
 ui.syncScroll.accesskey=s
 
+ui.unbind.short=切り離す
+ui.unbind.long=ウィンドウを切り離す
+ui.unbind.accesskey=u
+
 
 tabView.importedGroup=他のウィンドウから移動されたグループ（%S）

@@ -184,5 +184,9 @@ ui.syncScroll.short=Sync Scroll
 ui.syncScroll.long=스크롤 동기화
 ui.syncScroll.accesskey=s
 
+ui.unbind.short=Unbind
+ui.unbind.long=Unbind this window
+ui.unbind.accesskey=u
+
 
 tabView.importedGroup=Imported from other windows (%S)
