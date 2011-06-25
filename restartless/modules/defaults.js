@@ -55,6 +55,10 @@ config.setDefault(domain+'shortcut.splitTabToBottom',
 	''
 );
 config.setDefault(domain+'shortcut.splitTabToLeft', '');
+config.setDefault(domain+'shortcut.grid', '');
+config.setDefault(domain+'shortcut.x', '');
+config.setDefault(domain+'shortcut.y', '');
+config.setDefault(domain+'shortcut.gather', '');
 
 config.setDefault(domain+'platformOffset.needToBeUpdated', XULAppInfo.OS == 'Linux');
 config.setDefault(domain+'platformOffset.x', 0);

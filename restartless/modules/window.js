@@ -1222,25 +1222,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	openContextLinkAt : function FSW_openContextLinkAt(aPosition)
-	{
-		var gContextMenu = this.window.gContextMenu;
-		if (!gContextMenu)
-			return Deferred.next(function() {});
-
-		return this.openLinkAt(gContextMenu.linkURL, aPosition);
-	},
-
-	openContextFrameAt : function FSW_openContextFrameAt(aPosition)
-	{
-		var gContextMenu = this.window.gContextMenu;
-		if (!gContextMenu)
-			return Deferred.next(function() {});
-
-		var uri = gContextMenu.target.ownerDocument.defaultView.location.href;
-		return this.openLinkAt(uri, aPosition);
-	},
-
 	splitCurrentTabTo : function FSW_splitCurrentTabTo(aPosition) /* PUBLIC API */
 	{
 		return this.splitTabTo(this.browser.selectedTab, aPosition);

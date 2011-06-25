@@ -598,10 +598,14 @@ FoxSplitterUI.prototype = {
 		var keyset = this.document.getElementById('mainKeyset');
 
 		var commands = {
-				splitTabToTop    : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_TOP);',
-				splitTabToRight  : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_RIGHT);',
-				splitTabToBottom : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_BOTTOM);',
-				splitTabToLeft   : 'FoxSplitter.splitCurrentTabTo(FoxSplitter.POSITION_LEFT);'
+				splitTabToTop    : 'FoxSplitter.ui.splitTabFromKeyboardTo(FoxSplitter.POSITION_TOP);',
+				splitTabToRight  : 'FoxSplitter.ui.splitTabFromKeyboardTo(FoxSplitter.POSITION_RIGHT);',
+				splitTabToBottom : 'FoxSplitter.ui.splitTabFromKeyboardTo(FoxSplitter.POSITION_BOTTOM);',
+				splitTabToLeft   : 'FoxSplitter.ui.splitTabFromKeyboardTo(FoxSplitter.POSITION_LEFT);',
+				layoutGrid       : 'FoxSplitter.ui.tileTabsFromKeyboard(FoxSplitter.TILE_MODE_GRID);',
+				layoutX          : 'FoxSplitter.ui.tileTabsFromKeyboard(FoxSplitter.TILE_MODE_X_AXIS);',
+				layoutY          : 'FoxSplitter.ui.tileTabsFromKeyboard(FoxSplitter.TILE_MODE_Y_AXIS);',
+				gather           : 'FoxSplitter.gatherWindows();'
 			};
 		for (let command in commands)
 		{
@@ -700,22 +704,22 @@ FoxSplitterUI.prototype = {
 				return this.splitTabsFromAppMenuItem(tabs);
 
 			case 'foxsplitter-context-link-split-top':
-				return owner.openContextLinkAt(this.POSITION_TOP);
+				return this.openContextLinkAt(this.POSITION_TOP);
 			case 'foxsplitter-context-link-split-right':
-				return owner.openContextLinkAt(this.POSITION_RIGHT);
+				return this.openContextLinkAt(this.POSITION_RIGHT);
 			case 'foxsplitter-context-link-split-bottom':
-				return owner.openContextLinkAt(this.POSITION_BOTTOM);
+				return this.openContextLinkAt(this.POSITION_BOTTOM);
 			case 'foxsplitter-context-link-split-left':
-				return owner.openContextLinkAt(this.POSITION_LEFT);
+				return this.openContextLinkAt(this.POSITION_LEFT);
 
 			case 'foxsplitter-context-frame-split-top':
-				return owner.openContextFrameAt(this.POSITION_TOP);
+				return this.openContextFrameAt(this.POSITION_TOP);
 			case 'foxsplitter-context-frame-split-right':
-				return owner.openContextFrameAt(this.POSITION_RIGHT);
+				return this.openContextFrameAt(this.POSITION_RIGHT);
 			case 'foxsplitter-context-frame-split-bottom':
-				return owner.openContextFrameAt(this.POSITION_BOTTOM);
+				return this.openContextFrameAt(this.POSITION_BOTTOM);
 			case 'foxsplitter-context-frame-split-left':
-				return owner.openContextFrameAt(this.POSITION_LEFT);
+				return this.openContextFrameAt(this.POSITION_LEFT);
 
 			default:
 				switch (aEvent.target.getAttribute('foxsplitter-command'))
@@ -920,6 +924,43 @@ FoxSplitterUI.prototype = {
 		return this.owner.duplicateTabsAt(aTabs, prefs.getPref(this.domain+'appMenu.split.position'));
 	},
 
+	openContextLinkAt : function FSUI_openContextLinkAt(aPosition)
+	{
+		var gContextMenu = this.window.gContextMenu;
+		if (!gContextMenu)
+			return Deferred.next(function() {});
+
+		return this.owner.openLinkAt(gContextMenu.linkURL, aPosition);
+	},
+
+	openContextFrameAt : function FSUI_openContextFrameAt(aPosition)
+	{
+		var gContextMenu = this.window.gContextMenu;
+		if (!gContextMenu)
+			return Deferred.next(function() {});
+
+		var uri = gContextMenu.target.ownerDocument.defaultView.location.href;
+		return this.owner.openLinkAt(uri, aPosition);
+	},
+
+	splitTabFromKeyboardTo : function FSUI_splitTabFromKeyboardTo()
+	{
+		var tabs = this.owner.selectedTabs;
+		if (!tabs.length)
+			tabs = [this.browser.selectedTab];
+
+		return this.owner.splitTabsTo(tabs, aPosition);
+	},
+
+	tileTabsFromKeyboard : function FSUI_tileTabsFromKeyboard(aMode)
+	{
+		var tabs = this.owner.selectedTabs;
+		if (!tabs.length)
+			tabs = this.owner.visibleTabs;
+
+		return this.owner.tileTabs(tabs, aMode);
+	},
+
 
 	updateChromeHidden : function FSUI_updateChromeHidden(aForceRestore)
 	{
@@ -1098,6 +1139,10 @@ var prefListener = {
 					case 'context.splitFromTab.move':
 					case 'context.splitFromTab.duplicate':
 					case 'context.gatherWindows':
+					case 'selection.splitToTop':
+					case 'selection.splitToRight':
+					case 'selection.splitToBottom':
+					case 'selection.splitToLeft':
 					case 'selection.grid':
 					case 'selection.x':
 					case 'selection.y':
@@ -1110,6 +1155,10 @@ var prefListener = {
 					case 'shortcut.splitTabToRight':
 					case 'shortcut.splitTabToBottom':
 					case 'shortcut.splitTabToLeft':
+					case 'shortcut.grid':
+					case 'shortcut.x':
+					case 'shortcut.y':
+					case 'shortcut.gather':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetKeyboardShortcuts();
 							aUI.resetMenuItems();

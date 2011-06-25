@@ -334,6 +334,18 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shortcut.splitTabToLeft"
 				name={domain+'shortcut.splitTabToLeft'}
 				type="string"/>
+			<preference id="shortcut.layoutGrid"
+				name={domain+'shortcut.layoutGrid'}
+				type="string"/>
+			<preference id="shortcut.layoutX"
+				name={domain+'shortcut.layoutX'}
+				type="string"/>
+			<preference id="shortcut.layoutY"
+				name={domain+'shortcut.layoutY'}
+				type="string"/>
+			<preference id="shortcut.gather"
+				name={domain+'shortcut.gather'}
+				type="string"/>
 		</preferences>
 		<grid>
 			<columns>
@@ -390,6 +402,62 @@ config.register('about:blank?foxsplitter-config', <>
 						control="shortcut.splitTabToBottom-textbox"/>
 					<textbox id="shortcut.splitTabToBottom-textbox"
 						preference="shortcut.splitTabToBottom"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.layout.grid.long')}
+						control="shortcut.layoutGrid-textbox"/>
+					<textbox id="shortcut.layoutGrid-textbox"
+						preference="shortcut.layoutGrid"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.layout.x.long')}
+						control="shortcut.layoutX-textbox"/>
+					<textbox id="shortcut.layoutX-textbox"
+						preference="shortcut.layoutX"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.layout.y.long')}
+						control="shortcut.layoutY-textbox"/>
+					<textbox id="shortcut.layoutY-textbox"
+						preference="shortcut.layoutY"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label={bundle.getString('shortcut.clear')}
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label={bundle.getString('shortcut.reset')}
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value={bundle.getString('ui.gather.long')}
+						control="shortcut.gather-textbox"/>
+					<textbox id="shortcut.gather-textbox"
+						preference="shortcut.gather"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
 					<button label={bundle.getString('shortcut.clear')}
