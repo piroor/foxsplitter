@@ -1078,7 +1078,24 @@ FoxSplitterUI.prototype = {
 	_originalChromeHidden : undefined,
 
 
-	setGroupedAppearance : function FSUI_setGroupedAppearance()
+	setGroupedAppearance : function FSUI_setGroupedAppearance(aForce)
+	{
+		if (!this._window)
+			return;
+
+		if (this._deferredGroupAppearance)
+			this._deferredGroupAppearance.cancel();
+
+		if (aForce)
+			return this._setGroupedAppearanceInternal(aForce);
+
+		var self = this;
+		this._deferredGroupAppearance = Deferred.next(function() {
+			delete self._deferredGroupAppearance;
+			self._setGroupedAppearanceInternal();
+		});
+	},
+	_setGroupedAppearanceInternal : function FSUI_setGroupedAppearanceInternal(aForce)
 	{
 		if (!this._window)
 			return;
@@ -1137,6 +1154,23 @@ FoxSplitterUI.prototype = {
 
 
 	clearGroupedAppearance : function FSUI_clearGroupedAppearance(aForce)
+	{
+		if (!this._window)
+			return;
+
+		if (this._deferredGroupAppearance)
+			this._deferredGroupAppearance.cancel();
+
+		if (aForce)
+			return this._clearGroupedAppearanceInternal();
+
+		var self = this;
+		this._deferredGroupAppearance = Deferred.next(function() {
+			delete self._deferredGroupAppearance;
+			self._clearGroupedAppearanceInternal();
+		});
+	},
+	_clearGroupedAppearanceInternal : function FSUI_clearGroupedAppearanceInternal(aForce)
 	{
 		if (!this._window)
 			return;

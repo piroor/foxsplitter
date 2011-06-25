@@ -124,6 +124,7 @@ FoxSplitterGroup.prototype = {
 		this.parent = null;
 		this.resetting = 0;
 		this.members = [];
+		this.binding = 0;
 
 		FoxSplitterGroup.instances.push(this);
 	},

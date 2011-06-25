@@ -88,6 +88,8 @@ FoxSplitterBase.prototype = {
 		if (!aSibling || !(aPosition & this.POSITION_VALID))
 			return Deferred.next(function() {});
 
+		this.binding++;
+
 		var deferreds = [];
 
 		if (this.parent)
@@ -122,10 +124,13 @@ FoxSplitterBase.prototype = {
 			this.saveState();
 
 			let self = this;
+			let binding = this.binding;
 			deferreds.push(Deferred.next(function() {
-				let event = self.document.createEvent('Events');
-				event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
-				self.document.dispatchEvent(event);
+				if (!binding) {
+					let event = self.document.createEvent('Events');
+					event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
+					self.document.dispatchEvent(event);
+				}
 
 				self.active = self.active; // update status of grouped windows
 			}));
@@ -141,6 +146,8 @@ FoxSplitterBase.prototype = {
 				aSibling.document.dispatchEvent(event);
 			}));
 		}
+
+		this.binding--;
 
 		return deferreds.length > 1 ?
 				Deferred.parallel(deferreds) :
@@ -268,22 +275,28 @@ FoxSplitterBase.prototype = {
 		this.parent.unregister(this);
 
 		if (!this.isGroup) {
-			this.clearGroupedAppearance();
 			if (!aSilent)
 				this.saveState();
 
-			let event = this.document.createEvent('Events');
-			event.initEvent(this.EVENT_TYPE_UNSPLIT, true, false);
-			this.document.dispatchEvent(event);
+			if (!this.binding) {
+				this.clearGroupedAppearance();
+
+				let event = this.document.createEvent('Events');
+				event.initEvent(this.EVENT_TYPE_UNSPLIT, true, false);
+				this.document.dispatchEvent(event);
+			}
 		}
 		if (sibling && !sibling.isGroup) {
-			sibling.clearGroupedAppearance();
 			if (!aSilent)
 				sibling.saveState();
 
-			let event = sibling.document.createEvent('Events');
-			event.initEvent(sibling.EVENT_TYPE_UNSPLIT, true, false);
-			sibling.document.dispatchEvent(event);
+			if (!sibling.parent) {
+				sibling.clearGroupedAppearance();
+
+				let event = sibling.document.createEvent('Events');
+				event.initEvent(sibling.EVENT_TYPE_UNSPLIT, true, false);
+				sibling.document.dispatchEvent(event);
+			}
 		}
 	},
 
@@ -512,10 +525,9 @@ FoxSplitterBase.prototype = {
 
 	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition) /* PUBLIC API */
 	{
-		if (aDOMWindow.FoxSplitter != this) {
-			aDOMWindow.FoxSplitter.unbind();
+		if (aDOMWindow.FoxSplitter != this)
 			aDOMWindow.FoxSplitter.bindWith(this, aPosition);
-		}
+
 		return Deferred.next(function() {
 			return aDOMWindow;
 		});
