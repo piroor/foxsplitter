@@ -1014,7 +1014,10 @@ FoxSplitterUI.prototype = {
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 				this._autoHideWasEnabled = enabled;
-				if (treeStyleTab.toggleAutoHide && !enabled) {
+
+				if (treeStyleTab.toggleAutoHide &&
+					treeStyleTab.browser &&
+					!enabled) {
 					treeStyleTab.toggleAutoHide();
 				}
 			}
@@ -1066,17 +1069,18 @@ FoxSplitterUI.prototype = {
 			this._autoHideWasEnabled !== undefined &&
 			(
 				aForce ||
-				(
-					!this.owner.parent &&
-					FoxSplitterBase.prototype.memberClass.instances.length == 1
-				)
+				!FoxSplitterBase.prototype.groupClass.instances.length
 			)
 			) {
 			let treeStyleTab = this.browser.treeStyleTab;
+
 			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (treeStyleTab.toggleAutoHide && enabled != this._autoHideWasEnabled)
+				if (treeStyleTab.toggleAutoHide &&
+					treeStyleTab.browser &&
+					enabled != this._autoHideWasEnabled) {
 					treeStyleTab.toggleAutoHide();
+				}
 			}
 			this._autoHideWasEnabled = undefined;
 		}

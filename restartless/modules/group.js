@@ -550,9 +550,3 @@ FoxSplitterGroup.getInstanceById = function FSG_getInstanceById(aId) {
 	});
 	return found;
 };
-
-
-function shutdown()
-{
-	FoxSplitterBase.prototype.groupClass = null;
-}

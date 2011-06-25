@@ -4,6 +4,7 @@ FoxSplitterConst = require('const');
 load('defaults');
 load('config');
 
+load('base');
 load('window');
 load('group');
 
@@ -112,7 +113,7 @@ function shutdown()
 		if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
 			aWindow.FoxSplitter.destroy(true);
 			delete aWindow.FoxSplitter;
-			// delete aWindow.SplitBrowser;
+			delete aWindow.SplitBrowser;
 		}
 		else if (doc.documentElement.getAttribute('id') == TOOLBAR_CUSTOMIZE) {
 			doc.removeChild(doc.__foxsplitter__style);
@@ -121,6 +122,8 @@ function shutdown()
 	});
 
 	WindowManager = undefined;
+	FoxSplitterBase.prototype.memberClass = undefined;
+	FoxSplitterBase.prototype.groupClass = undefined;
 	FoxSplitterWindow = undefined;
 	FoxSplitterGroup = undefined;
 	FoxSplitterConst = undefined;

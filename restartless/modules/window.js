@@ -363,7 +363,6 @@ FoxSplitterWindow.prototype = {
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
-		this.clearGroupedAppearance(true);
 
 		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
@@ -1684,7 +1683,7 @@ FoxSplitterWindow.prototype = {
 	},
 	_handleLowered : function FSW_handleLowered()
 	{
-		if (!this._window || !this.parent || this.raising)
+		if (!this._window || !this.parent || this.raising || !this.document || !this.documentElement)
 			return;
 
 		this.setGroupedAppearance();
@@ -2516,7 +2515,7 @@ FoxSplitterWindow.prototype = {
 				.getInterface(Ci.nsIWebNavigation)
 				.QueryInterface(Ci.nsIDocShell);
 
-			let browsers = this.activeBrowser.browsers;
+			let browsers = this.browser.browsers;
 			for (let i = 0, maxi = browsers.length; i < maxi; i++)
 			{
 				if (browsers[i].docShell == docShell)
@@ -2589,6 +2588,5 @@ function shutdown()
 {
 	prefs.removePrefListener(prefListener);
 	prefs = undefined;
-	FoxSplitterBase.prototype.memberClass = undefined;
 	FoxSplitterConst = undefined;
 }
