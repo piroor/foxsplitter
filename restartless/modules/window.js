@@ -1320,6 +1320,8 @@ FoxSplitterWindow.prototype = {
 		this.window.addEventListener('dragend', this, true);
 		this.window.addEventListener('tabviewshown', this, true);
 		this.window.addEventListener('tabviewhidden', this, true);
+		this.window.addEventListener(this.EVENT_TYPE_CONTENT_SPLIT_REQUEST, this, true, true);
+		this.window.addEventListener(this.EVENT_TYPE_CONTENT_UNSPLIT_REQUEST, this, true, true);
 		this._listening = true;
 	},
 	_listening : false,
@@ -1338,6 +1340,8 @@ FoxSplitterWindow.prototype = {
 		this.window.removeEventListener('dragend', this, true);
 		this.window.removeEventListener('tabviewshown', this, true);
 		this.window.removeEventListener('tabviewhidden', this, true);
+		this.window.removeEventListener(this.EVENT_TYPE_CONTENT_SPLIT_REQUEST, this, true, true);
+		this.window.removeEventListener(this.EVENT_TYPE_CONTENT_UNSPLIT_REQUEST, this, true, true);
 		this._listening = false;
 	},
 
@@ -1407,6 +1411,13 @@ FoxSplitterWindow.prototype = {
 
 			case 'tabviewhidden':
 				return this._onTabViewHidden();
+
+
+			case this.EVENT_TYPE_CONTENT_SPLIT_REQUEST:
+				return this._onSplitRequestFromContent(aEvent);
+
+			case this.EVENT_TYPE_CONTENT_UNSPLIT_REQUEST:
+				return this._onUnsplitRequestFromContent(aEvent);
 		}
 	},
 
@@ -2030,23 +2041,26 @@ FoxSplitterWindow.prototype = {
 			target.openLinksAt(links, position);
 		}
 	},
-	_filterOnlySafeLinks : function FSW_filterOnlySafeLinks(aURIs)
+	_filterOnlySafeLinks : function FSW_filterOnlySafeLinks(aURIs, aSourceURI)
 	{
-		var currentDragSession = Cc['@mozilla.org/widget/dragservice;1']
-									.getService(Ci.nsIDragService)
-									.getCurrentSession();
+		if (!aSourceURI) {
+			let currentDragSession = Cc['@mozilla.org/widget/dragservice;1']
+										.getService(Ci.nsIDragService)
+										.getCurrentSession();
+			let sourceDoc = currentDragSession ? currentDragSession.sourceDocument : null ;
+			aSourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
+		}
+
 		const SecMan = Cc['@mozilla.org/scriptsecuritymanager;1']
 						.getService(Ci.nsIScriptSecurityManager);
 
-		var sourceDoc = currentDragSession ? currentDragSession.sourceDocument : null ;
-		var sourceURI = sourceDoc ? sourceDoc.documentURI : 'file:///' ;
 		return aURIs.filter(function(aURI) {
 			if (aURI.indexOf(' ', 0) != -1 || /^\s*(javascript|data):/.test(aURI))
 				return false;
 			var normalizedURI = this.makeURIFromSpec(aURI);
-			if (normalizedURI && sourceURI.indexOf('chrome://') < 0) {
+			if (normalizedURI && aSourceURI.indexOf('chrome://') < 0) {
 				try {
-					SecMan.checkLoadURIStr(sourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
+					SecMan.checkLoadURIStr(aSourceURI, normalizedURI.spec, Ci.nsIScriptSecurityManager.STANDARD);
 				}
 				catch(e) {
 					return false;
@@ -2432,6 +2446,47 @@ FoxSplitterWindow.prototype = {
 		this._inTabView = false;
 	},
 
+	_onSplitRequestFromContent : function FSW_onSplitRequestFromContent(aEvent)
+	{
+		var sourceEvent = aEvent.sourceEvent;
+		if (!sourceEvent || sourceEvent.type.indexOf('SubBrowserAddRequest') != 0)
+			return;
+
+		var type = sourceEvent.type;
+		var position = type.match(/pos(?:ition)?\s*=\s*(top|right|bottom|left|tab)/i)
+		if (!position)
+			return;
+
+		position = position[1].toUpperCase();
+
+		var target = aEvent.originalTarget;
+		var frame = !('nodeType' in target) ? target :
+				(target.nodeType == Ci.nsIDOMNode.DOCUMENT_NODE) ? target.defaultView :
+				target.ownerDocument.defaultView;
+		var uri = type.match(/ur[li]\s*=\s*([^\&\;]*)/i);
+		uri = uri ? decodeURIComponent(uri[1]) : 'about:blank' ;
+
+		var uris = this._filterOnlySafeLinks([uri], frame.location.href);
+		if (!uris.length)
+			return;
+
+		uri = uris[0];
+		if (position == 'TAB') {
+			this.browser.loadOneTab(uri, {
+				referrerURI  : this.makeURIFromSpec(frame.location.href),
+				inBackground : prefs.getPref('browser.tabs.loadDivertedInBackground')
+			});
+		}
+		else {
+			this.openLinkAt(uri, this['POSITION_'+position]);
+		}
+	},
+
+	_onUnsplitRequestFromContent : function FSW_onUnsplitRequestFromContent(aEvent)
+	{
+		this.close(true);
+	},
+
 
 	// compatibility for old versions
 
@@ -2443,6 +2498,26 @@ FoxSplitterWindow.prototype = {
 	{
 		return this.browser;
 	},
+
+	get browsers()
+	{
+		return [];
+	},
+
+	collapseAllSubBrowsers : function FSW_collapseAllSubBrowsers()
+	{
+	},
+
+	expandAllSubBrowsers : function FSW_collapseAllSubBrowsers()
+	{
+	},
+
+	addSubBrowser : function FSW_addSubBrowser(aURI, aTargetSubBrowser, aPosition)
+	{
+		this.openLinkAt(aURI, aPosition);
+		return null;
+	},
+
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
 		if (aFrame && this._window) {

@@ -21,8 +21,13 @@ var exports = {
 	MENU_ITEM      : 'foxsplitter-menuitem',
 	COLLAPSED_BAR  : 'foxsplitter-collapsed-window-toolbar',
 
-	EVENT_TYPE_READY : 'nsDOMFoxSplitterReady',
+	EVENT_TYPE_READY                : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
+	EVENT_TYPE_SPLIT                : 'nsDOMFoxSplitterSplit',
+	EVENT_TYPE_UNSPLIT              : 'nsDOMFoxSplitterUnsplit',
+	// compatible to old versions
+	EVENT_TYPE_CONTENT_SPLIT_REQUEST   : 'SubBrowserAddRequestFromContent',
+	EVENT_TYPE_CONTENT_UNSPLIT_REQUEST : 'SubBrowserRemoveRequestFromContent',
 
 	STATE_MAXIMIZED  : Ci.nsIDOMChromeWindow.STATE_MAXIMIZED,
 	STATE_MINIMIZED  : Ci.nsIDOMChromeWindow.STATE_MINIMIZED,

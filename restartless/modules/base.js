@@ -123,6 +123,10 @@ FoxSplitterBase.prototype = {
 
 			let self = this;
 			deferreds.push(Deferred.next(function() {
+				let event = self.document.createEvent('Events');
+				event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
+				self.document.dispatchEvent(event);
+
 				self.active = self.active; // update status of grouped windows
 			}));
 		}
@@ -130,6 +134,12 @@ FoxSplitterBase.prototype = {
 		if (!aSibling.isGroup) {
 			aSibling.setGroupedAppearance();
 			aSibling.saveState();
+
+			deferreds.push(Deferred.next(function() {
+				let event = aSibling.document.createEvent('Events');
+				event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
+				aSibling.document.dispatchEvent(event);
+			}));
 		}
 
 		return deferreds.length > 1 ?
@@ -261,11 +271,19 @@ FoxSplitterBase.prototype = {
 			this.clearGroupedAppearance();
 			if (!aSilent)
 				this.saveState();
+
+			let event = this.document.createEvent('Events');
+			event.initEvent(this.EVENT_TYPE_UNSPLIT, true, false);
+			this.document.dispatchEvent(event);
 		}
 		if (sibling && !sibling.isGroup) {
 			sibling.clearGroupedAppearance();
 			if (!aSilent)
 				sibling.saveState();
+
+			let event = sibling.document.createEvent('Events');
+			event.initEvent(sibling.EVENT_TYPE_UNSPLIT, true, false);
+			sibling.document.dispatchEvent(event);
 		}
 	},
 
