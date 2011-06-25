@@ -90,7 +90,8 @@ function handleWindow(aWindow, aInitialization)
 	var doc = aWindow.document;
 	if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
 		aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
-		// aWindow.SplitBrowser = aWindow.FoxSplitter;
+		if (!('SplitBrowser' in aWindow))
+			aWindow.SplitBrowser = aWindow.FoxSplitter;
 	}
 	else if (doc.documentElement.getAttribute('id') == TOOLBAR_CUSTOMIZE) {
 		doc.__foxsplitter__style = doc.createProcessingInstruction('xml-stylesheet',
