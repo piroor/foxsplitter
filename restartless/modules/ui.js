@@ -398,7 +398,7 @@ FoxSplitterUI.prototype = {
 			if (prefs.getPref(this.domain+'context.splitFromTab.duplicate')) {
 				let item = ToolbarItem.toDOMDocumentFragment(<>
 					<menu id="foxsplitter-context-tab-split-duplicate"
-						class={this.tabContextMoveItem ? '' : 'menu-iconic split '+this.MENU_ITEM }
+						class={this.tabContextItems.length ? '' : 'menu-iconic split '+this.MENU_ITEM }
 						label={bundle.getString('ui.split.tab.duplicate.label')}
 						accesskey={bundle.getString('ui.split.tab.duplicate.accesskey')}
 						oncommand="FoxSplitter.ui.handleEvent(event);">
@@ -438,14 +438,8 @@ FoxSplitterUI.prototype = {
 				tabContextPopup.insertBefore(item, this.document.getElementById('context_bookmarkAllTabs').nextSibling);
 				this.tabContextItems.push(item);
 			}
-			if (this.tabContextItems.length) {
-				let fragment = this.document.createDocumentFragment();
-				this.tabContextItems.forEach(function(aItem) {
-					fragment.appendChild(aItem);
-				});
-				tabContextPopup.appendChild(fragment);
+			if (this.tabContextItems.length)
 				tabContextPopup.addEventListener('popupshowing', this, false);
-			}
 		}
 
 		var selectionPopup = this.document.getElementById('multipletab-selection-menu');
