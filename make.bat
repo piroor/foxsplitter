@@ -1,3 +1,3 @@
 copy buildscript\makexpi.sh .\
-bash makexpi.sh splitbrowser version=0
+bash makexpi.sh foxsplitter version=0
 del makexpi.sh

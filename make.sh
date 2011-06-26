@@ -1,6 +1,6 @@
 #!/bin/sh
 
-appname=splitbrowser
+appname=foxsplitter
 
 cp buildscript/makexpi.sh ./
 ./makexpi.sh $appname version=0
