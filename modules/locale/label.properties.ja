@@ -1,0 +1,194 @@
+# ja-JP
+# ***** BEGIN LICENSE BLOCK *****
+# Version: MPL 1.1/GPL 2.0/LGPL 2.1
+# 
+# The contents of these files are subject to the Mozilla Public License Version
+# 1.1 (the "License"); you may not use these files except in compliance with
+# the License. You may obtain a copy of the License at
+# http://www.mozilla.org/MPL/
+# 
+# Software distributed under the License is distributed on an "AS IS" basis,
+# WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+# for the specific language governing rights and limitations under the
+# License.
+# 
+# The Original Code is the Fox Splitter (formerly Split Browser).
+# 
+# The Initial Developer of the Original Code is SHIMODA Hiroshi.
+# Portions created by the Initial Developer are Copyright (C) 2007-2011
+# the Initial Developer. All Rights Reserved.
+# 
+# Contributor(s): SHIMODA Hiroshi <piro@p.club.ne.jp>
+# 
+# Alternatively, the contents of these files may be used under the terms of
+# either the GNU General Public License Version 2 or later (the "GPL"), or
+# the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+# in which case the provisions of the GPL or the LGPL are applicable instead
+# of those above. If you wish to allow use of your version of these files only
+# under the terms of either the GPL or the LGPL, and not to allow others to
+# use your version of these files under the terms of the MPL, indicate your
+# decision by deleting the provisions above and replace them with the notice
+# and other provisions required by the LGPL or the GPL. If you do not delete
+# the provisions above, a recipient may use your version of these files under
+# the terms of any one of the MPL, the GPL or the LGPL.
+# 
+# ***** END LICENSE BLOCK *****
+
+disableOldVersion.title=Firefoxを再起動しますか？
+disableOldVersion.text=Fox Splitterの古いバージョンを検出したため、自動的に無効化しました。今すぐFirefoxを再起動しますか？
+
+
+title=Fox Splitterの設定
+
+tab.general=全般
+
+shouldDuplicateOnSplit=ウィンドウを分割した時の既定の挙動
+shouldDuplicateOnSplit.true=選択されたタブを新しいウィンドウに複製する
+shouldDuplicateOnSplit.false=選択されたタブを新しいウィンドウに移動する
+generalButton.split.position=ツールバーの「分割」ボタンをクリックした時
+appMenu.split.position=Firefoxメニューの「ウィンドウを分割」ボタンをクリックした時
+importTabsFromClosedSibling=分割されたウィンドウを閉じた時の挙動
+importTabsFromClosedSibling.nothing=そのままウィンドウを閉じる
+importTabsFromClosedSibling.hidden=非表示になっているタブを隣のウィンドウに移動する
+importTabsFromClosedSibling.all=すべてのタブを隣のウィンドウに移動する
+
+tab.drag=ドラッグ＆ドロップ
+
+shouldDuplicateOnDrop=タブをドラッグ＆ドロップしてウィンドウを分割した時の既定の挙動
+shouldDuplicateOnDrop.true=ドロップしたタブを新しいウィンドウに複製する
+shouldDuplicateOnDrop.false=ドロップしたタブを新しいウィンドウに移動する
+dropZoneSize.before=ドロップを受け付ける領域：ウィンドウの端から
+dropZoneSize.after=ピクセルの範囲
+acceptDropDelay.before=ドロップを受け付けるまでの遅延：
+acceptDropDelay.after=ミリ秒
+handleDragWithShiftKey=Shiftキーを押しながらドラッグした時だけドロップを受け付ける
+draggableAppButton=Firefoxボタンのドラッグ操作でウィンドウを切り放す/他のウィンドウにくっつける
+
+tab.appearance=外観
+
+shouldMinimalizeUI=分割後のウィンドウではツールバーのボタンを小さく表示する
+shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に隠す
+shouldAutoHideTabs.note=（※そのような機能を提供する他のアドオンが必要です）
+hiddenUIInInactiveWindow=アクティブでないウィンドウで表示するUI要素
+hiddenUIInInactiveWindow.note=（チェックを外して表示する項目を減らすとブラウズ領域が広がります）
+hiddenUIInInactiveWindow.menubar=メニューバー
+hiddenUIInInactiveWindow.toolbar=ロケーションバー以外のナビゲーションツールバーの項目
+hiddenUIInInactiveWindow.location=ロケーションバー
+hiddenUIInInactiveWindow.bookmarks=ブックマークツールバー
+hiddenUIInInactiveWindow.status=ステータスバー
+hiddenUIInInactiveWindow.extra=その他のツールバー
+hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツールバー項目
+
+tab.menu=メニュー
+
+appMenu.split=Firefoxメニューに「%S」を追加する
+viewMenu.split=「表示」メニューに「%S」を追加する
+context.splitFromLink=Webページ上でのコンテキストメニューに「%S」を追加する
+context.splitFromFrame=フレーム上でのコンテキストメニューに「%S」を追加する
+tabContextMenu=タブのコンテキストメニューに以下の項目を追加する
+tabSelectionMenu=複数タブ選択時のメニューに以下の項目を追加する
+tabSelectionMenu.note=※註：別のアドオン「マルチプルタブハンドラ」が必要です
+
+tab.shortcut=ショートカット
+
+shortcut.clear=消去
+shortcut.reset=リセット
+
+tab.advanced=詳細
+
+syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
+platformOffset.needToBeUpdated=配置とサイズ指定のオフセット値
+platformOffset.description=Firefox自身のプラットフォーム依存のバグを回避するため、Fox Splitterはウィンドウの位置とサイズを正しく計算するためのオフセット値を必要とする場合があります。これらの値は通常は初回起動時に自動的に計算されます。もし分割されたウィンドウの位置や大きさがずれている場合は、手動でオフセット値を修正して下さい。
+platformOffset.forceUpdate=オフセット値を再計算する
+platformOffset.x=左
+platformOffset.y=上
+platformOffset.width=幅
+platformOffset.height=高さ
+
+
+
+
+ui.split.short=分割
+ui.split.long=ウィンドウを分割する
+
+ui.split.top.short=上に分割
+ui.split.top.long=タブを上のウィンドウとして分割
+ui.split.top.accesskey=a
+
+ui.split.right.short=右に分割
+ui.split.right.long=タブを右のウィンドウとして分割
+ui.split.right.accesskey=r
+
+ui.split.bottom.short=下に分割
+ui.split.bottom.long=タブを下のウィンドウとして分割
+ui.split.bottom.accesskey=b
+
+ui.split.left.short=左に分割
+ui.split.left.long=タブを左のウィンドウとして分割
+ui.split.left.accesskey=l
+
+
+ui.split.app.label=ウィンドウを分割
+ui.split.app.accesskey=s
+
+ui.split.view.label=ウィンドウを分割
+ui.split.view.accesskey=s
+
+ui.split.link.label=分割されたウィンドウでリンク先を開く
+ui.split.link.accesskey=s
+
+ui.split.frame.label=分割されたウィンドウでフレームを開く
+ui.split.frame.accesskey=s
+
+ui.split.tab.move.label=ウィンドウを分割してタブを移動
+ui.split.tab.move.accesskey=s
+
+ui.split.tab.duplicate.label=ウィンドウを分割してタブを複製
+ui.split.tab.duplicate.accesskey=u
+
+
+ui.layout.grid.short=平面に並べる
+ui.layout.grid.long=すべてのタブを平面に並べる
+ui.layout.grid.selection=平面に並べる
+ui.layout.grid.accesskey=t
+
+ui.layout.x.short=横に並べる
+ui.layout.x.long=すべてのタブを横に並べる
+ui.layout.x.selection=横に並べる
+ui.layout.x.accesskey=v
+
+ui.layout.y.short=縦に並べる
+ui.layout.y.long=すべてのタブを縦に並べる
+ui.layout.y.selection=縦に並べる
+ui.layout.y.accesskey=h
+
+ui.gather.short=集める
+ui.gather.long=分割されたウィンドウをタブに集める
+ui.gather.accesskey=g
+
+ui.collapseAll.short=たたむ
+ui.collapseAll.long=分割されたペインをすべてたたむ
+ui.collapseAll.accesskey=c
+
+ui.expandAll.short=ひろげる
+ui.expandAll.long=分割されたウィンドウをすべてひろげる
+ui.expandAll.accesskey=e
+
+ui.closeAll.short=すべて閉じる
+ui.closeAll.long=これらのウィンドウをすべて閉じる
+ui.closeAll.accesskey=a
+
+ui.closeOther.short=他を閉じる
+ui.closeOther.long=分割された他のウィンドウをすべて閉じる
+ui.closeOther.accesskey=o
+
+ui.syncScroll.short=スクロールを同期
+ui.syncScroll.long=スクロールを同期させる
+ui.syncScroll.accesskey=s
+
+ui.unbind.short=切り離す
+ui.unbind.long=ウィンドウを切り離す
+ui.unbind.accesskey=u
+
+
+tabView.importedGroup=他のウィンドウから移動されたグループ（%S）
