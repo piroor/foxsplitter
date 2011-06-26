@@ -2515,15 +2515,11 @@ FoxSplitterWindow.prototype = {
 	getSubBrowserAndBrowserFromFrame : function FSW_getSubBrowserAndBrowserFromFrame(aFrame)
 	{
 		if (aFrame && this._window) {
-			let docShell = aFrame.top
-				.QueryInterface(Ci.nsIInterfaceRequestor)
-				.getInterface(Ci.nsIWebNavigation)
-				.QueryInterface(Ci.nsIDocShell);
-
+			aFrame= aFrame.top || aFrame;
 			let browsers = this.browser.browsers;
 			for (let i = 0, maxi = browsers.length; i < maxi; i++)
 			{
-				if (browsers[i].docShell == docShell)
+				if (browsers[i].contentWindow == aFrame)
 					return {
 						subBrowser : null,
 						browser    : browsers[i]
