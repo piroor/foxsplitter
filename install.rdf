@@ -8,7 +8,7 @@
                    em:version="2.0.2011062601"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
-                   em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                   em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                    em:optionsURL="about:blank?foxsplitter-config"
                    em:bootstrap="true">
 
@@ -21,7 +21,7 @@
       <RDF:Description em:locale="en-US"
                        em:name="Fox Splitter"
                        em:description="Splits browser window as you like."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -40,7 +40,7 @@
       <RDF:Description em:locale="ja-JP"
                        em:name="Fox Splitter"
                        em:description="ブラウザウィンドウ内を自由に分割できるようにします。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -59,7 +59,7 @@
       <RDF:Description em:locale="fr-FR"
                        em:name="Fox Splitter"
                        em:description="Partager la fenêtre du navigateur selon vos désirs."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -78,7 +78,7 @@
       <RDF:Description em:locale="de-DE"
                        em:name="Fox Splitter"
                        em:description="Erlaubt ein beliebiges Aufteilen des Browser-Fensters zur gleichzeitigen Anzeige mehrerer Seitenansichten."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -97,7 +97,7 @@
       <RDF:Description em:locale="ko-KR"
                        em:name="Fox Splitter"
                        em:description="사용자 마음대로 브라우저 화면을 분할합니다."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -116,7 +116,7 @@
       <RDF:Description em:locale="zh-TW"
                        em:name="Fox Splitter"
                        em:description="依您所喜歡的方式分割瀏覽視窗"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -135,7 +135,7 @@
       <RDF:Description em:locale="hu-HU"
                        em:name="Fox Splitter"
                        em:description="A böngésző megnyitott ablakainak felosztása..."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -154,7 +154,7 @@
       <RDF:Description em:locale="es-ES"
                        em:name="Fox Splitter"
                        em:description="Divide la ventana del navegador como tú quieras"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -173,7 +173,7 @@
       <RDF:Description em:locale="it-IT"
                        em:name="Fox Splitter"
                        em:description="Permette di suddividere a piacimento la finestra del browser."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -192,7 +192,7 @@
       <RDF:Description em:locale="zh-CN"
                        em:name="Fox Splitter"
                        em:description="按你希望的方式拆分浏览器窗口。"
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -211,7 +211,7 @@
       <RDF:Description em:locale="pl"
                        em:name="Fox Splitter"
                        em:description="Dzieli okno przeglądarki tak jak chcesz."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
@@ -230,7 +230,7 @@
       <RDF:Description em:locale="cs-CZ"
                        em:name="Fox Splitter"
                        em:description="Umožňuje zobrazení obsahu panelů v současně zobrazovaných subpanelech."
-                       em:homepageURL="http://piro.sakura.ne.jp/xul/_foxsplitter.html.en"
+                       em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
