@@ -1951,7 +1951,12 @@ FoxSplitterWindow.prototype = {
 					this.handleDragWithShiftKey ||
 					!this._isEventFiredOnTabbar(aEvent)
 				) :
-				dragInfo.links.length
+			dragInfo.links.length ?
+				(
+					this.handleDragWithShiftKey ||
+					!this._isEventFiredOnDroppable(aEvent)
+				) :
+				false
 		);
 		dragInfo.position = this._getDropPosition(aEvent);
 
@@ -2144,6 +2149,21 @@ FoxSplitterWindow.prototype = {
 			return false;
 		return d.evaluate(
 				'ancestor-or-self::*[local-name()="tabs" and contains(concat(" ", @class, " "), " tabbrowser-tabs ")][1]',
+				node,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue;
+	},
+
+	_isEventFiredOnDroppable : function FSW_isEventFiredOnDroppable(aEvent)
+	{
+		var node = aEvent.originalTarget;
+		var d = node.ownerDocument;
+		if (!d)
+			return false;
+		return d.evaluate(
+				'ancestor-or-self::*[local-name()="textbox"]',
 				node,
 				null,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
