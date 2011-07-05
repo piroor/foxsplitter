@@ -2158,17 +2158,32 @@ FoxSplitterWindow.prototype = {
 
 	_isEventFiredOnDroppable : function FSW_isEventFiredOnDroppable(aEvent)
 	{
-		var node = aEvent.originalTarget;
-		var d = node.ownerDocument;
-		if (!d)
+		if (!aEvent.originalTarget.ownerDocument)
 			return false;
-		return d.evaluate(
-				'ancestor-or-self::*[local-name()="textbox"]',
-				node,
+		var inputFieldPattern = <![CDATA[(
+				(
+					contains(concat(" ", local-name(), " "), " input INPUT ") and
+					contains(concat(" ", @type, " "), " text TEXT file FILE password PASSWORD ")
+				) or
+				contains(concat(" ", local-name(), " "), " textarea TEXTAREA ")
+			)]]>.toString().replace(/\n\t+/g, ' ');
+		var droppablePattern = 'ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+']';
+		return (
+			aEvent.originalTarget.ownerDocument.evaluate(
+				droppablePattern,
+				aEvent.originalTarget,
 				null,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
 				null
-			).booleanValue;
+			).booleanValue ||
+			aEvent.target.ownerDocument.evaluate(
+				droppablePattern,
+				aEvent.target,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue
+		);
 	},
 
 	_getDraggedWindow : function FSW_getDraggedWindow(aEvent)
