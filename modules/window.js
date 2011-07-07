@@ -1070,10 +1070,29 @@ FoxSplitterWindow.prototype = {
 						return targetGroup = aGroup;
 					});
 					var groupId = targetGroup ? targetGroup.id : null ;
+
+					/**
+					 * If the tab is the last tab (when the window is newly opened),
+					 * Panorama will be shown automatically. To prevent it, we have
+					 * to create a dummy tab as the new selected tab after the imported
+					 * tab is moved to a background group.
+					 */
+					var tempTab = self.visibleTabs.length == 1 ? self.browser.addTab('about:blank') : null ;
+
 					self.window.TabView.moveTabTo(aTab, groupId);
 					// newly created group has no title yet!
 					if (!groupId && aTab._tabViewTabItem && aTargetGroupInfo.title)
 						aTab._tabViewTabItem.parent.setTitle(aTargetGroupInfo.title);
+
+					// Cleanup the dummy tab and a new group for the dummy tab.
+					if (tempTab && aTab._tabViewTabItem) {
+						self.browser.selectedTab = aTab;
+
+						if (tempTab._tabViewTabItem &&
+							tempTab._tabViewTabItem.parent)
+							tempTab._tabViewTabItem.parent.close();
+						self.browser.removeTab(tempTab);
+					}
 				})
 				.error(this.defaultHandleError);
 	},
@@ -1932,7 +1951,12 @@ FoxSplitterWindow.prototype = {
 					this.handleDragWithShiftKey ||
 					!this._isEventFiredOnTabbar(aEvent)
 				) :
-				dragInfo.links.length
+			dragInfo.links.length ?
+				(
+					this.handleDragWithShiftKey ||
+					!this._isEventFiredOnDroppable(aEvent)
+				) :
+				false
 		);
 		dragInfo.position = this._getDropPosition(aEvent);
 
@@ -2130,6 +2154,36 @@ FoxSplitterWindow.prototype = {
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
 				null
 			).booleanValue;
+	},
+
+	_isEventFiredOnDroppable : function FSW_isEventFiredOnDroppable(aEvent)
+	{
+		if (!aEvent.originalTarget.ownerDocument)
+			return false;
+		var inputFieldPattern = <![CDATA[(
+				(
+					contains(concat(" ", local-name(), " "), " input INPUT ") and
+					contains(concat(" ", @type, " "), " text TEXT file FILE password PASSWORD ")
+				) or
+				contains(concat(" ", local-name(), " "), " textarea TEXTAREA ")
+			)]]>.toString().replace(/\n\t+/g, ' ');
+		var droppablePattern = 'ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+']';
+		return (
+			aEvent.originalTarget.ownerDocument.evaluate(
+				droppablePattern,
+				aEvent.originalTarget,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue ||
+			aEvent.target.ownerDocument.evaluate(
+				droppablePattern,
+				aEvent.target,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue
+		);
 	},
 
 	_getDraggedWindow : function FSW_getDraggedWindow(aEvent)
