@@ -2162,10 +2162,10 @@ FoxSplitterWindow.prototype = {
 			return false;
 		var inputFieldPattern = <![CDATA[(
 				(
-					contains(concat(" ", local-name(), " "), " input INPUT ") and
-					contains(concat(" ", @type, " "), " text TEXT file FILE password PASSWORD ")
+					contains(" input INPUT ", concat(" ", local-name(), " ")) and
+					contains(" text TEXT file FILE password PASSWORD ", concat(" ", @type, " "))
 				) or
-				contains(concat(" ", local-name(), " "), " textarea TEXTAREA ")
+				contains(" textarea TEXTAREA ", concat(" ", local-name(), " "))
 			)]]>.toString().replace(/\n\t+/g, ' ');
 		var droppablePattern = 'ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+']';
 		return (
