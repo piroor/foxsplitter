@@ -437,6 +437,7 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 				tabContextPopup.insertBefore(item, this.document.getElementById('context_openTabInWindow').nextSibling);
 				this.tabContextItems.push(item);
+				this.tabContextMoveItem = item;
 			}
 			if (prefs.getPref(this.domain+'context.splitFromTab.duplicate')) {
 				let item = ToolbarItem.toDOMDocumentFragment(<>
@@ -467,6 +468,7 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 				tabContextPopup.insertBefore(item, (this.tabContextItems.length && this.tabContextItems[0] || this.document.getElementById('context_openTabInWindow')).nextSibling);
 				this.tabContextItems.push(item);
+				this.tabContextDuplicateItem = item;
 			
 			}
 			if (prefs.getPref(this.domain+'context.gatherWindows')) {
@@ -480,6 +482,7 @@ FoxSplitterUI.prototype = {
 				</>, tabContextPopup).querySelector('*');
 				tabContextPopup.insertBefore(item, this.document.getElementById('context_bookmarkAllTabs').nextSibling);
 				this.tabContextItems.push(item);
+				this.tabContextGatherItem = item;
 			}
 			if (this.tabContextItems.length)
 				tabContextPopup.addEventListener('popupshowing', this, false);
@@ -613,6 +616,9 @@ FoxSplitterUI.prototype = {
 			}, this);
 
 		this.tabContextItems = [];
+		this.tabContextMoveItem = null;
+		this.tabContextDuplicateItem = null;
+		this.tabContextGatherItem = null;
 		this.selectionPopupItems = [];
 	},
 
