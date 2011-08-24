@@ -1,7 +1,7 @@
 /**
  * @fileOverview Bootstrap code for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      1
+ * @version      2
  *
  * @description
  *   This provides ability to load a script file placed to "modules/main.js".
@@ -16,16 +16,14 @@
  */
 
 var _gLoader;
+var _gResourceRegistered = false;
 
-function _loadMain(aId, aRoot, aReason)
+function _load(aScriptName, aId, aRoot, aReason)
 {
-	if (_gLoader)
-		return;
-
 	const IOService = Components.classes['@mozilla.org/network/io-service;1']
 						.getService(Components.interfaces.nsIIOService);
 
-	var resource, loader, main;
+	var resource, loader, script;
 	if (aRoot.isDirectory()) {
 		resource = IOService.newFileURI(aRoot);
 
@@ -34,24 +32,33 @@ function _loadMain(aId, aRoot, aReason)
 		loader.append('loader.js');
 		loader = IOService.newFileURI(loader).spec;
 
-		main = aRoot.clone();
-		main.append('modules');
-		main.append('main.js');
-		main = IOService.newFileURI(main).spec;
+		script = aRoot.clone();
+		script.append('modules');
+		script.append(aScriptName+'.js');
+		script = IOService.newFileURI(script).spec;
 	}
 	else {
 		let base = 'jar:'+IOService.newFileURI(aRoot).spec+'!/';
 		loader = base + 'components/loader.js';
-		main = base + 'modules/main.js';
+		script = base + 'modules/'+aScriptName+'.js';
 		resource = IOService.newURI(base, null, null);
 	}
 
-	_gLoader = {};
-	Components.classes['@mozilla.org/moz/jssubscript-loader;1']
-		.getService(Components.interfaces.mozIJSSubScriptLoader)
-		.loadSubScript(loader, _gLoader);
-	_gLoader.registerResource(aId.split('@')[0]+'-resources', resource);
-	_gLoader.load(main);
+	if (!_gLoader) {
+		_gLoader = {};
+		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
+			.getService(Components.interfaces.mozIJSSubScriptLoader)
+			.loadSubScript(loader, _gLoader);
+	}
+
+	if (!_gLoader.exists('modules/'+aScriptName+'.js', resource.spec))
+		return;
+
+	if (!_gResourceRegistered) {
+		_gLoader.registerResource(aId.split('@')[0]+'-resources', resource);
+		_gResourceRegistered = true;
+	}
+	_gLoader.load(script);
 }
 
 function _reasonToString(aReason)
@@ -76,26 +83,33 @@ function _reasonToString(aReason)
 
 function install(aData, aReason)
 {
-	_loadMain(aData.id, aData.installPath, _reasonToString(aReason));
+	_load('install', aData.id, aData.installPath, _reasonToString(aReason));
 	_gLoader.install(_reasonToString(aReason));
 }
 
 function startup(aData, aReason)
 {
-	_loadMain(aData.id, aData.installPath, _reasonToString(aReason));
+	_load('main', aData.id, aData.installPath, _reasonToString(aReason));
 }
 
 function shutdown(aData, aReason)
 {
 	if (!_gLoader) return;
-	_gLoader.unregisterResource(aData.id.split('@')[0]+'-resources');
+	if (_gResourceRegistered) {
+		_gLoader.unregisterResource(aData.id.split('@')[0]+'-resources');
+	}
 	_gLoader.shutdown(_reasonToString(aReason));
-	_gLoader = void(0);
+	_gLoader = undefined;
 }
 
 function uninstall(aData, aReason)
 {
-	if (!_gLoader) return;
+	if (!_gLoader) {
+		_load('install', aData.id, aData.installPath, _reasonToString(aReason));
+	}
 	_gLoader.uninstall(_reasonToString(aReason));
-	_gLoader = void(0);
+	if (_gResourceRegistered) {
+		_gLoader.unregisterResource(aData.id.split('@')[0]+'-resources');
+	}
+	_gLoader = undefined;
 }
