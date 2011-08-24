@@ -304,7 +304,7 @@ function unregisterResource(aName)
 /** Handler for "install" of the bootstrap.js */
 function install(aReason)
 {
-	_callHandler('iustall', aReason);
+	_callHandler('install', aReason);
 }
 
 /** Handler for "uninstall" of the bootstrap.js */
