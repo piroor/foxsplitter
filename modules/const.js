@@ -99,7 +99,8 @@ var exports = {
 	HIDE_BOOKMARKS : (1 << 3),
 	HIDE_STATUS    : (1 << 4),
 	HIDE_EXTRA     : (1 << 5),
-	HIDE_NON_NAVIGATION_ITEMS : (1 << 6),
+	HIDE_NON_NAVIGATION_ITEMS   : (1 << 6),
+	HIDE_NON_NAVIGATION_TOOLBAR : (1 << 7),
 
 	RAISE_WINDOW_BY_FOCUS       : 0,
 	RAISE_WINDOW_BY_RAISED_FLAG : 1,
@@ -143,7 +144,8 @@ var exports = {
 	STYLESHEET : <![CDATA[
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
 		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS% {
+		:root[chromehidden~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS%,
+		:root[chromehidden~="non-navigation-toolbar"] toolbar:not(#nav-bar):not(#TabsToolbar) {
 			visibility: collapse;
 		}
 
