@@ -78,6 +78,7 @@ hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
 hiddenUIInInactiveWindow.status=Status Bar
 hiddenUIInInactiveWindow.extra=Extra Toolbars
 hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
+hiddenUIInInactiveWindow.extra-toolbars=All other extra toolbars
 
 tab.menu=Menu
 

@@ -63,7 +63,7 @@ config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUB
                                                      FoxSplitterConst.HIDE_BOOKMARKS |
                                                      FoxSplitterConst.HIDE_EXTRA |
                                                      FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS |
-                                                     FoxSplitterConst.HIDE_NON_NAVIGATION_TOOLBAR);
+                                                     FoxSplitterConst.HIDE_EXTRA_TOOLBARS);
 
 config.setDefault(domain+'generalButton.split.position', FoxSplitterConst.POSITION_RIGHT);
 config.setDefault(domain+'appMenu.split', true);

@@ -78,6 +78,7 @@ hiddenUIInInactiveWindow.bookmarks=ブックマークツールバー
 hiddenUIInInactiveWindow.status=ステータスバー
 hiddenUIInInactiveWindow.extra=その他のツールバー
 hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツールバー項目
+hiddenUIInInactiveWindow.extra-toolbars=その他のツールバー
 
 tab.menu=メニュー
 

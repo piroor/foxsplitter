@@ -262,6 +262,8 @@ config.register('about:blank?foxsplitter-config', <>
 						value={FoxSplitterConst.HIDE_STATUS}/>
 					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.extra')}
 						value={FoxSplitterConst.HIDE_EXTRA}/>
+					<checkbox label={bundle.getString('hiddenUIInInactiveWindow.extra-toolbars')}
+						value={FoxSplitterConst.HIDE_EXTRA_TOOLBARS}/>
 				</vbox>
 			</hbox>
 		</groupbox>

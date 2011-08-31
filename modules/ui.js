@@ -1095,8 +1095,8 @@ FoxSplitterUI.prototype = {
 			hiddenItems.push('status');
 		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA)
 			hiddenItems.push('extrachrome');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_NON_NAVIGATION_TOOLBAR)
-			hiddenItems.push('non-navigation-toolbar');
+		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA_TOOLBARS)
+			hiddenItems.push('extra-toolbars');
 
 		// extra hidden items controled by Fox Splitter
 		if (this.hiddenUIInInactiveWindow & this.HIDE_NON_NAVIGATION_ITEMS)
