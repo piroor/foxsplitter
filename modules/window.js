@@ -427,10 +427,16 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
-		var exportTabs = this.allTabs;
+		var exportTabs = this.allTabs.filter(function(aTab) {
+				return (
+					aTab.linkedBrowser.currentURI.spec != 'about:blank' &&
+					removingTabs.indexOf(aTab) < 0
+				);
+			}, this);
 		if (this.importTabsFromClosedSibling == this.IMPORT_ONLY_HIDDEN) {
+			let removingTabs = this.browser._removingTabs || [];
 			exportTabs = exportTabs.filter(function(aTab) {
-				return aTab.hidden && aTab.linkedBrowser.currentURI.spec != 'about:blank';
+				return aTab.hidden;
 			}, this);
 		}
 		else {
