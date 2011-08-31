@@ -78,9 +78,9 @@ hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
 hiddenUIInInactiveWindow.location=Location Bar
 hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
 hiddenUIInInactiveWindow.status=Status Bar
-hiddenUIInInactiveWindow.extra=Extra Toolbars
+hiddenUIInInactiveWindow.extra=Sidebar
 hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
-hiddenUIInInactiveWindow.extra-toolbars=All other extra toolbars
+hiddenUIInInactiveWindow.extra-toolbars=Extra Toolbars
 
 tab.menu=Nabídka
 
