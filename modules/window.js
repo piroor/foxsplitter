@@ -430,7 +430,7 @@ FoxSplitterWindow.prototype = {
 		var exportTabs = this.allTabs;
 		if (this.importTabsFromClosedSibling == this.IMPORT_ONLY_HIDDEN) {
 			exportTabs = exportTabs.filter(function(aTab) {
-				return aTab.hidden;
+				return aTab.hidden && aTab.linkedBrowser.currentURI.spec != 'about:blank';
 			}, this);
 		}
 		else {
