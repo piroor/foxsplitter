@@ -1960,7 +1960,7 @@ FoxSplitterWindow.prototype = {
 			dragInfo.links.length ?
 				(
 					this.handleDragWithShiftKey ||
-					!this._isEventFiredOnDroppable(aEvent)
+					this._isEventFiredOnDroppable(aEvent)
 				) :
 				false
 		);
@@ -2165,25 +2165,30 @@ FoxSplitterWindow.prototype = {
 	_isEventFiredOnDroppable : function FSW_isEventFiredOnDroppable(aEvent)
 	{
 		if (!aEvent.originalTarget.ownerDocument)
-			return false;
+			return true;
+
 		var inputFieldPattern = <![CDATA[(
 				(
 					contains(" input INPUT ", concat(" ", local-name(), " ")) and
 					contains(" text TEXT file FILE password PASSWORD ", concat(" ", @type, " "))
 				) or
 				contains(" textarea TEXTAREA ", concat(" ", local-name(), " "))
-			)]]>.toString().replace(/\n\t+/g, ' ');
-		var droppablePattern = 'ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+']';
+			)]]>.toString();
+		var popupPattern = <![CDATA[(
+				contains(" popup menupopup panel tooltip ", concat(" ", local-name(), " ")) and
+				not(contains(@class, "DROP_INDICATOR_CLASS"))
+			)]]>.toString().replace(/DROP_INDICATOR_CLASS/g, this.DROP_INDICATOR);
+		var undroppablePattern = ('ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+' or '+popupPattern+']').replace(/\n\t+/g, ' ');
 		return (
-			aEvent.originalTarget.ownerDocument.evaluate(
-				droppablePattern,
+			!aEvent.originalTarget.ownerDocument.evaluate(
+				undroppablePattern,
 				aEvent.originalTarget,
 				null,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
 				null
-			).booleanValue ||
-			aEvent.target.ownerDocument.evaluate(
-				droppablePattern,
+			).booleanValue &&
+			!aEvent.target.ownerDocument.evaluate(
+				undroppablePattern,
 				aEvent.target,
 				null,
 				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
