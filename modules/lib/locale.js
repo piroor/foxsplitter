@@ -1,7 +1,7 @@
 /**
  * @fileOverview Locale module for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      3
+ * @version      4
  *
  * @license
  *   The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi.
@@ -9,7 +9,7 @@
  * @url http://github.com/piroor/restartless
  */
 
-const EXPORTED_SYMBOLS = ['get'];
+const EXPORTED_SYMBOLS = ['locale'];
 
 const DEFAULT_LOCALE = 'en-US';
 
@@ -50,6 +50,8 @@ var get = function(aPath, aBaseURI) {
 		return gCache[uri];
 	};
 exports.get = get;
+
+var locale = { 'get' : get };
 
 const Service = Cc['@mozilla.org/intl/stringbundle;1']
 					.getService(Ci.nsIStringBundleService);
