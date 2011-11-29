@@ -283,8 +283,10 @@ FoxSplitterWindow.prototype = {
 		var self = this;
 		Deferred.next(function() {
 			// workaround to fix broken appearance on sized windows
-			self.resizeBy(0, -1);
-			self.resizeBy(0, 1);
+			if (!self.maximized) {
+				self.resizeBy(0, -1);
+				self.resizeBy(0, 1);
+			}
 
 			self._restoreState();
 			self.startListen();
