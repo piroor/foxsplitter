@@ -1920,6 +1920,11 @@ FoxSplitterWindow.prototype = {
 		if (this.ui)
 			this.ui.setGroupedAppearance();
 	},
+	updateGroupedAppearance : function FSW_updateGroupedAppearance()
+	{
+		if (this.ui)
+			this.ui.updateGroupedAppearance();
+	},
 	clearGroupedAppearance : function FSW_clearGroupedAppearance(aOnQuit)
 	{
 		if (!aOnQuit)

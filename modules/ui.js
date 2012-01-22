@@ -727,6 +727,9 @@ FoxSplitterUI.prototype = {
 	{
 		if (this._chromeMarginUpdating) return;
 
+		if (typeof this._originalChromeMargin == 'undefined')
+			this._originalChromeMargin = this.documentElement.getAttribute('chromemargin');
+
 		var margin = (this._originalChromeMargin || '-1,-1,-1,-1').split(/\s*,\s*/);
 		if (this.owner.topSibling) margin[0] = 0;
 		if (this.owner.rightSibling) margin[1] = 0;
@@ -1184,12 +1187,7 @@ FoxSplitterUI.prototype = {
 			return;
 
 		this.updateChromeHidden();
-
-		if (typeof this._originalChromeMargin == 'undefined')
-			this._originalChromeMargin = this.documentElement.getAttribute('chromemargin');
-
 		this.updateChromeMargin();
-
 		this._initToolbarState();
 
 		if (
@@ -1238,6 +1236,29 @@ FoxSplitterUI.prototype = {
 			aToolbar.setAttribute('iconsize', 'small');
 		}, this);
 		this._originalToolbarState = state;
+	},
+
+
+	updateGroupedAppearance : function FSUI_updateGroupedAppearance()
+	{
+		if (!this._window)
+			return;
+
+		if (this._deferredGroupAppearance)
+			this._deferredGroupAppearance.cancel();
+
+		var self = this;
+		this._deferredGroupAppearance = Deferred.next(function() {
+			delete self._deferredGroupAppearance;
+			self._updateGroupedAppearanceInternal();
+		});
+	},
+	_updateGroupedAppearanceInternal : function FSUI_updateGroupedAppearanceInternal()
+	{
+		if (!this._window)
+			return;
+
+		this.updateChromeMargin();
 	},
 
 

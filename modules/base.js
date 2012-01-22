@@ -176,8 +176,8 @@ FoxSplitterBase.prototype = {
 		if (!aSilent)
 			deferreds.push(this._initPositionAndSize());
 
+		this.setGroupedAppearance();
 		if (!this.isGroup) {
-			this.setGroupedAppearance();
 			this.saveState();
 
 			let self = this;
@@ -193,8 +193,8 @@ FoxSplitterBase.prototype = {
 			}));
 		}
 
+		aSibling.setGroupedAppearance();
 		if (!aSibling.isGroup) {
-			aSibling.setGroupedAppearance();
 			aSibling.saveState();
 
 			deferreds.push(Deferred.next(function() {
@@ -331,6 +331,7 @@ FoxSplitterBase.prototype = {
 
 		this.parent.unregister(this);
 
+		this.updateGroupedAppearance();
 		if (!this.isGroup) {
 			if (!aSilent)
 				this.saveState();
@@ -343,16 +344,19 @@ FoxSplitterBase.prototype = {
 				this.document.dispatchEvent(event);
 			}
 		}
-		if (sibling && !sibling.isGroup) {
-			if (!aSilent)
-				sibling.saveState();
+		if (sibling) {
+			sibling.updateGroupedAppearance();
+			if (!sibling.isGroup) {
+				if (!aSilent)
+					sibling.saveState();
 
-			if (!sibling.parent) {
-				sibling.clearGroupedAppearance();
+				if (!sibling.parent) {
+					sibling.clearGroupedAppearance();
 
-				let event = sibling.document.createEvent('Events');
-				event.initEvent(sibling.EVENT_TYPE_UNSPLIT, true, false);
-				sibling.document.dispatchEvent(event);
+					let event = sibling.document.createEvent('Events');
+					event.initEvent(sibling.EVENT_TYPE_UNSPLIT, true, false);
+					sibling.document.dispatchEvent(event);
+				}
 			}
 		}
 	},
