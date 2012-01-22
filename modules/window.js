@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1490,6 +1490,11 @@ FoxSplitterWindow.prototype = {
 
 			case 'sizemode':
 				return this._onWindowStateChange();
+
+			case 'chromemargin':
+				if (this.ui)
+					this.ui.onChromeMarginChange(aEvent);
+				return;
 		}
 	},
 

@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -723,6 +723,37 @@ FoxSplitterUI.prototype = {
 	},
 
 
+	updateChromeMargin : function FSUI_updateChromeMargin()
+	{
+		if (this._chromeMarginUpdating) return;
+
+		var margin = (this._originalChromeMargin || '-1,-1,-1,-1').split(/\s*,\s*/);
+		if (this.owner.topSibling) margin[0] = 0;
+		if (this.owner.rightSibling) margin[1] = 0;
+		if (this.owner.bottomSibling) margin[2] = 0;
+		if (this.owner.leftSibling) margin[3] = 0;
+
+		this._chromeMarginUpdating = true;
+		try {
+			this.documentElement.setAttribute('chromemargin', margin.join(','));
+		}
+		finally {
+			this._chromeMarginUpdating = false;
+		}
+	},
+	_chromeMarginUpdating : false,
+	_originalChromeMargin : undefined,
+
+	onChromeMarginChange : function FSUI_onChromeMarginChange(aEvent)
+	{
+		if (this._chromeMarginUpdating)
+			return;
+
+		this._originalChromeMargin = aEvent.newValue;
+		this.updateChromeMargin();
+	},
+
+
 	handleEvent : function FSUI_handleEvent(aEvent)
 	{
 		switch (aEvent.type)
@@ -749,6 +780,15 @@ FoxSplitterUI.prototype = {
 				return this._onDragStart(aEvent);
 			case 'dragend':
 				return this._onDragEnd(aEvent);
+/* DOMAttrModified is handled by FoxSplitterWindow
+			case 'DOMAttrModifined':
+				switch (aEvent.attrName)
+				{
+					case 'chromemargin':
+						return this._onChromeMarginChange(aEvent);
+				}
+				return;
+*/
 			default:
 				return;
 		}
@@ -1145,6 +1185,11 @@ FoxSplitterUI.prototype = {
 
 		this.updateChromeHidden();
 
+		if (typeof this._originalChromeMargin == 'undefined')
+			this._originalChromeMargin = this.documentElement.getAttribute('chromemargin');
+
+		this.updateChromeMargin();
+
 		this._initToolbarState();
 
 		if (
@@ -1219,6 +1264,14 @@ FoxSplitterUI.prototype = {
 			return;
 
 		this.updateChromeHidden(aForce);
+
+		if (typeof this._originalChromeMargin != 'undefined') {
+			if (this._originalChromeMargin)
+				this.documentElement.setAttribute('chromemargin', this._originalChromeMargin);
+			else
+				this.documentElement.removeAttribute('chromemargin');
+			delete this._originalChromeMargin;
+		}
 
 		this._restoreToolbarState(aForce);
 

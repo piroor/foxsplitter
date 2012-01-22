@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -105,6 +105,28 @@ FoxSplitterBase.prototype = {
 				return aMember != this;
 			}, this);
 		return otherMembers[0];
+	},
+	get topSibling() { return this.getSiblingAt(this.POSITION_TOP); },
+	get bottomSibling() { return this.getSiblingAt(this.POSITION_BOTTOM); },
+	get rightSibling() { return this.getSiblingAt(this.POSITION_RIGHT); },
+	get leftSibling() { return this.getSiblingAt(this.POSITION_LEFT); },
+
+	getSiblingAt : function FSB_getSiblingAt(aPosition)
+	{
+		if (!this.parent)
+			return null;
+
+		var current = this;
+		var sibling;
+		while (
+			current &&
+			(sibling = current.sibling) &&
+			current.sibling.position != aPosition
+		)
+		{
+			current = current.parent;
+		}
+		return sibling;
 	},
 
 
