@@ -189,5 +189,9 @@ ui.unbind.short=Unbind
 ui.unbind.long=Unbind this window
 ui.unbind.accesskey=u
 
+ui.setAsMainWindow.short=Main Window
+ui.setAsMainWindow.long=Make this window main
+ui.setAsMainWindow.accesskey=m
+
 
 tabView.importedGroup=Imported from other windows (%S)

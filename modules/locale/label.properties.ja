@@ -15,7 +15,7 @@
 # The Original Code is the Fox Splitter (formerly Split Browser).
 # 
 # The Initial Developer of the Original Code is SHIMODA Hiroshi.
-# Portions created by the Initial Developer are Copyright (C) 2007-2011
+# Portions created by the Initial Developer are Copyright (C) 2007-2012
 # the Initial Developer. All Rights Reserved.
 # 
 # Contributor(s): SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -190,6 +190,10 @@ ui.syncScroll.accesskey=s
 ui.unbind.short=切り離す
 ui.unbind.long=ウィンドウを切り離す
 ui.unbind.accesskey=u
+
+ui.setAsMainWindow.short=メインのウィンドウ
+ui.setAsMainWindow.long=このウィンドウをメインのウィンドウにする
+ui.setAsMainWindow.accesskey=m
 
 
 tabView.importedGroup=他のウィンドウから移動されたグループ（%S）
