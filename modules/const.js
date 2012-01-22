@@ -42,6 +42,7 @@ var exports = {
 	IMAGES_VERSION : 2,
 
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
+	MAIN              : 'foxsplitter-main-window',
 	ACTIVE            : 'foxsplitter-active',
 	MEMBER            : 'foxsplitter-member-window',
 	HOVER             : 'foxsplitter-hover',

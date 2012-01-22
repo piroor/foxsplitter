@@ -87,6 +87,8 @@ FoxSplitterUI.prototype = {
 	set shouldMinimalizeUI(aValue) { return FoxSplitterUI.shouldMinimalizeUI = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
+	get shouldFixActiveWindow() { return FoxSplitterUI.shouldFixActiveWindow; },
+	set shouldFixActiveWindow(aValue) { return FoxSplitterUI.shouldFixActiveWindow = aValue; },
 	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
 	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
 
@@ -264,6 +266,13 @@ FoxSplitterUI.prototype = {
 				label={bundle.getString('ui.unbind.long')}
 				accesskey={bundle.getString('ui.unbind.accesskey')}
 				foxsplitter-command="unbind"/>
+			<menuseparator class={this.MENU_ITEM+' setAsMainWindowSeparator'}/>
+			<menuitem class={this.MENU_ITEM+' setAsMainWindow'}
+				type="radio"
+				autoCheck="false"
+				label={bundle.getString('ui.setAsMainWindow.long')}
+				accesskey={bundle.getString('ui.setAsMainWindow.accesskey')}
+				foxsplitter-command="setAsMainWindow"/>
 			<menuseparator class={this.MENU_ITEM+' syncScrollSeparator'}/>
 			<menuitem class={this.MENU_ITEM+' syncScroll'}
 				type="checkbox"
@@ -898,6 +907,9 @@ FoxSplitterUI.prototype = {
 					case 'closeOther':
 						return owner.closeOther();
 
+					case 'setAsMainWindow':
+						return owner.main = true;
+
 					case 'syncScroll':
 						return owner.syncScroll = !owner.syncScroll;
 				}
@@ -939,6 +951,19 @@ FoxSplitterUI.prototype = {
 			else
 				aItem.setAttribute('disabled', true);
 		}, this);
+
+		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
+		if (setAsMainWindowItem) {
+			if (this.owner.main)
+				setAsMainWindowItem.setAttribute('checked', true);
+			else
+				setAsMainWindowItem.removeAttribute('checked');
+
+			if (!this.owner.parent)
+				setAsMainWindowItem.setAttribute('disabled', true);
+			else
+				setAsMainWindowItem.removeAttribute('disabled');
+		}
 
 		var separator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
 		var syncScrollItem = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScroll');
@@ -1150,7 +1175,11 @@ FoxSplitterUI.prototype = {
 		if (this._originalChromeHidden === undefined)
 			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
 
-		if (this.owner.active || !this.owner.parent || aForceRestore) {
+		if (
+			(this.shouldFixActiveWindow ? this.owner.main : this.owner.active ) ||
+			!this.owner.parent ||
+			aForceRestore
+			) {
 			if (this._originalChromeHidden)
 				this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
 			else
@@ -1186,7 +1215,6 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		this.updateChromeHidden();
 		this._updateGroupedAppearanceInternal();
 		this._initToolbarState();
 
@@ -1258,6 +1286,7 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
+		this.updateChromeHidden();
 		this.updateChromeMargin();
 	},
 
@@ -1348,6 +1377,7 @@ FoxSplitterUI.instances = [];
 
 FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
+FoxSplitterUI.shouldFixActiveWindow = prefs.getPref(domain+'shouldFixActiveWindow');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 
 var prefListener = {
@@ -1359,6 +1389,19 @@ var prefListener = {
 			var prefName = aData.replace(domain, '');
 			if (prefName in FoxSplitterUI) {
 				FoxSplitterUI[prefName] = prefs.getPref(aData);
+				switch (prefName)
+				{
+					/*
+					case 'shouldMinimalizeUI':
+					case 'shouldAutoHideTabs':
+					*/
+					case 'shouldFixActiveWindow':
+					case 'hiddenUIInInactiveWindow':
+						FoxSplitterUI.instances.forEach(function(aUI) {
+							aUI.updateGroupedAppearance();
+						});
+						break;
+				}
 			}
 			else {
 				switch (prefName)

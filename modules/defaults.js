@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -51,6 +51,7 @@ config.setDefault(domain+'handleDragWithShiftKey', false);
 
 config.setDefault(domain+'shouldMinimalizeUI', true);
 config.setDefault(domain+'shouldAutoHideTabs', true);
+config.setDefault(domain+'shouldFixActiveWindow', true);
 
 config.setDefault(domain+'syncScrollX', true);
 config.setDefault(domain+'syncScrollY', true);

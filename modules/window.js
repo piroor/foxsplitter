@@ -182,8 +182,34 @@ FoxSplitterWindow.prototype = {
 			}, this);
 		}
 		this.documentElement.setAttribute(this.ACTIVE, this._active);
-		this.ui.updateChromeHidden();
+		if (this.ui)
+			this.ui.updateGroupedAppearance();
 		return this._active;
+	},
+
+	get main()
+	{
+		return this._main;
+	},
+	set main(aValue)
+	{
+		this._main = !!aValue;
+		if (aValue && this.parent) {
+			this.root.allWindows.forEach(function(aFSWindow) {
+				if (aFSWindow != this)
+					aFSWindow.main = false;
+			}, this);
+		}
+		this.documentElement.setAttribute(this.MAIN, this._main);
+		if (this.ui)
+			this.ui.updateGroupedAppearance();
+		return this._main;
+	},
+	_main : false,
+
+	get mainWindow()
+	{
+		return this.parent ? this.root.mainWindow : this ;
 	},
 
 	get windowState()
@@ -268,6 +294,7 @@ FoxSplitterWindow.prototype = {
 		aWindow.addEventListener('unload', this, false);
 
 		this.active = true;
+		this.main = true;
 
 		if (aOnInit)
 			this._initAfterLoad();
@@ -339,10 +366,17 @@ FoxSplitterWindow.prototype = {
 		if (!sibling || sibling.parent)
 			return false;
 
-		this.bindWith(sibling, lastState.position, true);
+		this.bindWith(sibling, {
+			position   : lastState.position,
+			silent     : true,
+			mainWindow : this
+		});
 		this.parent.resetPositionAndSize(this);
 		if (lastState.collapsed)
 			this.collapse();
+
+		if (lastState.main)
+			this.main = true;
 
 		delete this._lastState;
 		this._restored = true;
@@ -429,6 +463,7 @@ FoxSplitterWindow.prototype = {
 			)
 			return;
 
+		var removingTabs = this.browser._removingTabs || [];
 		var exportTabs = this.allTabs.filter(function(aTab) {
 				return (
 					aTab.linkedBrowser.currentURI.spec != 'about:blank' &&
@@ -436,7 +471,6 @@ FoxSplitterWindow.prototype = {
 				);
 			}, this);
 		if (this.importTabsFromClosedSibling == this.IMPORT_ONLY_HIDDEN) {
-			let removingTabs = this.browser._removingTabs || [];
 			exportTabs = exportTabs.filter(function(aTab) {
 				return aTab.hidden;
 			}, this);
@@ -836,20 +870,36 @@ FoxSplitterWindow.prototype = {
 
 					beforeYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : beforeYTiles[aIndex-1];
-						aTile.FSWindow.bindWith(base, self.POSITION_TOP, true);
+						aTile.FSWindow.bindWith(base, {
+							position   : self.POSITION_TOP,
+							silent     : true,
+							mainWindow : self
+						});
 					});
 					beforeXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.bindWith(row[aTile.col+1].FSWindow, self.POSITION_LEFT, true);
+						aTile.FSWindow.bindWith(row[aTile.col+1].FSWindow, {
+							position   : self.POSITION_LEFT,
+							silent     : true,
+							mainWindow : self
+						});
 					});
 
 					afterYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : afterYTiles[aIndex-1];
-						aTile.FSWindow.bindWith(base, self.POSITION_BOTTOM, true);
+						aTile.FSWindow.bindWith(base, {
+							position   : self.POSITION_BOTTOM,
+							silent     : true,
+							mainWindow : self
+						});
 					});
 					afterXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.bindWith(row[aTile.col-1].FSWindow, self.POSITION_RIGHT, true);
+						aTile.FSWindow.bindWith(row[aTile.col-1].FSWindow, {
+							position   : self.POSITION_RIGHT,
+							silent     : true,
+							mainWindow : self
+						});
 					});
 
 					self.parent.resetPositionAndSize(self); // for safety
@@ -1334,6 +1384,7 @@ FoxSplitterWindow.prototype = {
 			height   : this.height,
 			sibling  : (this.sibling ? this.sibling.id : null ),
 			position : this.position,
+			main     : this.main,
 			collapsed : this.collapsed
 		};
 	},

@@ -135,6 +135,27 @@ FoxSplitterGroup.prototype = {
 		});
 	},
 
+	get main()
+	{
+		return !!this.mainWindow;
+	},
+	set main(aValue)
+	{
+		if (aValue) this.members[0].main = true;
+		return aValue;
+	},
+
+	get mainWindow()
+	{
+		var main = null;
+		this.members.some(function(aMember) {
+			return aMember.isGroup ?
+					(main = aMember.mainWindow) :
+					aMember.main ? (main = aMember) : null ;
+		});
+		return main;
+	},
+
 	get state()
 	{
 		var self = {
