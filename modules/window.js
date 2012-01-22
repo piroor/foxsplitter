@@ -548,7 +548,12 @@ FoxSplitterWindow.prototype = {
 
 	raise : function FSW_raise()
 	{
-		if (!this._window || this.raising || this.minimized)
+		if (
+			!this._window ||
+			this.raising ||
+			this.minimized ||
+			this.methodToRaiseWindow == this.DO_NOT_RAISE_WINDOW
+			)
 			return Deferred.next(function() {});
 
 		this.raising++;

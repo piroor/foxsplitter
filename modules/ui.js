@@ -1187,7 +1187,7 @@ FoxSplitterUI.prototype = {
 			return;
 
 		this.updateChromeHidden();
-		this.updateChromeMargin();
+		this._updateGroupedAppearanceInternal();
 		this._initToolbarState();
 
 		if (

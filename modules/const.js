@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -104,6 +104,7 @@ var exports = {
 
 	RAISE_WINDOW_BY_FOCUS       : 0,
 	RAISE_WINDOW_BY_RAISED_FLAG : 1,
+	DO_NOT_RAISE_WINDOW         : -1,
 
 	WINDOW_DROP_TYPE : 'application/x-foxsplitter-window',
 	TAB_DROP_TYPE    : 'application/x-moz-tabbrowser-tab',
