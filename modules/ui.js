@@ -1102,7 +1102,18 @@ FoxSplitterUI.prototype = {
 
 	splitTabsFromToolbarButton : function FSUI_splitTabsFromToolbarButton(aTabs, aEvent)
 	{
-		return this.owner.splitTabsTo(aTabs, prefs.getPref(this.domain+'generalButton.split.position'), aEvent);
+		var position = prefs.getPref(this.domain+'generalButton.split.position');
+		if (this.owner.parent) {
+			if (this.owner.position & this.POSITION_HORIZONTAL)
+				position = (position & this.POSITION_BEFORE) ?
+							this.POSITION_TOP :
+							this.POSITION_BOTTOM ;
+			else
+				position = (position & this.POSITION_BEFORE) ?
+							this.POSITION_LEFT :
+							this.POSITION_RIGHT ;
+		}
+		return this.owner.splitTabsTo(aTabs, position, aEvent);
 	},
 
 	splitTabsFromAppMenuItem : function FSUI_splitTabsFromAppMenuItem(aTabs)

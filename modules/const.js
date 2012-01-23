@@ -79,6 +79,8 @@ var exports = {
 
 	POSITION_HORIZONTAL : (1 << 0) | (1 << 1),
 	POSITION_VERTICAL   : (1 << 2) | (1 << 3),
+	POSITION_BEFORE     : (1 << 0) | (1 << 2),
+	POSITION_AFTER      : (1 << 1) | (1 << 3),
 
 	POSITION_VALID   : (1 << 0) | (1 << 1) | (1 << 2) | (1 << 3),
 	POSITION_INVALID : 0,
