@@ -1172,25 +1172,15 @@ FoxSplitterUI.prototype = {
 
 		hiddenItems = hiddenItems.join(' ');
 
-		if (this._originalChromeHidden === undefined)
-			this._originalChromeHidden = this.documentElement.getAttribute('chromehidden');
-
 		if (
 			(this.shouldFixActiveWindow ? this.owner.main : this.owner.active ) ||
 			!this.owner.parent ||
 			aForceRestore
-			) {
-			if (this._originalChromeHidden)
-				this.documentElement.setAttribute('chromehidden', this._originalChromeHidden);
-			else
-				this.documentElement.removeAttribute('chromehidden');
-
-			delete this._originalChromeHidden;
-		}
+			)
+			this.documentElement.removeAttribute(this.CHROMEHIDDEN);
 		else
-			this.documentElement.setAttribute('chromehidden', hiddenItems);
+			this.documentElement.setAttribute(this.CHROMEHIDDEN, hiddenItems);
 	},
-	_originalChromeHidden : undefined,
 
 
 	setGroupedAppearance : function FSUI_setGroupedAppearance(aForce)

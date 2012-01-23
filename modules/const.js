@@ -47,6 +47,7 @@ var exports = {
 	MEMBER            : 'foxsplitter-member-window',
 	HOVER             : 'foxsplitter-hover',
 	STATE             : 'foxsplitter-state',
+	CHROMEHIDDEN      : 'foxsplitter-chromehidden',
 	ID                : 'foxsplitter-id',
 	SYNC_SCROLL       : 'foxsplitter-syncScroll',
 	COLLAPSED_ORIGINAL_WIDTH  : 'foxsplitter-collapsed-window-original-width',
@@ -144,11 +145,19 @@ var exports = {
 		.join(''),
 
 	STYLESHEET : <![CDATA[
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
-		:root[chromehidden~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS%,
-		:root[chromehidden~="extra-toolbars"] toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
+		:root[%CHROMEHIDDEN%~="menubar"] .chromeclass-menubar,
+		:root[%CHROMEHIDDEN%~="directories"] .chromeclass-directories,
+		:root[%CHROMEHIDDEN%~="status"] .chromeclass-status,
+		:root[%CHROMEHIDDEN%~="extrachrome"] .chromeclass-extrachrome,
+		:root[%CHROMEHIDDEN%~="location"] .chromeclass-location,
+		:root[%CHROMEHIDDEN%~="location"][chromehidden~="toolbar"] .chromeclass-toolbar,
+		:root[%CHROMEHIDDEN%~="toolbar"] .chromeclass-toolbar-additional,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS%,
+		:root[%CHROMEHIDDEN%~="extra-toolbars"] toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
 			visibility: collapse;
+			-moz-user-focus: none;
 		}
 
 		#%COLLAPSED_BAR% {
