@@ -1835,7 +1835,7 @@ FoxSplitterWindow.prototype = {
 			var frames = this._collectAllFrames(scrolledFrame.top);
 			var index = frames.indexOf(scrolledFrame);
 			this.root.allWindows.forEach(function(aFSWindow) {
-				if (aFSWindow.syncScroll)
+				if (aFSWindow != this && aFSWindow.syncScroll)
 					aFSWindow._setScrollPosition(xFactor, yFactor, index);
 			}, this);
 		}
