@@ -161,8 +161,8 @@ FoxSplitterBase.prototype = {
 
 		mainWindow = (
 			mainWindow ||
-			aSibling.main && aSibling.mainWindow ||
-			this.main && this.mainWindow
+			aSibling.main && aSibling.root.mainWindow ||
+			this.main && this.root.mainWindow
 		);
 
 		if (this.parent)
@@ -350,7 +350,7 @@ FoxSplitterBase.prototype = {
 		if (!aSilent)
 			this._expandSibling();
 
-		let lastMainWindow = this.mainWindow;
+		let lastMainWindow = this.root.mainWindow;
 
 		this.parent.unregister(this);
 
@@ -367,7 +367,11 @@ FoxSplitterBase.prototype = {
 				this.document.dispatchEvent(event);
 			}
 		}
-		(lastMainWindow || this).main = true;
+		if (lastMainWindow)
+			lastMainWindow.main = true;
+
+		if (!this.root || !this.root.mainWindow)
+			this.main = true;
 
 		if (sibling) {
 			sibling.updateGroupedAppearance();
@@ -383,8 +387,8 @@ FoxSplitterBase.prototype = {
 					sibling.document.dispatchEvent(event);
 				}
 			}
-			if (!lastMainWindow || lastMainWindow.root != sibling.root)
-				(sibling.mainWindow || sibling).main = true;
+			if (!sibling.root || !sibling.root.mainWindow)
+				sibling.main = true;
 		}
 	},
 
