@@ -250,6 +250,19 @@ var exports = {
 		}
 		#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
 		#foxsplitter-syncScroll-button[checked="true"] { -moz-image-region: rect(0 128px 16px 112px); }
+
+		/* shrink appmenu button */
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button {
+			padding-left: 0.7em;
+			padding-right: 0.7em;
+			min-width: 0;
+		}
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button > .box-inherit dropmarker {
+			margin: 0;
+		}
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button > .box-inherit .button-text {
+			visibility: collapse;
+		}
 	]]>.toString()
 };
 

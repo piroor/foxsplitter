@@ -200,7 +200,14 @@ FoxSplitterWindow.prototype = {
 					aFSWindow.main = false;
 			}, this);
 		}
-		this.documentElement.setAttribute(this.MAIN, this._main);
+
+		if (this._main)
+			this.documentElement.setAttribute(this.MAIN, this._main);
+		else
+			this.documentElement.removeAttribute(this.MAIN);
+
+		this.saveState();
+
 		if (this.ui)
 			this.ui.updateGroupedAppearance();
 		return this._main;
