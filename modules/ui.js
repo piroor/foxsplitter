@@ -1189,8 +1189,14 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearance)
+		if (this._deferredGroupAppearance) {
 			this._deferredGroupAppearance.cancel();
+			this._deferredGroupAppearance = null;
+		}
+		if (this._deferredGroupAppearanceUpdate) {
+			this._deferredGroupAppearanceUpdate.cancel();
+			this._deferredGroupAppearanceUpdate = null;
+		}
 
 		if (aForce)
 			return this._setGroupedAppearanceInternal(aForce);
@@ -1263,12 +1269,12 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearance)
-			this._deferredGroupAppearance.cancel();
+		if (this._deferredGroupAppearanceUpdate)
+			this._deferredGroupAppearanceUpdate.cancel();
 
 		var self = this;
-		this._deferredGroupAppearance = Deferred.next(function() {
-			delete self._deferredGroupAppearance;
+		this._deferredGroupAppearanceUpdate = Deferred.next(function() {
+			delete self._deferredGroupAppearanceUpdate;
 			self._updateGroupedAppearanceInternal();
 		});
 	},
@@ -1287,8 +1293,14 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearance)
+		if (this._deferredGroupAppearance) {
 			this._deferredGroupAppearance.cancel();
+			this._deferredGroupAppearance = null;
+		}
+		if (this._deferredGroupAppearanceUpdate) {
+			this._deferredGroupAppearanceUpdate.cancel();
+			this._deferredGroupAppearanceUpdate = null;
+		}
 
 		if (aForce)
 			return this._clearGroupedAppearanceInternal();
