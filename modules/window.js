@@ -202,7 +202,7 @@ FoxSplitterWindow.prototype = {
 		}
 
 		if (this._main)
-			this.documentElement.setAttribute(this.MAIN, this._main);
+			this.documentElement.setAttribute(this.MAIN, true);
 		else
 			this.documentElement.removeAttribute(this.MAIN);
 
