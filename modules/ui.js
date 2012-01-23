@@ -1225,24 +1225,7 @@ FoxSplitterUI.prototype = {
 
 		this._updateGroupedAppearanceInternal();
 		this._initToolbarState();
-
-		if (
-			this.shouldAutoHideTabs &&
-			this.browser &&
-			this._autoHideWasEnabled === undefined
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				this._autoHideWasEnabled = enabled;
-
-				if (treeStyleTab.toggleAutoHide &&
-					treeStyleTab.browser &&
-					!enabled) {
-					treeStyleTab.toggleAutoHide();
-				}
-			}
-		}
+		this.startAutoHideTabs();
 	},
 	get _autoHideWasEnabled()
 	{
@@ -1339,27 +1322,7 @@ FoxSplitterUI.prototype = {
 
 		this._restoreToolbarState(aForce);
 
-		if (
-			this.shouldAutoHideTabs &&
-			this.browser &&
-			this._autoHideWasEnabled !== undefined &&
-			(
-				aForce ||
-				!FoxSplitterBase.prototype.groupClass.instances.length
-			)
-			) {
-			let treeStyleTab = this.browser.treeStyleTab;
-
-			if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
-				let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-				if (treeStyleTab.toggleAutoHide &&
-					treeStyleTab.browser &&
-					enabled != this._autoHideWasEnabled) {
-					treeStyleTab.toggleAutoHide();
-				}
-			}
-			this._autoHideWasEnabled = undefined;
-		}
+		this.endAutoHideTabs(aForce);
 	},
 	_restoreToolbarState : function FSUI_restoreToolbarState(aForce)
 	{
@@ -1383,6 +1346,53 @@ FoxSplitterUI.prototype = {
 					aToolbar.removeAttribute('iconsize');
 			}, this);
 		}
+	},
+
+	startAutoHideTabs : function FSUI_startAutoHideTabs()
+	{
+		if (
+			!this.shouldAutoHideTabs ||
+			!this.browser ||
+			typeof this._autoHideWasEnabled != 'undefined'
+			)
+			return;
+
+		let treeStyleTab = this.browser.treeStyleTab;
+		if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
+			let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+			this._autoHideWasEnabled = enabled;
+
+			if (treeStyleTab.toggleAutoHide &&
+				treeStyleTab.browser &&
+				!enabled) {
+				treeStyleTab.toggleAutoHide();
+			}
+		}
+	},
+
+	endAutoHideTabs : function FSUI_endAutoHideTabs(aForce)
+	{
+		if (
+			!this.shouldAutoHideTabs ||
+			!this.browser ||
+			typeof this._autoHideWasEnabled == 'undefined' ||
+			(
+				!aForce &&
+				FoxSplitterBase.prototype.groupClass.instances.length
+			)
+			)
+			return;
+
+		let treeStyleTab = this.browser.treeStyleTab;
+		if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
+			let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
+			if (treeStyleTab.toggleAutoHide &&
+				treeStyleTab.browser &&
+				enabled != this._autoHideWasEnabled) {
+				treeStyleTab.toggleAutoHide();
+			}
+		}
+		this._autoHideWasEnabled = undefined;
 	}
 
 };
