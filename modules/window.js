@@ -209,7 +209,9 @@ FoxSplitterWindow.prototype = {
 
 	get mainWindow()
 	{
-		return this.parent ? this.root.mainWindow : this ;
+		return this.main ? this :
+				this.parent ? this.root.mainWindow :
+				this ;
 	},
 
 	get windowState()

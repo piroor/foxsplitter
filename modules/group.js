@@ -147,13 +147,13 @@ FoxSplitterGroup.prototype = {
 
 	get mainWindow()
 	{
-		var main = null;
+		var mainWindow = null;
 		this.members.some(function(aMember) {
 			return aMember.isGroup ?
-					(main = aMember.mainWindow) :
-					aMember.main ? (main = aMember) : null ;
+					(mainWindow = aMember.mainWindow) :
+					aMember.main ? (mainWindow = aMember) : null ;
 		});
-		return main;
+		return mainWindow;
 	},
 
 	get state()

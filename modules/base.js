@@ -528,7 +528,7 @@ FoxSplitterBase.prototype = {
 						this.restore() :
 						null ;
 		var self = this;
-		var lastMainWindow = this.mainWindow || this;
+		var lastMainWindow = (this.parent && this.root.mainWindow) || this;
 		return (waitRestored || Deferred)
 				.next(function() {
 					let positionAndSize = self.calculatePositionAndSizeFor(aPosition);
@@ -536,7 +536,7 @@ FoxSplitterBase.prototype = {
 				})
 				.next(function(aWindow) {
 					return aWindow.FoxSplitter.bindWith(self, {
-								position : aPosition,
+								position   : aPosition,
 								mainWindow : lastMainWindow
 							})
 								.next(function() {
