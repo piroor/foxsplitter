@@ -734,7 +734,8 @@ FoxSplitterUI.prototype = {
 
 	updateChromeMargin : function FSUI_updateChromeMargin()
 	{
-		if (this._chromeMarginUpdating) return;
+		if (this._chromeMarginUpdating || !this.owner.parent)
+			return;
 
 		if (typeof this._originalChromeMargin == 'undefined')
 			this._originalChromeMargin = this.documentElement.getAttribute('chromemargin');
