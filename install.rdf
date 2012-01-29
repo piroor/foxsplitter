@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="foxsplitter@piro.sakura.ne.jp"
                    em:name="Fox Splitter"
-                   em:version="2.0.2011090101"
+                   em:version="2.0.2012012901"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
