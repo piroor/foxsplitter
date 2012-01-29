@@ -107,6 +107,7 @@ platformOffset.x=Left
 platformOffset.y=Top
 platformOffset.width=Width
 platformOffset.height=Height
+shouldScrollToSplitPosition=String scrolled position of windows which are split from one tab
 
 
 

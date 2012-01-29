@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2007-2011
+ * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
@@ -82,6 +82,12 @@ var script = (function() {
 			pref.value = pref.defaultValue;
 			aField.value = pref.defaultValue;
 		}
+
+		var Cc = Components.classes;
+		var Ci = Components.interfaces;
+		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
+			.getService(Components.interfaces.mozIJSSubScriptLoader)
+			.loadSubScript('resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js', window);
 	}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '');
 
 config.register('about:blank?foxsplitter-config', <>
@@ -520,6 +526,9 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="syncScrollX"
 				name={domain+'syncScrollX'}
 				type="bool"/>
+			<preference id="shouldScrollToSplitPosition"
+				name={domain+'shouldScrollToSplitPosition'}
+				type="bool"/>
 			<preference id="platformOffset.needToBeUpdated"
 				name={domain+'platformOffset.needToBeUpdated'}
 				type="bool"
@@ -543,6 +552,8 @@ config.register('about:blank?foxsplitter-config', <>
 		</preferences>
 		<checkbox label={bundle.getString('syncScrollX')}
 			preference="syncScrollX"/>
+		<checkbox label={bundle.getString('shouldScrollToSplitPosition')}
+			preference="shouldScrollToSplitPosition"/>
 		<groupbox orient="vertical">
 			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
 			<hbox style="max-width:40em">
@@ -586,21 +597,6 @@ config.register('about:blank?foxsplitter-config', <>
 			</hbox>
 		</groupbox>
 	</prefpane>
-
-	<!-- This must be created as an XHTML script element, not XUL one, because
-	     XUL script elements are not evaluated when they are dynamically inserted. -->
-	<script type="application/javascript;version=1.8"
-		xmlns="http://www.w3.org/1999/xhtml">{script}</script>
-
-	<script type="application/javascript;version=1.8"
-		xmlns="http://www.w3.org/1999/xhtml"><![CDATA[
-		var Cc = Components.classes;
-		var Ci = Components.interfaces;
-	]]></script>
-	<script type="application/javascript;version=1.8"
-		xmlns="http://www.w3.org/1999/xhtml"
-		src="resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js"/>
-
 </prefwindow>
 
-</>);
+</>, script);

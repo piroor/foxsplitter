@@ -1,12 +1,12 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      8
+ * @version      9
  *
  * @license
- *   The MIT License, Copyright (c) 2011 SHIMODA "Piro" Hiroshi.
- *   http://www.cozmixng.org/repos/piro/restartless-addon/trunk/license.txt
- * @url http://www.cozmixng.org/repos/piro/restartless-addon/trunk/
+ *   The MIT License, Copyright (c) 2011-2012 SHIMODA "Piro" Hiroshi.
+ *   https://github.com/piroor/restartless/blob/master/license.txt
+ * @url http://github.com/piroor/restartless
  */
 
 const EXPORTED_SYMBOLS = ['config'];
@@ -53,7 +53,7 @@ var config = {
 
 		var source = Cc['@mozilla.org/variant;1']
 						.createInstance(Ci.nsIWritableVariant);
-		source.setFromVariant([this._builder.toSource(), current.source, aURI]);
+		source.setFromVariant([this._builder.toSource(), current.source, aURI, current.script]);
 
 		if (aOwner) {
 			let parent = aOwner.top
@@ -105,14 +105,16 @@ var config = {
 	 *   A source of a XUL document for a configuration dialog defined as an
 	 *   E4X object (XML object). Typical headers (<?xml version="1.0"?> and
 	 *   an <?xml-stylesheet?> for the default theme) are automatically added.
-	 *   Note: Any <script/> elements must be written as XHTML script elements.
-	 *   (ex. <script xmlns="http://www.w3.org/1999/xhtml" ...> )
-	 *   If you put XUL <script/>s in your dialog, they won't be evaluated
-	 *   because they are inserted to the document dynamically. Only XHTML
-	 *   script elements are evaluated by dynamic insertion.
+	 *   Note: Any <script/> elements are ignored or doesn't work as you expected.
+	 *   You have to put any script as the third argument.
+	 * @param {String} aScript
+	 *   JavaScript codes to be run in the configuration dialog.
 	 */
-	register : function(aURI, aXML)
+	register : function(aURI, aXML, aScript)
 	{
+		if (typeof aScript == 'function')
+			aScript = aScript.toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '');
+
 		var root = aXML.copy();
 		delete root.*;
 		var attributes = root.attributes();
@@ -133,24 +135,27 @@ var config = {
 		this._configs[this._resolveResURI(aURI)] = {
 			container    : header+((new XMLList(root.toXMLString())).toXMLString()),
 			source       : (new XMLList(aXML.toXMLString())).toXMLString(),
+			script       : aScript || '',
 			openedWindow : null
 		};
 
 		XML.setSettings(originalSettings);
 	},
 	_loader : <![CDATA[
-		eval('f='+arguments[0][0]);
-		f(document, arguments[0][1], arguments[0][2]);
+		eval(arguments[0][0]+'();'+arguments[0][3]);
 	]]>.toString()
 		.replace(/\s\s+/g, ' '),
-	_builder : function(aDocument, aSource, aSourceURI)
+	_builder : function()
 	{
-		var root = aDocument.documentElement;
-		var range = aDocument.createRange();
+		var args = window.arguments[0];
+		var soruce = args[1];
+		var sourceURI = args[2];
+		var root = document.documentElement;
+		var range = document.createRange();
 		range.selectNode(root);
-		aDocument.replaceChild(range.createContextualFragment(aSource), root);
+		document.replaceChild(range.createContextualFragment(soruce), root);
 		range.detach();
-		aDocument.defaultView._sourceURI = aSourceURI;
+		window._sourceURI = sourceURI;
 	},
 
 	/**
