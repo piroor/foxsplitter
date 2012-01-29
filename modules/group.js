@@ -191,8 +191,10 @@ FoxSplitterGroup.prototype = {
 			this.unregister(aMember);
 		}, this);
 
-		if (this.parent)
+		if (this.parent) {
+			this._restoreSiblingScrollPosition();
 			this.parent.unregister(this);
+		}
 
 		FoxSplitterGroup.instances = FoxSplitterGroup.instances.filter(function(aFSGroup) {
 			return aFSGroup != this;

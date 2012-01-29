@@ -522,7 +522,7 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinksAt : function FSB_openLinksAt(aURIs, aPosition) /* PUBLIC API */
+	openLinksAt : function FSB_openLinksAt(aURIs, aPosition, aOptions) /* PUBLIC API */
 	{
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
@@ -567,28 +567,113 @@ FoxSplitterBase.prototype = {
 				.error(this.defaultHandleError);
 	},
 
-	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition) /* PUBLIC API */
+	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition, aOptions) /* PUBLIC API */
 	{
-		return this.openLinksAt([aURIOrTab], aPosition);
+		return this.openLinksAt([aURIOrTab], aPosition, aOptions);
 	},
 
-	duplicateTabsAt : function FSB_duplicateTabsAt(aTabs, aPosition) /* PUBLIC API */
+	duplicateTabsAt : function FSB_duplicateTabsAt(aTabs, aPosition, aOptions) /* PUBLIC API */
 	{
+		aOptions = aOptions || {};
+		var self = this;
 		return this.openLinkAt('about:blank', aPosition)
 				.next(function(aWindow) {
 					var firstTab = aWindow.gBrowser.selectedTab;
-					aWindow.FoxSplitter.duplicateTabs(aTabs);
+					var tabs = aWindow.FoxSplitter.duplicateTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
+					if (aOptions.scrollToSplitPosition)
+						self._scrollTabsToSplitPosition(aTabs, tabs, aPosition);
 					return aWindow;
 				})
 				.error(this.defaultHandleError);
 	},
-	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition) /* PUBLIC API */
+	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition, aOptions) /* PUBLIC API */
 	{
-		return this.duplicateTabsAt([aTab], aPosition);
+		return this.duplicateTabsAt([aTab], aPosition, aOptions);
+	},
+	_scrollTabsToSplitPosition : function FSB_scrollTabsToSplitPosition(aSourceTabs, aNewTabs, aPosition)
+	{
+		aSourceTabs.forEach(function(aSourceTab, aIndex) {
+			this._scrollTabToSplitPosition(aSourceTab, aNewTabs[aIndex], aPosition);
+		}, this);
+	},
+	_scrollTabToSplitPosition : function FSB_scrollTabToSplitPosition(aSourceTab, aNewTab, aPosition)
+	{
+		if (aPosition & this.POSITION_AFTER) {
+			let browser = aNewTab.linkedBrowser;
+			let scrollSize = aPosition == this.POSITON_RIGHT ?
+							{
+								x : browser.boxObject.width,
+								y : 0,
+							} :
+							{
+								x : 0,
+								y : browser.boxObject.height,
+							} ;
+			let self = this;
+			aNewTab.addEventListener('SSTabRestored', function() {
+				aNewTab.removeEventListener('SSTabRestored', arguments.callee, false);
+				browser.contentWindow.setTimeout(function() {
+					self._scrollContentToSplitPosition(browser.contentWindow, scrollSize);
+				}, 0);
+			}, false);
+		}
+		else {
+			let browser = aSourceTab.linkedBrowser;
+			let scrollSize = aPosition == this.POSITON_LEFT ?
+							{
+								x : browser.boxObject.width,
+								y : 0,
+							} :
+							{
+								x : 0,
+								y : browser.boxObject.height,
+							} ;
+			this._scrollContentToSplitPosition(browser.contentWindow, scrollSize);
+		}
+	},
+	_scrollContentToSplitPosition : function FSB_scrollContentToSplitPosition(aWindow, aScrollSize)
+	{
+		var root = aWindow.document.documentElement;
+		var currentX = aWindow.scrollX;
+		var currentY = aWindow.scrollY;
+		aWindow.scrollBy(aScrollSize.x, aScrollSize.y);
+		root.setAttribute(this.SCROLLED_X, currentX + '=>' + aWindow.scrollX);
+		root.setAttribute(this.SCROLLED_Y, currentY + '=>' + aWindow.scrollY);
+	},
+	_restoreSiblingScrollPosition : function FSB_restoreSiblingScrollPosition()
+	{
+		let sibling = this.sibling;
+		if (sibling.isGroup)
+			return;
+
+		sibling.allTabs.forEach(function(aTab) {
+			var window = aTab.linkedBrowser.contentWindow;
+			var root = window.document.documentElement;
+			var deltaX = 0;
+			var deltaY = 0;
+			var x = root.getAttribute(this.SCROLLED_X);
+			if (x) {
+				x = x.split('=>');
+				if (x.length == 2) {
+					deltaX = Number(x[1]) - Number(x[0]);
+					if (isNaN(deltaX)) deltaX = 0;
+				}
+			}
+			var y = root.getAttribute(this.SCROLLED_Y);
+			if (y) {
+				y = y.split('=>');
+				if (y.length == 2) {
+					deltaY = Number(y[1]) - Number(y[0]);
+					if (isNaN(deltaY)) deltaY = 0;
+				}
+			}
+			if (deltaX || deltaY)
+				window.scrollBy(-deltaX, -deltaY);
+		}, sibling);
 	},
 
-	moveTabsTo : function FSB_moveTabsTo(aTabs, aPosition) /* PUBLIC API */
+	moveTabsTo : function FSB_moveTabsTo(aTabs, aPosition, aOptions) /* PUBLIC API */
 	{
 		aTabs = aTabs.slice(0);
 
@@ -614,12 +699,12 @@ FoxSplitterBase.prototype = {
 				})
 				.error(this.defaultHandleError);
 	},
-	moveTabTo : function FSB_moveTabTo(aTab, aPosition) /* PUBLIC API */
+	moveTabTo : function FSB_moveTabTo(aTab, aPosition, aOptions) /* PUBLIC API */
 	{
-		return this.moveTabsTo([aTab], aPosition);
+		return this.moveTabsTo([aTab], aPosition, aOptions);
 	},
 
-	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition) /* PUBLIC API */
+	moveWindowTo : function FSB_moveWindowTo(aDOMWindow, aPosition, aOptions) /* PUBLIC API */
 	{
 		if (aDOMWindow.FoxSplitter != this) {
 			let lastMainWindow = this.mainWindow || this;
@@ -637,17 +722,23 @@ FoxSplitterBase.prototype = {
 		});
 	},
 
-	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aEvent) /* PUBLIC API */
+	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aOptions) /* PUBLIC API */
 	{
-		if (this.shouldDuplicateOnSplit != this.isMiddleClick(aEvent))
-			return this.duplicateTabsAt(aTabs, aPosition);
+		aOptions = aOptions || {};
+
+		// for backward compatibility
+		if (aOptions instanceof Ci.nsIDOMEvent)
+			aOptions = { triggerEvent : aOptions };
+
+		if (this.shouldDuplicateOnSplit != this.isMiddleClick(aOptions.triggerEvent))
+			return this.duplicateTabsAt(aTabs, aPosition, aOptions);
 		else
-			return this.moveTabsTo(aTabs, aPosition);
+			return this.moveTabsTo(aTabs, aPosition, aOptions);
 	},
 
-	splitTabTo : function FSB_splitTabTo(aTab, aPosition, aEvent) /* PUBLIC API */
+	splitTabTo : function FSB_splitTabTo(aTab, aPosition, aOptions) /* PUBLIC API */
 	{
-		return this.splitTabsTo([aTab], aPosition, aEvent);
+		return this.splitTabsTo([aTab], aPosition, aOptions);
 	},
 
 

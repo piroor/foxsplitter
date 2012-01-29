@@ -99,6 +99,8 @@ FoxSplitterUI.prototype = {
 	set shouldFixActiveWindow(aValue) { return FoxSplitterUI.shouldFixActiveWindow = aValue; },
 	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
 	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
+	get shouldScrollToSplitPosition() { return FoxSplitterUI.shouldScrollToSplitPosition; },
+	set shouldScrollToSplitPosition(aValue) { return FoxSplitterUI.shouldScrollToSplitPosition = aValue; },
 
 
 	init : function FSUI_init(aFSWindow)
@@ -867,13 +869,25 @@ FoxSplitterUI.prototype = {
 				switch (aEvent.target.getAttribute('foxsplitter-command'))
 				{
 					case 'split-top':
-						return owner.splitTabsTo(tabs, this.POSITION_TOP, aEvent);
+						return owner.splitTabsTo(tabs, this.POSITION_TOP, {
+							triggerEvent          : aEvent,
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 					case 'split-right':
-						return owner.splitTabsTo(tabs, this.POSITION_RIGHT, aEvent);
+						return owner.splitTabsTo(tabs, this.POSITION_RIGHT, {
+							triggerEvent          : aEvent,
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 					case 'split-bottom':
-						return owner.splitTabsTo(tabs, this.POSITION_BOTTOM, aEvent);
+						return owner.splitTabsTo(tabs, this.POSITION_BOTTOM, {
+							triggerEvent          : aEvent,
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 					case 'split-left':
-						return owner.splitTabsTo(tabs, this.POSITION_LEFT, aEvent);
+						return owner.splitTabsTo(tabs, this.POSITION_LEFT, {
+							triggerEvent          : aEvent,
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 
 					case 'move-top':
 						return owner.moveTabsTo(tabs, this.POSITION_TOP);
@@ -1061,13 +1075,21 @@ FoxSplitterUI.prototype = {
 		switch (aEvent.type.replace(this.EVENT_TYPE_KEY_COMBINATION_COMMAND, ''))
 		{
 			case 'splitTabToTop':
-				return owner.splitTabsTo(tabs, this.POSITION_TOP);
+				return owner.splitTabsTo(tabs, this.POSITION_TOP, {
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 			case 'splitTabToRight':
-				return owner.splitTabsTo(tabs, this.POSITION_RIGHT);
+				return owner.splitTabsTo(tabs, this.POSITION_RIGHT, {
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 			case 'splitTabToBottom':
-				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM);
+				return owner.splitTabsTo(tabs, this.POSITION_BOTTOM, {
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 			case 'splitTabToLeft':
-				return owner.splitTabsTo(tabs, this.POSITION_LEFT);
+				return owner.splitTabsTo(tabs, this.POSITION_LEFT, {
+							scrollToSplitPosition : this.shouldScrollToSplitPosition
+						});
 		}
 	},
 
@@ -1121,7 +1143,10 @@ FoxSplitterUI.prototype = {
 							this.POSITION_LEFT :
 							this.POSITION_RIGHT ;
 		}
-		return this.owner.splitTabsTo(aTabs, position, aEvent);
+		return this.owner.splitTabsTo(aTabs, position, {
+			triggerEvent          : aEvent,
+			scrollToSplitPosition : this.shouldScrollToSplitPosition
+		});
 	},
 
 	splitTabsFromAppMenuItem : function FSUI_splitTabsFromAppMenuItem(aTabs)
@@ -1407,6 +1432,7 @@ FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
 FoxSplitterUI.shouldFixActiveWindow = prefs.getPref(domain+'shouldFixActiveWindow');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
+FoxSplitterUI.shouldScrollToSplitPosition = prefs.getPref(domain+'shouldScrollToSplitPosition');
 
 var prefListener = {
 		domain : domain,

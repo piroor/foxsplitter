@@ -52,6 +52,8 @@ var exports = {
 	SYNC_SCROLL       : 'foxsplitter-syncScroll',
 	COLLAPSED_ORIGINAL_WIDTH  : 'foxsplitter-collapsed-window-original-width',
 	COLLAPSED_ORIGINAL_HEIGHT : 'foxsplitter-collapsed-window-original-height',
+	SCROLLED_X        : 'foxsplitter-scrolled-x',
+	SCROLLED_Y        : 'foxsplitter-scrolled-y',
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',
