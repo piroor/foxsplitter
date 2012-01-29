@@ -83,6 +83,14 @@ FoxSplitterUI.prototype = {
 		return this.document.getElementById('appmenu-button');
 	},
 
+	get shouldHaveFullUI()
+	{
+		return (
+			(this.shouldFixActiveWindow ? this.owner.main : this.owner.active ) ||
+			!this.owner.parent
+		);
+	},
+
 	get shouldMinimalizeUI() { return FoxSplitterUI.shouldMinimalizeUI; },
 	set shouldMinimalizeUI(aValue) { return FoxSplitterUI.shouldMinimalizeUI = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
@@ -1184,11 +1192,7 @@ FoxSplitterUI.prototype = {
 
 		hiddenItems = hiddenItems.join(' ');
 
-		if (
-			(this.shouldFixActiveWindow ? this.owner.main : this.owner.active ) ||
-			!this.owner.parent ||
-			aForceRestore
-			)
+		if (this.shouldHaveFullUI || aForceRestore)
 			this.documentElement.removeAttribute(this.CHROMEHIDDEN);
 		else
 			this.documentElement.setAttribute(this.CHROMEHIDDEN, hiddenItems);
