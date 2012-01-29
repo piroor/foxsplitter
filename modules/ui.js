@@ -1173,7 +1173,7 @@ FoxSplitterUI.prototype = {
 		return this.owner.openLinkAt(uri, aPosition);
 	},
 
-	splitTabFromKeyboardTo : function FSUI_splitTabFromKeyboardTo()
+	splitTabFromKeyboardTo : function FSUI_splitTabFromKeyboardTo(aPosition)
 	{
 		var tabs = this.owner.selectedTabs;
 		if (!tabs.length)
