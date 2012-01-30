@@ -477,7 +477,7 @@ FoxSplitterWindow.prototype = {
 		var removingTabs = this.browser._removingTabs || [];
 		var exportTabs = this.allTabs.filter(function(aTab) {
 				return (
-					aTab.linkedBrowser.currentURI.spec != 'about:blank' &&
+					(this.window.isBlankPageURL ? !this.window.isBlankPageURL(aTab.linkedBrowser.currentURI.spec) : (aTab.linkedBrowser.currentURI.spec != 'about:blank')) &&
 					removingTabs.indexOf(aTab) < 0
 				);
 			}, this);
