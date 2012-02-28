@@ -175,17 +175,22 @@ var exports = {
 		}
 
 		.%DROP_INDICATOR% {
+			appearance: none;
+			-moz-appearance: none;
 			background: rgba(0, 0, 0, 0.75);
 			border: 0 solid rgba(255, 255, 255, 0.75);
 			border-radius: 0;
+			-moz-border-radius: 0;
+			border-radius: 0;
+			box-align: center;
+			-moz-box-align: center;
+			box-pack: center;
+			-moz-box-pack: center;
 			line-height: 0;
 			margin: 0;
 			opacity: %MIN_OPACITY%;
 			padding: 0;
-			-moz-appearance: none;
-			-moz-border-radius: 0;
-			-moz-box-align: center;
-			-moz-box-pack: center;
+			transition: opacity 0.25s ease-in;
 			-moz-transition: opacity 0.25s ease-in;
 		}
 
