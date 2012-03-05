@@ -68,6 +68,8 @@ FoxSplitterBase.prototype = {
 	get offsetY() { return FoxSplitterBase.offsetY; },
 	get offsetWidth() { return FoxSplitterBase.offsetWidth; },
 	get offsetHeight() { return FoxSplitterBase.offsetHeight; },
+	get shouldKeepSizeRatioOnResize() { return FoxSplitterBase.shouldKeepSizeRatioOnResize; },
+	set shouldKeepSizeRatioOnResize(aValue) { return FoxSplitterBase.shouldKeepSizeRatioOnResize = aValue; },
 
 	isGroup : false,
 
@@ -796,10 +798,12 @@ FoxSplitterBase.prototype = {
 			}
 			else if (sibling.position == this.POSITION_BOTTOM) {
 				if (!sibling.collapsed) {
-					let resizeDelta = Math.round(aDelta / 2);
-					this.reserveResizeBy(0, -resizeDelta);
-					sibling.reserveResizeBy(0, aDelta - resizeDelta);
-					sibling.reserveMoveBy(0, -resizeDelta);
+					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+					if (resizeDelta) {
+						this.reserveResizeBy(0, -resizeDelta);
+						sibling.reserveResizeBy(0, aDelta - resizeDelta);
+						sibling.reserveMoveBy(0, -resizeDelta);
+					}
 				}
 			}
 			else { // horizontal slbling
@@ -826,11 +830,13 @@ FoxSplitterBase.prototype = {
 			}
 			else if (sibling.position == this.POSITION_LEFT) {
 				if (!sibling.collapsed) {
-					let resizeDelta = Math.round(aDelta / 2);
-					// resize before move, to prevent unexpected resizing fired by window move
-					this.reserveResizeBy(-(aDelta - resizeDelta), 0);
-					this.reserveMoveBy(resizeDelta, 0);
-					sibling.reserveResizeBy(resizeDelta, 0);
+					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+					if (resizeDelta) {
+						// resize before move, to prevent unexpected resizing fired by window move
+						this.reserveResizeBy(-(aDelta - resizeDelta), 0);
+						this.reserveMoveBy(resizeDelta, 0);
+						sibling.reserveResizeBy(resizeDelta, 0);
+					}
 				}
 			}
 			else { // vertical slbling
@@ -856,11 +862,13 @@ FoxSplitterBase.prototype = {
 			}
 			else if (sibling.position == this.POSITION_TOP) {
 				if (!sibling.collapsed) {
-					let resizeDelta = Math.round(aDelta / 2);
-					// resize before move, to prevent unexpected resizing fired by window move
-					this.reserveResizeBy(0, -(aDelta - resizeDelta));
-					this.reserveMoveBy(0, resizeDelta);
-					sibling.reserveResizeBy(0, resizeDelta);
+					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+					if (resizeDelta) {
+						// resize before move, to prevent unexpected resizing fired by window move
+						this.reserveResizeBy(0, -(aDelta - resizeDelta));
+						this.reserveMoveBy(0, resizeDelta);
+						sibling.reserveResizeBy(0, resizeDelta);
+					}
 				}
 			}
 			else { // horizontal slbling
@@ -885,10 +893,12 @@ FoxSplitterBase.prototype = {
 			}
 			else if (sibling.position == this.POSITION_RIGHT) {
 				if (!sibling.collapsed) {
-					let resizeDelta = Math.round(aDelta / 2);
-					this.reserveResizeBy(-resizeDelta, 0);
-					sibling.reserveMoveBy(-resizeDelta, 0);
-					sibling.reserveResizeBy(aDelta - resizeDelta, 0);
+					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+					if (resizeDelta) {
+						this.reserveResizeBy(-resizeDelta, 0);
+						sibling.reserveMoveBy(-resizeDelta, 0);
+						sibling.reserveResizeBy(aDelta - resizeDelta, 0);
+					}
 				}
 			}
 			else { // vertical sibling
@@ -1019,6 +1029,7 @@ FoxSplitterBase.offsetX = prefs.getPref(domain+'platformOffset.x');
 FoxSplitterBase.offsetY = prefs.getPref(domain+'platformOffset.y');
 FoxSplitterBase.offsetWidth = prefs.getPref(domain+'platformOffset.width');
 FoxSplitterBase.offsetHeight = prefs.getPref(domain+'platformOffset.height');
+FoxSplitterBase.shouldKeepSizeRatioOnResize = prefs.getPref(domain+'shouldKeepSizeRatioOnResize');
 
 /**
  * Due to Firefox's bug 581863 and bug 581866, windows are mispositioned.

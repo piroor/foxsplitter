@@ -53,6 +53,7 @@ config.setDefault(domain+'shouldMinimalizeUI', true);
 config.setDefault(domain+'shouldAutoHideTabs', true);
 config.setDefault(domain+'shouldFixActiveWindow', true);
 config.setDefault(domain+'shouldScrollToSplitPosition', true);
+config.setDefault(domain+'shouldKeepSizeRatioOnResize', true);
 
 config.setDefault(domain+'syncScrollX', true);
 config.setDefault(domain+'syncScrollY', true);

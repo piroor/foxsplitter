@@ -529,6 +529,9 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldScrollToSplitPosition"
 				name={domain+'shouldScrollToSplitPosition'}
 				type="bool"/>
+			<preference id="shouldKeepSizeRatioOnResize"
+				name={domain+'shouldKeepSizeRatioOnResize'}
+				type="bool"/>
 			<preference id="platformOffset.needToBeUpdated"
 				name={domain+'platformOffset.needToBeUpdated'}
 				type="bool"
@@ -554,6 +557,8 @@ config.register('about:blank?foxsplitter-config', <>
 			preference="syncScrollX"/>
 		<checkbox label={bundle.getString('shouldScrollToSplitPosition')}
 			preference="shouldScrollToSplitPosition"/>
+		<checkbox label={bundle.getString('shouldKeepSizeRatioOnResize')}
+			preference="shouldKeepSizeRatioOnResize"/>
 		<groupbox orient="vertical">
 			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
 			<hbox style="max-width:40em">

@@ -106,6 +106,7 @@ platformOffset.y=上
 platformOffset.width=幅
 platformOffset.height=高さ
 shouldScrollToSplitPosition=タブをウィンドウに分割した時に、それぞれのスクロール位置がひと続きになるように調整する
+shouldKeepSizeRatioOnResize=分割されたウィンドウの大きさを変えた時、大きさの比率を保つように他のウィンドウの大きさを調整する
 
 
 
