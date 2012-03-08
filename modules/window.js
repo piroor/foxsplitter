@@ -392,8 +392,11 @@ FoxSplitterWindow.prototype = {
 		if (lastState.collapsed)
 			this.collapse();
 
-		if (lastState.main)
-			this.main = true;
+		if (lastState.main) {
+			let mainWindow = FoxSplitterWindow.instancesById[lastState.main];
+			if (mainWindow)
+				mainWindow.main = true;
+		}
 
 		delete this._lastState;
 		this._restored = true;
@@ -1409,7 +1412,7 @@ FoxSplitterWindow.prototype = {
 			height   : this.height,
 			sibling  : (this.sibling ? this.sibling.id : null ),
 			position : this.position,
-			main     : this.main,
+			main     : this.mainWindow.id,
 			collapsed : this.collapsed
 		};
 	},
