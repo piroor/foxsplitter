@@ -1087,7 +1087,6 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 	prefs.setPref(domain+'platformOffset.needToBeUpdated', false);
 	var window = WindowWatcher.openWindow(
 			null,
-			// We must use a XUL document to use "document.documentElement.boxObject".
 			'chrome://browser/content/browser.xul',
 			'_blank',
 			'chrome,dialog=no,all,screenX=100,screenY=100,outerWidth=100,outerHeight=100',
@@ -1096,16 +1095,15 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 	window.addEventListener('load', function() {
 		window.removeEventListener('load', arguments.callee, false);
 		Deferred.next(function() {
-			var rootBox = window.document.documentElement.boxObject;
-			prefs.setPref(domain+'platformOffset.x', self.offsetX = rootBox.screenX - 100);
-			prefs.setPref(domain+'platformOffset.y', self.offsetY = rootBox.screenY - 100);
+			prefs.setPref(domain+'platformOffset.x', self.offsetX = window.screenX - 100);
+			prefs.setPref(domain+'platformOffset.y', self.offsetY = window.screenY - 100);
 			var width = window.screen.availWidth;
 			var height = window.screen.availHeight;
 			window.moveTo(0, 0);
 			window.resizeTo(width, height);
 			Deferred.next(function() {
-				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - rootBox.width);
-				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - rootBox.height);
+				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - window.outerWidth);
+				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - window.outerHeight);
 				window.close();
 				deferred.call({
 					x : self.offsetX,
