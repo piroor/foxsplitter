@@ -42,6 +42,8 @@ var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
 const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 					.getService(Ci.nsISessionStore);
+const ObserverService = Cc['@mozilla.org/observer-service;1']
+					.getService(Ci.nsIObserverService);
 
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
@@ -302,6 +304,8 @@ FoxSplitterWindow.prototype = {
 
 		aWindow.addEventListener('unload', this, false);
 
+		ObserverService.addObserver(this, 'sessionstore-windows-restored', false);
+
 		this.active = true;
 		this.main = true;
 
@@ -331,8 +335,9 @@ FoxSplitterWindow.prototype = {
 				self.resizeBy(0, -1);
 				self.resizeBy(0, 1);
 			}
-
-			self._restoreState();
+			return self._restoreState();
+		})
+		.next(function() {
 			self.startListen();
 			self.watchWindowState();
 
@@ -345,6 +350,9 @@ FoxSplitterWindow.prototype = {
 
 	_restoreState : function FSW_restoreState()
 	{
+		if (this._restoringContext)
+			return this._continueRestoreState();
+
 		if (this._restored || !this._needRestored)
 			return false;
 
@@ -376,12 +384,52 @@ FoxSplitterWindow.prototype = {
 			return false;
 		}
 
-		sibling = (sibling.indexOf(':') > -1 && this.groupClass) ?
-					this.groupClass.getInstanceById(sibling) :
-					FoxSplitterWindow.instancesById[sibling] ;
+		if (sibling.indexOf(':') < 0 || !this.groupClass) { // sibling is window - restore now!
+			return this._restoreStatePostProcess({
+				sibling   : FoxSplitterWindow.instancesById[sibling],
+				lastState : lastState
+			});
+		}
 
-		if (!sibling || sibling.parent)
+		let group = this.groupClass.getInstanceById(sibling);
+		if (group) { // the sibling group is already restored - restore now!
+			return this._restoreStatePostProcess({
+				sibling   : group,
+				lastState : lastState
+			});
+		}
+
+		// the sibling group is not restored yet, so wait its restoration
+		var deferred = new Deferred();
+		this._restoringContext = {
+			siblingGroupId : sibling,
+			lastState      : lastState,
+			deferred       : deferred
+		};
+		return deferred;
+	},
+	_restoreStatePostProcess : function FSW_restoreStatePostProcess(aContext)
+	{
+		aContext = aContext || {};
+		if (aContext.siblingGroupId) {
+			let group = this.groupClass.getInstanceById(aContext.siblingGroupId);
+			if (group)
+				aContext.sibling = group;
+			else // the sibling group is not restored yet...
+				return aContext.deferred;
+		}
+
+		if (this._restoringContext)
+			delete this._restoringContext;
+
+		var sibling = aContext.sibling;
+		var lastState = aContext.lastState;
+
+		if (!sibling || sibling.parent) {
+			if (aContext.deferred)
+				aContext.deferred.call(false);
 			return false;
+		}
 
 		this.bindWith(sibling, {
 			position   : lastState.position,
@@ -405,14 +453,25 @@ FoxSplitterWindow.prototype = {
 		 * Because this group is restored, other member related
 		 * to the restored group can become to restorable.
 		 */
-		FoxSplitterWindow.instances.some(function(aFSWindow) {
-			return aFSWindow._restoreState();
+		FoxSplitterWindow.instances.forEach(function(aFSWindow) {
+			aFSWindow._continueRestoreState();
 		});
+
+		if (aContext.deferred)
+			aContext.deferred.call(true);
 
 		return true;
 	},
 	_needRestored : true,
 	_restored : false,
+	_restoringContext : null,
+
+	_continueRestoreState : function FSW_continueRestoreState()
+	{
+		return this._restoringContext ?
+			this._restoreStatePostProcess(this._restoringContext) :
+			false ;
+	},
 
 
 	/**
@@ -456,6 +515,8 @@ FoxSplitterWindow.prototype = {
 
 		this.hideDropIndicator();
 		this.unwatchWindowState();
+
+		ObserverService.removeObserver(this, 'sessionstore-windows-restored');
 
 		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
@@ -1554,6 +1615,9 @@ FoxSplitterWindow.prototype = {
 				if (aSubject == this.window)
 					this._preDestroy();
 				return;
+
+			case 'sessionstore-windows-restored':
+				return this._continueRestoreState();
 		}
 	},
 
