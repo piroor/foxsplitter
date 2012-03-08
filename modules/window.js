@@ -356,7 +356,7 @@ FoxSplitterWindow.prototype = {
 		if (this._restored || !this._needRestored)
 			return false;
 
-		this.syncScroll = this.getWindowValue(this.SYNC_SCROLL);
+		this.syncScroll = this.getWindowValue(this.SYNC_SCROLL) == 'true';
 
 		var lastState = this._lastState || this.getWindowValue(this.STATE);
 		if (!lastState)
