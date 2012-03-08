@@ -305,8 +305,16 @@ FoxSplitterWindow.prototype = {
 		this.active = true;
 		this.main = true;
 
-		if (aOnInit)
-			this._initAfterLoad();
+		var self = this;
+		(aOnInit ? this._initAfterLoad() : Deferred)
+			.next(function() {
+				// OK, it's the time to start saving any state changing!
+				self.shouldSaveState = true;
+			})
+			.wait(1) // wait for other windows...
+			.next(function() {
+				self.saveState();
+			});
 	},
 
 	_initAfterLoad : function FSW_initAfterLoad()
@@ -317,7 +325,7 @@ FoxSplitterWindow.prototype = {
 			.registerNotification(this);
 
 		var self = this;
-		Deferred.next(function() {
+		return Deferred.next(function() {
 			// workaround to fix broken appearance on sized windows
 			if (!self.maximized) {
 				self.resizeBy(0, -1);
@@ -430,6 +438,8 @@ FoxSplitterWindow.prototype = {
 
 	destroy : function FSW_destroy(aOnQuit) 
 	{
+		this.shouldSaveState = !aOnQuit;
+
 		if (!this._preDestroyDone)
 			this._preDestroy(aOnQuit);
 
@@ -1406,13 +1416,14 @@ FoxSplitterWindow.prototype = {
 
 	saveState : function FSW_saveState()
 	{
-		if (!this._window)
+		if (!this._window || !this.shouldSaveState)
 			return;
 
 		var state = this.state;
 		state = JSON.stringify(state);
 		this.setWindowValue(this.STATE, state);
 	},
+	shouldSaveState : false,
 
 
 	// event handling

@@ -143,17 +143,23 @@ WindowManager.addHandler(handleWindow);
 
 function shutdown()
 {
+	var browserWindows = [];
 	WindowManager.getWindows(null).forEach(function(aWindow) {
 		var doc = aWindow.document;
 		if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
-			aWindow.FoxSplitter.destroy(true);
-			delete aWindow.FoxSplitter;
-			delete aWindow.SplitBrowser;
+			aWindow.FoxSplitter.saveState();
+			aWindow.FoxSplitter.shouldSaveState = false; // prevent to be cleared the last state!
+			browserWindows.push(aWindow);
 		}
 		else if (doc.documentElement.getAttribute('id') == TOOLBAR_CUSTOMIZE) {
 			doc.removeChild(doc.__foxsplitter__style);
 			delete doc.__foxsplitter__style;
 		}
+	});
+	browserWindows.forEach(function(aWindow) {
+		aWindow.FoxSplitter.destroy(true);
+		delete aWindow.FoxSplitter;
+		delete aWindow.SplitBrowser;
 	});
 
 	WindowManager = undefined;

@@ -358,8 +358,7 @@ FoxSplitterBase.prototype = {
 
 		this.updateGroupedAppearance();
 		if (!this.isGroup) {
-			if (!aSilent)
-				this.saveState();
+			this.saveState();
 
 			if (!this.binding) {
 				this.clearGroupedAppearance();
@@ -378,8 +377,7 @@ FoxSplitterBase.prototype = {
 		if (sibling) {
 			sibling.updateGroupedAppearance();
 			if (!sibling.isGroup) {
-				if (!aSilent)
-					sibling.saveState();
+				sibling.saveState();
 
 				if (!sibling.parent) {
 					sibling.clearGroupedAppearance();
