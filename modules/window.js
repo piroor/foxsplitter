@@ -802,10 +802,13 @@ FoxSplitterWindow.prototype = {
 					return self.runCommand('wmctrl-raise', self.pathToWmctrl, aWindowId)
 							.next(function() {
 								return self.runCommand('wmctrl-unraise', self.pathToWmctrl, aWindowId);
-							})
-							.next(function() {
-								self.raising--;
 							});
+				})
+				.error(function(e) {
+					dump(e+'\n');
+				})
+				.next(function() {
+					self.raising--;
 				});
 	},
 	/**
