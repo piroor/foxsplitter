@@ -617,6 +617,7 @@ FoxSplitterWindow.prototype = {
 		this.resizing++;
 
 		aW = Math.max(this.MIN_WIDTH, Math.round(aW)) - this.offsetWidth;
+
 		aH = Math.max(this.MIN_HEIGHT, Math.round(aH)) - this.offsetHeight;
 		var waitResizeEvent = this._waitDOMEvent(this.window, 'resize')
 								.next(function() {
@@ -675,49 +676,70 @@ FoxSplitterWindow.prototype = {
 			)
 			return Deferred.next(function() {});
 
-		this.raising++;
-
-		if (this.methodToRaiseWindow == this.RAISE_WINDOW_BY_RAISED_FLAG) {
-			/**
-			 * This works only on Windows and OS/2 due to Gecko's limitation.
-			 * See:
-			 *   https://bugzilla.mozilla.org/show_bug.cgi?id=453274#c2
-			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=91508
-			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=450576
-			 *     https://bugzilla.mozilla.org/show_bug.cgi?id=117730#c25
-			 */
-			let XULWindow = this.window
-							.QueryInterface(Ci.nsIInterfaceRequestor)
-							.getInterface(Ci.nsIWebNavigation)
-							.QueryInterface(Ci.nsIDocShellTreeItem)
-							.treeOwner
-							.QueryInterface(Ci.nsIInterfaceRequestor)
-							.getInterface(Ci.nsIXULWindow);
-			let originalFlag = XULWindow.zLevel;
-			XULWindow.zLevel = Ci.nsIXULWindow.highestZ;
-
-			let self = this;
-			return Deferred.next(function() {
-					XULWindow.zLevel = originalFlag; // Ci.nsIXULWindow.normalZ;
-					self.raising--;
-				});
+		switch (this.methodToRaiseWindow)
+		{
+			case this.RAISE_WINDOW_BY_RAISED_FLAG:
+				return this._raiseWindowByRaisedFlag();
+			case this.RAISE_WINDOW_BY_WMCTRL:
+				return this._raiseWindowByWmctrl();
+			case this.RAISE_WINDOW_BY_FOCUS:
+			default:
+				return this._raiseWindowByFocus();
 		}
 
-		/**
-		 * on Windows:
-		 *   (event loop 1) focused => "activate" event is fired
-		 *     => (event loop 2) Deferred.next() is processed
-		 *       => ready to decrement the "raising" counter
-		 * on Linux:
-		 *   (event loop 1) focused
-		 *     => (event loop 2) Deferred.next() is processed
-		 *       => (event loop 3) "activate" event is fired
-		 *         => ready to decrement the "raising" counter
-		 *
-		 * Grouped windows flick each other infinitely, if I decrement
-		 * the counter too early. To avoid this flick, I have to wait
-		 * until this window is surely activated.
-		 */
+	},
+	/**
+	 * This works only on Windows and OS/2 due to Gecko's limitation.
+	 * See:
+	 *   https://bugzilla.mozilla.org/show_bug.cgi?id=453274#c2
+	 *     https://bugzilla.mozilla.org/show_bug.cgi?id=91508
+	 *     https://bugzilla.mozilla.org/show_bug.cgi?id=450576
+	 *     https://bugzilla.mozilla.org/show_bug.cgi?id=117730#c25
+	 */
+	_raiseWindowByRaisedFlag : function FSW_raiseWindowByRaisedFlag()
+	{
+		this.raising++;
+
+		var XULWindow = this.window
+						.QueryInterface(Ci.nsIInterfaceRequestor)
+						.getInterface(Ci.nsIWebNavigation)
+						.QueryInterface(Ci.nsIDocShellTreeItem)
+						.treeOwner
+						.QueryInterface(Ci.nsIInterfaceRequestor)
+						.getInterface(Ci.nsIXULWindow);
+		var originalFlag = XULWindow.zLevel;
+		XULWindow.zLevel = Ci.nsIXULWindow.highestZ;
+
+		var self = this;
+		return Deferred.next(function() {
+				XULWindow.zLevel = originalFlag; // Ci.nsIXULWindow.normalZ;
+				self.raising--;
+			});
+	},
+	_raiseWindowByWmctrl : function FSW_raiseWindowByWmctrl()
+	{
+		return this._raiseWindowByFocus();
+	},
+	/**
+	 * on Windows:
+	 *   (event loop 1) focused => "activate" event is fired
+	 *     => (event loop 2) Deferred.next() is processed
+	 *       => ready to decrement the "raising" counter
+	 * on Linux:
+	 *   (event loop 1) focused
+	 *     => (event loop 2) Deferred.next() is processed
+
+	 *       => (event loop 3) "activate" event is fired
+	 *         => ready to decrement the "raising" counter
+	 *
+	 * Grouped windows flick each other infinitely, if I decrement
+	 * the counter too early. To avoid this flick, I have to wait
+	 * until this window is surely activated.
+	 */
+	_raiseWindowByFocus : function FSW_raiseWindowByFocus()
+	{
+		this.raising++;
+
 		var self = this;
 		var deferred = Deferred
 						.parallel(
@@ -737,6 +759,7 @@ FoxSplitterWindow.prototype = {
 			var flags = Ci.nsIFocusManager.FLAG_RAISE |
 						Ci.nsIFocusManager.FLAG_NOSCROLL |
 						Ci.nsIFocusManager.FLAG_NOSWITCHFRAME |
+
 						reason;
 
 			focusedWindow.value.focus();

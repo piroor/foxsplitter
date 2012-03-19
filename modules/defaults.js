@@ -109,6 +109,8 @@ config.setDefault(domain+'platformOffset.height', 0);
 config.setDefault(domain+'methodToRaiseWindow',
 	XULAppInfo.OS == 'WINNT' ?
 		FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG :
+	XULAppInfo.OS == 'Linux' ?
+		FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL :
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-top',    true);
