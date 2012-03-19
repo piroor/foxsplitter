@@ -1,0 +1,2 @@
+#!/bin/sh
+wmctrl -r $1 -b remove,above
