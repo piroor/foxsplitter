@@ -487,10 +487,11 @@ FoxSplitterWindow.prototype = {
 
 		var originalTitle = this.document.title;
 		var temporaryTitle = 'wmctrl-target-window-'+Date.now()+'-'+parseInt(Math.random() * 65000);
+		var listFile = this._createTempFile('wmctrl-window-list');
 		return this._ensureWmctrlAvailable()
 				.next(function() {
 					self.document.title = temporaryTitle;
-					return self.runCommand('wmctrl-list', self.pathToWmctrl, self.wmctrlWindowListFile.path);
+					return self.runCommand('wmctrl-list', self.pathToWmctrl, listFile.path);
 				})
 				.error(function() {
 					if (self.document.title == temporaryTitle)
@@ -499,8 +500,8 @@ FoxSplitterWindow.prototype = {
 				.next(function() {
 					self.document.title = originalTitle;
 
-					var list = textIO.readFrom(self.wmctrlWindowListFile, 'UTF-8');
-					self.wmctrlWindowListFile = null;
+					var list = textIO.readFrom(listFile, 'UTF-8');
+					listFile.remove(true);
 
 					var match = list.match(new RegExp('^([^\\s]+)\\s.*'+temporaryTitle+'$', 'm'));
 					if (match)
@@ -512,42 +513,49 @@ FoxSplitterWindow.prototype = {
 	_wmctrlWindowId : null,
 
 
-	_ensureWmctrlAvailable : function FSB_ensureWmctrlAvailable()
+	_ensureWmctrlAvailable : function FSW_ensureWmctrlAvailable()
 	{
 		var deferred = new Deferred();
 
 		var self = this;
 		Deferred.next(function() {
-			if (self.pathToWmctrl)
+			if (self.pathToWmctrl) {
 				deferred.call(self.pathToWmctrl);
-			else
-				deferred.fail(new Error('you need to specify the path to wmctrl by '+domain+'.pathToWmctrl'));
+				return;
+			}
+			return self._detectWmctrlPath()
+					.next(function(aPath) {
+						prefs.setPref(domain+'pathToWmctrl', aPath);
+						deferred.call(aPath);
+					})
+					.error(function() {
+						deferred.fail(new Error('cannot detect path to wmctrl'));
+					});
 		});
 
 		return deferred;
 	},
+	_detectWmctrlPath : function FSW_detectWmctrlPath()
+	{
+		var pathFile = this._createTempFile('wmctrl-path');
+		return self.runCommand('which-wmctrl', pathFile.path)
+				.next(function() {
+					var path = textIO.readFrom(pathFile, 'UTF-8');
+					pathFile.remove(true);
+					return path;
+				});
+	},
 
 
-	set wmctrlWindowListFile(aValue)
+	_createTempFile : function FSW_createTempFile(aLeafName)
 	{
-		if (this._wmctrlWindowListFile && this._wmctrlWindowListFile instanceof Ci.nsIFile)
-			this._wmctrlWindowListFile.remove(true);
-		this._wmctrlWindowListFile = aValue;
-		return aValue;
+		let file = Cc['@mozilla.org/file/directory_service;1']
+					.getService(Ci.nsIProperties)
+					.get('TmpD', Ci.nsILocalFile);
+		file.append(aLeafName);
+		file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
+		return file;
 	},
-	get wmctrlWindowListFile()
-	{
-		if (!this._wmctrlWindowListFile) {
-			let file = Cc['@mozilla.org/file/directory_service;1']
-						.getService(Ci.nsIProperties)
-						.get('TmpD', Ci.nsILocalFile);
-			file.append('wmctrl-window-list');
-			file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
-			this._wmctrlWindowListFile = file;
-		}
-		return this._wmctrlWindowListFile;
-	},
-	_wmctrlWindowListFile : null,
 
 
 	/**
