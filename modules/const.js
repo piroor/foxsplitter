@@ -111,6 +111,7 @@ var exports = {
 	RAISE_WINDOW_BY_FOCUS       : 0,
 	RAISE_WINDOW_BY_RAISED_FLAG : 1,
 	RAISE_WINDOW_BY_WMCTRL      : 2,
+	RAISE_WINDOW_BY_XLIB        : 3,
 	DO_NOT_RAISE_WINDOW         : -1,
 
 	WINDOW_DROP_TYPE : 'application/x-foxsplitter-window',

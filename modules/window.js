@@ -766,12 +766,15 @@ FoxSplitterWindow.prototype = {
 				return this._raiseWindowByRaisedFlag();
 			case this.RAISE_WINDOW_BY_WMCTRL:
 				return this._raiseWindowByWmctrl();
+			case this.RAISE_WINDOW_BY_XLIB:
+				return this._raiseWindowByXLib();
 			case this.RAISE_WINDOW_BY_FOCUS:
 			default:
 				return this._raiseWindowByFocus();
 		}
 
 	},
+
 	/**
 	 * This works only on Windows and OS/2 due to Gecko's limitation.
 	 * See:
@@ -800,6 +803,7 @@ FoxSplitterWindow.prototype = {
 				self.raising--;
 			});
 	},
+
 	_raiseWindowByWmctrl : function FSW_raiseWindowByWmctrl()
 	{
 		this.raising++;
@@ -819,6 +823,12 @@ FoxSplitterWindow.prototype = {
 					self.raising--;
 				});
 	},
+
+	_raiseWindowByXLib : function FSW_raiseWindowByXLib()
+	{
+		return Deferred.next(function() {});
+	},
+
 	/**
 	 * on Windows:
 	 *   (event loop 1) focused => "activate" event is fired
