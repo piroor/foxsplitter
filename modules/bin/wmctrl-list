@@ -1,0 +1,4 @@
+#!/bin/sh
+# $1 = path to wmctrl
+# $2 = path to the list file
+$1 -l > $2
