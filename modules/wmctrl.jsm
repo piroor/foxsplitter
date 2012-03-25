@@ -33,9 +33,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-load('jsdeferred');
-load('textIO');
-load('prefs');
+load('lib/jsdeferred');
+load('lib/textIO');
+load('lib/prefs');
 
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
@@ -175,7 +175,7 @@ Wmctrl.prototype = {
 		});
 
 		return deferred;
-	}
+	},
 
 	createTempFile : function wmctrl_createTempFile(aLeafName)
 	{

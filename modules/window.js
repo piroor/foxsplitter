@@ -284,7 +284,7 @@ FoxSplitterWindow.prototype = {
 	get wmctrl()
 	{
 		if (!this._wmctrl) {
-			load('lib/wmctrl');
+			load('wmctrl');
 			this._wmctrl = new Wmctrl(this.window);
 		}
 		return this._wmctrl;
