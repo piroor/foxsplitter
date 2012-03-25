@@ -47,6 +47,8 @@ function Wmctrl(aWindow)
 	this.window = aWindow;
 }
 Wmctrl.prototype = {
+	ERROR_WMCTRL_NOT_FOUND : 'wmctlr is not installed',
+
 	destroy : function()
 	{
 		delete this.window;
@@ -72,11 +74,16 @@ Wmctrl.prototype = {
 					.next(function() {
 						var path = textIO.readFrom(pathFile, 'UTF-8');
 						pathFile.remove(true);
-						prefs.setPref(domain+'wmctrl.path', path);
-						deferred.call(path);
+						if (!path) {
+							deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
+						}
+						else {
+							prefs.setPref(domain+'wmctrl.path', path);
+							deferred.call(path);
+						}
 					})
 					.error(function() {
-						deferred.fail(new Error('cannot detect path to wmctrl'));
+						deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
 					});
 		});
 
