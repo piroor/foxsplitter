@@ -1010,42 +1010,6 @@ FoxSplitterBase.prototype = {
 	},
 
 
-	runCommand : function FSB_runCommand(aCommand)
-	{
-		var deferred = new Deferred();
-
-		var args = Array.slice(arguments, 1);
-		var path = resolve("./bin/" + aCommand);
-
-		var IOService = Cc['@mozilla.org/network/io-service;1']
-							.getService(Ci.nsIIOService);
-		var FileHandler = IOService.getProtocolHandler('file')
-							.QueryInterface(Ci.nsIFileProtocolHandler);
-		var command = FileHandler.getFileFromURLSpec(path);
-
-		if (!command.exists()) {
-			Deferred.next(function() {
-				deferred.fail(new Error("unknown command: " + aCommand));
-			});
-			return deferred;
-		}
-
-		var process = Cc["@mozilla.org/process/util;1"].createInstance(Ci.nsIProcess);
-		process.init(command);
-		process.runwAsync(args, args.length, {
-			observe : function runCommand_observe(aSubject, aTopic, aData)
-			{
-				if (aTopic == 'process-finished')
-					deferred.call();
-				else
-					deferred.fail(new Error("command " + aCommand + "failed"));
-			}
-		});
-
-		return deferred;
-	},
-
-
 	defaultHandleError : function FSB_defaultHandleError(aError)
 	{
 		dump(aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');

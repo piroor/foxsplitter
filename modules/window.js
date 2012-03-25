@@ -37,7 +37,6 @@ load('base');
 load('ui');
 load('lib/jsdeferred');
 load('lib/prefs');
-load('lib/textIO');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
@@ -95,8 +94,6 @@ FoxSplitterWindow.prototype = {
 	set importTabsFromClosedSibling(aValue) { return FoxSplitterWindow.importTabsFromClosedSibling = aValue; },
 	get methodToRaiseWindow() { return FoxSplitterWindow.methodToRaiseWindow; },
 	set methodToRaiseWindow(aValue) { return FoxSplitterWindow.methodToRaiseWindow = aValue; },
-	get pathToWmctrl() { return FoxSplitterWindow.pathToWmctrl; },
-	set pathToWmctrl(aValue) { return FoxSplitterWindow.pathToWmctrl = aValue; },
 
 	get x()
 	{
@@ -281,6 +278,16 @@ FoxSplitterWindow.prototype = {
 	{
 		return !this.browser ? [] :
 			Array.slice(this.browser.mTabContainer.childNodes);
+	},
+
+
+	get wmctrl()
+	{
+		if (!this._wmctrl) {
+			load('lib/wmctrl');
+			this._wmctrl = new Wmctrl(this.window);
+		}
+		return this._wmctrl;
 	},
 
 
@@ -476,87 +483,6 @@ FoxSplitterWindow.prototype = {
 			false ;
 	},
 
-	_getWmctrlWindowId : function FSW_getWmctrlWindowId()
-	{
-		var self = this;
-		if (this._wmctrlWindowId) {
-			return Deferred.next(function() {
-				return self._wmctrlWindowId;
-			});
-		}
-
-		var originalTitle = this.document.title;
-		var temporaryTitle = 'wmctrl-target-window-'+Date.now()+'-'+parseInt(Math.random() * 65000);
-		var listFile = this._createTempFile('wmctrl-window-list');
-		return this._ensureWmctrlAvailable()
-				.next(function() {
-					self.document.title = temporaryTitle;
-					return self.runCommand('wmctrl-list', self.pathToWmctrl, listFile.path);
-				})
-				.error(function() {
-					if (self.document.title == temporaryTitle)
-						self.document.title = originalTitle; // we should restore the original title anyway!
-				})
-				.next(function() {
-					self.document.title = originalTitle;
-
-					var list = textIO.readFrom(listFile, 'UTF-8');
-					listFile.remove(true);
-
-					var match = list.match(new RegExp('^([^\\s]+)\\s.*'+temporaryTitle+'$', 'm'));
-					if (match)
-						self._wmctrlWindowId = match[1];
-
-					return self._wmctrlWindowId;
-				});
-	},
-	_wmctrlWindowId : null,
-
-
-	_ensureWmctrlAvailable : function FSW_ensureWmctrlAvailable()
-	{
-		var deferred = new Deferred();
-
-		var self = this;
-		Deferred.next(function() {
-			if (self.pathToWmctrl) {
-				deferred.call(self.pathToWmctrl);
-				return;
-			}
-			return self._detectWmctrlPath()
-					.next(function(aPath) {
-						prefs.setPref(domain+'pathToWmctrl', aPath);
-						deferred.call(aPath);
-					})
-					.error(function() {
-						deferred.fail(new Error('cannot detect path to wmctrl'));
-					});
-		});
-
-		return deferred;
-	},
-	_detectWmctrlPath : function FSW_detectWmctrlPath()
-	{
-		var pathFile = this._createTempFile('wmctrl-path');
-		return self.runCommand('which-wmctrl', pathFile.path)
-				.next(function() {
-					var path = textIO.readFrom(pathFile, 'UTF-8');
-					pathFile.remove(true);
-					return path;
-				});
-	},
-
-
-	_createTempFile : function FSW_createTempFile(aLeafName)
-	{
-		let file = Cc['@mozilla.org/file/directory_service;1']
-					.getService(Ci.nsIProperties)
-					.get('TmpD', Ci.nsILocalFile);
-		file.append(aLeafName);
-		file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
-		return file;
-	},
-
 
 	/**
 	 * This process must be done at the timing between "close/DOMWindowClose"
@@ -615,7 +541,8 @@ FoxSplitterWindow.prototype = {
 		w.removeEventListener('unload', this, false);
 		this.endListen();
 
-		this.window = null;
+		delete this.window;
+		delete this._wmctrl;
 
 		FoxSplitterWindow.instances = FoxSplitterWindow.instances.filter(function(aFSWindow) {
 			return aFSWindow != this;
@@ -809,13 +736,7 @@ FoxSplitterWindow.prototype = {
 		this.raising++;
 
 		var self = this;
-		return this._getWmctrlWindowId()
-				.next(function(aWindowId) {
-					return self.runCommand('wmctrl-raise', self.pathToWmctrl, aWindowId)
-							.next(function() {
-								return self.runCommand('wmctrl-unraise', self.pathToWmctrl, aWindowId);
-							});
-				})
+		return this.wmctrl.raise()
 				.error(function(e) {
 					dump(e+'\n');
 				})
@@ -2943,7 +2864,6 @@ FoxSplitterWindow.syncScrollX = prefs.getPref(domain+'syncScrollX');
 FoxSplitterWindow.syncScrollY = prefs.getPref(domain+'syncScrollY');
 FoxSplitterWindow.fixMispositoning = prefs.getPref(domain+'fixMispositoning');
 FoxSplitterWindow.methodToRaiseWindow = prefs.getPref(domain+'methodToRaiseWindow');
-FoxSplitterWindow.pathToWmctrl = prefs.getPref(domain+'pathToWmctrl');
 
 FoxSplitterWindow.IMPORT_NOTHING     = FoxSplitterConst.IMPORT_NOTHING;
 FoxSplitterWindow.IMPORT_ALL         = FoxSplitterConst.IMPORT_ALL;

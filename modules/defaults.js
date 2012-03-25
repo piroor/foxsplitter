@@ -112,7 +112,7 @@ config.setDefault(domain+'methodToRaiseWindow',
 	XULAppInfo.OS == 'Linux' ?
 		FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL :
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
-config.setDefault(domain+'pathToWmctrl', '');
+config.setDefault(domain+'wmctrl.path', '');
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-top',    true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-right',  true);
