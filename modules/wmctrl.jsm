@@ -68,7 +68,7 @@ Wmctrl.prototype = {
 				return;
 			}
 			var pathFile = self.createTempFile('wmctrl-path');
-			return this.runCommand('which-wmctrl', pathFile.path)
+			return self.runCommand('which-wmctrl', pathFile.path)
 					.next(function() {
 						var path = textIO.readFrom(pathFile, 'UTF-8');
 						pathFile.remove(true);
@@ -100,6 +100,7 @@ Wmctrl.prototype = {
 
 	initId : function wmctrl_initId()
 	{
+		var self = this;
 		return this.getWindowId(this.window)
 				.next(function(aWindowId) {
 					return self.id = aWindowId;
@@ -146,7 +147,7 @@ Wmctrl.prototype = {
 		var deferred = new Deferred();
 
 		var args = Array.slice(arguments, 1);
-		var path = resolve('../bin/' + aCommand);
+		var path = resolve('bin/' + aCommand);
 
 		const IOService = Cc['@mozilla.org/network/io-service;1']
 							.getService(Ci.nsIIOService);
