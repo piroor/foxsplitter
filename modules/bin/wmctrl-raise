@@ -1,4 +1,0 @@
-#!/bin/sh
-# $1 = path to wmctrl
-# $2 = window id
-$1 -i -r $2 -b add,above

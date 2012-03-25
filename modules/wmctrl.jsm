@@ -99,9 +99,9 @@ Wmctrl.prototype = {
 						return self.raise();
 					});
 
-		return this.runCommand('wmctrl-raise', this.path, this.id)
+		return this.runCommand(this.path, '-i', '-r', this.id, '-b', 'add,above')
 				.next(function() {
-					return self.runCommand('wmctrl-unraise', self.path, self.id);
+					return self.runCommand(self.path, '-i', '-r', self.id, '-b', 'remove,above');
 				});
 	},
 
