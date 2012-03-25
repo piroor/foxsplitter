@@ -70,7 +70,7 @@ Wmctrl.prototype = {
 				return;
 			}
 			var pathFile = self.createTempFile('wmctrl-path');
-			return self.runCommand('which-wmctrl', pathFile.path)
+			return self.run(resolve('bin/which-wmctrl'), pathFile.path)
 					.next(function() {
 						var path = textIO.readFrom(pathFile, 'UTF-8');
 						pathFile.remove(true);
@@ -99,9 +99,9 @@ Wmctrl.prototype = {
 						return self.raise();
 					});
 
-		return this.runCommand(this.path, '-i', '-r', this.id, '-b', 'add,above')
+		return this.run(this.path, '-i', '-r', this.id, '-b', 'add,above')
 				.next(function() {
-					return self.runCommand(self.path, '-i', '-r', self.id, '-b', 'remove,above');
+					return self.run(self.path, '-i', '-r', self.id, '-b', 'remove,above');
 				});
 	},
 
@@ -129,7 +129,7 @@ Wmctrl.prototype = {
 
 		aWindow.document.title = temporaryTitle;
 
-		return this.runCommand('wmctrl-list', this.path, listFile.path)
+		return this.run(resolve('bin/wmctrl-list'), this.path, listFile.path)
 				.error(function() {
 					// we must restore the original title anyway!
 					if (aWindow.document.title == temporaryTitle)
@@ -149,36 +149,44 @@ Wmctrl.prototype = {
 				});
 	},
 
-	runCommand : function wmctrl_runCommand(aCommand)
+	run : function wmctrl_run(aExecutable)
 	{
 		var deferred = new Deferred();
 
 		var args = Array.slice(arguments, 1);
-		var path = resolve('bin/' + aCommand);
 
 		const IOService = Cc['@mozilla.org/network/io-service;1']
 							.getService(Ci.nsIIOService);
 		const FileHandler = IOService.getProtocolHandler('file')
 							.QueryInterface(Ci.nsIFileProtocolHandler);
-		var command = FileHandler.getFileFromURLSpec(path);
-
-		if (!command.exists()) {
+		var executable;
+		try {
+			executable = FileHandler.getFileFromURLSpec(aExecutable);
+		}
+		catch(e) {
 			Deferred.next(function() {
-				deferred.fail(new Error("unknown command: " + aCommand));
+				deferred.fail(new Error("invalid executable: " + aExecutable));
+			});
+			return deferred;
+		}
+
+		if (!executable.exists()) {
+			Deferred.next(function() {
+				deferred.fail(new Error("missing executable: " + aExecutable));
 			});
 			return deferred;
 		}
 
 		var process = Cc['@mozilla.org/process/util;1']
 						.createInstance(Ci.nsIProcess);
-		process.init(command);
+		process.init(executable);
 		process.runwAsync(args, args.length, {
-			observe : function runCommand_observe(aSubject, aTopic, aData)
+			observe : function run_observe(aSubject, aTopic, aData)
 			{
 				if (aTopic == 'process-finished')
 					deferred.call();
 				else
-					deferred.fail(new Error("command " + aCommand + "failed"));
+					deferred.fail(new Error(aExecutable + " failed"));
 			}
 		});
 
