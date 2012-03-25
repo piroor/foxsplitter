@@ -1,3 +1,3 @@
 copy buildscript\makexpi.sh .\
-bash makexpi.sh foxsplitter version=0
+bash makexpi.sh -n foxsplitter
 del makexpi.sh
