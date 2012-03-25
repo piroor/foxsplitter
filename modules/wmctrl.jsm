@@ -155,13 +155,20 @@ Wmctrl.prototype = {
 
 		var args = Array.slice(arguments, 1);
 
-		const IOService = Cc['@mozilla.org/network/io-service;1']
-							.getService(Ci.nsIIOService);
-		const FileHandler = IOService.getProtocolHandler('file')
-							.QueryInterface(Ci.nsIFileProtocolHandler);
 		var executable;
 		try {
-			executable = FileHandler.getFileFromURLSpec(aExecutable);
+			if (aExecutable.indexOf('file:') == 0) {
+				const IOService = Cc['@mozilla.org/network/io-service;1']
+									.getService(Ci.nsIIOService);
+				const FileHandler = IOService.getProtocolHandler('file')
+									.QueryInterface(Ci.nsIFileProtocolHandler);
+				executable = FileHandler.getFileFromURLSpec(aExecutable);
+			}
+			else {
+				executable = Cc['@mozilla.org/file/local;1']
+								.createInstance(Ci.nsILocalFile);
+				executable.initWithPath(aExecutable);
+			}
 		}
 		catch(e) {
 			Deferred.next(function() {
