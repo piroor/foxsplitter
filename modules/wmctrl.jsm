@@ -165,14 +165,14 @@ Wmctrl.prototype = {
 		}
 		catch(e) {
 			Deferred.next(function() {
-				deferred.fail(new Error("invalid executable: " + aExecutable));
+				deferred.fail(new Error(e+'\ninvalid executable: ' + aExecutable));
 			});
 			return deferred;
 		}
 
 		if (!executable.exists()) {
 			Deferred.next(function() {
-				deferred.fail(new Error("missing executable: " + aExecutable));
+				deferred.fail(new Error('missing executable: ' + aExecutable));
 			});
 			return deferred;
 		}
@@ -186,7 +186,7 @@ Wmctrl.prototype = {
 				if (aTopic == 'process-finished')
 					deferred.call();
 				else
-					deferred.fail(new Error(aExecutable + " failed"));
+					deferred.fail(new Error(aExecutable + ' failed'));
 			}
 		});
 
