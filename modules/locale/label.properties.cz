@@ -205,3 +205,4 @@ wmctrl.notFound.title=Wmctrl Not Found
 wmctrl.notFound.text=Failed to detect the location of the "wmctrl" command. Fox Splitter requires "wmctrl" to control windows.\nIf it is not installed yet, it should be installed via the package management system on your system (or other ways).
 wmctrl.notFound.ok=OK
 wmctrl.notFound.neverShow=Never show this message
+wmctrl.notFound.wmctrl=About wmctrl

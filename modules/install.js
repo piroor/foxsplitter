@@ -57,24 +57,32 @@ function install()
 				var WM = require('lib/WindowManager').WindowManager;
 				var windows = WM.getWindows('navigator:browser');
 				if (windows.length && windows[0].gBrowser) {
+					let b = windows[0].gBrowser;
 					let confirmWithPopup = require('lib/confirmWithPopup').confirmWithPopup;
 					let Deferred = require('lib/jsdeferred').Deferred;
 					Deferred.wait(0.5).next(function() {
 						return confirmWithPopup({
-							browser : windows[0].gBrowser.selectedBrowser,
+							browser : b,
 							label   : bundle.getString('wmctrl.notFound.text'),
 							value   : 'foxsplitter-wmctrl-not-found',
 							image   : location.href + '/../../icon.png',
 							buttons : [
-								bundle.getString('wmctrl.notFound.ok'),
+								bundle.getString('wmctrl.notFound.wmctrl'),
 								bundle.getString('wmctrl.notFound.neverShow')
 							],
-							persistence : -1
+							persistence : 2
 						});
 					})
 					.next(function(aButtonIndex) {
-						if (aButtonIndex == 1)
-							prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
+						switch (aButtonIndex)
+						{
+							case 0:
+								b.selectedTab = b.addTab('http://tomas.styblo.name/wmctrl/');
+								return;
+							case 1:
+								prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
+								return;
+						}
 					});
 				}
 				else {
