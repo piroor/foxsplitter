@@ -199,3 +199,9 @@ ui.setAsMainWindow.accesskey=m
 
 
 tabView.importedGroup=他のウィンドウから移動されたグループ（%S）
+
+
+wmctrl.notFound.title=wmctrlが見つかりません
+wmctrl.notFound.text=wmctrlを見つけられませんでした。\nFox Splitterは、ウィンドウの制御にwmctrlを利用します。システムのパッケージ管理システムを利用するなどしてwmctrlをインストールして下さい。
+wmctrl.notFound.ok=OK
+wmctrl.notFound.neverShow=このメッセージを今後表示しない

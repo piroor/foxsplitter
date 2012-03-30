@@ -113,6 +113,7 @@ config.setDefault(domain+'methodToRaiseWindow',
 		FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL :
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 config.setDefault(domain+'wmctrl.path', '');
+config.setDefault(domain+'wmctrl.alertNotFound', true);
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-top',    true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-right',  true);
