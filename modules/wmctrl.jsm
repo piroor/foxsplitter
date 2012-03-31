@@ -36,6 +36,7 @@
 load('lib/jsdeferred');
 load('lib/textIO');
 load('lib/prefs');
+load('lib/commandLineHelper');
 
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
@@ -66,9 +67,9 @@ Wmctrl.prototype = {
 						return self.raise();
 					});
 
-		return run(this.path, '-i', '-r', this.id, '-b', 'add,above')
+		return commandLineHelper.run(this.path, '-i', '-r', this.id, '-b', 'add,above')
 				.next(function() {
-					return run(self.path, '-i', '-r', self.id, '-b', 'remove,above');
+					return commandLineHelper.run(self.path, '-i', '-r', self.id, '-b', 'remove,above');
 				});
 	},
 
@@ -92,11 +93,11 @@ Wmctrl.prototype = {
 
 		var originalTitle = aWindow.document.title;
 		var temporaryTitle = 'wmctrl-target-window-'+Date.now()+'-'+parseInt(Math.random() * 65000);
-		var listFile = createTempFile('wmctrl-window-list');
+		var listFile = commandLineHelper.createTempFile('wmctrl-window-list');
 
 		aWindow.document.title = temporaryTitle;
 
-		return run(resolve('bin/wmctrl-list'), this.path, listFile.path)
+		return commandLineHelper.run(resolve('bin/wmctrl-list'), this.path, listFile.path)
 				.error(function() {
 					// we must restore the original title anyway!
 					if (aWindow.document.title == temporaryTitle)
@@ -132,8 +133,8 @@ Wmctrl.initPath = function wmctrl_initPath() {
 			deferred.call(self.path);
 			return;
 		}
-		var pathFile = createTempFile('wmctrl-path');
-		return run(resolve('bin/which-wmctrl'), pathFile.path)
+		var pathFile = commandLineHelper.createTempFile('wmctrl-path');
+		return commandLineHelper.run(resolve('bin/which-wmctrl'), pathFile.path)
 				.next(function() {
 					var path = textIO.readFrom(pathFile, 'UTF-8');
 					pathFile.remove(true);
@@ -152,64 +153,3 @@ Wmctrl.initPath = function wmctrl_initPath() {
 
 	return deferred;
 };
-
-function run(aExecutable)
-{
-	var deferred = new Deferred();
-
-	var args = Array.slice(arguments, 1);
-
-	var executable;
-	try {
-		if (aExecutable.indexOf('file:') == 0) {
-			const IOService = Cc['@mozilla.org/network/io-service;1']
-								.getService(Ci.nsIIOService);
-			const FileHandler = IOService.getProtocolHandler('file')
-								.QueryInterface(Ci.nsIFileProtocolHandler);
-			executable = FileHandler.getFileFromURLSpec(aExecutable);
-		}
-		else {
-			executable = Cc['@mozilla.org/file/local;1']
-							.createInstance(Ci.nsILocalFile);
-			executable.initWithPath(aExecutable);
-		}
-	}
-	catch(e) {
-		Deferred.next(function() {
-			deferred.fail(new Error(e+'\ninvalid executable: ' + aExecutable));
-		});
-		return deferred;
-	}
-
-	if (!executable.exists()) {
-		Deferred.next(function() {
-			deferred.fail(new Error('missing executable: ' + aExecutable));
-		});
-		return deferred;
-	}
-
-	var process = Cc['@mozilla.org/process/util;1']
-					.createInstance(Ci.nsIProcess);
-	process.init(executable);
-	process.runwAsync(args, args.length, {
-		observe : function run_observe(aSubject, aTopic, aData)
-		{
-			if (aTopic == 'process-finished')
-				deferred.call();
-			else
-				deferred.fail(new Error(aExecutable + ' failed'));
-		}
-	});
-
-	return deferred;
-}
-
-function createTempFile(aLeafName)
-{
-	var file = Cc['@mozilla.org/file/directory_service;1']
-				.getService(Ci.nsIProperties)
-				.get('TmpD', Ci.nsILocalFile);
-	file.append(aLeafName);
-	file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
-	return file;
-}

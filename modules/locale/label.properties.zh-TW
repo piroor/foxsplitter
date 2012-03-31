@@ -201,7 +201,7 @@ tabView.importedGroup=Imported from other windows (%S)
 
 wmctrl.notFound.title=Wmctrl Not Found
 wmctrl.notFound.text=Failed to detect the location of the "wmctrl" command. Fox Splitter requires "wmctrl" to control windows.\nIf it is not installed yet, it should be installed via the package management system on your system (or other ways).
+wmctrl.notFound.textWithCommand=Failed to detect the location of the "wmctrl" command. Fox Splitter requires "wmctrl" to control windows.\nIf it is not installed yet, it should be installed via the command:\n\n%S
 wmctrl.notFound.neverShow=Never show this message
 wmctrl.notFound.wmctrl=About wmctrl
 wmctrl.notFound.close=Close
-

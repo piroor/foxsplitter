@@ -1,0 +1,12 @@
+#!/bin/sh
+# $1 = path to the result file
+if [ "$(which apt)" != "" ];
+then
+  echo "sudo apt-get install wmctrl" > $1
+elif [ "$(which yum)" != "" ];
+then
+  echo "sudo yum install wmctrl" > $1
+elif [ "$(which port)" != "" ];
+then
+  echo "sudo port install wmctrl" > $1
+fi

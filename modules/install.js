@@ -51,57 +51,71 @@ function install()
 				throw new Error(Wmctrl.ERROR_WMCTRL_NOT_FOUND);
 		})
 		.error(function(aError) {
-			if (aError && aError.message == Wmctrl.ERROR_WMCTRL_NOT_FOUND) {
-				var bundle = require('lib/locale')
-								.get(resolve('locale/label.properties'));
-				var WM = require('lib/WindowManager').WindowManager;
-				var windows = WM.getWindows('navigator:browser');
-				if (windows.length && windows[0].gBrowser) {
-					let b = windows[0].gBrowser;
-					let confirmWithPopup = require('lib/confirmWithPopup').confirmWithPopup;
-					let Deferred = require('lib/jsdeferred').Deferred;
-					confirmWithPopup({
-						browser : b,
-						label   : bundle.getString('wmctrl.notFound.text'),
-						value   : 'foxsplitter-wmctrl-not-found',
-						image   : location.href + '/../../icon.png',
-						anchor  : 'addons-notification-icon',
-						buttons : [
-							bundle.getString('wmctrl.notFound.wmctrl'),
-							bundle.getString('wmctrl.notFound.close'),
-							bundle.getString('wmctrl.notFound.neverShow')
-						],
-						persistence : 2
-					})
-					.next(function(aButtonIndex) {
-						switch (aButtonIndex)
-						{
-							case 0:
-								b.selectedTab = b.addTab('http://tomas.styblo.name/wmctrl/');
-								return;
-							case 2:
-								prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
-								return;
-						}
-					// })
-					// .error(function(e) {
-					// 	dump(e+'\n');
-					});
-				}
-				else {
-					let checked = { value : false };
-					Cc['@mozilla.org/embedcomp/prompt-service;1']
-						.getService(Ci.nsIPromptService)
-						.alertCheck(
-							null,
-							bundle.getString('wmctrl.notFound.title'),
-							bundle.getString('wmctrl.notFound.text'),
-							bundle.getString('wmctrl.notFound.neverShow'),
-							checked
-						);
-					if (checked.value)
-						prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
-				}
-			}
+			if (!aError || aError.message != Wmctrl.ERROR_WMCTRL_NOT_FOUND)
+				return;
+
+			var commandLineHelper = require('lib/commandLineHelper').commandLineHelper;
+			var commandFile = commandLineHelper.createTempFile('package-management-system-autodetection');
+			commandLineHelper.run(resolve('bin/detect-package-management-system'), commandFile.path)
+				.next(function() {
+					var textIO = require('lib/textIO').textIO;
+					var command = textIO.readFrom(commandFile, 'UTF-8');
+					commandFile.remove(true);
+
+					var text = command ?
+								bundle.getFormattedString('wmctrl.notFound.textWithCommand', [command]) :
+								bundle.getString('wmctrl.notFound.text') ;
+
+					var bundle = require('lib/locale')
+									.get(resolve('locale/label.properties'));
+					var WM = require('lib/WindowManager').WindowManager;
+					var windows = WM.getWindows('navigator:browser');
+					if (windows.length && windows[0].gBrowser) {
+						let b = windows[0].gBrowser;
+						let confirmWithPopup = require('lib/confirmWithPopup').confirmWithPopup;
+						let Deferred = require('lib/jsdeferred').Deferred;
+						confirmWithPopup({
+							browser : b,
+							label   : text,
+							value   : 'foxsplitter-wmctrl-not-found',
+							image   : location.href + '/../../icon.png',
+							anchor  : 'addons-notification-icon',
+							buttons : [
+								bundle.getString('wmctrl.notFound.wmctrl'),
+								bundle.getString('wmctrl.notFound.close'),
+								bundle.getString('wmctrl.notFound.neverShow')
+							],
+							persistence : 2
+						})
+						.next(function(aButtonIndex) {
+							switch (aButtonIndex)
+							{
+								case 0:
+									b.selectedTab = b.addTab('http://tomas.styblo.name/wmctrl/');
+									return;
+								case 2:
+									prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
+									return;
+							}
+						// })
+						// .error(function(e) {
+						// 	dump(e+'\n');
+						});
+					}
+					else {
+						let checked = { value : false };
+						Cc['@mozilla.org/embedcomp/prompt-service;1']
+							.getService(Ci.nsIPromptService)
+							.alertCheck(
+								null,
+								bundle.getString('wmctrl.notFound.title'),
+								text,
+								bundle.getString('wmctrl.notFound.neverShow'),
+								checked
+							);
+						if (checked.value)
+							prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
+					}
+				});
 		});
 }
