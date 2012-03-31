@@ -104,10 +104,10 @@ config.register('about:blank?foxsplitter-config', <>
 				type="bool"/>
 			<preference id="generalButton.split.position"
 				name={domain+'generalButton.split.position'}
-				type="bool"/>
+				type="int"/>
 			<preference id="appMenu.split.position"
 				name={domain+'appMenu.split.position'}
-				type="bool"/>
+				type="int"/>
 			<preference id="importTabsFromClosedSibling"
 				name={domain+'importTabsFromClosedSibling'}
 				type="int"/>
