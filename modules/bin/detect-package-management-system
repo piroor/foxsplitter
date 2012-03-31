@@ -1,6 +1,9 @@
 #!/bin/sh
 # $1 = path to the result file
-if [ "$(which apt)" != "" ];
+if [ "$(which aptitude)" != "" ];
+then
+  echo "sudo aptitude install wmctrl" > $1
+elif [ "$(which apt-get)" != "" ];
 then
   echo "sudo apt-get install wmctrl" > $1
 elif [ "$(which yum)" != "" ];

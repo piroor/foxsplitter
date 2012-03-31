@@ -142,7 +142,13 @@ var confirmWithPopup;
 				)+
 				'#notification-popup-box[anchorid="'+aOptions.anchor+'"] > #'+aOptions.anchor+' {'+
 				'	display: -moz-box;'+
-				'}'
+				'}' +
+				(aOptions.label.indexOf('\n') > -1 ?
+					'popupnotification[id="'+aOptions.id+'-notification"] .popup-notification-description {' +
+					'	white-space: pre-wrap;' +
+					'}' :
+					''
+				)
 			);
 
 		var styleSheets = aDocument.styleSheets;
@@ -285,6 +291,7 @@ var confirmWithPopup;
 			var secondaryActions = buttons.length > 1 ? buttons.slice(1) : null ;
 
 			options.id = options.value || 'confirmWithPopup-'+encodeURIComponent(options.label);
+			options.label = options.label.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
 			style = addStyleSheet(doc, options);
 

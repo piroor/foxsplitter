@@ -60,14 +60,16 @@ function install()
 				.next(function() {
 					var textIO = require('lib/textIO').textIO;
 					var command = textIO.readFrom(commandFile, 'UTF-8');
+dump('command = '+command+'\n');
 					commandFile.remove(true);
-
-					var text = command ?
-								bundle.getFormattedString('wmctrl.notFound.textWithCommand', [command]) :
-								bundle.getString('wmctrl.notFound.text') ;
 
 					var bundle = require('lib/locale')
 									.get(resolve('locale/label.properties'));
+					var text = command ?
+								bundle.getFormattedString('wmctrl.notFound.textWithCommand', [command]) :
+								bundle.getString('wmctrl.notFound.text') ;
+dump('text = '+text+'\n');
+
 					var WM = require('lib/WindowManager').WindowManager;
 					var windows = WM.getWindows('navigator:browser');
 					if (windows.length && windows[0].gBrowser) {
