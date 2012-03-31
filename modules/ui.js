@@ -1410,16 +1410,17 @@ FoxSplitterUI.prototype = {
 
 		var toolboxHeight = toolbox.boxObject.height;
 		var collapsedHeight = prefs.getPref(domain+'shouldAutoHideToolbox.collapsedHeight');
+		var duration = prefs.getPref(domain+'shouldAutoHideToolbox.animationDuration');
 		this._autoHideToolboxStyleSheet = this.resolveSymbols(<![CDATA[
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox {
 				margin-bottom: -%MARGIN_BOTTOM%px;
 				max-height: %HEIGHT%px;
 				overflow: hidden;
 				position: relative;
-				transition: margin-bottom ease-in 0.15s,
-				            max-height ease-in 0.15s;
-				-moz-transition: margin-bottom ease-in 0.15s,
-				                 max-height ease-in 0.15s;
+				transition: margin-bottom ease %DURATION%s,
+				            max-height ease %DURATION%s;
+				-moz-transition: margin-bottom ease %DURATION%s,
+				                 max-height ease %DURATION%s;
 			}
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
 				margin-bottom: 0 !important;
@@ -1428,7 +1429,8 @@ FoxSplitterUI.prototype = {
 		]]>.toString(), {
 			HEIGHT           : toolboxHeight,
 			MARGIN_BOTTOM    : toolboxHeight - collapsedHeight,
-			COLLAPSED_HEIGHT : collapsedHeight
+			COLLAPSED_HEIGHT : collapsedHeight,
+			DURATION         : duration ? duration / 1000 : 0
 		});
 
 		this._installStyleSheet(this._autoHideToolboxStyleSheet);
@@ -1565,6 +1567,7 @@ var prefListener = {
 						});
 						break;
 
+					case 'shouldAutoHideToolbox.animationDuration':
 					case 'shouldAutoHideToolbox.collapsedHeight':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.updateToolboxAutoHide();
