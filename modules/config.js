@@ -558,7 +558,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 	type="child">
 
 	<prefpane id="prefpane-platform"
-		flex="1">
+		flex="1"
+		onpaneload="updateAvailabilityOfPathToWmctrl()">
 		<preferences>
 			<preference id="platformOffset.needToBeUpdated"
 				name={domain+'platformOffset.needToBeUpdated'}
@@ -580,9 +581,15 @@ config.register('about:blank?foxsplitter-config-platform', <>
 				name={domain+'platformOffset.height'}
 				type="int"
 				instantApply="true"/>
+			<preference id="methodToRaiseWindow"
+				name={domain+'methodToRaiseWindow'}
+				type="int"/>
+			<preference id="methodToRaiseWindow.wmctrl.path"
+				name={domain+'methodToRaiseWindow.wmctrl.path'}
+				type="string"/>
 		</preferences>
 		<groupbox orient="vertical">
-			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
+			<caption label={bundle.getString('platformOffset.caption')}/>
 			<hbox style="max-width:40em">
 				<description flex="1">{bundle.getString('platformOffset.description')}</description>
 			</hbox>
@@ -623,10 +630,47 @@ config.register('about:blank?foxsplitter-config-platform', <>
 					size="5"/>
 			</hbox>
 		</groupbox>
+		<groupbox>
+			<caption label={bundle.getString('methodToRaiseWindow.caption')}/>
+			<radiogroup orient="vertical"
+				preference="methodToRaiseWindow"
+				oncommand="updateAvailabilityOfPathToWmctrl()">
+				<radio value={FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG}
+					label={bundle.getString('methodToRaiseWindow.zLevel')}/>
+				<hbox align="center">
+					<radio value={FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL}
+						label={bundle.getString('methodToRaiseWindow.wmctrl')}
+						id="methodToRaiseWindow.wmctrl-radio"/>
+					<spacer style="width:0.5em;"/>
+					<label control="methodToRaiseWindow.wmctrl.path-textbox"
+						value={bundle.getString('methodToRaiseWindow.wmctrl.path')}/>
+					<textbox id="methodToRaiseWindow.wmctrl.path-textbox"
+						preference="methodToRaiseWindow.wmctrl.path"
+						flex="1"/>
+				</hbox>
+				<radio value={FoxSplitterConst.RAISE_WINDOW_BY_FOCUS}
+					label={bundle.getString('methodToRaiseWindow.focus')}/>
+				<radio value={FoxSplitterConst.DO_NOT_RAISE_WINDOW}
+					label={bundle.getString('methodToRaiseWindow.none')}/>
+			</radiogroup>
+		</groupbox>
 	</prefpane>
 </prefwindow>
 
 </>,
 (function() {
+	function updateAvailabilityOfPathToWmctrl() {
+		var elements = [document.getElementById('methodToRaiseWindow.wmctrl.path-textbox')];
+		elements.push(elements[0].previousSibling);
+		elements.forEach(
+			document.getElementById('methodToRaiseWindow.wmctrl-radio').selected ?
+				function(aElement) {
+					aElement.removeAttribute('disabled');
+				} :
+				function(aElement) {
+					aElement.setAttribute('disabled', true);
+				}
+		);
+	}
 }).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '')
 );

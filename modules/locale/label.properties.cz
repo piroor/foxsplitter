@@ -106,13 +106,20 @@ shouldKeepSizeRatioOnResize=Resize split windows to keep their size ratio, when 
 platform.button=Configurations of workarounds for platform specific issues
 platform.title=Workarounds for platform specific issues
 
-platformOffset.needToBeUpdated=Offset of positioning and resizing
+platformOffset.caption=Offset of positioning and resizing
 platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
 platformOffset.forceUpdate=Re-calculate offsets now
 platformOffset.x=Left
 platformOffset.y=Top
 platformOffset.width=Width
 platformOffset.height=Height
+
+methodToRaiseWindow.caption=How to raise grouped windows to front
+methodToRaiseWindow.zLevel=By nsIXULWindow::zLevel (recommended for Windows)
+methodToRaiseWindow.wmctrl=By wmctrl (recommended for Linux)
+methodToRaiseWindow.wmctrl.path=Path to wmctrl:
+methodToRaiseWindow.focus=By window focus
+methodToRaiseWindow.none=Do nothing (grouped windows can hide behind another window)
 
 
 

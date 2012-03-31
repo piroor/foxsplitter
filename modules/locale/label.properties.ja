@@ -104,13 +104,20 @@ shouldKeepSizeRatioOnResize=分割されたウィンドウの大きさを変え�
 platform.button=プラットフォーム固有の問題への対処の詳細設定
 platform.title=プラットフォーム固有の問題への対処
 
-platformOffset.needToBeUpdated=配置とサイズ指定のオフセット値
+platformOffset.caption=配置とサイズ指定のオフセット値
 platformOffset.description=Firefox自身のプラットフォーム依存のバグを回避するため、Fox Splitterはウィンドウの位置とサイズを正しく計算するためのオフセット値を必要とする場合があります。これらの値は通常は初回起動時に自動的に計算されます。もし分割されたウィンドウの位置や大きさがずれている場合は、手動でオフセット値を修正して下さい。
 platformOffset.forceUpdate=オフセット値を再計算する
 platformOffset.x=左
 platformOffset.y=上
 platformOffset.width=幅
 platformOffset.height=高さ
+
+methodToRaiseWindow.caption=グループ化されたウィンドウを手前に表示する方法
+methodToRaiseWindow.zLevel=nsIXULWindow::zLevelを使う（Windowsでの推奨設定）
+methodToRaiseWindow.wmctrl=wmctrlを使う（Linuxでの推奨設定）
+methodToRaiseWindow.wmctrl.path=wmctrlの位置:
+methodToRaiseWindow.focus=ウィンドウのフォーカスを使う
+methodToRaiseWindow.none=何もしない（グループ化されたウィンドウが他のウィンドウの背後に隠れることがあります）
 
 
 
