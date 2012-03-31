@@ -1270,13 +1270,13 @@ FoxSplitterUI.prototype = {
 		this.startAutoHideTabs();
 		this._updateGroupedAppearanceInternal();
 	},
-	get _autoHideWasEnabled()
+	get _autoHideTabsWasEnabled()
 	{
-		return FoxSplitterUI._autoHideWasEnabled;
+		return FoxSplitterUI._autoHideTabsWasEnabled;
 	},
-	set _autoHideWasEnabled(aValue)
+	set _autoHideTabsWasEnabled(aValue)
 	{
-		return FoxSplitterUI._autoHideWasEnabled = aValue;
+		return FoxSplitterUI._autoHideTabsWasEnabled = aValue;
 	},
 	_initToolbarState : function FSUI_initToolbarState()
 	{
@@ -1405,28 +1405,34 @@ FoxSplitterUI.prototype = {
 			return;
 
 		let collapsedHeight = prefs.getPref(domain+'shouldAutoHideToolbox.collapsedHeight');
-		this._autoHideStyleSheet = this.resolveSymbols(<![CDATA[
+		this._autoHideToolboxStyleSheet = this.resolveSymbols(<![CDATA[
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox {
 				margin-bottom: -%MARGIN_BOTTOM%px;
+				max-height: %HEIGHT%px;
 				overflow: hidden;
 				position: relative;
+				transition: margin-bottom ease-in 0.15s,
+				            max-height ease-in 0.15s;
+				-moz-transition: margin-bottom ease-in 0.15s,
+				                 max-height ease-in 0.15s;
 			}
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
 				margin-bottom: 0 !important;
 				max-height: %COLLAPSED_HEIGHT%px;
 			}
 		]]>.toString(), {
+			HEIGHT           : toolbox.boxObject.height,
 			MARGIN_BOTTOM    : toolbox.boxObject.height - collapsedHeight,
 			COLLAPSED_HEIGHT : collapsedHeight
 		});
-		this._installStyleSheet(this._autoHideStyleSheet);
+		this._installStyleSheet(this._autoHideToolboxStyleSheet);
 	},
 
 	clearToolboxAutoHide : function FSUI_clearToolboxAutoHide()
 	{
-		if (this._autoHideStyleSheet) {
-			this._uninstallStyleSheet(this._autoHideStyleSheet);
-			delete this._autoHideStyleSheet;
+		if (this._autoHideToolboxStyleSheet) {
+			this._uninstallStyleSheet(this._autoHideToolboxStyleSheet);
+			delete this._autoHideToolboxStyleSheet;
 		}
 	},
 
@@ -1435,14 +1441,14 @@ FoxSplitterUI.prototype = {
 		if (
 			!this.shouldAutoHideTabs ||
 			!this.browser ||
-			typeof this._autoHideWasEnabled != 'undefined'
+			typeof this._autoHideTabsWasEnabled != 'undefined'
 			)
 			return;
 
 		let treeStyleTab = this.browser.treeStyleTab;
 		if (treeStyleTab && treeStyleTab.autoHide && treeStyleTab.toggleAutoHide) {
 			let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
-			this._autoHideWasEnabled = enabled;
+			this._autoHideTabsWasEnabled = enabled;
 
 			if (treeStyleTab.toggleAutoHide &&
 				treeStyleTab.browser &&
@@ -1457,7 +1463,7 @@ FoxSplitterUI.prototype = {
 		if (
 			!this.shouldAutoHideTabs ||
 			!this.browser ||
-			typeof this._autoHideWasEnabled == 'undefined' ||
+			typeof this._autoHideTabsWasEnabled == 'undefined' ||
 			(
 				!aForce &&
 				FoxSplitterBase.prototype.groupClass.instances.length
@@ -1470,11 +1476,11 @@ FoxSplitterUI.prototype = {
 			let enabled = treeStyleTab.autoHide.mode != treeStyleTab.autoHide.kMODE_DISABLED;
 			if (treeStyleTab.toggleAutoHide &&
 				treeStyleTab.browser &&
-				enabled != this._autoHideWasEnabled) {
+				enabled != this._autoHideTabsWasEnabled) {
 				treeStyleTab.toggleAutoHide();
 			}
 		}
-		this._autoHideWasEnabled = undefined;
+		this._autoHideTabsWasEnabled = undefined;
 	}
 
 };
