@@ -53,7 +53,7 @@ var config = {
 
 		var source = Cc['@mozilla.org/variant;1']
 						.createInstance(Ci.nsIWritableVariant);
-		source.setFromVariant([this._builder.toSource(), current.source, aURI, current.script]);
+		source.setFromVariant([this._builder.toSource(), current.source, aURI, current.script, this]);
 
 		if (aOwner) {
 			let parent = aOwner.top
@@ -148,6 +148,7 @@ var config = {
 	_builder : function()
 	{
 		var args = window.arguments[0];
+		window.config = args[4];
 		var soruce = args[1];
 		var sourceURI = args[2];
 		var root = document.documentElement;

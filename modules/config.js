@@ -482,26 +482,6 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldKeepSizeRatioOnResize"
 				name={domain+'shouldKeepSizeRatioOnResize'}
 				type="bool"/>
-			<preference id="platformOffset.needToBeUpdated"
-				name={domain+'platformOffset.needToBeUpdated'}
-				type="bool"
-				instantApply="true"/>
-			<preference id="platformOffset.x"
-				name={domain+'platformOffset.x'}
-				type="int"
-				instantApply="true"/>
-			<preference id="platformOffset.y"
-				name={domain+'platformOffset.y'}
-				type="int"
-				instantApply="true"/>
-			<preference id="platformOffset.width"
-				name={domain+'platformOffset.width'}
-				type="int"
-				instantApply="true"/>
-			<preference id="platformOffset.height"
-				name={domain+'platformOffset.height'}
-				type="int"
-				instantApply="true"/>
 		</preferences>
 		<checkbox label={bundle.getString('syncScrollX')}
 			preference="syncScrollX"/>
@@ -509,48 +489,12 @@ config.register('about:blank?foxsplitter-config', <>
 			preference="shouldScrollToSplitPosition"/>
 		<checkbox label={bundle.getString('shouldKeepSizeRatioOnResize')}
 			preference="shouldKeepSizeRatioOnResize"/>
-		<groupbox orient="vertical">
-			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
-			<hbox style="max-width:40em">
-				<description flex="1">{bundle.getString('platformOffset.description')}</description>
-			</hbox>
-			<hbox align="center">
-				<spacer flex="1"/>
-				<button label={bundle.getString('platformOffset.forceUpdate')}
-					oncommand="document.getElementById('platformOffset.needToBeUpdated').value=true;"/>
-				<spacer flex="1"/>
-			</hbox>
-			<hbox align="center">
-				<label value={bundle.getString('platformOffset.x')}
-					control="platformOffset.x-textbox"/>
-				<textbox id="platformOffset.x-textbox"
-					preference="platformOffset.x"
-					type="number"
-					increment="1"
-					size="5"/>
-				<label value={bundle.getString('platformOffset.y')}
-					control="platformOffset.y-textbox"/>
-				<textbox id="platformOffset.y-textbox"
-					preference="platformOffset.y"
-					type="number"
-					increment="1"
-					size="5"/>
-				<label value={bundle.getString('platformOffset.width')}
-					control="platformOffset.width-textbox"/>
-				<textbox id="platformOffset.width-textbox"
-					preference="platformOffset.width"
-					type="number"
-					increment="1"
-					size="5"/>
-				<label value={bundle.getString('platformOffset.height')}
-					control="platformOffset.height-textbox"/>
-				<textbox id="platformOffset.height-textbox"
-					preference="platformOffset.height"
-					type="number"
-					increment="1"
-					size="5"/>
-			</hbox>
-		</groupbox>
+		<hbox align="center">
+			<spacer flex="1"/>
+			<button label={bundle.getString('platform.button')}
+				oncommand="config.open('about:blank?foxsplitter-config-platform');"/>
+			<spacer flex="1"/>
+		</hbox>
 	</prefpane>
 </prefwindow>
 
@@ -603,5 +547,86 @@ config.register('about:blank?foxsplitter-config', <>
 	Components.classes['@mozilla.org/moz/jssubscript-loader;1']
 		.getService(Components.interfaces.mozIJSSubScriptLoader)
 		.loadSubScript('resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js', window);
+}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '')
+);
+
+config.register('about:blank?foxsplitter-config-platform', <>
+
+<prefwindow id="foxsplitter-config-platform"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title={bundle.getString('platform.title')}
+	type="child">
+
+	<prefpane id="prefpane-platform"
+		flex="1">
+		<preferences>
+			<preference id="platformOffset.needToBeUpdated"
+				name={domain+'platformOffset.needToBeUpdated'}
+				type="bool"
+				instantApply="true"/>
+			<preference id="platformOffset.x"
+				name={domain+'platformOffset.x'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.y"
+				name={domain+'platformOffset.y'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.width"
+				name={domain+'platformOffset.width'}
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.height"
+				name={domain+'platformOffset.height'}
+				type="int"
+				instantApply="true"/>
+		</preferences>
+		<groupbox orient="vertical">
+			<caption label={bundle.getString('platformOffset.needToBeUpdated')}/>
+			<hbox style="max-width:40em">
+				<description flex="1">{bundle.getString('platformOffset.description')}</description>
+			</hbox>
+			<hbox align="center">
+				<spacer flex="1"/>
+				<button label={bundle.getString('platformOffset.forceUpdate')}
+					oncommand="document.getElementById('platformOffset.needToBeUpdated').value=true;"/>
+				<spacer flex="1"/>
+			</hbox>
+			<hbox align="center">
+				<label value={bundle.getString('platformOffset.x')}
+					control="platformOffset.x-textbox"/>
+				<textbox id="platformOffset.x-textbox"
+					preference="platformOffset.x"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.y')}
+					control="platformOffset.y-textbox"/>
+				<textbox id="platformOffset.y-textbox"
+					preference="platformOffset.y"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.width')}
+					control="platformOffset.width-textbox"/>
+				<textbox id="platformOffset.width-textbox"
+					preference="platformOffset.width"
+					type="number"
+					increment="1"
+					size="5"/>
+				<label value={bundle.getString('platformOffset.height')}
+					control="platformOffset.height-textbox"/>
+				<textbox id="platformOffset.height-textbox"
+					preference="platformOffset.height"
+					type="number"
+					increment="1"
+					size="5"/>
+			</hbox>
+		</groupbox>
+	</prefpane>
+</prefwindow>
+
+</>,
+(function() {
 }).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '')
 );

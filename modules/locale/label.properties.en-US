@@ -97,6 +97,12 @@ shortcut.reset=Reset
 tab.advanced=Advanced
 
 syncScrollX=Enable synchronized scroll for horizontal scrolls
+shouldScrollToSplitPosition=String scrolled position of windows which are split from one tab
+shouldKeepSizeRatioOnResize=Resize split windows to keep their size ratio, when one of them is resized
+
+platform.button=Configurations of workarounds for platform specific issues
+platform.title=Workarounds for platform specific issues
+
 platformOffset.needToBeUpdated=Offset of positioning and resizing
 platformOffset.description=On some platforms, Fox Splitter requires offset values to position/resize windows correctly avoiding Firefox's bug. They are automatically calculated on the initial startup. If you see wrongly positioned/sized split windows, correct these offsets manually.
 platformOffset.forceUpdate=Re-calculate offsets now
@@ -104,8 +110,6 @@ platformOffset.x=Left
 platformOffset.y=Top
 platformOffset.width=Width
 platformOffset.height=Height
-shouldScrollToSplitPosition=String scrolled position of windows which are split from one tab
-shouldKeepSizeRatioOnResize=Resize split windows to keep their size ratio, when one of them is resized
 
 
 

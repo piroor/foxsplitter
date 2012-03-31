@@ -98,6 +98,12 @@ shortcut.reset=リセット
 tab.advanced=詳細
 
 syncScrollX=同期スクロールするように設定したウィンドウで横スクロールも同期する
+shouldScrollToSplitPosition=タブをウィンドウに分割した時に、それぞれのスクロール位置がひと続きになるように調整する
+shouldKeepSizeRatioOnResize=分割されたウィンドウの大きさを変えた時、大きさの比率を保つように他のウィンドウの大きさを調整する
+
+platform.button=プラットフォーム固有の問題への対処の詳細設定
+platform.title=プラットフォーム固有の問題への対処
+
 platformOffset.needToBeUpdated=配置とサイズ指定のオフセット値
 platformOffset.description=Firefox自身のプラットフォーム依存のバグを回避するため、Fox Splitterはウィンドウの位置とサイズを正しく計算するためのオフセット値を必要とする場合があります。これらの値は通常は初回起動時に自動的に計算されます。もし分割されたウィンドウの位置や大きさがずれている場合は、手動でオフセット値を修正して下さい。
 platformOffset.forceUpdate=オフセット値を再計算する
@@ -105,8 +111,6 @@ platformOffset.x=左
 platformOffset.y=上
 platformOffset.width=幅
 platformOffset.height=高さ
-shouldScrollToSplitPosition=タブをウィンドウに分割した時に、それぞれのスクロール位置がひと続きになるように調整する
-shouldKeepSizeRatioOnResize=分割されたウィンドウの大きさを変えた時、大きさの比率を保つように他のウィンドウの大きさを調整する
 
 
 
