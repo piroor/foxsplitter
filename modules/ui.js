@@ -1430,11 +1430,18 @@ FoxSplitterUI.prototype = {
 				max-height: %HEIGHT%px;
 				overflow: hidden;
 				position: relative;
-				transition: margin-bottom ease %DURATION%s,
+				transition: /* background-color ease %DURATION%s, */
+				            margin-bottom ease %DURATION%s,
 				            max-height ease %DURATION%s;
-				-moz-transition: margin-bottom ease %DURATION%s,
+				-moz-transition: /* background-color ease %DURATION%s, */
+				                 margin-bottom ease %DURATION%s,
 				                 max-height ease %DURATION%s;
 			}
+			/*
+			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox[tabsontop="true"]:not(:hover) {
+				background-color: ThreeDFace;
+			}
+			*/
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
 				margin-bottom: 0 !important;
 				max-height: %COLLAPSED_HEIGHT%px;
