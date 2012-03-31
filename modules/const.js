@@ -274,13 +274,19 @@ var exports = {
 		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button > .box-inherit .button-text {
 			visibility: collapse;
 		}
-	]]>.toString()
+	]]>.toString(),
+	resolveSymbols : function FSC_resolveSymbols(aSource, aDefinitions)
+	{
+		var self = this;
+		aDefinitions = aDefinitions || this;
+		return aSource.replace(/\%[A-Z_]+\%/g, function(aMatched) {
+				var symbol = aMatched.substr(1, aMatched.length-2);
+				return aDefinitions[symbol] || self[symbol] || aMatched;
+			});
+	}
 };
 
-exports.STYLESHEET = exports.STYLESHEET
-							.replace(/\%[A-Z_]+\%/g, function(aMatched) {
-								return exports[aMatched.substr(1, aMatched.length-2)];
-							});
+exports.STYLESHEET = exports.resolveSymbols(exports.STYLESHEET);
 
 exports.positionName = {};
 exports.positionName[exports.POSITION_TOP]     = 'top';

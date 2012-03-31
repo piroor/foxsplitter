@@ -74,6 +74,10 @@ FoxSplitterUI.prototype = {
 	{
 		return this.owner.browser;
 	},
+	get toolbox()
+	{
+		return !this._window ? null : this.document.querySelector('toolbox') ;
+	},
 	get toolbars()
 	{
 		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
@@ -93,6 +97,8 @@ FoxSplitterUI.prototype = {
 
 	get shouldMinimalizeUI() { return FoxSplitterUI.shouldMinimalizeUI; },
 	set shouldMinimalizeUI(aValue) { return FoxSplitterUI.shouldMinimalizeUI = aValue; },
+	get shouldAutoHideToolbox() { return FoxSplitterUI.shouldAutoHideToolbox; },
+	set shouldAutoHideToolbox(aValue) { return FoxSplitterUI.shouldAutoHideToolbox = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
 	get shouldFixActiveWindow() { return FoxSplitterUI.shouldFixActiveWindow; },
@@ -107,10 +113,11 @@ FoxSplitterUI.prototype = {
 	{
 		this.owner = aFSWindow;
 		this.shortcuts = {};
+		this._styleSheets = {};
 
 		FoxSplitterUI.instances.push(this);
 
-		this._installStyleSheet();
+		this._installStyleSheet(this.STYLESHEET);
 		this._initToolbarItems();
 		this._initKeyboardShortcuts();
 		this._initMenuItems();
@@ -124,7 +131,12 @@ FoxSplitterUI.prototype = {
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
 		this._destroyKeyboardShortcuts();
-		this._uninstallStyleSheet();
+
+		for (let styleSheet in this._styleSheets)
+		{
+			this._uninstallStyleSheet(styleSheet);
+		}
+		delete this._styleSheets;
 
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
 			return aUI != this;
@@ -133,21 +145,23 @@ FoxSplitterUI.prototype = {
 		delete this.owner;
 	},
 
-	_installStyleSheet : function FSUI_installStyleSheet()
+	_installStyleSheet : function FSUI_installStyleSheet(aStyleSheet)
 	{
-		if (this._styleSheet)
+		if (this._styleSheets[aStyleSheet])
 			return;
-		this._styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
-			'type="text/css" href="data:text/css,'+encodeURIComponent(this.STYLESHEET)+'"');
-		this.document.insertBefore(this._styleSheet, this.documentElement);
+		var styleSheet = this.document.createProcessingInstruction('xml-stylesheet',
+			'type="text/css" href="data:text/css,'+encodeURIComponent(aStyleSheet)+'"');
+		this._styleSheets[aStyleSheet] = styleSheet;
+		this.document.insertBefore(styleSheet, this.documentElement);
 	},
 
-	_uninstallStyleSheet : function FSUI_uninstallStyleSheet()
+	_uninstallStyleSheet : function FSUI_uninstallStyleSheet(aStyleSheet)
 	{
-		if (!this._styleSheet)
+		var styleSheet = this._styleSheets[aStyleSheet];
+		if (!styleSheet)
 			return;
-		this.document.removeChild(this._styleSheet);
-		delete this._styleSheet;
+		this.document.removeChild(styleSheet);
+		delete this._styleSheets[aStyleSheet];
 	},
 
 
@@ -1252,9 +1266,9 @@ FoxSplitterUI.prototype = {
 		if (!this._window)
 			return;
 
-		this._updateGroupedAppearanceInternal();
 		this._initToolbarState();
 		this.startAutoHideTabs();
+		this._updateGroupedAppearanceInternal();
 	},
 	get _autoHideWasEnabled()
 	{
@@ -1308,6 +1322,7 @@ FoxSplitterUI.prototype = {
 
 		this.updateChromeHidden();
 		this.updateChromeMargin();
+		this.updateToolboxAutoHide();
 	},
 
 
@@ -1351,6 +1366,8 @@ FoxSplitterUI.prototype = {
 
 		this._restoreToolbarState(aForce);
 
+		this.clearToolboxAutoHide();
+
 		this.endAutoHideTabs(aForce);
 	},
 	_restoreToolbarState : function FSUI_restoreToolbarState(aForce)
@@ -1374,6 +1391,42 @@ FoxSplitterUI.prototype = {
 				else
 					aToolbar.removeAttribute('iconsize');
 			}, this);
+		}
+	},
+
+	updateToolboxAutoHide : function FSUI_updateToolboxAutoHide()
+	{
+		this.clearToolboxAutoHide();
+		if (!this.shouldAutoHideToolbox)
+			return;
+
+		var toolbox = this.toolbox;
+		if (!toolbox)
+			return;
+
+		let collapsedHeight = prefs.getPref(domain+'shouldAutoHideToolbox.collapsedHeight');
+		this._autoHideStyleSheet = this.resolveSymbols(<![CDATA[
+			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox {
+				margin-bottom: -%MARGIN_BOTTOM%px;
+				overflow: hidden;
+				position: relative;
+			}
+			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
+				margin-bottom: 0 !important;
+				max-height: %COLLAPSED_HEIGHT%px;
+			}
+		]]>.toString(), {
+			MARGIN_BOTTOM    : toolbox.boxObject.height - collapsedHeight,
+			COLLAPSED_HEIGHT : collapsedHeight
+		});
+		this._installStyleSheet(this._autoHideStyleSheet);
+	},
+
+	clearToolboxAutoHide : function FSUI_clearToolboxAutoHide()
+	{
+		if (this._autoHideStyleSheet) {
+			this._uninstallStyleSheet(this._autoHideStyleSheet);
+			delete this._autoHideStyleSheet;
 		}
 	},
 
@@ -1429,6 +1482,7 @@ FoxSplitterUI.prototype = {
 FoxSplitterUI.instances = [];
 
 FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
+FoxSplitterUI.shouldAutoHideToolbox = prefs.getPref(domain+'shouldAutoHideToolbox');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
 FoxSplitterUI.shouldFixActiveWindow = prefs.getPref(domain+'shouldFixActiveWindow');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
@@ -1496,6 +1550,12 @@ var prefListener = {
 					case 'draggableAppButton':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.resetDraggableAppButton();
+						});
+						break;
+
+					case 'shouldAutoHideToolbox.collapsedHeight':
+						FoxSplitterUI.instances.forEach(function(aUI) {
+							aUI.updateToolboxAutoHide();
 						});
 						break;
 				}
