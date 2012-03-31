@@ -1,7 +1,7 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      9
+ * @version      10
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 SHIMODA "Piro" Hiroshi.
