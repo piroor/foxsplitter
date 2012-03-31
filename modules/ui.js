@@ -117,6 +117,8 @@ FoxSplitterUI.prototype = {
 
 		FoxSplitterUI.instances.push(this);
 
+		this.window.addEventListener('TabSelect', this, false);
+
 		this._installStyleSheet(this.STYLESHEET);
 		this._initToolbarItems();
 		this._initKeyboardShortcuts();
@@ -126,6 +128,8 @@ FoxSplitterUI.prototype = {
 
 	destroy : function FSUI_destroy(aOnQuit)
 	{
+		this.window.removeEventListener('TabSelect', this, false);
+
 		this.clearGroupedAppearance(aOnQuit);
 		this._makeAppButtonUndraggable();
 		this._destroyToolbarItems();
@@ -826,6 +830,8 @@ FoxSplitterUI.prototype = {
 				}
 				return;
 */
+			case 'TabSelect':
+				return this.updateToolboxAutoHide();
 			default:
 				return;
 		}
@@ -1397,14 +1403,13 @@ FoxSplitterUI.prototype = {
 	updateToolboxAutoHide : function FSUI_updateToolboxAutoHide()
 	{
 		this.clearToolboxAutoHide();
-		if (!this.shouldAutoHideToolbox)
-			return;
 
 		var toolbox = this.toolbox;
-		if (!toolbox)
+		if (!toolbox || !this.shouldAutoHideToolbox)
 			return;
 
-		let collapsedHeight = prefs.getPref(domain+'shouldAutoHideToolbox.collapsedHeight');
+		var toolboxHeight = toolbox.boxObject.height;
+		var collapsedHeight = prefs.getPref(domain+'shouldAutoHideToolbox.collapsedHeight');
 		this._autoHideToolboxStyleSheet = this.resolveSymbols(<![CDATA[
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox {
 				margin-bottom: -%MARGIN_BOTTOM%px;
@@ -1421,10 +1426,11 @@ FoxSplitterUI.prototype = {
 				max-height: %COLLAPSED_HEIGHT%px;
 			}
 		]]>.toString(), {
-			HEIGHT           : toolbox.boxObject.height,
-			MARGIN_BOTTOM    : toolbox.boxObject.height - collapsedHeight,
+			HEIGHT           : toolboxHeight,
+			MARGIN_BOTTOM    : toolboxHeight - collapsedHeight,
 			COLLAPSED_HEIGHT : collapsedHeight
 		});
+
 		this._installStyleSheet(this._autoHideToolboxStyleSheet);
 	},
 
