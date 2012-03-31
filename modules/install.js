@@ -65,6 +65,7 @@ function install()
 						label   : bundle.getString('wmctrl.notFound.text'),
 						value   : 'foxsplitter-wmctrl-not-found',
 						image   : location.href + '/../../icon.png',
+						anchor  : 'addons-notification-icon',
 						buttons : [
 							bundle.getString('wmctrl.notFound.wmctrl'),
 							bundle.getString('wmctrl.notFound.close'),
