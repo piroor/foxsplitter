@@ -831,7 +831,7 @@ FoxSplitterUI.prototype = {
 				return;
 */
 			case 'TabSelect':
-				return this.updateToolboxAutoHide();
+				return this.onTabSelect();
 			default:
 				return;
 		}
@@ -1149,6 +1149,19 @@ FoxSplitterUI.prototype = {
 			this.owner.unbindAsIndependent(aEvent.screenX, aEvent.screenY);
 	},
 
+	onTabSelect : function FSUI_onTabSelect()
+	{
+		if (!this.owner.parent)
+			return;
+
+		var chromeDisabled = this.documentElement.hasAttribute('disablechrome');
+		if (chromeDisabled == this._lastChromeDisabled)
+			return;
+
+		this._lastChromeDisabled = chromeDisabled;
+		this.updateToolboxAutoHide();
+	},
+
 
 	splitTabsFromToolbarButton : function FSUI_splitTabsFromToolbarButton(aTabs, aEvent)
 	{
@@ -1434,6 +1447,8 @@ FoxSplitterUI.prototype = {
 		});
 
 		this._installStyleSheet(this._autoHideToolboxStyleSheet);
+
+		this._lastChromeDisabled = this.documentElement.hasAttribute('disablechrome');
 	},
 
 	clearToolboxAutoHide : function FSUI_clearToolboxAutoHide()
