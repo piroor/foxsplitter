@@ -177,6 +177,9 @@ config.register('about:blank?foxsplitter-config', <>
 			<preference id="shouldMinimalizeUI"
 				name={domain+'shouldMinimalizeUI'}
 				type="bool"/>
+			<preference id="shouldAutoHideToolbox"
+				name={domain+'shouldAutoHideToolbox'}
+				type="bool"/>
 			<preference id="shouldAutoHideTabs"
 				name={domain+'shouldAutoHideTabs'}
 				type="bool"/>
@@ -187,6 +190,8 @@ config.register('about:blank?foxsplitter-config', <>
 
 		<checkbox label={bundle.getString('shouldMinimalizeUI')}
 			preference="shouldMinimalizeUI"/>
+		<checkbox label={bundle.getString('shouldAutoHideToolbox')}
+			preference="shouldAutoHideToolbox"/>
 		<checkbox label={bundle.getString('shouldAutoHideTabs')}
 			id="shouldAutoHideTabs-checkbox"
 			preference="shouldAutoHideTabs"/>
