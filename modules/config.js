@@ -40,56 +40,6 @@ var bundle = require('lib/locale')
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
-var script = (function() {
-		var hiddenUIInInactiveWindow;
-		var updateHiddenUIInInactiveWindowGroupbox;
-		function initHiddenUIInInactiveWindowChecks() {
-			hiddenUIInInactiveWindow = document.getElementById('hiddenUIInInactiveWindow');
-			updateHiddenUIInInactiveWindowGroupbox = document.getElementById('updateHiddenUIInInactiveWindow-groupbox');
-			var prefValue = parseInt(hiddenUIInInactiveWindow.value);
-			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
-				var value = parseInt(aCheckbox.getAttribute('value'));
-				aCheckbox.checked = !(prefValue & value);
-			});
-		}
-		function onChangeHiddenUIInInactiveWindow() {
-			var pref = hiddenUIInInactiveWindow;
-			var prefValue = parseInt(pref.value);
-			Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
-				var value = parseInt(aCheckbox.getAttribute('value'));
-				if (prefValue & value) prefValue ^= value;
-				if (!aCheckbox.checked)
-					prefValue |= value;
-			});
-			pref.value = prefValue;
-		}
-		function updateShortcut(aEvent) {
-			var field = aEvent.target;
-			var shortcut = KeyboardShortcut.toKeyboardShortcut(aEvent);
-			if (shortcut) {
-				field.value = shortcut;
-				document.getElementById(field.getAttribute('preference')).value = shortcut;
-				aEvent.stopPropagation()
-				aEvent.preventDefault();
-			}
-		}
-		function clearPref(aField) {
-			document.getElementById(aField.getAttribute('preference')).value = '';
-			aField.value = '';
-		}
-		function resetPref(aField) {
-			var pref = document.getElementById(aField.getAttribute('preference'));
-			pref.value = pref.defaultValue;
-			aField.value = pref.defaultValue;
-		}
-
-		var Cc = Components.classes;
-		var Ci = Components.interfaces;
-		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
-			.getService(Components.interfaces.mozIJSSubScriptLoader)
-			.loadSubScript('resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js', window);
-	}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '');
-
 config.register('about:blank?foxsplitter-config', <>
 
 <prefwindow id="foxsplitter-config"
@@ -604,4 +554,54 @@ config.register('about:blank?foxsplitter-config', <>
 	</prefpane>
 </prefwindow>
 
-</>, script);
+</>,
+(function() {
+	var hiddenUIInInactiveWindow;
+	var updateHiddenUIInInactiveWindowGroupbox;
+	function initHiddenUIInInactiveWindowChecks() {
+		hiddenUIInInactiveWindow = document.getElementById('hiddenUIInInactiveWindow');
+		updateHiddenUIInInactiveWindowGroupbox = document.getElementById('updateHiddenUIInInactiveWindow-groupbox');
+		var prefValue = parseInt(hiddenUIInInactiveWindow.value);
+		Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
+			var value = parseInt(aCheckbox.getAttribute('value'));
+			aCheckbox.checked = !(prefValue & value);
+		});
+	}
+	function onChangeHiddenUIInInactiveWindow() {
+		var pref = hiddenUIInInactiveWindow;
+		var prefValue = parseInt(pref.value);
+		Array.forEach(updateHiddenUIInInactiveWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
+			var value = parseInt(aCheckbox.getAttribute('value'));
+			if (prefValue & value) prefValue ^= value;
+			if (!aCheckbox.checked)
+				prefValue |= value;
+		});
+		pref.value = prefValue;
+	}
+	function updateShortcut(aEvent) {
+		var field = aEvent.target;
+		var shortcut = KeyboardShortcut.toKeyboardShortcut(aEvent);
+		if (shortcut) {
+			field.value = shortcut;
+			document.getElementById(field.getAttribute('preference')).value = shortcut;
+			aEvent.stopPropagation()
+			aEvent.preventDefault();
+		}
+	}
+	function clearPref(aField) {
+		document.getElementById(aField.getAttribute('preference')).value = '';
+		aField.value = '';
+	}
+	function resetPref(aField) {
+		var pref = document.getElementById(aField.getAttribute('preference'));
+		pref.value = pref.defaultValue;
+		aField.value = pref.defaultValue;
+	}
+
+	var Cc = Components.classes;
+	var Ci = Components.interfaces;
+	Components.classes['@mozilla.org/moz/jssubscript-loader;1']
+		.getService(Components.interfaces.mozIJSSubScriptLoader)
+		.loadSubScript('resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js', window);
+}).toSource().replace(/^\(?function\s*\(\)\s*\{|\}\)?$/g, '')
+);
