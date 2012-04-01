@@ -41,6 +41,8 @@ function install()
 		!prefs.getPref(FSC.domain+'wmctrl.alertNotFound'))
 		return;
 
+	const WMCTRL_WEBSITE = 'http://tomas.styblo.name/wmctrl/';
+
 	var Wmctrl = require('wmctrl').Wmctrl;
 	Wmctrl.initPath()
 		.next(function(aPath) {
@@ -93,7 +95,7 @@ dump('text = '+text+'\n');
 							switch (aButtonIndex)
 							{
 								case 0:
-									b.selectedTab = b.addTab('http://tomas.styblo.name/wmctrl/');
+									b.selectedTab = b.addTab(WMCTRL_WEBSITE);
 									return;
 								case 2:
 									prefs.setPref(FSC.domain+'wmctrl.alertNotFound', false);
