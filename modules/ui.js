@@ -118,6 +118,7 @@ FoxSplitterUI.prototype = {
 		FoxSplitterUI.instances.push(this);
 
 		this.window.addEventListener('TabSelect', this, false);
+		this.toolbox.addEventListener('MozMouseHittest', this, true);
 
 		this._installStyleSheet(this.STYLESHEET);
 		this._initToolbarItems();
@@ -129,6 +130,7 @@ FoxSplitterUI.prototype = {
 	destroy : function FSUI_destroy(aOnQuit)
 	{
 		this.window.removeEventListener('TabSelect', this, false);
+		this.toolbox.removeEventListener('MozMouseHittest', this, true);
 
 		this.clearGroupedAppearance(aOnQuit);
 		this._makeAppButtonUndraggable();
@@ -831,7 +833,9 @@ FoxSplitterUI.prototype = {
 				return;
 */
 			case 'TabSelect':
-				return this.onTabSelect();
+				return this.onTabSelect(aEvent);
+			case 'MozMouseHittest':
+				return this.onMozMouseHittest(aEvent);
 			default:
 				return;
 		}
@@ -1149,7 +1153,7 @@ FoxSplitterUI.prototype = {
 			this.owner.unbindAsIndependent(aEvent.screenX, aEvent.screenY);
 	},
 
-	onTabSelect : function FSUI_onTabSelect()
+	onTabSelect : function FSUI_onTabSelect(aEvent)
 	{
 		if (!this.owner.parent)
 			return;
@@ -1160,6 +1164,28 @@ FoxSplitterUI.prototype = {
 
 		this._lastChromeDisabled = chromeDisabled;
 		this.updateToolboxAutoHide();
+	},
+
+	onMozMouseHittest : function FSUI_onMozMouseHittest(aEvent)
+	{
+		if (
+			this.owner.parent &&
+			!this.owner.main &&
+			aEvent.originalTarget.ownerDocument == this.document &&
+			this.toolbox.boxObject.height != this._originalToolboxHeight &&
+			this.document.evaluate(
+				'ancestor-or-self::*[local-name()="toolbox"]',
+				aEvent.originalTarget,
+				null,
+				Ci.nsIDOMXPathResult.BOOLEAN_TYPE,
+				null
+			).booleanValue
+			) {
+			// stopPropagation() disables WindowDraggingUtils.jsm
+			aEvent.stopPropagation();
+			// but don't prevent default action, because it is required to accept mouse events!
+			// aEvent.preventDefault();
+		}
 	},
 
 
@@ -1430,18 +1456,11 @@ FoxSplitterUI.prototype = {
 				max-height: %HEIGHT%px;
 				overflow: hidden;
 				position: relative;
-				transition: /* background-color ease %DURATION%s, */
-				            margin-bottom ease %DURATION%s,
+				transition: margin-bottom ease %DURATION%s,
 				            max-height ease %DURATION%s;
-				-moz-transition: /* background-color ease %DURATION%s, */
-				                 margin-bottom ease %DURATION%s,
+				-moz-transition: margin-bottom ease %DURATION%s,
 				                 max-height ease %DURATION%s;
 			}
-			/*
-			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox[tabsontop="true"]:not(:hover) {
-				background-color: ThreeDFace;
-			}
-			*/
 			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
 				margin-bottom: 0 !important;
 				max-height: %COLLAPSED_HEIGHT%px;
@@ -1456,6 +1475,7 @@ FoxSplitterUI.prototype = {
 		this._installStyleSheet(this._autoHideToolboxStyleSheet);
 
 		this._lastChromeDisabled = this.documentElement.hasAttribute('disablechrome');
+		this._originalToolboxHeight = toolboxHeight;
 	},
 
 	clearToolboxAutoHide : function FSUI_clearToolboxAutoHide()
@@ -1463,6 +1483,7 @@ FoxSplitterUI.prototype = {
 		if (this._autoHideToolboxStyleSheet) {
 			this._uninstallStyleSheet(this._autoHideToolboxStyleSheet);
 			delete this._autoHideToolboxStyleSheet;
+			delete this._originalToolboxHeight;
 		}
 	},
 
