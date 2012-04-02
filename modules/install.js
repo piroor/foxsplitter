@@ -33,7 +33,80 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-function install()
+function uninstallOldVersion()
+{
+	function restart()
+	{
+		Cc['@mozilla.org/toolkit/app-startup;1']
+			.getService(Ci.nsIAppStartup)
+			.quit(Ci.nsIAppStartup.eForceQuit | Ci.nsIAppStartup.eRestart);
+	}
+
+	var shouldShowRestartPrompt = false;
+	if ('@mozilla.org/extensions/manager;1' in Cc) { // Firefox 3.6
+		let EM = Cc['@mozilla.org/extensions/manager;1']
+					.getService(Ci.nsIExtensionManager);
+		let item = EM.getItemForID(OLD_ID);
+		if (item) {
+			let RDF = Cc['@mozilla.org/rdf/rdf-service;1']
+						.getService(Ci.nsIRDFService);
+			let res  = RDF.GetResource('urn:mozilla:item:'+OLD_ID);
+			let appDisabled = false;
+			try {
+				appDisabled = EM.datasource.GetTarget(
+						res,
+						RDF.GetResource('http://www.mozilla.org/2004/em-rdf#appDisabled'),
+						true
+					).QueryInterface(Ci.nsIRDFLiteral)
+					.Value == 'true';
+			}
+			catch(e) {
+			}
+			let userDisabled = false;
+			try {
+				userDisabled = EM.datasource.GetTarget(
+						res,
+						RDF.GetResource('http://www.mozilla.org/2004/em-rdf#userDisabled'),
+						true
+					).QueryInterface(Ci.nsIRDFLiteral)
+					.Value == 'true';
+			}
+			catch(e) {
+			}
+
+			if (!appDisabled && !userDisabled) {
+				EM.disableItem(OLD_ID);
+				restart();
+			}
+		}
+	}
+	else {
+		Cu.import('resource://gre/modules/AddonManager.jsm');
+		AddonManager.getAddonByID(OLD_ID, function(aAddon) {
+			if (aAddon && !aAddon.userDisabled) {
+				aAddon.userDisabled = true;
+				var bundle = require('lib/locale')
+								.get(resolve('locale/label.properties'));
+				if (Cc['@mozilla.org/embedcomp/prompt-service;1']
+						.getService(Ci.nsIPromptService)
+						.confirmEx(
+							null,
+							bundle.getString('disableOldVersion.title'),
+							bundle.getString('disableOldVersion.text'),
+							Ci.nsIPromptService.STD_YES_NO_BUTTONS,
+							null,
+							null,
+							null,
+							null,
+							{}
+						) == 0)
+					return restart();
+			}
+		})
+	}
+}
+
+function initWmctrlPath()
 {
 	var prefs = require('lib/prefs').prefs;
 	var FSC = require('const');
@@ -44,7 +117,7 @@ function install()
 	const WMCTRL_WEBSITE = 'http://tomas.styblo.name/wmctrl/';
 
 	var Wmctrl = require('wmctrl').Wmctrl;
-	Wmctrl.initPath()
+	return Wmctrl.initPath()
 		.next(function(aPath) {
 			// On the version 2.0.2012040201, the path can include "\n" accidentaly.
 			// We have to remove it automatically.
@@ -129,3 +202,10 @@ function install()
 				});
 		});
 }
+
+function install()
+{
+	uninstallOldVersion();
+	initWmctrlPath();
+}
+
