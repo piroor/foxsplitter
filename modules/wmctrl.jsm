@@ -120,6 +120,9 @@ Wmctrl.prototype = {
 
 Wmctrl.ERROR_WMCTRL_NOT_FOUND = 'wmctlr is not installed';
 
+Wmctrl.__defineSetter__('path', function(aValue) {
+	return prefs.setPref(domain+'wmctrl.path', aValue);
+});
 Wmctrl.__defineGetter__('path', function() {
 	return prefs.getPref(domain+'wmctrl.path');
 });
@@ -142,7 +145,7 @@ Wmctrl.initPath = function wmctrl_initPath() {
 						deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
 					}
 					else {
-						prefs.setPref(domain+'wmctrl.path', path);
+						Wmctrl.path = path;
 						deferred.call(path);
 					}
 				})

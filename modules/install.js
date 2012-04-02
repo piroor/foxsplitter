@@ -46,6 +46,14 @@ function install()
 	var Wmctrl = require('wmctrl').Wmctrl;
 	Wmctrl.initPath()
 		.next(function(aPath) {
+			// On the version 2.0.2012040201, the path can include "\n" accidentaly.
+			// We have to remove it automatically.
+			var updated = aPath.replace(/^\s+|\s+$/g, '');
+			if (updated != aPath) {
+				Wmctrl.path = updated;
+				aPath = updated;
+			}
+
 			var wmctrl = Cc['@mozilla.org/file/local;1']
 							.createInstance(Ci.nsILocalFile);
 			wmctrl.initWithPath(aPath);
@@ -62,7 +70,6 @@ function install()
 				.next(function() {
 					var textIO = require('lib/textIO').textIO;
 					var command = textIO.readFrom(commandFile, 'UTF-8');
-dump('command = '+command+'\n');
 					commandFile.remove(true);
 
 					var bundle = require('lib/locale')
@@ -70,7 +77,6 @@ dump('command = '+command+'\n');
 					var text = command ?
 								bundle.getFormattedString('wmctrl.notFound.textWithCommand', [command]) :
 								bundle.getString('wmctrl.notFound.text') ;
-dump('text = '+text+'\n');
 
 					var WM = require('lib/WindowManager').WindowManager;
 					var windows = WM.getWindows('navigator:browser');
