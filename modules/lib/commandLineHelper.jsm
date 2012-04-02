@@ -40,8 +40,6 @@ var EXPORTED_SYMBOLS = ['commandLineHelper'];
 var commandLineHelper = {
 	run : function commandLineHelper_run(aExecutable)
 	{
-		var deferred = new Deferred();
-
 		var args = Array.slice(arguments, 1);
 
 		var executable;
@@ -60,18 +58,18 @@ var commandLineHelper = {
 			}
 		}
 		catch(e) {
-			Deferred.next(function() {
-				deferred.fail(new Error(e+'\ninvalid executable: ' + aExecutable));
+			return Deferred.next(function() {
+				throw new Error(e+'\ninvalid executable: ' + aExecutable);
 			});
-			return deferred;
 		}
 
 		if (!executable.exists()) {
-			Deferred.next(function() {
-				deferred.fail(new Error('missing executable: ' + aExecutable));
+			return Deferred.next(function() {
+				throw new Error('missing executable: ' + aExecutable);
 			});
-			return deferred;
 		}
+
+		var deferred = new Deferred();
 
 		var process = Cc['@mozilla.org/process/util;1']
 						.createInstance(Ci.nsIProcess);
