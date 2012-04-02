@@ -136,7 +136,7 @@ Wmctrl.initPath = function wmctrl_initPath() {
 		var pathFile = commandLineHelper.createTempFile('wmctrl-path');
 		return commandLineHelper.run(resolve('bin/which-wmctrl'), pathFile.path)
 				.next(function() {
-					var path = textIO.readFrom(pathFile, 'UTF-8');
+					var path = textIO.readFrom(pathFile, 'UTF-8').replace(/^\s+|\s+$/g, '');
 					pathFile.remove(true);
 					if (!path) {
 						deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
