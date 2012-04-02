@@ -35,6 +35,8 @@
 
 function uninstallOldVersion()
 {
+	const OLD_ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
+
 	function restart()
 	{
 		Cc['@mozilla.org/toolkit/app-startup;1']
