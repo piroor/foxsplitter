@@ -24,17 +24,6 @@
                        em:description="Splits browser window as you like."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -43,17 +32,6 @@
                        em:description="ブラウザウィンドウ内を自由に分割できるようにします。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -63,16 +41,6 @@
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
 		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -81,17 +49,8 @@
                        em:description="Erlaubt ein beliebiges Aufteilen des Browser-Fensters zur gleichzeitigen Anzeige mehrerer Seitenansichten."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
 		<em:translator>ReinekeFux (de-DE locale)</em:translator>
 		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -100,17 +59,7 @@
                        em:description="사용자 마음대로 브라우저 화면을 분할합니다."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
 		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -119,17 +68,7 @@
                        em:description="依您所喜歡的方式分割瀏覽視窗"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
 		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -138,17 +77,7 @@
                        em:description="A böngésző megnyitott ablakainak felosztása..."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
 		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -157,17 +86,7 @@
                        em:description="Divide la ventana del navegador como tú quieras"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
 		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -176,17 +95,7 @@
                        em:description="Permette di suddividere a piacimento la finestra del browser."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
 		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -195,17 +104,7 @@
                        em:description="按你希望的方式拆分浏览器窗口。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
 		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -214,17 +113,7 @@
                        em:description="Dzieli okno przeglądarki tak jak chcesz."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
 		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
       </RDF:Description>
     </em:localized>
     <em:localized>
@@ -233,17 +122,7 @@
                        em:description="Umožňuje zobrazení obsahu panelů v současně zobrazovaných subpanelech."
                        em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                        em:creator="SHIMODA Hiroshi">
-		<em:translator>Menet (fr-FR locale)</em:translator>
-		<em:translator>ReinekeFux (de-DE locale)</em:translator>
-		<em:translator>Hagen Halbach (de-DE locale)</em:translator>
-		<em:translator>sushizang (ko-KR locale)</em:translator>
-		<em:translator>Alan CHENG (zh-TW locale)</em:translator>
-		<em:translator>Mikes Kaszmán István (hu-HU locale)</em:translator>
-		<em:translator>tito (es-ES locale)</em:translator>
-		<em:translator>Godai71 (it-IT locale)</em:translator>
-		<em:translator>Vincent D (zh-CN locale)</em:translator>
-		<em:translator>Leszek(teo)Życzkowski (pl locale)</em:translator>
-		<em:translator>Yearling (cs-CZ locale)</em:translator>	
+		<em:translator>Yearling (cs-CZ locale)</em:translator>
       </RDF:Description>
     </em:localized>
 
