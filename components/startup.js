@@ -81,6 +81,33 @@ StartupService.prototype = {
 			(this._ExtensionManager = Cc['@mozilla.org/extensions/manager;1']
 									.getService(Ci.nsIExtensionManager));
 	},
+	get RDF()
+	{
+		return this._RDF ||
+			(this._RDF = Cc['@mozilla.org/rdf/rdf-service;1']
+									.getService(Ci.nsIRDFService));
+	},
+	get Prefs()
+	{
+		return this._Prefs ||
+			(this._Prefs = Cc['@mozilla.org/preferences;1']
+							.getService(Ci.nsIPrefBranch));
+	},
+	get version()
+	{
+		try {
+			return this.ExtensionManager.datasource.GetTarget(
+					this.RDF.GetResource('urn:mozilla:item:'+ADDON_ID),
+					this.RDF.GetResource('http://www.mozilla.org/2004/em-rdf#version'),
+					true
+					)
+					.QueryInterface(Ci.nsIRDFLiteral)
+					.Value;
+		}
+		catch(e) {
+		}
+		return null;
+	},
 	observe : function(aSubject, aTopic, aData) 
 	{
 		switch (aTopic)
@@ -104,6 +131,25 @@ StartupService.prototype = {
 	onStartup : function()
 	{
 		this.Loader.registerResource(ADDON_ID.split('@')[0]+'-resources', this.IOService.newFileURI(this.root));
+
+		var lastVersion;
+		try {
+			lastVersion = this.Prefs.getCharPref('extensions.'+ADDON_ID+'.restartless.lastVersion');
+		}
+		catch(e) {
+		}
+
+		var version = this.version + ':' + this.root.lastModifiedTime;
+		if (lastVersion != version) {
+			this.Prefs.setCharPref('extensions.'+ADDON_ID+'.restartless.lastVersion', version);
+			let install = this.root.clone();
+			install.append('modules');
+			install.append('install.js');
+			if (install.exists()) {
+				this.Loader.load(this.IOService.newFileURI(install).spec);
+				this.Loader.install(lastVersion ? 'ADDON_UPGRADE' : 'ADDON_INSTALL' );
+			}
+		}
 
 		let main = this.root.clone();
 		main.append('modules');
