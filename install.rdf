@@ -45,7 +45,7 @@
     </em:localized>
     <em:localized>
       <RDF:Description em:locale="ja-JP"
-                       em:name="分割ブラウザ"
+                       em:name="Fox Splitter (分割ブラウザ)"
                        em:description="ブラウザウィンドウ内を自由に分割できるようにします。"
                        em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html"
                        em:creator="SHIMODA Hiroshi">
