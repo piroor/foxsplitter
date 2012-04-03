@@ -38,6 +38,11 @@ pref("splitbrowser.delay.subbrowser.toolbar.show", 800);
 pref("splitbrowser.delay.subbrowser.toolbar.hide", 4000);
 pref("splitbrowser.delay.subbrowser.autoFocus",    1000);
 
+pref("splitbrowser.update.lastFetchedVersion", "0");
+pref("splitbrowser.update.lastFetchedTime", "0");
+pref("splitbrowser.update.interval", "86400000"); // 24h
+pref("splitbrowser.update.enabled", true);
+
 
 // 0 = main browser (Firefox default), 1 = active browser, 2 = "search" named browser
 pref("splitbrowser.search.loadResultsIn", 1);
