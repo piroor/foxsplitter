@@ -239,8 +239,8 @@ FoxSplitterUpdateService.prototype = {
 			return;
 
 		var version = this.getValue(this.ExtensionManager.datasource, this.RDF.GetResource('urn:mozilla:item:'+NEW_ID), 'version');
-//		if (version)
-//			return;
+		if (version)
+			return;
 
 		var last = parseInt(this.Prefs.getCharPref('splitbrowser.update.lastFetchedTime'));
 		var interval = this.interval - (Date.now() - last);
