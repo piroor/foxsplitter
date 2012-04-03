@@ -38,10 +38,6 @@ var config = require('lib/config');
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
-const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
-					.getService(Ci.nsIXULAppInfo)
-					.QueryInterface(Ci.nsIXULRuntime);
-
 config.setDefault(domain+'shouldDuplicateOnSplit', true);
 config.setDefault(domain+'shouldDuplicateOnDrop', false);
 
@@ -91,11 +87,11 @@ config.setDefault(domain+'selection.y', true);
 
 config.setDefault(domain+'shortcut.splitTabToTop', '');
 config.setDefault(domain+'shortcut.splitTabToRight',
-	XULAppInfo.OS == 'Darwin' ? 'ctrl-"' : // compatible to XCode's one
+	FoxSplitterConst.OS == 'Darwin' ? 'ctrl-"' : // compatible to XCode's one
 	''
 );
 config.setDefault(domain+'shortcut.splitTabToBottom',
-	XULAppInfo.OS == 'Darwin' ? 'alt-ctrl-"' : // compatible to XCode's one
+	FoxSplitterConst.OS == 'Darwin' ? 'alt-ctrl-"' : // compatible to XCode's one
 	''
 );
 config.setDefault(domain+'shortcut.splitTabToLeft', '');
@@ -104,16 +100,16 @@ config.setDefault(domain+'shortcut.x', '');
 config.setDefault(domain+'shortcut.y', '');
 config.setDefault(domain+'shortcut.gather', '');
 
-config.setDefault(domain+'platformOffset.needToBeUpdated', XULAppInfo.OS == 'Linux');
+config.setDefault(domain+'platformOffset.needToBeUpdated', FoxSplitterConst.OS == 'Linux');
 config.setDefault(domain+'platformOffset.x', 0);
 config.setDefault(domain+'platformOffset.y', 0);
 config.setDefault(domain+'platformOffset.width', 0);
 config.setDefault(domain+'platformOffset.height', 0);
 
 config.setDefault(domain+'methodToRaiseWindow',
-	XULAppInfo.OS == 'WINNT' ?
+	FoxSplitterConst.OS == 'WINNT' ?
 		FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG :
-	XULAppInfo.OS == 'Linux' ?
+	FoxSplitterConst.OS == 'Linux' && FoxSplitterConst.IS_GECKO_2 ?
 		FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL :
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 config.setDefault(domain+'wmctrl.path', '');

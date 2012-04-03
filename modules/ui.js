@@ -1138,9 +1138,7 @@ FoxSplitterUI.prototype = {
 		// image isn't shown if there are multiple drag data...
 		if (tabs.length <= 1 ||
 			'mozSourceNode' in dt ||
-			Cc['@mozilla.org/xre/app-info;1']
-				.getService(Ci.nsIXULAppInfo)
-				.QueryInterface(Ci.nsIXULRuntime).OS != 'WINNT')
+			this.OS != 'WINNT')
 			dt.mozCursor = 'default';
 
 		aEvent.stopPropagation();
@@ -1441,6 +1439,9 @@ FoxSplitterUI.prototype = {
 
 	updateToolboxAutoHide : function FSUI_updateToolboxAutoHide()
 	{
+		if (!this.IS_GECKO_2)
+			return;
+
 		this.clearToolboxAutoHide();
 
 		var toolbox = this.toolbox;

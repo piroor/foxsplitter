@@ -69,10 +69,15 @@ var commandLineHelper = {
 			});
 		}
 
-		var deferred = new Deferred();
-
 		var process = Cc['@mozilla.org/process/util;1']
 						.createInstance(Ci.nsIProcess);
+		if (!process.runwAsync) {
+			return Deferred.next(function() {
+				throw new Error('missing feature: nsIProcess::runwAsync');
+			});
+		}
+
+		var deferred = new Deferred();
 		process.init(executable);
 		process.runwAsync(args, args.length, {
 			observe : function run_observe(aSubject, aTopic, aData)

@@ -36,10 +36,15 @@
 const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.getService(Ci.nsIXULAppInfo)
 					.QueryInterface(Ci.nsIXULRuntime);
+const Comparator = Cc['@mozilla.org/xpcom/version-comparator;1']
+					.getService(Ci.nsIVersionComparator);
 
 var exports = {
 	domain         : 'extensions.foxsplitter@piro.sakura.ne.jp.',
 	IMAGES_VERSION : 2,
+
+	OS         : XULAppInfo.OS,
+	IS_GECKO_2 : Comparator.compare(XULAppInfo.version, '4.0') >= 0,
 
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	MAIN              : 'foxsplitter-main-window',

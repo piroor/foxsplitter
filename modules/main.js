@@ -33,6 +33,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+dump('LOADING\n');
 load('lib/WindowManager');
 
 FoxSplitterConst = require('const');
@@ -48,6 +49,7 @@ const TOOLBAR_CUSTOMIZE = 'CustomizeToolbarWindow';
 
 function handleWindow(aWindow, aInitialization)
 {
+	dump('INITIALIZE WINDOW\n');
 	var doc = aWindow.document;
 	if (doc.documentElement.getAttribute('windowtype') == TYPE_BROWSER) {
 		aWindow.FoxSplitter = new FoxSplitterWindow(aWindow, aInitialization);
@@ -94,3 +96,4 @@ function shutdown()
 	FoxSplitterGroup = undefined;
 	FoxSplitterConst = undefined;
 }
+dump('OK\n');

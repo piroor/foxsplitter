@@ -38,10 +38,6 @@ load('lib/prefs');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
 
-const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
-					.getService(Ci.nsIXULAppInfo)
-					.QueryInterface(Ci.nsIXULRuntime);
-
 const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 						.getService(Ci.nsIWindowWatcher);
 
@@ -934,7 +930,7 @@ FoxSplitterBase.prototype = {
 
 	isAccelKeyPressed : function FSB_isAccelKeyPressed(aEvent)
 	{
-		return aEvent && (XULAppInfo.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey );
+		return aEvent && (this.OS == 'Darwin' ? aEvent.metaKey : aEvent.ctrlKey );
 	},
 
 	isMiddleClick : function FSB_isMiddleClick(aEvent)
