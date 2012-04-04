@@ -45,6 +45,8 @@
 const ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
 const NEW_ID = 'foxsplitter@piro.sakura.ne.jp';
 
+const DEBUG = false;
+
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -218,7 +220,11 @@ FoxSplitterUpdateService.prototype = {
 
 			case 'final-ui-startup':
 				this.ObserverService.removeObserver(this, 'final-ui-startup');
-				this.onStartup();
+				let (self = this) {
+					setTimeout(function() {
+						self.onStartup();
+					}, 500);
+				}
 				return;
 		}
 	},
@@ -267,7 +273,7 @@ FoxSplitterUpdateService.prototype = {
 			return;
 
 		var uri = this.updateURI;
-//dump(uri+'\n');
+		if (DEBUG) dump('Fox Splitter: fetching '+uri+'\n');
 		if (!uri)
 			return;
 
@@ -290,7 +296,7 @@ FoxSplitterUpdateService.prototype = {
 			return this.reserveRetryFetch();
 
 		var item = this.getUpdateItem(aEvent.target);
-//dump(uneval(item)+'\n');
+		if (DEBUG) dump('Fox Splitter: update item = '+uneval(item)+'\n');
 		if (!item)
 			return this.reserveRetryFetch();
 
@@ -321,7 +327,7 @@ FoxSplitterUpdateService.prototype = {
 		var datasource = Cc['@mozilla.org/rdf/datasource;1?name=in-memory-datasource']
 							.createInstance(Ci.nsIRDFDataSource);
 		parser.parseString(datasource, aRequest.channel.URI, aRequest.responseText);
-//dump(aRequest.responseText+'\n');
+		if (DEBUG) dump('Fox Splitter: response = '+aRequest.responseText+'\n');
 
 		var res = this.RDF.GetResource('urn:mozilla:extension:'+NEW_ID);
 
@@ -394,12 +400,11 @@ FoxSplitterUpdateService.prototype = {
 					};
 					foundItem.objectSource = foundItem.toSource();
 					foundItem.init = function() {};
-//dump(foundItem.objectSource+'\n');
 				}
 			}
 		}
 		catch(e) {
-dump(e+'\n');
+			dump('Fox Splitter: '+e+'\n');
 		}
 
 		return foundItem;
@@ -411,7 +416,6 @@ dump(e+'\n');
 					.QueryInterface(Ci.nsIRDFLiteral).Value;
 		}
 		catch(e) {
-dump(e+'\n');
 		}
 		return null;
 	},
@@ -456,9 +460,12 @@ dump(e+'\n');
 	install : function(aUpdateItem)
 	{
 		this.ExtensionManager.addDownloads([aUpdateItem], 1, null);
-		var window = this.browserWindow;
-		if (window)
-			window.BrowserOpenAddonsMgr('installs');
+		var self = this;
+		setTimeout(function() {
+			var window = self.browserWindow;
+			if (window)
+				window.BrowserOpenAddonsMgr('installs');
+		}, 500);
 	}
 };
 
