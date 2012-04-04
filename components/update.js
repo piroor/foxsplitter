@@ -42,7 +42,7 @@
  *
  * ***** END LICENSE BLOCK ******/
 
-const ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
+const OLD_ID = '{29c4afe1-db19-4298-8785-fcc94d1d6c1d}';
 const NEW_ID = 'foxsplitter@piro.sakura.ne.jp';
 
 const DEBUG = false;
@@ -130,26 +130,17 @@ FoxSplitterUpdateService.prototype = {
 		if (this._updateURI)
 			return this._updateURI;
 
-		var res = this.RDF.GetResource('urn:mozilla:item:'+ID);
+		var res = this.RDF.GetResource('urn:mozilla:item:'+OLD_ID);
 		var uri;
 		try {
-			uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.'+ID+'.update.url')));
+			uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.'+OLD_ID+'.update.url')));
 		}
 		catch(e) {
 		}
-		try {
-			if (!uri) {
-				if (this.ExtensionManager.datasource.GetTarget(
-						res,
-						this.RDF.GetResource(EM+'updateURL'),
-						true
-					).QueryInterface(Ci.nsIRDFLiteral)
-					.Value)
-					return null;
-			}
-		}
-		catch(e) {
-		}
+
+		if (!uri && this.getValue(this.ExtensionManager.datasource, res, 'updateURL'))
+			return null;
+
 		if (!uri)
 			uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.update.url')));
 
@@ -193,7 +184,7 @@ FoxSplitterUpdateService.prototype = {
 					}
 				})
 				.replace(/\+/g, '%2B')
-				.replace(ID, NEW_ID);
+				.replace(OLD_ID, NEW_ID);
 	},
 
 	get bundle()
@@ -248,6 +239,11 @@ FoxSplitterUpdateService.prototype = {
 		if (version)
 			return;
 
+		// Ignore custom update.rdf.
+		// We have to take care of cases only installed from AMO website.
+		if (this.getValue(this.ExtensionManager.datasource, this.RDF.GetResource('urn:mozilla:item:'+OLD_ID), 'updateURL'))
+			return;
+
 		var last = parseInt(this.Prefs.getCharPref('splitbrowser.update.lastFetchedTime'));
 		var interval = this.interval - (Date.now() - last);
 		if (interval <= 0) {
@@ -264,12 +260,6 @@ FoxSplitterUpdateService.prototype = {
 	fetch : function()
 	{
 		if (!this.enabled)
-			return;
-
-		// If there is the updateKey, it was installed not from Mozilla Add-ons.
-		// We don't have to take care of such cases.
-		var updateKey = this.getValue(this.ExtensionManager.datasource, this.RDF.GetResource('urn:mozilla:item:'+ID), 'updateKey');
-		if (updateKey)
 			return;
 
 		var uri = this.updateURI;
@@ -382,7 +372,7 @@ FoxSplitterUpdateService.prototype = {
 						)
 						continue;
 
-					let installedRes = this.RDF.GetResource('urn:mozilla:item:'+ID);
+					let installedRes = this.RDF.GetResource('urn:mozilla:item:'+OLD_ID);
 					foundItem = {
 						id                 : NEW_ID,
 						version            : version,
