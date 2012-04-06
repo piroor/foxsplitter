@@ -159,7 +159,8 @@ var exports = {
 		:root[%CHROMEHIDDEN%~="menubar"] .chromeclass-menubar,
 		:root[%CHROMEHIDDEN%~="directories"] .chromeclass-directories,
 		:root[%CHROMEHIDDEN%~="status"] .chromeclass-status,
-		:root[%CHROMEHIDDEN%~="extrachrome"] .chromeclass-extrachrome,
+		:root[%CHROMEHIDDEN%~="extrachrome"] .chromeclass-extrachrome:not(#sidebar-box),
+		:root[%CHROMEHIDDEN%~="extrachrome"] #browser > .chromeclass-extrachrome#sidebar-box, /* Don't hide floating sidebar (by Ez Sidebar) */
 		:root[%CHROMEHIDDEN%~="location"] .chromeclass-location,
 		:root[%CHROMEHIDDEN%~="location"][chromehidden~="toolbar"] .chromeclass-toolbar,
 		:root[%CHROMEHIDDEN%~="toolbar"] .chromeclass-toolbar-additional,
