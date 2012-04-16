@@ -1792,7 +1792,8 @@ FoxSplitterWindow.prototype = {
 			this.lastY === null ||
 			this.positioning ||
 			this.minimized ||
-			this.maximizing
+			this.maximizing ||
+			(this.lastX == this.x && this.lastY == this.y)
 			)
 			return;
 
