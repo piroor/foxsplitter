@@ -75,6 +75,30 @@ FoxSplitterGroup.prototype = {
 		return member ? member.y - this.y + member.height : 0 ;
 	},
 
+	get logicalX()
+	{
+		var member = this.leftMember || this.topMember;
+		return member ? member.logicalX : 0 ;
+	},
+	get logicalY()
+	{
+		var member = this.topMember || this.leftMember;
+		return member ? member.logicalY : 0 ;
+	},
+	get logicalWidth()
+	{
+		var member = this.rightMember || this.bottomMember;
+		return member ? member.logicalX - this.logicalX + member.logicalWidth : 0 ;
+	},
+	get logicalHeight()
+	{
+		var member = this.bottomMember || this.rightMember;
+		return member ? member.logicalY - this.logicalY + member.logicalHeight : 0 ;
+	},
+	get inTabView()
+	{
+		return this.allWindows.some(function(aWindow) { return aWindow.inTabView; });
+	},
 
 	get topMember()
 	{
@@ -438,23 +462,23 @@ FoxSplitterGroup.prototype = {
 
 
 			var expectedX = base.position & this.POSITION_VERTICAL ?
-							base.x :
+							base.logicalX :
 						base.position & this.POSITION_LEFT ?
-							base.x + base.width :
-							base.x - another.width ;
+							base.logicalX + base.logicalWidth :
+							base.logicalX - another.logicalWidth ;
 			var expectedY = base.position & this.POSITION_HORIZONTAL ?
-							base.y :
+							base.logicalY :
 						base.position & this.POSITION_TOP ?
-							base.y + base.height :
-							base.y - another.height ;
-			if (aForce || another.x != expectedX || another.y != expectedY)
+							base.logicalY + base.logicalHeight :
+							base.logicalY - another.logicalHeight ;
+			if (aForce || another.logicalX != expectedX || another.logicalY != expectedY)
 				another.moveTo(expectedX, expectedY);
 
 			var expectedWidth = base.position & this.POSITION_VERTICAL ?
-								base.width : another.width ;
+								base.logicalWidth : another.logicalWidth ;
 			var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
-								base.height : another.height ;
-			if (aForce || another.width != expectedWidth || another.height != expectedHeight)
+								base.logicalHeight : another.logicalHeight ;
+			if (aForce || another.logicalWidth != expectedWidth || another.logicalHeight != expectedHeight)
 				another.resizeTo(expectedWidth, expectedHeight);
 
 			if (this.parent)
@@ -469,10 +493,10 @@ FoxSplitterGroup.prototype = {
 
 	updateLastPositionAndSize : function FSG_updateLastPositionAndSize(aNewSize)
 	{
-		this.lastX      = this.x;
-		this.lastY      = this.y;
-		this.lastWidth  = this.width;
-		this.lastHeight = this.height;
+		this.lastX      = this.logicalX;
+		this.lastY      = this.logicalY;
+		this.lastWidth  = this.logicalWidth;
+		this.lastHeight = this.logicalHeight;
 	},
 
 
