@@ -66,13 +66,15 @@ FoxSplitterGroup.prototype = {
 	},
 	get width()
 	{
-		var member = this.rightMember || this.bottomMember;
-		return member ? member.x - this.x + member.width : 0 ;
+		var base = this.leftMember;
+		var another = this.rightMember;
+		return base && another ? base.width + another.width : this.startMember.width ;
 	},
 	get height()
 	{
-		var member = this.bottomMember || this.rightMember;
-		return member ? member.y - this.y + member.height : 0 ;
+		var base = this.topMember;
+		var another = this.bottomMember;
+		return base && another ? base.height + another.height : this.startMember.height ;
 	},
 
 	get logicalX()
@@ -87,13 +89,15 @@ FoxSplitterGroup.prototype = {
 	},
 	get logicalWidth()
 	{
-		var member = this.rightMember || this.bottomMember;
-		return member ? member.logicalX - this.logicalX + member.logicalWidth : 0 ;
+		var base = this.leftMember;
+		var another = this.rightMember;
+		return base && another ? base.logicalWidth + another.logicalWidth : this.startMember.logicalWidth ;
 	},
 	get logicalHeight()
 	{
-		var member = this.bottomMember || this.rightMember;
-		return member ? member.logicalY - this.logicalY + member.logicalHeight : 0 ;
+		var base = this.topMember;
+		var another = this.bottomMember;
+		return base && another ? base.logicalHeight + another.logicalHeight : this.startMember.logicalHeight ;
 	},
 	get inTabView()
 	{
