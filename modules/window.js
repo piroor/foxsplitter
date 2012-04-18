@@ -1930,8 +1930,10 @@ FoxSplitterWindow.prototype = {
 
 		this.active = true;
 
-		if (this.parent && this.root.inTabView)
+		if (this.parent && this.root.inTabView) {
+			FoxSplitterWindow.raising--;
 			return;
+		}
 
 		if (this._reservedHandleRaised)
 			this._reservedHandleRaised.cancel();
