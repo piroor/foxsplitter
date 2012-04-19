@@ -589,8 +589,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 			<preference id="methodToRaiseWindow"
 				name={domain+'methodToRaiseWindow'}
 				type="int"/>
-			<preference id="methodToRaiseWindow.wmctrl.path"
-				name={domain+'methodToRaiseWindow.wmctrl.path'}
+			<preference id="wmctrl.path"
+				name={domain+'wmctrl.path'}
 				type="string"/>
 		</preferences>
 		<groupbox orient="vertical">
@@ -647,10 +647,10 @@ config.register('about:blank?foxsplitter-config-platform', <>
 						label={bundle.getString('methodToRaiseWindow.wmctrl')}
 						id="methodToRaiseWindow.wmctrl-radio"/>
 					<spacer style="width:0.5em;"/>
-					<label control="methodToRaiseWindow.wmctrl.path-textbox"
+					<label control="wmctrl.path-textbox"
 						value={bundle.getString('methodToRaiseWindow.wmctrl.path')}/>
-					<textbox id="methodToRaiseWindow.wmctrl.path-textbox"
-						preference="methodToRaiseWindow.wmctrl.path"
+					<textbox id="wmctrl.path-textbox"
+						preference="wmctrl.path"
 						flex="1"/>
 				</hbox>
 				<radio value={FoxSplitterConst.RAISE_WINDOW_BY_FOCUS}
