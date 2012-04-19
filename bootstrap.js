@@ -1,7 +1,7 @@
 /**
  * @fileOverview Bootstrap code for restartless addons
  * @author       SHIMODA "Piro" Hiroshi
- * @version      2
+ * @version      3
  *
  * @description
  *   This provides ability to load a script file placed to "modules/main.js".
@@ -10,7 +10,7 @@
  *   updating).
  *
  * @license
- *   The MIT License, Copyright (c) 2010-2011 SHIMODA "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2010-2012 SHIMODA "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -77,6 +77,19 @@ function _reasonToString(aReason)
 	return aReason;
 }
 
+function _free()
+{
+	_gLoader =
+	_load =
+	_reasonToString =
+	_free = _gResourceRegistered =
+	install =
+	uninstall =
+	startup =
+	shoutdown =
+		undefined;
+}
+
 /**
  * handlers for bootstrap
  */
@@ -85,6 +98,7 @@ function install(aData, aReason)
 {
 	_load('install', aData.id, aData.installPath, _reasonToString(aReason));
 	_gLoader.install(_reasonToString(aReason));
+	_free();
 }
 
 function startup(aData, aReason)
@@ -99,7 +113,7 @@ function shutdown(aData, aReason)
 		_gLoader.unregisterResource(aData.id.split('@')[0]+'-resources');
 	}
 	_gLoader.shutdown(_reasonToString(aReason));
-	_gLoader = undefined;
+	_free();
 }
 
 function uninstall(aData, aReason)
@@ -111,5 +125,5 @@ function uninstall(aData, aReason)
 	if (_gResourceRegistered) {
 		_gLoader.unregisterResource(aData.id.split('@')[0]+'-resources');
 	}
-	_gLoader = undefined;
+	_free();
 }
