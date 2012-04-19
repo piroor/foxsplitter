@@ -611,6 +611,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 					preference="platformOffset.x"
 					type="number"
 					increment="1"
+					max="9999"
+					min="-9999"
 					size="5"/>
 				<label value={bundle.getString('platformOffset.y')}
 					control="platformOffset.y-textbox"/>
@@ -618,6 +620,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 					preference="platformOffset.y"
 					type="number"
 					increment="1"
+					max="9999"
+					min="-9999"
 					size="5"/>
 				<label value={bundle.getString('platformOffset.width')}
 					control="platformOffset.width-textbox"/>
@@ -625,6 +629,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 					preference="platformOffset.width"
 					type="number"
 					increment="1"
+					max="9999"
+					min="-9999"
 					size="5"/>
 				<label value={bundle.getString('platformOffset.height')}
 					control="platformOffset.height-textbox"/>
@@ -632,6 +638,8 @@ config.register('about:blank?foxsplitter-config-platform', <>
 					preference="platformOffset.height"
 					type="number"
 					increment="1"
+					max="9999"
+					min="-9999"
 					size="5"/>
 			</hbox>
 		</groupbox>
