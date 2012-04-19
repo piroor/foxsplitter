@@ -665,7 +665,7 @@ config.register('about:blank?foxsplitter-config-platform', <>
 </>,
 (function() {
 	function updateAvailabilityOfPathToWmctrl() {
-		var elements = [document.getElementById('methodToRaiseWindow.wmctrl.path-textbox')];
+		var elements = [document.getElementById('wmctrl.path-textbox')];
 		elements.push(elements[0].previousSibling);
 		elements.forEach(
 			document.getElementById('methodToRaiseWindow.wmctrl-radio').selected ?
