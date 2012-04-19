@@ -1091,7 +1091,9 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 		);
 	window.addEventListener('load', function() {
 		window.removeEventListener('load', arguments.callee, false);
-		Deferred.next(function() {
+		// on some environments, just on this timing the window is not shown yet, so we fail to calculate offsets.
+		// to avoid this problem, (for safety,) wait until the window is completely shown.
+		Deferred.wait(0.5).next(function() {
 			prefs.setPref(domain+'platformOffset.x', self.offsetX = window.screenX - 100);
 			prefs.setPref(domain+'platformOffset.y', self.offsetY = window.screenY - 100);
 			var width = window.screen.availWidth;
