@@ -436,6 +436,33 @@ FoxSplitterWindow.prototype = {
 	},
 	_restoreStatePostProcess : function FSW_restoreStatePostProcess(aContext)
 	{
+		var self = this;
+		return this._restorePosition(aContext)
+				.next(function() {
+					return self._restoreSize(aContext);
+				})
+				.next(function() {
+					return self._restoreGroup(aContext);
+				});
+	},
+	_restorePosition : function FSW_restorePosition(aContext)
+	{
+		if (aContext.lastState.x != this.logicalX ||
+			aContext.lastState.y != this.logicalY)
+			return this.moveTo(aContext.lastState.x, aContext.lastState.y);
+		else
+			return Deferred;
+	},
+	_restoreSize : function FSW_restoreSize(aContext)
+	{
+		if (aContext.lastState.width != this.logicalWidth ||
+			aContext.lastState.height != this.logicalHeight)
+			return this.resizeTo(aContext.lastState.width, aContext.lastState.height);
+		else
+			return Deferred;
+	},
+	_restoreGroup : function FSW_restoreGroup(aContext)
+	{
 		aContext = aContext || {};
 		if (aContext.siblingGroupId) {
 			let group = this.groupClass.getInstanceById(aContext.siblingGroupId);
@@ -495,7 +522,7 @@ FoxSplitterWindow.prototype = {
 	_continueRestoreState : function FSW_continueRestoreState()
 	{
 		return this._restoringContext ?
-			this._restoreStatePostProcess(this._restoringContext) :
+			this._restoreGroup(this._restoringContext) :
 			false ;
 	},
 
@@ -601,7 +628,7 @@ FoxSplitterWindow.prototype = {
 	moveTo : function FSW_moveTo(aX, aY)
 	{
 		if (this.minimized || !this._window)
-			return;
+			return Deferred.next(function() {});
 
 		this.positioning++;
 
@@ -614,17 +641,19 @@ FoxSplitterWindow.prototype = {
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		Deferred.next(function() {
-			self.updateLastPositionAndSize();
-			self.positioning--;
-		})
-		.error(this.defaultHandleError);
+		return Deferred.next(function() {
+				self.updateLastPositionAndSize();
+			})
+			.error(this.defaultHandleError)
+			.next(function() {
+				self.positioning--;
+			});
 	},
 
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
 		if (this.minimized || !this._window)
-			return;
+			return Deferred.next(function() {});
 
 		this.positioning++;
 
@@ -634,11 +663,13 @@ FoxSplitterWindow.prototype = {
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		Deferred.next(function() {
-			self.updateLastPositionAndSize();
-			self.positioning--;
-		})
-		.error(this.defaultHandleError);
+		return Deferred.next(function() {
+				self.updateLastPositionAndSize();
+			})
+			.error(this.defaultHandleError)
+			.next(function() {
+				self.positioning--;
+			});
 	},
 
 	resizeTo : function FSW_resizeTo(aW, aH)
