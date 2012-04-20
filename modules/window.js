@@ -921,6 +921,9 @@ FoxSplitterWindow.prototype = {
 		this.stretchedOffsetY = currentY - y;
 		this.stretchedOffsetWidth = currentWidth - width;
 		this.stretchedOffsetHeight = currentHeight - height;
+
+		if (this.ui)
+			this.ui.updateChromeMargin();
 	},
 
 	shrink : function FSW_shrink()
@@ -944,6 +947,9 @@ FoxSplitterWindow.prototype = {
 				delete self.stretchedOffsetY;
 				delete self.stretchedOffsetWidth;
 				delete self.stretchedOffsetHeight;
+
+				if (self.ui)
+					self.ui.updateChromeMargin();
 			});
 	},
 

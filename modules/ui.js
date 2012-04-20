@@ -766,10 +766,12 @@ FoxSplitterUI.prototype = {
 			this._originalChromeMargin = this.documentElement.getAttribute('chromemargin');
 
 		var margin = (this._originalChromeMargin || '-1,-1,-1,-1').split(/\s*,\s*/);
-		if (this.owner.topSibling) margin[0] = 0;
-		if (this.owner.rightSibling) margin[1] = 0;
-		if (this.owner.bottomSibling) margin[2] = 0;
-		if (this.owner.leftSibling) margin[3] = 0;
+		if (!this.owner.stretched) {
+			if (this.owner.topSibling) margin[0] = 0;
+			if (this.owner.rightSibling) margin[1] = 0;
+			if (this.owner.bottomSibling) margin[2] = 0;
+			if (this.owner.leftSibling) margin[3] = 0;
+		}
 
 		this._chromeMarginUpdating = true;
 		try {
