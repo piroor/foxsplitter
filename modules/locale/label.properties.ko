@@ -189,12 +189,12 @@ ui.expandAll.long=Expand all windows
 ui.expandAll.accesskey=e
 
 ui.stretch.short=Stretch
-ui.stretch.long=Stretch this window to the size of the group
+ui.stretch.long=Stretch to the size of the group
 ui.stretch.accesskey=r
 
 ui.shrink.short=Shrink
-ui.shrink.long=Shrink this window to the original size
-ui.shrink.accesskey=r
+ui.shrink.long=Shrink to the original size
+ui.shrink.accesskey=k
 
 ui.closeAll.short=Close All
 ui.closeAll.long=Close all windows

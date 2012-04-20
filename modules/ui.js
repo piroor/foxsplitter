@@ -291,7 +291,15 @@ FoxSplitterUI.prototype = {
 				label={bundle.getString('ui.unbind.long')}
 				accesskey={bundle.getString('ui.unbind.accesskey')}
 				foxsplitter-command="unbind"/>
-			<menuseparator class={this.MENU_ITEM+' setAsMainWindowSeparator'}/>
+			<menuseparator/>
+			<menuitem class={iconicClass+'stretch grouped'}
+				label={bundle.getString('ui.stretch.long')}
+				accesskey={bundle.getString('ui.stretch.accesskey')}
+				foxsplitter-command="stretch"/>
+			<menuitem class={iconicClass+'shrink grouped'}
+				label={bundle.getString('ui.shrink.long')}
+				accesskey={bundle.getString('ui.shrink.accesskey')}
+				foxsplitter-command="shrink"/>
 			<menuitem class={this.MENU_ITEM+' setAsMainWindow'}
 				type="radio"
 				autoCheck="false"
@@ -943,6 +951,11 @@ FoxSplitterUI.prototype = {
 					case 'gather':
 						return owner.gatherWindows();
 
+					case 'stretch':
+						return owner.stretch();
+					case 'shrink':
+						return owner.shrink();
+
 					case 'unbind':
 						return owner.unbindAsIndependent();
 
@@ -995,6 +1008,17 @@ FoxSplitterUI.prototype = {
 			else
 				aItem.setAttribute('disabled', true);
 		}, this);
+
+		var stretch = aPopup.querySelector('.'+this.MENU_ITEM+'.stretch');
+		var shrink = aPopup.querySelector('.'+this.MENU_ITEM+'.shrink');
+		if (this.owner.stretched) {
+			shrink.removeAttribute('hidden');
+			stretch.setAttribute('hidden', true);
+		}
+		else {
+			shrink.setAttribute('hidden', true);
+			stretch.removeAttribute('hidden');
+		}
 
 		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
 		if (setAsMainWindowItem) {

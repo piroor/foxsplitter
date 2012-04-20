@@ -263,6 +263,10 @@ var exports = {
 		.%MENU_ITEM%.split-bottom[disabled="true"] { -moz-image-region: rect(16px 176px 32px 160px); }
 		.%MENU_ITEM%.split-left                    { -moz-image-region: rect(0 192px 16px 176px); }
 		.%MENU_ITEM%.split-left[disabled="true"]   { -moz-image-region: rect(16px 192px 32px 176px); }
+		.%MENU_ITEM%.stretch                       { -moz-image-region: rect(0 208px 16px 192px); }
+		.%MENU_ITEM%.stretch[disabled="true"]      { -moz-image-region: rect(16px 208px 32px 192px); }
+		.%MENU_ITEM%.shrink                        { -moz-image-region: rect(0 224px 16px 208px); }
+		.%MENU_ITEM%.shrink[disabled="true"]       { -moz-image-region: rect(16px 224px 32px 208px); }
 
 		:root:not([%MEMBER%="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button {
 			visibility: collapse;
