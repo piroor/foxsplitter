@@ -202,8 +202,6 @@ FoxSplitterWindow.prototype = {
 			}, this);
 		}
 		this.documentElement.setAttribute(this.ACTIVE, this._active);
-		if (this.ui)
-			this.ui.updateGroupedAppearance();
 		return this._active;
 	},
 
@@ -1960,13 +1958,9 @@ FoxSplitterWindow.prototype = {
 		if (!this._window || this.minimized)
 			return;
 
-		if (!this.parent)
-			this.clearGroupedAppearance();
-
-		if (!this.parent || this.root.hasMinimizedWindow) {
-			// _onWindowStateChange() should handle this event instead of this method.
+		// _onWindowStateChange() should handle this event instead of this method.
+		if (!this.parent || this.root.hasMinimizedWindow)
 			return;
-		}
 
 		this.root.raise(this);
 	},
@@ -1981,24 +1975,6 @@ FoxSplitterWindow.prototype = {
 			delete this._reservedHandleRaised;
 			FoxSplitterWindow.raising--;
 		}
-
-		if (this._reservedHandleLowered)
-			this._reservedHandleLowered.cancel();
-
-		var self = this;
-		this._reservedHandleLowered = Deferred.next(function() {
-			delete self._reservedHandleLowered;
-			self._handleLowered();
-		});
-		this._reservedHandleLowered
-			.error(this.defaultHandleError);
-	},
-	_handleLowered : function FSW_handleLowered()
-	{
-		if (!this._window || !this.parent || this.raising || !this.document || !this.documentElement)
-			return;
-
-		this.setGroupedAppearance();
 	},
 
 	onScroll : function FSW_onScroll(aEvent)
