@@ -98,7 +98,6 @@ function install(aData, aReason)
 {
 	_load('install', aData.id, aData.installPath, _reasonToString(aReason));
 	_gLoader.install(_reasonToString(aReason));
-	_free();
 }
 
 function startup(aData, aReason)
