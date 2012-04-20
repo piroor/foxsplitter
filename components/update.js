@@ -450,6 +450,7 @@ FoxSplitterUpdateService.prototype = {
 	install : function(aUpdateItem)
 	{
 		this.ExtensionManager.addDownloads([aUpdateItem], 1, null);
+		this.ExtensionManager.uninstallItem(OLD_ID);
 		var self = this;
 		setTimeout(function() {
 			var window = self.browserWindow;
