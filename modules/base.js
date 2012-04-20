@@ -802,16 +802,14 @@ FoxSplitterBase.prototype = {
 		if (sibling) {
 			if (sibling.position == this.POSITION_TOP) {
 				splitterResizing = true;
-				if (!sibling.collapsed) sibling.resizeBy(0, -aDelta);
+				sibling.resizeBy(0, -aDelta);
 			}
 			else if (sibling.position == this.POSITION_BOTTOM) {
-				if (!sibling.collapsed) {
-					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
-					if (resizeDelta) {
-						this.reserveResizeBy(0, -resizeDelta);
-						sibling.reserveResizeBy(0, aDelta - resizeDelta);
-						sibling.reserveMoveBy(0, -resizeDelta);
-					}
+				let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+				if (resizeDelta) {
+					this.reserveResizeBy(0, -resizeDelta);
+					sibling.reserveResizeBy(0, aDelta - resizeDelta);
+					sibling.reserveMoveBy(0, -resizeDelta);
 				}
 			}
 			else { // horizontal slbling
@@ -834,17 +832,15 @@ FoxSplitterBase.prototype = {
 			if (sibling.position == this.POSITION_RIGHT) {
 				splitterResizing = true;
 				sibling.moveBy(aDelta, 0);
-				if (!sibling.collapsed) sibling.resizeBy(-aDelta, 0);
+				sibling.resizeBy(-aDelta, 0);
 			}
 			else if (sibling.position == this.POSITION_LEFT) {
-				if (!sibling.collapsed) {
-					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
-					if (resizeDelta) {
-						// resize before move, to prevent unexpected resizing fired by window move
-						this.reserveResizeBy(-(aDelta - resizeDelta), 0);
-						this.reserveMoveBy(resizeDelta, 0);
-						sibling.reserveResizeBy(resizeDelta, 0);
-					}
+				let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+				if (resizeDelta) {
+					// resize before move, to prevent unexpected resizing fired by window move
+					this.reserveResizeBy(-(aDelta - resizeDelta), 0);
+					this.reserveMoveBy(resizeDelta, 0);
+					sibling.reserveResizeBy(resizeDelta, 0);
 				}
 			}
 			else { // vertical slbling
@@ -866,17 +862,15 @@ FoxSplitterBase.prototype = {
 			if (sibling.position == this.POSITION_BOTTOM) {
 				splitterResizing = true;
 				sibling.moveBy(0, aDelta);
-				if (!sibling.collapsed) sibling.resizeBy(0, -aDelta);
+				sibling.resizeBy(0, -aDelta);
 			}
 			else if (sibling.position == this.POSITION_TOP) {
-				if (!sibling.collapsed) {
-					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
-					if (resizeDelta) {
-						// resize before move, to prevent unexpected resizing fired by window move
-						this.reserveResizeBy(0, -(aDelta - resizeDelta));
-						this.reserveMoveBy(0, resizeDelta);
-						sibling.reserveResizeBy(0, resizeDelta);
-					}
+				let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+				if (resizeDelta) {
+					// resize before move, to prevent unexpected resizing fired by window move
+					this.reserveResizeBy(0, -(aDelta - resizeDelta));
+					this.reserveMoveBy(0, resizeDelta);
+					sibling.reserveResizeBy(0, resizeDelta);
 				}
 			}
 			else { // horizontal slbling
@@ -897,16 +891,14 @@ FoxSplitterBase.prototype = {
 		if (sibling) {
 			if (sibling.position == this.POSITION_LEFT) {
 				splitterResizing = true;
-				if (!sibling.collapsed) sibling.resizeBy(-aDelta, 0);
+				sibling.resizeBy(-aDelta, 0);
 			}
 			else if (sibling.position == this.POSITION_RIGHT) {
-				if (!sibling.collapsed) {
-					let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
-					if (resizeDelta) {
-						this.reserveResizeBy(-resizeDelta, 0);
-						sibling.reserveMoveBy(-resizeDelta, 0);
-						sibling.reserveResizeBy(aDelta - resizeDelta, 0);
-					}
+				let resizeDelta = this.shouldKeepSizeRatioOnResize ? Math.round(aDelta / 2) : 0 ;
+				if (resizeDelta) {
+					this.reserveResizeBy(-resizeDelta, 0);
+					sibling.reserveMoveBy(-resizeDelta, 0);
+					sibling.reserveResizeBy(aDelta - resizeDelta, 0);
 				}
 			}
 			else { // vertical sibling

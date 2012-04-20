@@ -179,14 +179,6 @@ ui.gather.short=Gather
 ui.gather.long=Gather all windows as tabs
 ui.gather.accesskey=g
 
-ui.collapseAll.short=Colapsar
-ui.collapseAll.long=Collapse all windows
-ui.collapseAll.accesskey=c
-
-ui.expandAll.short=Expandir
-ui.expandAll.long=Expand all windows
-ui.expandAll.accesskey=e
-
 ui.stretch.short=Stretch
 ui.stretch.long=Stretch to the size of the group
 ui.stretch.accesskey=r

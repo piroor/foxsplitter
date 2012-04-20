@@ -186,14 +186,6 @@ ui.gather.short=集める
 ui.gather.long=分割されたウィンドウをタブに集める
 ui.gather.accesskey=g
 
-ui.collapseAll.short=たたむ
-ui.collapseAll.long=分割されたペインをすべてたたむ
-ui.collapseAll.accesskey=c
-
-ui.expandAll.short=ひろげる
-ui.expandAll.long=分割されたウィンドウをすべてひろげる
-ui.expandAll.accesskey=e
-
 ui.stretch.short=拡大
 ui.stretch.long=グループの大きさに拡大
 ui.stretch.accesskey=r

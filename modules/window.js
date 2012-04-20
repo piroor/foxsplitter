@@ -490,8 +490,6 @@ FoxSplitterWindow.prototype = {
 			mainWindow : this
 		});
 		this.parent.resetPositionAndSize(this);
-		if (lastState.collapsed)
-			this.collapse();
 
 		if (lastState.main) {
 			let mainWindow = FoxSplitterWindow.instancesById[lastState.main];
@@ -1471,131 +1469,6 @@ FoxSplitterWindow.prototype = {
 	},
 
 
-	get collapsed()
-	{
-		return !!this._collapsedWindowToolbar;
-	},
-
-	collapse : function FSW_collapse()
-	{
-		if (this._collapsedWindowToolbar || !this.parent)
-			return Deferred.next(function() {});
-
-		this._collapsedWindowToolbar = this.document.createElement('box');
-		this._collapsedWindowToolbar.setAttribute('id', this.COLLAPSED_BAR);
-		this._collapsedWindowToolbar.setAttribute('ondblclick', 'FoxSplitter.expand();');
-		this._collapsedWindowToolbar.setAttribute('onclick', 'if (FoxSplitter.isMiddleClick(event)) FoxSplitter.expand();');
-		this.documentElement.appendChild(this._collapsedWindowToolbar);
-
-		var width = this.width;
-		if (!this.getWindowValue(this.COLLAPSED_ORIGINAL_WIDTH))
-			this.setWindowValue(this.COLLAPSED_ORIGINAL_WIDTH, width);
-		var height = this.height;
-		if (!this.getWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT))
-			this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, height);
-
-		var deltaX = this.position & this.POSITION_HORIZONTAL ? width - this.COLLAPSED_WINDOW_SIZE : 0 ;
-		var deltaY = this.position & this.POSITION_VERTICAL ? height - this.COLLAPSED_WINDOW_SIZE : 0 ;
-
-		var deferreds = [];
-		if (deltaX || deltaY) {
-			let sibling = this.sibling;
-
-			if (this.position & this.POSITION_HORIZONTAL) {
-				deferreds.push(this.resizeBy(-deltaX, 0));
-				deferreds.push(sibling.resizeBy(deltaX, 0));
-			}
-			else {
-				deferreds.push(this.resizeBy(0, -deltaY));
-				deferreds.push(sibling.resizeBy(0, deltaY));
-			}
-
-			switch (this.position)
-			{
-				case this.POSITION_TOP:
-					sibling.moveBy(0, -deltaY);
-					break;
-				case this.POSITION_RIGHT:
-					this.moveBy(deltaX, 0);
-					break;
-				case this.POSITION_BOTTOM:
-					this.moveBy(0, deltaY);
-					break;
-				case this.POSITION_LEFT:
-					sibling.moveBy(-deltaX, 0);
-					break;
-			}
-		}
-
-		var self = this;
-		return (deferreds.length > 1 ?
-					Deferred.parallel(deferreds) :
-				deferreds.length ?
-					deferreds[0] :
-					Deferred )
-				.next(function() {
-					self.parent.resetPositionAndSize(self);
-				});
-	},
-
-	expand : function FSW_expand(aManuallyResized)
-	{
-		if (!this._collapsedWindowToolbar || !this.parent)
-			return Deferred.next(function() {});
-
-		var width = parseInt(this.getWindowValue(this.COLLAPSED_ORIGINAL_WIDTH) || this.width);
-		var height = parseInt(this.getWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT) || this.height);
-		var deltaX = this.position & this.POSITION_HORIZONTAL ? width - this.COLLAPSED_WINDOW_SIZE : 0 ;
-		var deltaY = this.position & this.POSITION_VERTICAL ? height - this.COLLAPSED_WINDOW_SIZE : 0 ;
-
-		var deferreds = [];
-		if (!aManuallyResized && (deltaX || deltaY)) {
-			let sibling = this.sibling;
-
-			if (this.position & this.POSITION_HORIZONTAL) {
-				deferreds.push(this.resizeBy(deltaX, 0));
-				deferreds.push(sibling.resizeBy(-deltaX, 0));
-			}
-			else {
-				deferreds.push(this.resizeBy(0, deltaY));
-				deferreds.push(sibling.resizeBy(0, -deltaY));
-			}
-
-			switch (this.position)
-			{
-				case this.POSITION_TOP:
-					sibling.moveBy(0, deltaY);
-					break;
-				case this.POSITION_RIGHT:
-					this.moveBy(-deltaX, 0);
-					break;
-				case this.POSITION_BOTTOM:
-					this.moveBy(0, -deltaY);
-					break;
-				case this.POSITION_LEFT:
-					sibling.moveBy(deltaX, 0);
-					break;
-			}
-		}
-
-		this._collapsedWindowToolbar.parentNode.removeChild(this._collapsedWindowToolbar);
-		delete this._collapsedWindowToolbar;
-
-		this.setWindowValue(this.COLLAPSED_ORIGINAL_WIDTH, '');
-		this.setWindowValue(this.COLLAPSED_ORIGINAL_HEIGHT, '');
-
-		var self = this;
-		return (deferreds.length > 1 ?
-					Deferred.parallel(deferreds) :
-				deferreds.length ?
-					deferreds[0] :
-					Deferred )
-				.next(function() {
-					self.parent.resetPositionAndSize(self);
-				});
-	},
-
-
 	splitCurrentTabTo : function FSW_splitCurrentTabTo(aPosition) /* PUBLIC API */
 	{
 		return this.splitTabTo(this.browser.selectedTab, aPosition);
@@ -1644,8 +1517,7 @@ FoxSplitterWindow.prototype = {
 			height    : this.logicalHeight,
 			sibling   : (this.sibling ? this.sibling.id : null ),
 			position  : this.position,
-			main      : this.mainWindow.id,
-			collapsed : this.collapsed
+			main      : this.mainWindow.id
 		};
 	},
 
@@ -1974,15 +1846,12 @@ FoxSplitterWindow.prototype = {
 			this.resizing ||
 			this.minimized ||
 			this.maximizing ||
-			this.expanded
+			this.stretched
 			)
 			return;
 
 		if (this.windowState == this.STATE_MAXIMIZED && this.stillMaximizedYet)
 			return;
-
-		if (this.collapsed)
-			this.expand(true);
 
 		var x = this.x;
 		var y = this.y;
@@ -2243,9 +2112,6 @@ FoxSplitterWindow.prototype = {
 	},
 	clearGroupedAppearance : function FSW_clearGroupedAppearance(aOnQuit)
 	{
-		if (!aOnQuit)
-			this.expand();
-
 		this.documentElement.removeAttribute(this.MEMBER);
 		if (this.ui)
 			this.ui.clearGroupedAppearance(aOnQuit);

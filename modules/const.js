@@ -57,15 +57,12 @@ var exports = {
 	CHROMEHIDDEN      : 'foxsplitter-chromehidden',
 	ID                : 'foxsplitter-id',
 	SYNC_SCROLL       : 'foxsplitter-syncScroll',
-	COLLAPSED_ORIGINAL_WIDTH  : 'foxsplitter-collapsed-window-original-width',
-	COLLAPSED_ORIGINAL_HEIGHT : 'foxsplitter-collapsed-window-original-height',
 	SCROLLED_X        : 'foxsplitter-scrolled-x',
 	SCROLLED_Y        : 'foxsplitter-scrolled-y',
 
 	DROP_INDICATOR : 'foxsplitter-drop-indicator',
 	TOOLBAR_ITEM   : 'foxsplitter-toolbar-item',
 	MENU_ITEM      : 'foxsplitter-menuitem',
-	COLLAPSED_BAR  : 'foxsplitter-collapsed-window-toolbar',
 
 	EVENT_TYPE_READY                : 'nsDOMFoxSplitterReady',
 	EVENT_TYPE_WINDOW_STATE_CHANGED : 'nsDOMFoxSplitterWindowStateChange',
@@ -137,8 +134,6 @@ var exports = {
 	MIN_WIDTH : 16,
 	MIN_HEIGHT : 16,
 
-	COLLAPSED_WINDOW_SIZE : 24,
-
 
 	NON_NAVIGATION_ITEM_CLASS : <![CDATA[
 		unified-back-forward-button
@@ -172,16 +167,6 @@ var exports = {
 		:root[%CHROMEHIDDEN%~="extra-toolbars"] toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
 			visibility: collapse;
 			-moz-user-focus: none;
-		}
-
-		#%COLLAPSED_BAR% {
-			background: ThreeDFace;
-			height: 5000px;
-			left: 0;
-			position: fixed;
-			top: 0;
-			width: 5000px;
-			-moz-binding: url('chrome://global/content/bindings/toolbar.xml#toolbar-drag');
 		}
 
 		.%DROP_INDICATOR% {
