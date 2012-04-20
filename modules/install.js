@@ -60,7 +60,8 @@ function uninstallOldVersion()
 						RDF.GetResource('http://www.mozilla.org/2004/em-rdf#appDisabled'),
 						true
 					).QueryInterface(Ci.nsIRDFLiteral)
-					.Value == 'true';
+					.Value;
+				appDisabled = appDisabled == 'true' || appDisabled == 'needs-disable';
 			}
 			catch(e) {
 			}
@@ -71,7 +72,8 @@ function uninstallOldVersion()
 						RDF.GetResource('http://www.mozilla.org/2004/em-rdf#userDisabled'),
 						true
 					).QueryInterface(Ci.nsIRDFLiteral)
-					.Value == 'true';
+					.Value;
+				userDisabled = userDisabled == 'true' || userDisabled == 'needs-disable';
 			}
 			catch(e) {
 			}
