@@ -1011,50 +1011,55 @@ FoxSplitterUI.prototype = {
 
 		var stretch = aPopup.querySelector('.'+this.MENU_ITEM+'.stretch');
 		var shrink = aPopup.querySelector('.'+this.MENU_ITEM+'.shrink');
-		if (this.owner.stretched) {
-			shrink.removeAttribute('hidden');
-			stretch.setAttribute('hidden', true);
-		}
-		else {
-			shrink.setAttribute('hidden', true);
-			stretch.removeAttribute('hidden');
-		}
-
 		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
-		if (setAsMainWindowItem) {
-			if (this.owner.main)
-				setAsMainWindowItem.setAttribute('checked', true);
-			else
-				setAsMainWindowItem.removeAttribute('checked');
-
-			if (!this.owner.parent)
-				setAsMainWindowItem.setAttribute('disabled', true);
-			else
-				setAsMainWindowItem.removeAttribute('disabled');
-		}
-
 		var separator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
 		var syncScrollItem = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScroll');
-		if (this.syncScrollButton.inserted &&
-			this.syncScrollButton.node.boxObject.width) {
+		if (this.owner.stretched) {
+			if (shrink) shrink.removeAttribute('hidden');
+			if (stretch) stretch.setAttribute('hidden', true);
+
+			if (setAsMainWindowItem) setAsMainWindowItem.setAttribute('hidden', true);
 			if (separator) separator.setAttribute('hidden', true);
 			if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
 		}
 		else {
-			if (separator) separator.removeAttribute('hidden');
-			if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
-		}
+			if (shrink) shrink.setAttribute('hidden', true);
+			if (stretch) stretch.removeAttribute('hidden');
 
-		if (syncScrollItem) {
-			if (this.owner.syncScroll)
-				syncScrollItem.setAttribute('checked', true);
-			else
-				syncScrollItem.removeAttribute('checked');
+			if (setAsMainWindowItem) {
+				setAsMainWindowItem.removeAttribute('hidden');
+				if (this.owner.main)
+					setAsMainWindowItem.setAttribute('checked', true);
+				else
+					setAsMainWindowItem.removeAttribute('checked');
 
-			if (!this.owner.parent)
-				syncScrollItem.setAttribute('disabled', true);
-			else
-				syncScrollItem.removeAttribute('disabled');
+				if (!this.owner.parent)
+					setAsMainWindowItem.setAttribute('disabled', true);
+				else
+					setAsMainWindowItem.removeAttribute('disabled');
+			}
+
+			if (this.syncScrollButton.inserted &&
+				this.syncScrollButton.node.boxObject.width) {
+				if (separator) separator.setAttribute('hidden', true);
+				if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
+			}
+			else {
+				if (separator) separator.removeAttribute('hidden');
+				if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
+			}
+
+			if (syncScrollItem) {
+				if (this.owner.syncScroll)
+					syncScrollItem.setAttribute('checked', true);
+				else
+					syncScrollItem.removeAttribute('checked');
+
+				if (!this.owner.parent)
+					syncScrollItem.setAttribute('disabled', true);
+				else
+					syncScrollItem.removeAttribute('disabled');
+			}
 		}
 	},
 	_updatePageContextPopup : function FSUI_updatePageContextPopup()
