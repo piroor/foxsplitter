@@ -287,7 +287,9 @@ var exports = {
 		aDefinitions = aDefinitions || this;
 		return aSource.replace(/\%[A-Z_]+\%/g, function(aMatched) {
 				var symbol = aMatched.substr(1, aMatched.length-2);
-				return aDefinitions[symbol] || self[symbol] || aMatched;
+				return symbol in aDefinitions ? aDefinitions[symbol] :
+						symbol in self ? self[symbol] :
+						aMatched;
 			});
 	}
 };
