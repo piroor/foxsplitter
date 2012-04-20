@@ -255,7 +255,7 @@ var exports = {
 		.%MENU_ITEM%.toggleStretched[%TOGGLE_MODE%="shrink"][disabled="true"]  { -moz-image-region: rect(16px 224px 32px 208px); }
 
 		:root:not([%MEMBER%="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button,
-		:root:not([%MEMBER%="true"]) toolbox:not([customizing="true"]) #foxsplitter-toggleStretched-button {
+		:root:not([%MEMBER%="true"]):not([%STRETCHED%="true"]) toolbox:not([customizing="true"]) #foxsplitter-toggleStretched-button {
 			visibility: collapse;
 		}
 		#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
