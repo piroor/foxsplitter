@@ -61,7 +61,7 @@ config.setDefault(domain+'fixMispositoning', true);
 config.setDefault(domain+'draggableAppButton', true);
 
 config.setDefault(domain+'importTabsFromClosedSibling', FoxSplitterConst.IMPORT_ONLY_HIDDEN);
-config.setDefault(domain+'hiddenUIInInactiveWindow', FoxSplitterConst.HIDE_MENUBAR |
+config.setDefault(domain+'hiddenUIInMemberWindow', FoxSplitterConst.HIDE_MENUBAR |
                                                      FoxSplitterConst.HIDE_BOOKMARKS |
                                                      FoxSplitterConst.HIDE_EXTRA |
                                                      FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS |

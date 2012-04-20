@@ -70,16 +70,16 @@ shouldMinimalizeUI=分割後のウィンドウではツールバーのボタン�
 shouldAutoHideToolbox=分割後のウィンドウではツールバーを自動的に隠す
 shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に隠す
 shouldAutoHideTabs.note=（※そのような機能を提供する他のアドオンが必要です）
-hiddenUIInInactiveWindow=アクティブでないウィンドウで表示するUI要素
-hiddenUIInInactiveWindow.note=（チェックを外して表示する項目を減らすとブラウズ領域が広がります）
-hiddenUIInInactiveWindow.menubar=メニューバー
-hiddenUIInInactiveWindow.toolbar=ロケーションバー以外のナビゲーションツールバーの項目
-hiddenUIInInactiveWindow.location=ロケーションバー
-hiddenUIInInactiveWindow.bookmarks=ブックマークツールバー
-hiddenUIInInactiveWindow.status=ステータスバー
-hiddenUIInInactiveWindow.extra=サイドバー
-hiddenUIInInactiveWindow.non-navigation=ナビゲーションに関係ないツールバー項目
-hiddenUIInInactiveWindow.extra-toolbars=その他のツールバー
+hiddenUIInMemberWindow=アクティブでないウィンドウで表示するUI要素
+hiddenUIInMemberWindow.note=（チェックを外して表示する項目を減らすとブラウズ領域が広がります）
+hiddenUIInMemberWindow.menubar=メニューバー
+hiddenUIInMemberWindow.toolbar=ロケーションバー以外のナビゲーションツールバーの項目
+hiddenUIInMemberWindow.location=ロケーションバー
+hiddenUIInMemberWindow.bookmarks=ブックマークツールバー
+hiddenUIInMemberWindow.status=ステータスバー
+hiddenUIInMemberWindow.extra=サイドバー
+hiddenUIInMemberWindow.non-navigation=ナビゲーションに関係ないツールバー項目
+hiddenUIInMemberWindow.extra-toolbars=その他のツールバー
 
 tab.menu=メニュー
 

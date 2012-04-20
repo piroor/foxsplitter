@@ -98,8 +98,8 @@ FoxSplitterUI.prototype = {
 	set shouldAutoHideToolbox(aValue) { return FoxSplitterUI.shouldAutoHideToolbox = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
-	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
-	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
+	get hiddenUIInMemberWindow() { return FoxSplitterUI.hiddenUIInMemberWindow; },
+	set hiddenUIInMemberWindow(aValue) { return FoxSplitterUI.hiddenUIInMemberWindow = aValue; },
 	get shouldScrollToSplitPosition() { return FoxSplitterUI.shouldScrollToSplitPosition; },
 	set shouldScrollToSplitPosition(aValue) { return FoxSplitterUI.shouldScrollToSplitPosition = aValue; },
 
@@ -1248,23 +1248,23 @@ FoxSplitterUI.prototype = {
 	{
 		var hiddenItems = [];
 
-		if (this.hiddenUIInInactiveWindow & this.HIDE_MENUBAR)
+		if (this.hiddenUIInMemberWindow & this.HIDE_MENUBAR)
 			hiddenItems.push('menubar');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_TOOLBAR)
+		if (this.hiddenUIInMemberWindow & this.HIDE_TOOLBAR)
 			hiddenItems.push('toolbar');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_LOCATION)
+		if (this.hiddenUIInMemberWindow & this.HIDE_LOCATION)
 			hiddenItems.push('location');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_BOOKMARKS)
+		if (this.hiddenUIInMemberWindow & this.HIDE_BOOKMARKS)
 			hiddenItems.push('directories');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_STATUS)
+		if (this.hiddenUIInMemberWindow & this.HIDE_STATUS)
 			hiddenItems.push('status');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA)
+		if (this.hiddenUIInMemberWindow & this.HIDE_EXTRA)
 			hiddenItems.push('extrachrome');
-		if (this.hiddenUIInInactiveWindow & this.HIDE_EXTRA_TOOLBARS)
+		if (this.hiddenUIInMemberWindow & this.HIDE_EXTRA_TOOLBARS)
 			hiddenItems.push('extra-toolbars');
 
 		// extra hidden items controled by Fox Splitter
-		if (this.hiddenUIInInactiveWindow & this.HIDE_NON_NAVIGATION_ITEMS)
+		if (this.hiddenUIInMemberWindow & this.HIDE_NON_NAVIGATION_ITEMS)
 			hiddenItems.push('toolbar-non-navigation-items');
 
 		hiddenItems = hiddenItems.join(' ');
@@ -1539,7 +1539,7 @@ FoxSplitterUI.instances = [];
 FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideToolbox = prefs.getPref(domain+'shouldAutoHideToolbox');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
-FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
+FoxSplitterUI.hiddenUIInMemberWindow = prefs.getPref(domain+'hiddenUIInMemberWindow');
 FoxSplitterUI.shouldScrollToSplitPosition = prefs.getPref(domain+'shouldScrollToSplitPosition');
 
 var prefListener = {
@@ -1557,7 +1557,7 @@ var prefListener = {
 					case 'shouldMinimalizeUI':
 					case 'shouldAutoHideTabs':
 					*/
-					case 'hiddenUIInInactiveWindow':
+					case 'hiddenUIInMemberWindow':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.updateGroupedAppearance();
 						});

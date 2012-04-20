@@ -110,6 +110,23 @@ function uninstallOldVersion()
 	}
 }
 
+function migratePrefs()
+{
+	var prefs = require('lib/prefs').prefs;
+	var FSC = require('const');
+	switch (prefs.getPref(FSC.domain+'prefsVersion') || 0)
+	{
+		case 0:
+			prefs.setPref(FSC.domain+'hiddenUIInMemberWindow', prefs.getPref(FSC.domain+'hiddenUIInInactiveWindow'));
+			prefs.clearPref(FSC.domain+'hiddenUIInInactiveWindow');
+			break;
+
+		default:
+			return;
+	}
+	prefs.setPref(FSC.domain+'prefsVersion', FSC.PREFS_VERSION);
+}
+
 function initWmctrlPath()
 {
 	var prefs = require('lib/prefs').prefs;
@@ -210,6 +227,7 @@ function initWmctrlPath()
 function install()
 {
 	uninstallOldVersion();
+	migratePrefs();
 	initWmctrlPath();
 }
 

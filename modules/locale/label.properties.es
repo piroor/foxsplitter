@@ -70,16 +70,16 @@ shouldMinimalizeUI=Minimalize toolbar buttons in split windows
 shouldAutoHideToolbox=Hide toolbar in split windows
 shouldAutoHideTabs=Hide tab bar automatically in split windows
 shouldAutoHideTabs.note=(*require other addons which provide such feature)
-hiddenUIInInactiveWindow=Available UIs in inactive windows
-hiddenUIInInactiveWindow.note=(You can expand the browsing area by unchecking following items)
-hiddenUIInInactiveWindow.menubar=Menu Bar
-hiddenUIInInactiveWindow.toolbar=Navigation Toolbar items except Location Bar
-hiddenUIInInactiveWindow.location=Location Bar
-hiddenUIInInactiveWindow.bookmarks=Bookmarks Toolbar
-hiddenUIInInactiveWindow.status=Status Bar
-hiddenUIInInactiveWindow.extra=Sidebar
-hiddenUIInInactiveWindow.non-navigation=Toolbar items not related to navigation
-hiddenUIInInactiveWindow.extra-toolbars=Extra Toolbars
+hiddenUIInMemberWindow=Available UIs in inactive windows
+hiddenUIInMemberWindow.note=(You can expand the browsing area by unchecking following items)
+hiddenUIInMemberWindow.menubar=Menu Bar
+hiddenUIInMemberWindow.toolbar=Navigation Toolbar items except Location Bar
+hiddenUIInMemberWindow.location=Location Bar
+hiddenUIInMemberWindow.bookmarks=Bookmarks Toolbar
+hiddenUIInMemberWindow.status=Status Bar
+hiddenUIInMemberWindow.extra=Sidebar
+hiddenUIInMemberWindow.non-navigation=Toolbar items not related to navigation
+hiddenUIInMemberWindow.extra-toolbars=Extra Toolbars
 
 tab.menu=Menú
 
