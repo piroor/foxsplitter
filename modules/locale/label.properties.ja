@@ -67,10 +67,15 @@ draggableAppButton=Firefoxボタンのドラッグ操作でウィンドウを切
 tab.appearance=外観
 
 shouldMinimalizeUI=分割後のウィンドウではツールバーのボタンを小さく表示する
-shouldAutoHideToolbox=分割後のウィンドウではツールバーを自動的に隠す
+shouldAutoHideToolbox=
+hiddenUIInMemberWindow=アクティブでないウィンドウで表示するUI要素
+
+
+shouldMinimalizeUI=分割後のウィンドウではツールバーのボタンを小さく表示する
+shouldAutoHideToolbox=分割後のメイン以外のウィンドウではツールバーを自動的に隠す
 shouldAutoHideTabs=分割後のウィンドウではタブバーを自動的に隠す
 shouldAutoHideTabs.note=（※そのような機能を提供する他のアドオンが必要です）
-hiddenUIInMemberWindow=アクティブでないウィンドウで表示するUI要素
+hiddenUIInMemberWindow=分割後のメイン以外のウィンドウでは以下のUI項目だけを表示する
 hiddenUIInMemberWindow.note=（チェックを外して表示する項目を減らすとブラウズ領域が広がります）
 hiddenUIInMemberWindow.menubar=メニューバー
 hiddenUIInMemberWindow.toolbar=ロケーションバー以外のナビゲーションツールバーの項目

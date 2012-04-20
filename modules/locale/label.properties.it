@@ -67,10 +67,10 @@ draggableAppButton=Unbind/bind windows by drag and drop of the Firefox Button
 tab.appearance=Aspetto
 
 shouldMinimalizeUI=Minimalize toolbar buttons in split windows
-shouldAutoHideToolbox=Hide toolbar in split windows
+shouldAutoHideToolbox=Hide toolbar automatically in normal (not main) split windows
 shouldAutoHideTabs=Hide tab bar automatically in split windows
 shouldAutoHideTabs.note=(*require other addons which provide such feature)
-hiddenUIInMemberWindow=Available UIs in inactive windows
+hiddenUIInMemberWindow=Show following UI items in normal (not main) split windows
 hiddenUIInMemberWindow.note=(You can expand the browsing area by unchecking following items)
 hiddenUIInMemberWindow.menubar=Menu Bar
 hiddenUIInMemberWindow.toolbar=Navigation Toolbar items except Location Bar
