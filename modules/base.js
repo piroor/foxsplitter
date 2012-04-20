@@ -153,6 +153,13 @@ FoxSplitterBase.prototype = {
 		if (!aSibling || !(position & this.POSITION_VALID))
 			return Deferred.next(function() {});
 
+		if (!this.isGroup && this.stretched) {
+			let self = this;
+			return this.shrink().next(function() {
+					self.bindWith(aSibling, aOptions);
+				});
+		}
+
 		this.binding++;
 
 		var deferreds = [];
@@ -342,6 +349,13 @@ FoxSplitterBase.prototype = {
 	{
 		if (!this.parent)
 			return;
+
+		if (!this.isGroup && this.stretched) {
+			let self = this;
+			return this.shrink().next(function() {
+					self.unbind(aSilent);
+				});
+		}
 
 		var sibling = this.sibling;
 
