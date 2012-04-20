@@ -131,19 +131,19 @@ FoxSplitterWindow.prototype = {
 
 	get logicalX()
 	{
-		return this.inTabView ? this.x + this.tabViewOffsetX : this.x ;
+		return this.stretched ? this.x + this.stretchedOffsetX : this.x ;
 	},
 	get logicalY()
 	{
-		return this.inTabView ? this.y + this.tabViewOffsetY : this.y ;
+		return this.stretched ? this.y + this.stretchedOffsetY : this.y ;
 	},
 	get logicalWidth()
 	{
-		return this.inTabView ? this.width + this.tabViewOffsetWidth : this.width ;
+		return this.stretched ? this.width + this.stretchedOffsetWidth : this.width ;
 	},
 	get logicalHeight()
 	{
-		return this.inTabView ? this.height + this.tabViewOffsetHeight : this.height ;
+		return this.stretched ? this.height + this.stretchedOffsetHeight : this.height ;
 	},
 
 	updateLastPositionAndSize : function FSW_updateLastPositionAndSize(aExpected)
@@ -605,9 +605,9 @@ FoxSplitterWindow.prototype = {
 
 		this.positioning++;
 
-		if (this.inTabView) {
-			aX += this.tabViewOffsetX;
-			aY += this.tabViewOffsetY;
+		if (this.stretched) {
+			aX += this.stretchedOffsetX;
+			aY += this.stretchedOffsetY;
 		}
 
 		this.window.moveTo(Math.round(aX), Math.round(aY));
@@ -648,9 +648,9 @@ FoxSplitterWindow.prototype = {
 
 		this.resizing++;
 
-		if (this.inTabView) {
-			aW += this.tabViewOffsetWidth;
-			aH += this.tabViewOffsetHeight;
+		if (this.stretched) {
+			aW += this.stretchedOffsetWidth;
+			aH += this.stretchedOffsetHeight;
 		}
 
 		aW = Math.max(this.MIN_WIDTH, Math.round(aW)) - this.offsetWidth;
@@ -896,6 +896,56 @@ FoxSplitterWindow.prototype = {
 				Deferred.next(function() {});
 	},
 
+
+	stretch : function FSW_stretch()
+	{
+		if (!this.parent || this.stretched)
+			return;
+
+		var root = this.root;
+		var x = root.x;
+		var y = root.y;
+		var width = root.width;
+		var height = root.height;
+
+		var currentX = this.x;
+		var currentY = this.y;
+		var currentWidth = this.width;
+		var currentHeight = this.height;
+
+		this.moveTo(x, y);
+		this.resizeTo(width, height);
+
+		this.stretched = true;
+		this.stretchedOffsetX = currentX - x;
+		this.stretchedOffsetY = currentY - y;
+		this.stretchedOffsetWidth = currentWidth - width;
+		this.stretchedOffsetHeight = currentHeight - height;
+	},
+
+	shrink : function FSW_shrink()
+	{
+		if (!this.parent || !this.stretched)
+			return;
+
+		this.stretched = false;
+
+		var self = this;
+		this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
+			.next(function() {
+				// don't move the window yet, because it is not resized actually!
+			})
+			.next(function() {
+				// now, the window is actually shown with the specified size.
+				// we can move it.
+				self.moveTo(self.x + self.stretchedOffsetX, self.y + self.stretchedOffsetY);
+				// self.parent.resetPositionAndSize(self);
+				delete self.stretchedOffsetX;
+				delete self.stretchedOffsetY;
+				delete self.stretchedOffsetWidth;
+				delete self.stretchedOffsetHeight;
+			});
+	},
 
 
 	tileTabs : function FSW_tileTabs(aTabs, aMode) /* PUBLIC API */
@@ -1881,7 +1931,7 @@ FoxSplitterWindow.prototype = {
 			this.resizing ||
 			this.minimized ||
 			this.maximizing ||
-			this.inTabView
+			this.expanded
 			)
 			return;
 
@@ -1928,7 +1978,7 @@ FoxSplitterWindow.prototype = {
 
 		this.active = true;
 
-		if (this.parent && this.root.inTabView) {
+		if (this.parent && this.root.stretched) {
 			FoxSplitterWindow.raising--;
 			return;
 		}
@@ -2723,55 +2773,12 @@ FoxSplitterWindow.prototype = {
 
 	_onTabViewShown : function FSW_onTabViewShown()
 	{
-		if (!this.parent)
-			return;
-
-		var root = this.root;
-		var x = root.x;
-		var y = root.y;
-		var width = root.width;
-		var height = root.height;
-
-		var currentX = this.x;
-		var currentY = this.y;
-		var currentWidth = this.width;
-		var currentHeight = this.height;
-
-		this.moveTo(x, y);
-		this.resizeTo(width, height);
-
-		this.inTabView = true;
-		this.tabViewOffsetX = currentX - x;
-		this.tabViewOffsetY = currentY - y;
-		this.tabViewOffsetWidth = currentWidth - width;
-		this.tabViewOffsetHeight = currentHeight - height;
+		this.stretch();
 	},
 
 	_onTabViewHidden : function FSW_onTabViewHidden()
 	{
-		if (
-			!this.parent ||
-			!this.inTabView
-			)
-			return;
-
-		this.inTabView = false;
-
-		var self = this;
-		this.resizeTo(this.width + this.tabViewOffsetWidth, this.height + this.tabViewOffsetHeight)
-			.next(function() {
-				// don't move the window yet, because it is not resized actually!
-			})
-			.next(function() {
-				// now, the window is actually shown with the specified size.
-				// we can move it.
-				self.moveTo(self.x + self.tabViewOffsetX, self.y + self.tabViewOffsetY);
-				// self.parent.resetPositionAndSize(self);
-				delete self.tabViewOffsetX;
-				delete self.tabViewOffsetY;
-				delete self.tabViewOffsetWidth;
-				delete self.tabViewOffsetHeight;
-			});
+		this.shrink();
 	},
 
 	_onSplitRequestFromContent : function FSW_onSplitRequestFromContent(aEvent)

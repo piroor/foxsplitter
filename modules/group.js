@@ -99,9 +99,9 @@ FoxSplitterGroup.prototype = {
 		var another = this.bottomMember;
 		return base && another ? base.logicalHeight + another.logicalHeight : this.startMember.logicalHeight ;
 	},
-	get inTabView()
+	get stretched()
 	{
-		return this.allWindows.some(function(aWindow) { return aWindow.inTabView; });
+		return this.allWindows.some(function(aWindow) { return aWindow.stretched; });
 	},
 
 	get topMember()
