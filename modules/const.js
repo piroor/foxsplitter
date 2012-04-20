@@ -50,6 +50,7 @@ var exports = {
 	ATTACHED_POSITION : 'foxsplitter-attached-position',
 	MAIN              : 'foxsplitter-main-window',
 	ACTIVE            : 'foxsplitter-active',
+	STRETCHED         : 'foxsplitter-stretched',
 	MEMBER            : 'foxsplitter-member-window',
 	HOVER             : 'foxsplitter-hover',
 	STATE             : 'foxsplitter-state',
@@ -270,15 +271,15 @@ var exports = {
 		#foxsplitter-syncScroll-button[checked="true"] { -moz-image-region: rect(0 128px 16px 112px); }
 
 		/* shrink appmenu button */
-		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button {
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]):not([%STRETCHED%="true"]) #appmenu-button {
 			padding-left: 0.7em;
 			padding-right: 0.7em;
 			min-width: 0;
 		}
-		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button > .box-inherit dropmarker {
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]):not([%STRETCHED%="true"]) #appmenu-button > .box-inherit dropmarker {
 			margin: 0;
 		}
-		:root[%MEMBER%="true"]:not([%MAIN%="true"]) #appmenu-button > .box-inherit .button-text {
+		:root[%MEMBER%="true"]:not([%MAIN%="true"]):not([%STRETCHED%="true"]) #appmenu-button > .box-inherit .button-text {
 			visibility: collapse;
 		}
 	]]>.toString(),

@@ -921,9 +921,9 @@ FoxSplitterWindow.prototype = {
 		this.stretchedOffsetY = currentY - y;
 		this.stretchedOffsetWidth = currentWidth - width;
 		this.stretchedOffsetHeight = currentHeight - height;
+		this.documentElement.setAttribute(this.STRETCHED, true);
 
-		if (this.ui)
-			this.ui.updateChromeMargin();
+		this.updateGroupedAppearance();
 	},
 
 	shrink : function FSW_shrink()
@@ -932,6 +932,7 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		this.stretched = false;
+		this.documentElement.removeAttribute(this.STRETCHED);
 
 		var self = this;
 		this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
@@ -948,8 +949,7 @@ FoxSplitterWindow.prototype = {
 				delete self.stretchedOffsetWidth;
 				delete self.stretchedOffsetHeight;
 
-				if (self.ui)
-					self.ui.updateChromeMargin();
+				self.updateGroupedAppearance();
 			});
 	},
 

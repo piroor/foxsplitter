@@ -89,7 +89,7 @@ FoxSplitterUI.prototype = {
 
 	get shouldHaveFullUI()
 	{
-		return this.owner.main || !this.owner.parent;
+		return this.owner.main || this.owner.stretched || !this.owner.parent;
 	},
 
 	get shouldMinimalizeUI() { return FoxSplitterUI.shouldMinimalizeUI; },
@@ -1442,7 +1442,7 @@ FoxSplitterUI.prototype = {
 		this.clearToolboxAutoHide();
 
 		var toolbox = this.toolbox;
-		if (!toolbox || !this.shouldAutoHideToolbox)
+		if (!toolbox || !this.shouldAutoHideToolbox || this.owner.stretched)
 			return;
 
 		var toolboxHeight = toolbox.boxObject.height;
