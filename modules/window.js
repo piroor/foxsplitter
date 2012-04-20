@@ -931,7 +931,7 @@ FoxSplitterWindow.prototype = {
 	stretch : function FSW_stretch()
 	{
 		if (!this.parent || this.stretched)
-			return;
+			return Deferred.next(function() {});
 
 		var root = this.root;
 		var x = root.x;
@@ -944,30 +944,34 @@ FoxSplitterWindow.prototype = {
 		var currentWidth = this.width;
 		var currentHeight = this.height;
 
-		this.moveTo(x, y);
-		this.resizeTo(width, height);
+		var self = this;
+		return this.moveTo(x, y)
+			.next(function() {
+				return self.resizeTo(width, height);
+			})
+			.next(function() {
+				self.stretched = true;
+				self.stretchedOffsetX = currentX - x;
+				self.stretchedOffsetY = currentY - y;
+				self.stretchedOffsetWidth = currentWidth - width;
+				self.stretchedOffsetHeight = currentHeight - height;
+				self.documentElement.setAttribute(self.STRETCHED, true);
 
-		this.stretched = true;
-		this.stretchedOffsetX = currentX - x;
-		this.stretchedOffsetY = currentY - y;
-		this.stretchedOffsetWidth = currentWidth - width;
-		this.stretchedOffsetHeight = currentHeight - height;
-		this.documentElement.setAttribute(this.STRETCHED, true);
-
-		this.clearGroupedAppearance();
-		this.saveState();
+				self.clearGroupedAppearance();
+				self.saveState();
+			});
 	},
 
 	shrink : function FSW_shrink()
 	{
 		if (!this.parent || !this.stretched)
-			return;
+			return Deferred.next(function() {});
 
 		this.stretched = false;
 		this.documentElement.removeAttribute(this.STRETCHED);
 
 		var self = this;
-		this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
+		return this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
 			.next(function() {
 				// don't move the window yet, because it is not resized actually!
 			})
@@ -981,7 +985,7 @@ FoxSplitterWindow.prototype = {
 				delete self.stretchedOffsetWidth;
 				delete self.stretchedOffsetHeight;
 
-				self.updateGroupedAppearance();
+				self.setGroupedAppearance();
 				self.saveState();
 			});
 	},
