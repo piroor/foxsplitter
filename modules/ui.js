@@ -311,7 +311,7 @@ FoxSplitterUI.prototype = {
 				label={bundle.getString('ui.unbind.long')}
 				accesskey={bundle.getString('ui.unbind.accesskey')}
 				foxsplitter-command="unbind"/>
-			<menuseparator/>
+			<menuseparator class={this.MENU_ITEM+' setAsMainWindowSeparator'}/>
 			<menuitem class={iconicClass+'toggleStretched grouped'}
 				foxsplitter-command="toggleStretched"/>
 			<menuitem class={this.MENU_ITEM+' setAsMainWindow'}
@@ -1038,6 +1038,7 @@ FoxSplitterUI.prototype = {
 			}
 		}
 
+		var setAsMainWindowSeparator = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindowSeparator');
 		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
 		var syncScrollSeparator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
 		var syncScrollItem = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScroll');
@@ -1047,6 +1048,7 @@ FoxSplitterUI.prototype = {
 				toggleStretchedItem.setAttribute('accesskey', bundle.getString('ui.shrink.accesskey'));
 				toggleStretchedItem.setAttribute(this.TOGGLE_MODE, 'shrink');
 			}
+			if (setAsMainWindowSeparator) setAsMainWindowSeparator.setAttribute('hidden', true);
 			if (setAsMainWindowItem) setAsMainWindowItem.setAttribute('hidden', true);
 			if (syncScrollSeparator) syncScrollSeparator.setAttribute('hidden', true);
 			if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
@@ -1058,6 +1060,7 @@ FoxSplitterUI.prototype = {
 				toggleStretchedItem.setAttribute(this.TOGGLE_MODE, 'stretch');
 			}
 			if (setAsMainWindowItem) {
+				if (setAsMainWindowSeparator) setAsMainWindowSeparator.removeAttribute('hidden');
 				setAsMainWindowItem.removeAttribute('hidden');
 				if (this.owner.main)
 					setAsMainWindowItem.setAttribute('checked', true);
@@ -1068,6 +1071,9 @@ FoxSplitterUI.prototype = {
 					setAsMainWindowItem.setAttribute('disabled', true);
 				else
 					setAsMainWindowItem.removeAttribute('disabled');
+			}
+			else {
+				if (setAsMainWindowSeparator) setAsMainWindowSeparator.setAttribute('hidden', true);
 			}
 
 			if (this.syncScrollButton.inserted &&
