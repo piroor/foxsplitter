@@ -1845,13 +1845,18 @@ FoxSplitterWindow.prototype = {
 			!this._window ||
 			this.resizing ||
 			this.minimized ||
-			this.maximizing ||
-			this.stretched
+			this.maximizing
 			)
 			return;
 
 		if (this.windowState == this.STATE_MAXIMIZED && this.stillMaximizedYet)
 			return;
+
+		if (this.stretched && this.parent) {
+			this.updateLastPositionAndSize();
+			this.root.reserveResetPositionAndSize(this);
+			return;
+		}
 
 		var x = this.x;
 		var y = this.y;
