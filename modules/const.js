@@ -145,6 +145,7 @@ var exports = {
 		window-controls
 		foxsplitter-general-button
 		foxsplitter-syncScroll-button
+		foxsplitter-toggleStretched-button
 	]]>.toString()
 		.replace(/^\s+|\s+$/g, '')
 		.split(/\s+/)
