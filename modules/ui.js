@@ -220,6 +220,26 @@ FoxSplitterUI.prototype = {
 				}
 			}
 		);
+
+		this.toggleStretchedButton = ToolbarItem.create(
+			<>
+				<toolbarbutton id="foxsplitter-toggleStretched-button"
+					label={bundle.getString('ui.stretch.short')}
+					tooltiptext={bundle.getString('ui.stretch.long')}
+					class={ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM}
+					foxsplitter-command="toggleStretched"
+					foxsplitter-toggle-mode="stretch"
+					oncommand="FoxSplitter.ui.handleEvent(event);"/>
+			</>,
+			toolbar,
+			{
+				onInit : function() {
+					self.onStretchedStateChange();
+				},
+				onDestroy : function() {
+				}
+			}
+		);
 	},
 
 	_createSplitItems : function FSUI_createSplitItems(aOptions)
@@ -316,6 +336,8 @@ FoxSplitterUI.prototype = {
 		delete this.generalButton;
 		this.syncScrollButton.destroy();
 		delete this.syncScrollButton;
+		this.toggleStretchedButton.destroy();
+		delete this.toggleStretchedButton;
 	},
 
 
@@ -1005,25 +1027,35 @@ FoxSplitterUI.prototype = {
 				aItem.setAttribute('disabled', true);
 		}, this);
 
-		var toggleStretched = aPopup.querySelector('.'+this.MENU_ITEM+'.toggleStretched');
+		var toggleStretchedItem = aPopup.querySelector('.'+this.MENU_ITEM+'.toggleStretched');
+		if (toggleStretchedItem) {
+			if (this.toggleStretchedButton.inserted &&
+				this.toggleStretchedButton.node.boxObject.width) {
+				toggleStretchedItem.setAttribute('hidden', true);
+			}
+			else {
+				toggleStretchedItem.removeAttribute('hidden');
+			}
+		}
+
 		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
-		var separator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
+		var syncScrollSeparator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
 		var syncScrollItem = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScroll');
 		if (this.owner.stretched) {
-			if (toggleStretched) {
-				toggleStretched.setAttribute('label', bundle.getString('ui.shrink.long'));
-				toggleStretched.setAttribute('accesskey', bundle.getString('ui.shrink.accesskey'));
-				toggleStretched.setAttribute(this.TOGGLE_MODE, 'shrink');
+			if (toggleStretchedItem) {
+				toggleStretchedItem.setAttribute('label', bundle.getString('ui.shrink.long'));
+				toggleStretchedItem.setAttribute('accesskey', bundle.getString('ui.shrink.accesskey'));
+				toggleStretchedItem.setAttribute(this.TOGGLE_MODE, 'shrink');
 			}
 			if (setAsMainWindowItem) setAsMainWindowItem.setAttribute('hidden', true);
-			if (separator) separator.setAttribute('hidden', true);
+			if (syncScrollSeparator) syncScrollSeparator.setAttribute('hidden', true);
 			if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
 		}
 		else {
-			if (toggleStretched) {
-				toggleStretched.setAttribute('label', bundle.getString('ui.stretch.long'));
-				toggleStretched.setAttribute('accesskey', bundle.getString('ui.stretch.accesskey'));
-				toggleStretched.setAttribute(this.TOGGLE_MODE, 'stretch');
+			if (toggleStretchedItem) {
+				toggleStretchedItem.setAttribute('label', bundle.getString('ui.stretch.long'));
+				toggleStretchedItem.setAttribute('accesskey', bundle.getString('ui.stretch.accesskey'));
+				toggleStretchedItem.setAttribute(this.TOGGLE_MODE, 'stretch');
 			}
 			if (setAsMainWindowItem) {
 				setAsMainWindowItem.removeAttribute('hidden');
@@ -1040,11 +1072,11 @@ FoxSplitterUI.prototype = {
 
 			if (this.syncScrollButton.inserted &&
 				this.syncScrollButton.node.boxObject.width) {
-				if (separator) separator.setAttribute('hidden', true);
+				if (syncScrollSeparator) syncScrollSeparator.setAttribute('hidden', true);
 				if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
 			}
 			else {
-				if (separator) separator.removeAttribute('hidden');
+				if (syncScrollSeparator) syncScrollSeparator.removeAttribute('hidden');
 				if (syncScrollItem) syncScrollItem.removeAttribute('hidden');
 			}
 
@@ -1110,6 +1142,23 @@ FoxSplitterUI.prototype = {
 		else {
 			if (menuitem) menuitem.removeAttribute('checked');
 			if (button) button.removeAttribute('checked');
+		}
+	},
+
+	onStretchedStateChange : function FSUI_onStretchedStateChange()
+	{
+		var button = this.document.getElementById('foxsplitter-toggleStretched-button');
+		if (!button) return;
+
+		if (this.owner.stretched) {
+			button.setAttribute('label', bundle.getString('ui.shrink.short'));
+			button.setAttribute('tooltiptext', bundle.getString('ui.shrink.long'));
+			button.setAttribute(this.TOGGLE_MODE, 'shrink');
+		}
+		else {
+			button.setAttribute('label', bundle.getString('ui.stretch.short'));
+			button.setAttribute('tooltiptext', bundle.getString('ui.stretch.long'));
+			button.setAttribute(this.TOGGLE_MODE, 'stretch');
 		}
 	},
 

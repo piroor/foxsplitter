@@ -928,7 +928,7 @@ FoxSplitterWindow.prototype = {
 
 	stretch : function FSW_stretch()
 	{
-		if (!this.parent || this.stretched)
+		if (!this.parent || this.stretched || this.root.stretched)
 			return Deferred.next(function() {});
 
 		var root = this.root;
@@ -957,6 +957,9 @@ FoxSplitterWindow.prototype = {
 
 				self.clearGroupedAppearance();
 				self.saveState();
+
+				if (self.ui)
+					self.ui.onStretchedStateChange();
 			});
 	},
 
@@ -985,6 +988,9 @@ FoxSplitterWindow.prototype = {
 
 				self.setGroupedAppearance();
 				self.saveState();
+
+				if (self.ui)
+					self.ui.onStretchedStateChange();
 			});
 	},
 

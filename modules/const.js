@@ -259,6 +259,10 @@ var exports = {
 		}
 		#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
 		#foxsplitter-syncScroll-button[checked="true"] { -moz-image-region: rect(0 128px 16px 112px); }
+		#foxsplitter-toggleStretched-button[%TOGGLE_MODE%="stretch"]                 { -moz-image-region: rect(0 208px 16px 192px); }
+		#foxsplitter-toggleStretched-button[%TOGGLE_MODE%="stretch"][checked="true"] { -moz-image-region: rect(16px 208px 32px 192px); }
+		#foxsplitter-toggleStretched-button[%TOGGLE_MODE%="shrink"]                  { -moz-image-region: rect(0 224px 16px 208px); }
+		#foxsplitter-toggleStretched-button[%TOGGLE_MODE%="shrink"][checked="true"]  { -moz-image-region: rect(16px 224px 32px 208px); }
 
 		/* shrink appmenu button */
 		:root[%MEMBER%="true"]:not([%MAIN%="true"]):not([%STRETCHED%="true"]) #appmenu-button {
