@@ -51,7 +51,6 @@ config.setDefault(domain+'shouldAutoHideToolbox', true);
 config.setDefault(domain+'shouldAutoHideToolbox.animation.duration', 150);
 config.setDefault(domain+'shouldAutoHideToolbox.animation.delay', 300);
 config.setDefault(domain+'shouldAutoHideToolbox.collapsedHeight', 16);
-config.setDefault(domain+'shouldFixActiveWindow', true);
 config.setDefault(domain+'shouldScrollToSplitPosition', true);
 config.setDefault(domain+'shouldKeepSizeRatioOnResize', true);
 

@@ -89,10 +89,7 @@ FoxSplitterUI.prototype = {
 
 	get shouldHaveFullUI()
 	{
-		return (
-			(this.shouldFixActiveWindow ? this.owner.main : this.owner.active ) ||
-			!this.owner.parent
-		);
+		return this.owner.main || !this.owner.parent;
 	},
 
 	get shouldMinimalizeUI() { return FoxSplitterUI.shouldMinimalizeUI; },
@@ -101,8 +98,6 @@ FoxSplitterUI.prototype = {
 	set shouldAutoHideToolbox(aValue) { return FoxSplitterUI.shouldAutoHideToolbox = aValue; },
 	get shouldAutoHideTabs() { return FoxSplitterUI.shouldAutoHideTabs; },
 	set shouldAutoHideTabs(aValue) { return FoxSplitterUI.shouldAutoHideTabs = aValue; },
-	get shouldFixActiveWindow() { return FoxSplitterUI.shouldFixActiveWindow; },
-	set shouldFixActiveWindow(aValue) { return FoxSplitterUI.shouldFixActiveWindow = aValue; },
 	get hiddenUIInInactiveWindow() { return FoxSplitterUI.hiddenUIInInactiveWindow; },
 	set hiddenUIInInactiveWindow(aValue) { return FoxSplitterUI.hiddenUIInInactiveWindow = aValue; },
 	get shouldScrollToSplitPosition() { return FoxSplitterUI.shouldScrollToSplitPosition; },
@@ -1544,7 +1539,6 @@ FoxSplitterUI.instances = [];
 FoxSplitterUI.shouldMinimalizeUI = prefs.getPref(domain+'shouldMinimalizeUI');
 FoxSplitterUI.shouldAutoHideToolbox = prefs.getPref(domain+'shouldAutoHideToolbox');
 FoxSplitterUI.shouldAutoHideTabs = prefs.getPref(domain+'shouldAutoHideTabs');
-FoxSplitterUI.shouldFixActiveWindow = prefs.getPref(domain+'shouldFixActiveWindow');
 FoxSplitterUI.hiddenUIInInactiveWindow = prefs.getPref(domain+'hiddenUIInInactiveWindow');
 FoxSplitterUI.shouldScrollToSplitPosition = prefs.getPref(domain+'shouldScrollToSplitPosition');
 
@@ -1563,7 +1557,6 @@ var prefListener = {
 					case 'shouldMinimalizeUI':
 					case 'shouldAutoHideTabs':
 					*/
-					case 'shouldFixActiveWindow':
 					case 'hiddenUIInInactiveWindow':
 						FoxSplitterUI.instances.forEach(function(aUI) {
 							aUI.updateGroupedAppearance();
