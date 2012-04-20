@@ -923,7 +923,8 @@ FoxSplitterWindow.prototype = {
 		this.stretchedOffsetHeight = currentHeight - height;
 		this.documentElement.setAttribute(this.STRETCHED, true);
 
-		this.updateGroupedAppearance();
+		this.clearGroupedAppearance();
+		this.saveState();
 	},
 
 	shrink : function FSW_shrink()
@@ -950,6 +951,7 @@ FoxSplitterWindow.prototype = {
 				delete self.stretchedOffsetHeight;
 
 				self.updateGroupedAppearance();
+				self.saveState();
 			});
 	},
 
@@ -1600,14 +1602,14 @@ FoxSplitterWindow.prototype = {
 	get state()
 	{
 		return {
-			id       : this.id,
-			x        : this.x,
-			y        : this.y,
-			width    : this.width,
-			height   : this.height,
-			sibling  : (this.sibling ? this.sibling.id : null ),
-			position : this.position,
-			main     : this.mainWindow.id,
+			id        : this.id,
+			x         : this.logicalX,
+			y         : this.logicalY,
+			width     : this.logicalWidth,
+			height    : this.logicalHeight,
+			sibling   : (this.sibling ? this.sibling.id : null ),
+			position  : this.position,
+			main      : this.mainWindow.id,
 			collapsed : this.collapsed
 		};
 	},
