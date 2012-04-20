@@ -963,13 +963,18 @@ FoxSplitterWindow.prototype = {
 			});
 	},
 
-	shrink : function FSW_shrink()
+	shrink : function FSW_shrink(aSilent)
 	{
 		if (!this.parent || !this.stretched)
 			return Deferred.next(function() {});
 
 		this.stretched = false;
 		this.documentElement.removeAttribute(this.STRETCHED);
+
+		if (aSilent) {
+			this._shrinkPostProcess();
+			return Deferred.next(function() {});
+		}
 
 		var self = this;
 		return this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
@@ -981,17 +986,21 @@ FoxSplitterWindow.prototype = {
 				// we can move it.
 				self.moveTo(self.x + self.stretchedOffsetX, self.y + self.stretchedOffsetY);
 				// self.parent.resetPositionAndSize(self);
-				delete self.stretchedOffsetX;
-				delete self.stretchedOffsetY;
-				delete self.stretchedOffsetWidth;
-				delete self.stretchedOffsetHeight;
-
-				self.setGroupedAppearance();
-				self.saveState();
-
-				if (self.ui)
-					self.ui.onStretchedStateChange();
+				self._shrinkPostProcess();
 			});
+	},
+	_shrinkPostProcess : function FSW_shrinkPostProcess()
+	{
+		delete this.stretchedOffsetX;
+		delete this.stretchedOffsetY;
+		delete this.stretchedOffsetWidth;
+		delete this.stretchedOffsetHeight;
+
+		this.setGroupedAppearance();
+		this.saveState();
+
+		if (this.ui)
+			this.ui.onStretchedStateChange();
 	},
 
 
@@ -2048,6 +2057,7 @@ FoxSplitterWindow.prototype = {
 									}) :
 								null ;
 
+		var stretched = this.stretched;
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
 		return (waitMaximized || Deferred)
@@ -2076,6 +2086,10 @@ FoxSplitterWindow.prototype = {
 				self.resizing--;
 				self.positioning--;
 
+				if (stretched)
+					return self.shrink();
+			})
+			.next(function() {
 				if (root.maximized)
 					return root.restore();
 				else
@@ -2096,6 +2110,9 @@ FoxSplitterWindow.prototype = {
 			})
 			.next(function() {
 				self.maximizing--;
+
+				if (stretched)
+					return self.stretch();
 			})
 			.error(this.defaultHandleError);
 	},
