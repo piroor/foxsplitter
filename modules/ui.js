@@ -292,14 +292,8 @@ FoxSplitterUI.prototype = {
 				accesskey={bundle.getString('ui.unbind.accesskey')}
 				foxsplitter-command="unbind"/>
 			<menuseparator/>
-			<menuitem class={iconicClass+'stretch grouped'}
-				label={bundle.getString('ui.stretch.long')}
-				accesskey={bundle.getString('ui.stretch.accesskey')}
-				foxsplitter-command="stretch"/>
-			<menuitem class={iconicClass+'shrink grouped'}
-				label={bundle.getString('ui.shrink.long')}
-				accesskey={bundle.getString('ui.shrink.accesskey')}
-				foxsplitter-command="shrink"/>
+			<menuitem class={iconicClass+'toggleStretched grouped'}
+				foxsplitter-command="toggleStretched"/>
 			<menuitem class={this.MENU_ITEM+' setAsMainWindow'}
 				type="radio"
 				autoCheck="false"
@@ -951,10 +945,12 @@ FoxSplitterUI.prototype = {
 					case 'gather':
 						return owner.gatherWindows();
 
-					case 'stretch':
-						return owner.stretch();
-					case 'shrink':
-						return owner.shrink();
+					case 'toggleStretched':
+						if (owner.stretched)
+							owner.shrink();
+						else
+							owner.stretch();
+						return;
 
 					case 'unbind':
 						return owner.unbindAsIndependent();
@@ -1009,23 +1005,26 @@ FoxSplitterUI.prototype = {
 				aItem.setAttribute('disabled', true);
 		}, this);
 
-		var stretch = aPopup.querySelector('.'+this.MENU_ITEM+'.stretch');
-		var shrink = aPopup.querySelector('.'+this.MENU_ITEM+'.shrink');
+		var toggleStretched = aPopup.querySelector('.'+this.MENU_ITEM+'.toggleStretched');
 		var setAsMainWindowItem = aPopup.querySelector('.'+this.MENU_ITEM+'.setAsMainWindow');
 		var separator = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScrollSeparator');
 		var syncScrollItem = aPopup.querySelector('.'+this.MENU_ITEM+'.syncScroll');
 		if (this.owner.stretched) {
-			if (shrink) shrink.removeAttribute('hidden');
-			if (stretch) stretch.setAttribute('hidden', true);
-
+			if (toggleStretched) {
+				toggleStretched.setAttribute('label', bundle.getString('ui.shrink.long'));
+				toggleStretched.setAttribute('accesskey', bundle.getString('ui.shrink.accesskey'));
+				toggleStretched.setAttribute(this.TOGGLE_MODE, 'shrink');
+			}
 			if (setAsMainWindowItem) setAsMainWindowItem.setAttribute('hidden', true);
 			if (separator) separator.setAttribute('hidden', true);
 			if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
 		}
 		else {
-			if (shrink) shrink.setAttribute('hidden', true);
-			if (stretch) stretch.removeAttribute('hidden');
-
+			if (toggleStretched) {
+				toggleStretched.setAttribute('label', bundle.getString('ui.stretch.long'));
+				toggleStretched.setAttribute('accesskey', bundle.getString('ui.stretch.accesskey'));
+				toggleStretched.setAttribute(this.TOGGLE_MODE, 'stretch');
+			}
 			if (setAsMainWindowItem) {
 				setAsMainWindowItem.removeAttribute('hidden');
 				if (this.owner.main)
