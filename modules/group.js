@@ -57,12 +57,12 @@ FoxSplitterGroup.prototype = {
 	get x()
 	{
 		var member = this.leftMember || this.topMember;
-		return member ? member.x : 0 ;
+		return member ? member.logicalX : 0 ;
 	},
 	get y()
 	{
 		var member = this.topMember || this.leftMember;
-		return member ? member.y : 0 ;
+		return member ? member.logicalY : 0 ;
 	},
 	get width()
 	{
@@ -79,25 +79,19 @@ FoxSplitterGroup.prototype = {
 
 	get logicalX()
 	{
-		var member = this.leftMember || this.topMember;
-		return member ? member.logicalX : 0 ;
+		return this.x;
 	},
 	get logicalY()
 	{
-		var member = this.topMember || this.leftMember;
-		return member ? member.logicalY : 0 ;
+		return this.y;
 	},
 	get logicalWidth()
 	{
-		var base = this.leftMember;
-		var another = this.rightMember;
-		return base && another ? base.logicalWidth + another.logicalWidth : this.startMember.logicalWidth ;
+		return this.width;
 	},
 	get logicalHeight()
 	{
-		var base = this.topMember;
-		var another = this.bottomMember;
-		return base && another ? base.logicalHeight + another.logicalHeight : this.startMember.logicalHeight ;
+		return this.height;
 	},
 	get stretched()
 	{
@@ -151,7 +145,7 @@ FoxSplitterGroup.prototype = {
 
 	_sortWindows : function FSG_sortWindows(aA, aB)
 	{
-		return aA.y - aB.y || aA.x - aB.x;
+		return aA.logicalY - aB.logicalY || aA.logicalX - aB.logicalX;
 	},
 
 	get hasMinimizedWindow()
