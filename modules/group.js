@@ -57,39 +57,39 @@ FoxSplitterGroup.prototype = {
 	get x()
 	{
 		var member = this.leftMember || this.topMember;
-		return member ? member.logicalX : 0 ;
+		return member ? member.imaginaryX : 0 ;
 	},
 	get y()
 	{
 		var member = this.topMember || this.leftMember;
-		return member ? member.logicalY : 0 ;
+		return member ? member.imaginaryY : 0 ;
 	},
 	get width()
 	{
 		var base = this.leftMember;
 		var another = this.rightMember;
-		return base && another ? base.logicalWidth + another.logicalWidth : this.startMember.logicalWidth ;
+		return base && another ? base.imaginaryWidth + another.imaginaryWidth : this.startMember.imaginaryWidth ;
 	},
 	get height()
 	{
 		var base = this.topMember;
 		var another = this.bottomMember;
-		return base && another ? base.logicalHeight + another.logicalHeight : this.startMember.logicalHeight ;
+		return base && another ? base.imaginaryHeight + another.imaginaryHeight : this.startMember.imaginaryHeight ;
 	},
 
-	get logicalX()
+	get imaginaryX()
 	{
 		return this.x;
 	},
-	get logicalY()
+	get imaginaryY()
 	{
 		return this.y;
 	},
-	get logicalWidth()
+	get imaginaryWidth()
 	{
 		return this.width;
 	},
-	get logicalHeight()
+	get imaginaryHeight()
 	{
 		return this.height;
 	},
@@ -145,7 +145,7 @@ FoxSplitterGroup.prototype = {
 
 	_sortWindows : function FSG_sortWindows(aA, aB)
 	{
-		return aA.logicalY - aB.logicalY || aA.logicalX - aB.logicalX;
+		return aA.imaginaryY - aB.imaginaryY || aA.imaginaryX - aB.imaginaryX;
 	},
 
 	get hasMinimizedWindow()
@@ -460,23 +460,23 @@ FoxSplitterGroup.prototype = {
 
 
 			var expectedX = base.position & this.POSITION_VERTICAL ?
-							base.logicalX :
+							base.imaginaryX :
 						base.position & this.POSITION_LEFT ?
-							base.logicalX + base.logicalWidth :
-							base.logicalX - another.logicalWidth ;
+							base.imaginaryX + base.imaginaryWidth :
+							base.imaginaryX - another.imaginaryWidth ;
 			var expectedY = base.position & this.POSITION_HORIZONTAL ?
-							base.logicalY :
+							base.imaginaryY :
 						base.position & this.POSITION_TOP ?
-							base.logicalY + base.logicalHeight :
-							base.logicalY - another.logicalHeight ;
-			if (aForce || another.logicalX != expectedX || another.logicalY != expectedY)
+							base.imaginaryY + base.imaginaryHeight :
+							base.imaginaryY - another.imaginaryHeight ;
+			if (aForce || another.imaginaryX != expectedX || another.imaginaryY != expectedY)
 				another.moveTo(expectedX, expectedY);
 
 			var expectedWidth = base.position & this.POSITION_VERTICAL ?
-								base.logicalWidth : another.logicalWidth ;
+								base.imaginaryWidth : another.imaginaryWidth ;
 			var expectedHeight = base.position & this.POSITION_HORIZONTAL ?
-								base.logicalHeight : another.logicalHeight ;
-			if (aForce || another.logicalWidth != expectedWidth || another.logicalHeight != expectedHeight)
+								base.imaginaryHeight : another.imaginaryHeight ;
+			if (aForce || another.imaginaryWidth != expectedWidth || another.imaginaryHeight != expectedHeight)
 				another.resizeTo(expectedWidth, expectedHeight);
 
 			if (this.parent)
@@ -491,10 +491,10 @@ FoxSplitterGroup.prototype = {
 
 	updateLastPositionAndSize : function FSG_updateLastPositionAndSize(aNewSize)
 	{
-		this.lastX      = this.logicalX;
-		this.lastY      = this.logicalY;
-		this.lastWidth  = this.logicalWidth;
-		this.lastHeight = this.logicalHeight;
+		this.lastX      = this.imaginaryX;
+		this.lastY      = this.imaginaryY;
+		this.lastWidth  = this.imaginaryWidth;
+		this.lastHeight = this.imaginaryHeight;
 	},
 
 

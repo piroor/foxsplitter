@@ -129,19 +129,19 @@ FoxSplitterWindow.prototype = {
 		return this.window.outerHeight;
 	},
 
-	get logicalX()
+	get imaginaryX()
 	{
 		return this.stretched ? this.x + this.stretchedOffsetX : this.x ;
 	},
-	get logicalY()
+	get imaginaryY()
 	{
 		return this.stretched ? this.y + this.stretchedOffsetY : this.y ;
 	},
-	get logicalWidth()
+	get imaginaryWidth()
 	{
 		return this.stretched ? this.width + this.stretchedOffsetWidth : this.width ;
 	},
-	get logicalHeight()
+	get imaginaryHeight()
 	{
 		return this.stretched ? this.height + this.stretchedOffsetHeight : this.height ;
 	},
@@ -447,16 +447,16 @@ FoxSplitterWindow.prototype = {
 	},
 	_restorePosition : function FSW_restorePosition(aContext)
 	{
-		if (aContext.lastState.x != this.logicalX ||
-			aContext.lastState.y != this.logicalY)
+		if (aContext.lastState.x != this.imaginaryX ||
+			aContext.lastState.y != this.imaginaryY)
 			return this.moveTo(aContext.lastState.x, aContext.lastState.y);
 		else
 			return Deferred;
 	},
 	_restoreSize : function FSW_restoreSize(aContext)
 	{
-		if (aContext.lastState.width != this.logicalWidth ||
-			aContext.lastState.height != this.logicalHeight)
+		if (aContext.lastState.width != this.imaginaryWidth ||
+			aContext.lastState.height != this.imaginaryHeight)
 			return this.resizeTo(aContext.lastState.width, aContext.lastState.height);
 		else
 			return Deferred;
@@ -1028,10 +1028,10 @@ FoxSplitterWindow.prototype = {
 				return aTab._tPos >= selectedTab._tPos;
 			});
 
-		var baseX = this.logicalX;
-		var baseY = this.logicalY;
-		var totalWidth = this.logicalWidth;
-		var totalHeight = this.logicalHeight;
+		var baseX = this.imaginaryX;
+		var baseY = this.imaginaryY;
+		var totalWidth = this.imaginaryWidth;
+		var totalHeight = this.imaginaryHeight;
 
 		var maxRows, maxCols, lastMaxCols;
 		switch (aMode)
@@ -1526,10 +1526,10 @@ FoxSplitterWindow.prototype = {
 	{
 		return {
 			id        : this.id,
-			x         : this.logicalX,
-			y         : this.logicalY,
-			width     : this.logicalWidth,
-			height    : this.logicalHeight,
+			x         : this.imaginaryX,
+			y         : this.imaginaryY,
+			width     : this.imaginaryWidth,
+			height    : this.imaginaryHeight,
 			sibling   : (this.sibling ? this.sibling.id : null ),
 			position  : this.position,
 			main      : this.mainWindow.id
