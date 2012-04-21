@@ -2212,7 +2212,9 @@ FoxSplitterWindow.prototype = {
 		 * window. So, we should ignore the "possibly drop target" group
 		 * if both (A) and (B) are true.
 		 */
-		let target = this._findBindTarget(aEvent, dragInfo.position);
+		let target = (this.stretched && this.parent) ?
+						this.root._lookDownBindTarget(aEvent, dragInfo.position) :
+						this._lookUpBindTarget(aEvent, dragInfo.position);
 		if (
 			target &&
 			(target != sourceFSWindow.parent || !dragInfo.allTabs)

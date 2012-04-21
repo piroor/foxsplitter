@@ -279,36 +279,36 @@ FoxSplitterBase.prototype = {
 		var maximized = this.maximized;
 		var baseWindow = (group && group.allWindows[0] || this).window;
 		if (aPosition & this.POSITION_HORIZONTAL) {
-			y = this.y;
+			y = this.imaginaryY;
 			let baseWidth = maximized ?
-							this.width :
-							Math.min(baseWindow.screen.availWidth, this.width * this.expandFactor) ;
-			let deltaX = Math.round((baseWidth - this.width) / 2);
+							this.imaginaryWidth :
+							Math.min(baseWindow.screen.availWidth, this.imaginaryWidth * this.expandFactor) ;
+			let deltaX = Math.round((baseWidth - this.imaginaryWidth) / 2);
 			width = Math.round(baseWidth * this.newMemberFactor);
-			height = this.height;
+			height = this.imaginaryHeight;
 			if (aPosition == this.POSITION_LEFT) {
-				x = this.x - (deltaX * 2);
+				x = this.imaginaryX - (deltaX * 2);
 				base.deltaX = width - (deltaX * 2);
 			}
 			else {
-				x = this.x + baseWidth - width;
+				x = this.imaginaryX + baseWidth - width;
 			}
 			base.deltaWidth = -width + (deltaX * 2);
 		}
 		else {
-			x = this.x;
-			width = this.width;
+			x = this.imaginaryX;
+			width = this.imaginaryWidth;
 			let baseHeight = maximized ?
-							this.height :
-							Math.min(baseWindow.screen.availHeight, this.height * this.expandFactor) ;
-			let deltaY = Math.round((baseHeight - this.height) / 2);
+							this.imaginaryHeight :
+							Math.min(baseWindow.screen.availHeight, this.imaginaryHeight * this.expandFactor) ;
+			let deltaY = Math.round((baseHeight - this.imaginaryHeight) / 2);
 			height = Math.round(baseHeight * this.newMemberFactor);
 			if (aPosition == this.POSITION_TOP) {
-				y = this.y - (deltaY * 2);
+				y = this.imaginaryY - (deltaY * 2);
 				base.deltaY = height - (deltaY * 2);
 			}
 			else {
-				y = this.y + baseHeight - height;
+				y = this.imaginaryY + baseHeight - height;
 			}
 			base.deltaHeight = -height + (deltaY * 2);
 		}
@@ -321,7 +321,7 @@ FoxSplitterBase.prototype = {
 		};
 	},
 
-	_findBindTarget : function FSB_findBindTarget(aEvent, aPosition)
+	_lookUpBindTarget : function FSB_lookUpBindTarget(aEvent, aPosition)
 	{
 		var parent = this.parent;
 		if (!parent)
@@ -342,7 +342,27 @@ FoxSplitterBase.prototype = {
 				return this;
 		}
 
-		return this.parent._findBindTarget(aEvent, aPosition);
+		return this.parent._lookUpBindTarget(aEvent, aPosition);
+	},
+
+	_lookDownBindTarget : function FSB_lookDownBindTarget(aEvent, aPosition)
+	{
+		if (!this.isGroup)
+			return null;
+
+		var windows = (this.root || this).allWindows;
+		var found = null;
+		windows.some(function(aWindow) {
+			if (aEvent.screenX >= aWindow.imaginaryX &&
+				aEvent.screenY >= aWindow.imaginaryY &&
+				aEvent.screenX <= aWindow.imaginaryX + aWindow.imaginaryWidth &&
+				aEvent.screenY <= aWindow.imaginaryY + aWindow.imaginaryHeight)
+				return found = aWindow;
+			else
+				return false;
+		}, this);
+
+		return found ? found._lookUpBindTarget(aEvent, aPosition) : null ;
 	},
 
 	unbind : function FSB_unbind(aSilent) /* PUBLIC API */
@@ -537,15 +557,21 @@ FoxSplitterBase.prototype = {
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 
-		var maximized = !this.parent && !this.isGroup && this.maximized;
-		var waitRestored = maximized ?
-						this.restore() :
-						null ;
 		var self = this;
+		var maximized = !this.parent && !this.isGroup && this.maximized;
 		var lastMainWindow = (this.parent && this.root.mainWindow) || this;
-		return (waitRestored || Deferred)
+		var stretchedMember = this.parent && this.root.stretchedMember;
+		return Deferred
 				.next(function() {
-					let positionAndSize = self.calculatePositionAndSizeFor(aPosition);
+					if (stretchedMember)
+						return stretchedMember.shrink();
+				})
+				.next(function() {
+					if (maximized)
+						return self.restore();
+				})
+				.next(function() {
+					var positionAndSize = self.calculatePositionAndSizeFor(aPosition);
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {
@@ -573,6 +599,15 @@ FoxSplitterBase.prototype = {
 							});
 					self.maximize();
 					return waitMaximized || aWindow;
+				})
+				.next(function(aWindow) {
+					/*
+					if (stretchedMember)
+						return stretchedMember.stretch()
+								.next(function() { return aWindow; });
+					*/
+
+					return aWindow;
 				})
 				.error(this.defaultHandleError);
 	},
