@@ -928,7 +928,7 @@ FoxSplitterWindow.prototype = {
 
 	stretch : function FSW_stretch()
 	{
-		if (!this.parent || this.stretched || this.root.stretched)
+		if (!this.parent || this.stretched || this.root.stretchedMember)
 			return Deferred.next(function() {});
 
 		var root = this.root;
@@ -1910,7 +1910,7 @@ FoxSplitterWindow.prototype = {
 
 		this.active = true;
 
-		if (this.parent && this.root.stretched) {
+		if (this.parent && this.root.stretchedMember) {
 			FoxSplitterWindow.raising--;
 			return;
 		}
