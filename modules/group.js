@@ -68,13 +68,13 @@ FoxSplitterGroup.prototype = {
 	{
 		var base = this.leftMember;
 		var another = this.rightMember;
-		return base && another ? base.width + another.width : this.startMember.width ;
+		return base && another ? base.logicalWidth + another.logicalWidth : this.startMember.logicalWidth ;
 	},
 	get height()
 	{
 		var base = this.topMember;
 		var another = this.bottomMember;
-		return base && another ? base.height + another.height : this.startMember.height ;
+		return base && another ? base.logicalHeight + another.logicalHeight : this.startMember.logicalHeight ;
 	},
 
 	get logicalX()
