@@ -1028,10 +1028,10 @@ FoxSplitterWindow.prototype = {
 				return aTab._tPos >= selectedTab._tPos;
 			});
 
-		var baseX = this.x;
-		var baseY = this.y;
-		var totalWidth = this.width;
-		var totalHeight = this.height;
+		var baseX = this.logicalX;
+		var baseY = this.logicalY;
+		var totalWidth = this.logicalWidth;
+		var totalHeight = this.logicalHeight;
 
 		var maxRows, maxCols, lastMaxCols;
 		switch (aMode)
