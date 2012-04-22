@@ -206,7 +206,7 @@ ui.unbind.long=Unbind this window
 ui.unbind.accesskey=u
 
 ui.setAsMainWindow.short=Main Window
-ui.setAsMainWindow.long=Make this window main
+ui.setAsMainWindow.long=Set this window Main
 ui.setAsMainWindow.accesskey=m
 
 
