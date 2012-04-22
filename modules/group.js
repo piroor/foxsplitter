@@ -177,17 +177,25 @@ FoxSplitterGroup.prototype = {
 
 	get mainWindow()
 	{
+		return this.realMainWindow || this.firstWindow;
+	},
+	get realMainWindow()
+	{
 		var mainWindow = null;
-		var firstWindow = null;
 		this.members.some(function(aMember) {
-			if (!firstWindow && !aMember.isGroup)
-				firstWindow = aMember;
-
 			return aMember.isGroup ?
-					(mainWindow = aMember.mainWindow) :
+					(mainWindow = aMember.realMainWindow) :
 					aMember.main ? (mainWindow = aMember) : null ;
 		});
-		return mainWindow || firstWindow;
+		return mainWindow;
+	},
+	get firstWindow()
+	{
+		var firstWindow = null;
+		this.members.some(function(aMember) {
+			return firstWindow = aMember.isGroup ? aMember.firstWindow : aMember ;
+		});
+		return firstWindow;
 	},
 
 	get state()
