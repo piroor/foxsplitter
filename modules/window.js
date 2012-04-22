@@ -335,16 +335,12 @@ FoxSplitterWindow.prototype = {
 		this.active = true;
 		this.main = true;
 
-		var self = this;
-		(aOnInit ? this._initAfterLoad() : Deferred)
-			.next(function() {
-				// OK, it's the time to start saving any state changing!
-				self.shouldSaveState = true;
-			})
-			.wait(1) // wait for other windows...
-			.next(function() {
-				self.saveState();
+		if (aOnInit) {
+			let self = this;
+			Deferred.wait(0.1).next(function() {
+				return self._initAfterLoad();
 			});
+		}
 	},
 
 	_initAfterLoad : function FSW_initAfterLoad()
@@ -371,6 +367,15 @@ FoxSplitterWindow.prototype = {
 			event.initEvent(self.EVENT_TYPE_READY, true, false);
 			self.document.dispatchEvent(event);
 		})
+		.error(this.defaultHandleError)
+		.next(function() {
+			// OK, it's the time to start saving any state changing!
+			self.shouldSaveState = true;
+		})
+		.wait(1) // wait for other windows...
+		.next(function() {
+			self.saveState();
+		})
 		.error(this.defaultHandleError);
 	},
 
@@ -393,12 +398,7 @@ FoxSplitterWindow.prototype = {
 		if (!lastState.id)
 			return false;
 
-		if (this.id == lastState.id) {
-			this._needRestored = false;
-			this._restored = true;
-			return false;
-		}
-		else {
+		if (this.id != lastState.id) {
 			// Override the id by the old id, if it was stored.
 			this.id = lastState.id;
 		}
@@ -411,29 +411,28 @@ FoxSplitterWindow.prototype = {
 			return lastState.whole ? this._restoreMetaGroups(lastState.whole) : false ;
 		}
 
-		if (sibling.indexOf(':') < 0 || !this.groupClass) { // sibling is window - restore now!
+		var siblingInstance = this._getSiblingById(sibling);
+		if (siblingInstance)
 			return this._restoreStatePostProcess({
-				sibling   : FoxSplitterWindow.instancesById[sibling],
+				sibling   : siblingInstance,
 				lastState : lastState
 			});
-		}
 
-		let group = this.groupClass.getInstanceById(sibling);
-		if (group) { // the sibling group is already restored - restore now!
-			return this._restoreStatePostProcess({
-				sibling   : group,
-				lastState : lastState
-			});
-		}
-
-		// the sibling group is not restored yet, so wait its restoration
+		// the sibling is not restored yet, so wait its restoration
 		var deferred = new Deferred();
 		this._restoringContext = {
-			siblingGroupId : sibling,
-			lastState      : lastState,
-			deferred       : deferred
+			siblingId : sibling,
+			lastState : lastState,
+			deferred  : deferred
 		};
 		return deferred;
+	},
+	_getSiblingById : function FSB_getSiblingById(aId)
+	{
+		return (
+			(this.memberClass && this.memberClass.instancesById[aId]) ||
+			(this.groupClass && this.groupClass.getInstanceById(aId))
+		);
 	},
 	_restoreStatePostProcess : function FSW_restoreStatePostProcess(aContext)
 	{
@@ -465,11 +464,10 @@ FoxSplitterWindow.prototype = {
 	_restoreGroup : function FSW_restoreGroup(aContext)
 	{
 		aContext = aContext || {};
-		if (aContext.siblingGroupId) {
-			let group = this.groupClass.getInstanceById(aContext.siblingGroupId);
-			if (group)
-				aContext.sibling = group;
-			else // the sibling group is not restored yet...
+		if (aContext.siblingId) {
+			aContext.sibling = this._getSiblingById(aContext.siblingId);
+			// the sibling is not restored yet...
+			if (!aContext.sibling)
 				return aContext.deferred;
 		}
 
@@ -521,9 +519,8 @@ FoxSplitterWindow.prototype = {
 	// So, we have to restore them after all window-groups are restored.
 	_restoreMetaGroups : function FSW_restoreMetaGroups(aGroupState)
 	{
-		if (!aGroupState || typeof aGroupState != 'object' || !aGroupState.members) {
+		if (!aGroupState || typeof aGroupState != 'object' || !aGroupState.members)
 			return Deferred.next(function() {});
-		}
 
 		var self = this;
 		var members = aGroupState.members;
