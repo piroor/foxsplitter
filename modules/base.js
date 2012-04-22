@@ -1057,6 +1057,40 @@ FoxSplitterBase.prototype = {
 	{
 		var message = aMessage ? aMessage+'\n' : '' ;
 		dump(message+aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
+	},
+
+	debug : true,
+	log : function FSB_log(aMessage)
+	{
+		if (!this._log) this._log = '';
+
+		var now = new Date();
+		var timestamp = now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+' '+('00' + now.getMilliseconds().toString()).slice(-3);
+		this._log += timestamp+' '+aMessage;
+
+		if (!this.debug) return;
+
+		if (this.isGroup) {
+			dump(aMessage);
+		}
+		else {
+			let self = this;
+			this.window.setTimeout(function() {
+				var header = 'data:text/plain;charset=UTF-8,'+encodeURIComponent('[logger]\n');
+				var b = self.window.gBrowser;
+				var logger = self._loggerTab;
+				if (!logger || !logger.parentNode) {
+					b.selectedTab = self._loggerTab = logger = b.addTab();
+					logger.style.backgroundColor = 'red';
+				}
+				Array.forEach(b.tabContainer.childNodes, function(aTab) {
+					if (aTab.linkedBrowser.currentURI.spec.indexOf(header) == 0)
+						b.removeTab(aTab);
+				});
+				logger.linkedBrowser.stop();
+				logger.linkedBrowser.loadURI(header+encodeURIComponent(self._log));
+			}, 500);
+		}
 	}
 };
 
