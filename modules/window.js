@@ -1543,6 +1543,7 @@ FoxSplitterWindow.prototype = {
 
 		var state = this.state;
 		state = JSON.stringify(state);
+		state.whole = this.parent ? this.root.state : null ;
 		this.setWindowValue(this.STATE, state);
 	},
 	shouldSaveState : false,

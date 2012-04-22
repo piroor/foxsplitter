@@ -188,20 +188,20 @@ FoxSplitterGroup.prototype = {
 
 	get state()
 	{
-		var self = {
+		var state = {
 				id       : this.id,
 				position : this.position ? this.positionName[this.position] : null ,
 				members  : {}
 			};
 		var top = this.topMember;
-		if (top) self.members.top = top.state;
+		if (top) state.members.top = top.isGroup ? top.state : top.id ;
 		var left = this.leftMember;
-		if (left) self.members.left = left.state;
+		if (left) state.members.left = left.isGroup ? left.state : left.id ;
 		var bottom = this.bottomMember;
-		if (bottom) self.members.bottom = bottom.state;
+		if (bottom) state.members.bottom = bottom.isGroup ? bottom.state : bottom.id ;
 		var right = this.rightMember;
-		if (right) self.members.right = right.state;
-		return self;
+		if (right) state.members.right = right.isGroup ? right.state : right.id ;
+		return state;
 	},
 
 
