@@ -138,7 +138,7 @@ FoxSplitterBase.prototype = {
 		return new this.groupClass();
 	},
 
-	bindWith : function FSB_bindWith(aSibling, aOptions) /* PUBLIC API */
+	bindTo : function FSB_bindTo(aSibling, aOptions) /* PUBLIC API */
 	{
 		aOptions = aOptions || {};
 
@@ -156,7 +156,7 @@ FoxSplitterBase.prototype = {
 		if (!this.isGroup && this.stretched) {
 			let self = this;
 			return this.shrink().next(function() {
-					self.bindWith(aSibling, aOptions);
+					self.bindTo(aSibling, aOptions);
 				});
 		}
 
@@ -250,6 +250,10 @@ FoxSplitterBase.prototype = {
 			deferreds.length ?
 				deferreds[0] :
 				Deferred.next(function() {}) ;
+	},
+	bindWith : function FSB_bindWith(aSibling, aOptions) /* PUBLIC API, for backward compatibility */
+	{
+		return this.bindTo(aSibling, aOptions);
 	},
 
 	_initPositionAndSize : function FSB_initPositionAndSize()
@@ -588,7 +592,7 @@ FoxSplitterBase.prototype = {
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {
-					return aWindow.FoxSplitter.bindWith(self, {
+					return aWindow.FoxSplitter.bindTo(self, {
 								position   : aPosition,
 								mainWindow : lastMainWindow
 							})
@@ -766,7 +770,7 @@ FoxSplitterBase.prototype = {
 	{
 		if (aDOMWindow.FoxSplitter != this) {
 			let lastMainWindow = this.mainWindow || this;
-			return aDOMWindow.FoxSplitter.bindWith(this, {
+			return aDOMWindow.FoxSplitter.bindTo(this, {
 						position   : aPosition,
 						mainWindow : lastMainWindow
 					})

@@ -488,7 +488,7 @@ FoxSplitterWindow.prototype = {
 			return this._restoreMetaGroups(lastState.whole);
 		}
 
-		this.bindWith(sibling, {
+		this.bindTo(sibling, {
 			position   : lastState.position,
 			silent     : true,
 			mainWindow : this
@@ -565,14 +565,14 @@ FoxSplitterWindow.prototype = {
 				bottom = bottom && self.groupClass.getInstanceById(typeof bottom == 'string' ? bottom : bottom.id);
 
 				if (left && !left.parent && right && !right.parent) {
-					right.bindWith(left, {
+					right.bindTo(left, {
 						position   : self.POSITION_RIGHT,
 						silent     : true,
 						mainWindow : mainWindow
 					});
 				}
 				else if (top && !top.parent && bottom && !bottom.parent) {
-					bottom.bindWith(top, {
+					bottom.bindTo(top, {
 						position   : self.POSITION_BOTTOM,
 						silent     : true,
 						mainWindow : mainWindow
@@ -1204,7 +1204,7 @@ FoxSplitterWindow.prototype = {
 
 					beforeYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : beforeYTiles[aIndex-1];
-						aTile.FSWindow.bindWith(base, {
+						aTile.FSWindow.bindTo(base, {
 							position   : self.POSITION_TOP,
 							silent     : true,
 							mainWindow : self
@@ -1212,7 +1212,7 @@ FoxSplitterWindow.prototype = {
 					});
 					beforeXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.bindWith(row[aTile.col+1].FSWindow, {
+						aTile.FSWindow.bindTo(row[aTile.col+1].FSWindow, {
 							position   : self.POSITION_LEFT,
 							silent     : true,
 							mainWindow : self
@@ -1221,7 +1221,7 @@ FoxSplitterWindow.prototype = {
 
 					afterYTiles.forEach(function(aTile, aIndex) {
 						var base = !aIndex ? self : afterYTiles[aIndex-1];
-						aTile.FSWindow.bindWith(base, {
+						aTile.FSWindow.bindTo(base, {
 							position   : self.POSITION_BOTTOM,
 							silent     : true,
 							mainWindow : self
@@ -1229,7 +1229,7 @@ FoxSplitterWindow.prototype = {
 					});
 					afterXTiles.forEach(function(aTile) {
 						var row = rows[aTile.row]
-						aTile.FSWindow.bindWith(row[aTile.col-1].FSWindow, {
+						aTile.FSWindow.bindTo(row[aTile.col-1].FSWindow, {
 							position   : self.POSITION_RIGHT,
 							silent     : true,
 							mainWindow : self
