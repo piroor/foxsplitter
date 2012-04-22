@@ -1066,7 +1066,7 @@ FoxSplitterBase.prototype = {
 		var now = new Date();
 		var timestamp = now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+' '+('00' + now.getMilliseconds().toString()).slice(-3);
 		aMessage = timestamp+' '+aMessage;
-		if (/\n$/.test(aMessage))
+		if (!/\n$/.test(aMessage))
 			aMessage += '\n';
 
 		if (!this.debug) return;
