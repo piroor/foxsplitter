@@ -398,7 +398,12 @@ FoxSplitterWindow.prototype = {
 		if (!lastState.id)
 			return false;
 
-		if (this.id != lastState.id) {
+		if (this.id == lastState.id) {
+			this._needRestored = false;
+			this._restored = true;
+			return false;
+		}
+		else {
 			// Override the id by the old id, if it was stored.
 			this.id = lastState.id;
 		}
