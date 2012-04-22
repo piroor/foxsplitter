@@ -1010,6 +1010,8 @@ FoxSplitterUI.prototype = {
 	},
 	_updateGeneralPopup : function FSUI_updateGeneralPopup(aPopup)
 	{
+		var shouldHideMenuItemsByToolbarButtons = aPopup.id == 'foxsplitter-general-button-popup';
+
 		var tabsItems = aPopup.querySelectorAll('.'+this.MENU_ITEM+'.tabs');
 		var multipleTabs = this.owner.visibleTabs.length > 1;
 		Array.forEach(tabsItems, function(aItem) {
@@ -1029,8 +1031,11 @@ FoxSplitterUI.prototype = {
 
 		var toggleStretchedItem = aPopup.querySelector('.'+this.MENU_ITEM+'.toggleStretched');
 		if (toggleStretchedItem) {
-			if (this.toggleStretchedButton.inserted &&
-				this.toggleStretchedButton.node.boxObject.width) {
+			if (
+				shouldHideMenuItemsByToolbarButtons &&
+				this.toggleStretchedButton.inserted &&
+				(this.toggleStretchedButton.node.boxObject.width || !this.parent)
+				) {
 				toggleStretchedItem.setAttribute('hidden', true);
 			}
 			else {
@@ -1076,8 +1081,11 @@ FoxSplitterUI.prototype = {
 				if (setAsMainWindowSeparator) setAsMainWindowSeparator.setAttribute('hidden', true);
 			}
 
-			if (this.syncScrollButton.inserted &&
-				this.syncScrollButton.node.boxObject.width) {
+			if (
+				shouldHideMenuItemsByToolbarButtons &&
+				this.syncScrollButton.inserted &&
+				(this.syncScrollButton.node.boxObject.width || !this.parent)
+				) {
 				if (syncScrollSeparator) syncScrollSeparator.setAttribute('hidden', true);
 				if (syncScrollItem) syncScrollItem.setAttribute('hidden', true);
 			}
