@@ -289,7 +289,7 @@ FoxSplitterBase.prototype = {
 					});
 	},
 
-	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition)
+	calculatePositionAndSizeFor : function FSB_calculatePositionAndSizeFor(aPosition, aSimulate)
 	{
 		var x, y, width, height;
 		var base = {
@@ -349,18 +349,19 @@ FoxSplitterBase.prototype = {
 			base.deltaWidth = -width + (deltaX * 2);
 
 			if (currentScreen) {
+				let left = Math.min(x, root.x + base.deltaX);
+				let right = Math.max(x + width, root.x + root.width + base.deltaWidth + base.deltaX);
+				let minX = screenAvailLeft;
+				let maxX = screenAvailLeft + screenAvailWidth;
 				if (aPosition == this.POSITION_LEFT) {
-					let left = Math.min(x, root.x + base.deltaX);
-					if (left < screenAvailLeft)
-						base.deltaX += screenAvailLeft - left;
+					if (left < minX) base.deltaX += minX - left;
 				}
 				else {
-					let right = Math.max(x + width, root.x + root.width + base.deltaWidth);
-					let maxRight = screenAvailLeft + screenAvailWidth;
-					if (right > maxRight)
-						base.deltaX -= right - maxRight;
+					if (right > maxX) base.deltaX -= right - maxX;
 				}
 			}
+			let wholeWidth = root.width + base.deltaWidth + (aSimulate ? width : 0 );
+			if (wholeWidth > screenAvailWidth) width -= wholeWidth - screenAvailWidth;
 		}
 		else {
 			x = this.imaginaryX;
@@ -380,18 +381,19 @@ FoxSplitterBase.prototype = {
 			base.deltaHeight = -height + (deltaY * 2);
 
 			if (currentScreen) {
+				let top = Math.min(y, root.y + base.deltaY);
+				let bottom = Math.max(y + height, root.y + root.height + base.deltaHeight + base.deltaY);
+				let minY = screenAvailTop;
+				let maxY = screenAvailTop + screenAvailHeight;
 				if (aPosition == this.POSITION_TOP) {
-					let top = Math.min(y, root.y + base.deltaY);
-					if (top < screenAvailTop)
-						base.deltaY += screenAvailTop - top;
+					if (top < minY) base.deltaY += minY - top;
 				}
 				else {
-					let bottom = Math.max(y + height, root.y + root.height + base.deltaHeight);
-					let maxBottom = screenAvailTop + screenAvailHeight;
-					if (bottom > maxBottom)
-						base.deltaY -= bottom - maxBottom;
+					if (bottom > maxY) base.deltaY -= bottom - maxY;
 				}
 			}
+			let wholeHeight = root.height + base.deltaHeight + (aSimulate ? height : 0 );
+			if (wholeHeight > screenAvailHeight) height -= wholeHeight - screenAvailHeight;
 		}
 		return {
 			x      : x,
@@ -652,7 +654,7 @@ FoxSplitterBase.prototype = {
 						return self.restore();
 				})
 				.next(function() {
-					var positionAndSize = self.calculatePositionAndSizeFor(aPosition);
+					var positionAndSize = self.calculatePositionAndSizeFor(aPosition, true);
 					return self._openWindow(first, positionAndSize)
 				})
 				.next(function(aWindow) {
