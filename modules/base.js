@@ -159,6 +159,12 @@ FoxSplitterBase.prototype = {
 					self.bindTo(aSibling, aOptions);
 				});
 		}
+		else if (!aSibling.isGroup && aSibling.stretched) {
+			let self = this;
+			return aSibling.shrink().next(function() {
+					self.bindTo(aSibling, aOptions);
+				});
+		}
 
 		this.binding++;
 
