@@ -301,11 +301,41 @@ FoxSplitterBase.prototype = {
 		var group = (this.isGroup && this || this.root);
 		var maximized = this.maximized;
 		var baseWindow = (group && group.allWindows[0] || this).window;
+
+		var currentScreen;
+		var screenLeft   = {},
+			screenTop    = {},
+			screenWidth  = {},
+			screenHeight = {},
+			screenAvailLeft   = {},
+			screenAvailTop    = {},
+			screenAvailWidth  = { value : baseWindow.screen.availWidth },
+			screenAvailHeight = { value : baseWindow.screen.availHeight };
+		try {
+			currentScreen = Cc['@mozilla.org/gfx/screenmanager;1']
+							.getService(Ci.nsIScreenManager)
+							.screenForRect(this.imaginaryX, this.imaginaryY, this.imaginaryWidth, this.imaginaryHeight);
+			currentScreen.GetRect(screenLeft, screenTop, screenWidth, screenHeight);
+			currentScreen.GetAvailRect(screenAvailLeft, screenAvailTop, screenAvailWidth, screenAvailHeight);
+		}
+		catch(e) {
+			dump(e+'\n');
+		}
+		screenLeft   = screenLeft.value;
+		screenTop    = screenTop.value;
+		screenWidth  = screenWidth.value;
+		screenHeight = screenHeight.value;
+		screenAvailLeft   = screenAvailLeft.value;
+		screenAvailTop    = screenAvailTop.value;
+		screenAvailWidth  = screenAvailWidth.value;
+		screenAvailHeight = screenAvailHeight.value;
+
+		var root = this.root || this;
 		if (aPosition & this.POSITION_HORIZONTAL) {
 			y = this.imaginaryY;
 			let baseWidth = maximized ?
 							this.imaginaryWidth :
-							Math.min(baseWindow.screen.availWidth, this.imaginaryWidth * this.expandFactor) ;
+							Math.min(screenAvailWidth, this.imaginaryWidth * this.expandFactor) ;
 			let deltaX = Math.round((baseWidth - this.imaginaryWidth) / 2);
 			width = Math.round(baseWidth * this.newMemberFactor);
 			height = this.imaginaryHeight;
@@ -317,13 +347,27 @@ FoxSplitterBase.prototype = {
 				x = this.imaginaryX + baseWidth - width;
 			}
 			base.deltaWidth = -width + (deltaX * 2);
+
+			if (currentScreen) {
+				if (aPosition == this.POSITION_LEFT) {
+					let left = Math.min(x, root.x + base.deltaX);
+					if (left < screenAvailLeft)
+						base.deltaX += screenAvailLeft - left;
+				}
+				else {
+					let right = Math.max(x + width, root.x + root.width + base.deltaWidth);
+					let maxRight = screenAvailLeft + screenAvailWidth;
+					if (right > maxRight)
+						base.deltaX -= right - maxRight;
+				}
+			}
 		}
 		else {
 			x = this.imaginaryX;
 			width = this.imaginaryWidth;
 			let baseHeight = maximized ?
 							this.imaginaryHeight :
-							Math.min(baseWindow.screen.availHeight, this.imaginaryHeight * this.expandFactor) ;
+							Math.min(screenAvailHeight, this.imaginaryHeight * this.expandFactor) ;
 			let deltaY = Math.round((baseHeight - this.imaginaryHeight) / 2);
 			height = Math.round(baseHeight * this.newMemberFactor);
 			if (aPosition == this.POSITION_TOP) {
@@ -334,6 +378,20 @@ FoxSplitterBase.prototype = {
 				y = this.imaginaryY + baseHeight - height;
 			}
 			base.deltaHeight = -height + (deltaY * 2);
+
+			if (currentScreen) {
+				if (aPosition == this.POSITION_TOP) {
+					let top = Math.min(y, root.y + base.deltaY);
+					if (top < screenAvailTop)
+						base.deltaY += screenAvailTop - top;
+				}
+				else {
+					let bottom = Math.max(y + height, root.y + root.height + base.deltaHeight);
+					let maxBottom = screenAvailTop + screenAvailHeight;
+					if (bottom > maxBottom)
+						base.deltaY -= bottom - maxBottom;
+				}
+			}
 		}
 		return {
 			x      : x,
