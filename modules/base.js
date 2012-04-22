@@ -1062,11 +1062,12 @@ FoxSplitterBase.prototype = {
 	debug : true,
 	log : function FSB_log(aMessage)
 	{
-		if (!this._log) this._log = '';
 
 		var now = new Date();
 		var timestamp = now.getHours()+':'+now.getMinutes()+':'+now.getSeconds()+' '+('00' + now.getMilliseconds().toString()).slice(-3);
-		this._log += timestamp+' '+aMessage;
+		aMessage = timestamp+' '+aMessage;
+		if (/\n$/.test(aMessage))
+			aMessage += '\n';
 
 		if (!this.debug) return;
 
@@ -1074,6 +1075,9 @@ FoxSplitterBase.prototype = {
 			dump(aMessage);
 		}
 		else {
+			if (!this._log) this._log = '';
+			this._log += aMessage;
+
 			let self = this;
 			this.window.setTimeout(function() {
 				var header = 'data:text/plain;charset=UTF-8,'+encodeURIComponent('[logger]\n');
@@ -1084,11 +1088,17 @@ FoxSplitterBase.prototype = {
 					logger.style.backgroundColor = 'red';
 				}
 				Array.forEach(b.tabContainer.childNodes, function(aTab) {
-					if (aTab.linkedBrowser.currentURI.spec.indexOf(header) == 0)
+					if (aTab.linkedBrowser &&
+						aTab.linkedBrowser.currentURI.spec.indexOf(header) == 0)
 						b.removeTab(aTab);
 				});
-				logger.linkedBrowser.stop();
-				logger.linkedBrowser.loadURI(header+encodeURIComponent(self._log));
+				try {
+					logger.linkedBrowser.stop();
+					logger.linkedBrowser.loadURI(header+encodeURIComponent(self._log));
+				}
+				catch(e) {
+					dump(aMessage);
+				}
 			}, 500);
 		}
 	}
