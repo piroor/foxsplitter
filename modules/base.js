@@ -166,8 +166,8 @@ FoxSplitterBase.prototype = {
 
 		mainWindow = (
 			mainWindow ||
-			aSibling.main && aSibling.root.mainWindow ||
-			this.main && this.root.mainWindow
+			aSibling.main && aSibling.parent && aSibling.root.mainWindow ||
+			this.main && this.parent && this.root.mainWindow
 		);
 
 		if (this.parent)
@@ -225,10 +225,23 @@ FoxSplitterBase.prototype = {
 			}));
 		}
 
-		if (mainWindow)
-			mainWindow.main = true;
+		if (mainWindow && typeof mainWindow == 'string')
+			mainWindow = this.memberClass.instancesById[mainWindow];
+		if (mainWindow) {
+			// if the specified main is not a member of this group, then fall back to the existing main.
+			if (!this.root.allWindows.some(function(aFSWindow) {
+					if (aFSWindow == mainWindow) {
+						return mainWindow.main = true;
+					}
+					else
+						return false;
+				}))
+				this.root.mainWindow.main = true;
+		}
 		else if (!this.isGroup && this.main && aSibling.main)
 			aSibling.main = true;
+		else if (this.parent) // finally, fall back to one of existing main windows.
+			this.root.mainWindow.main = true;
 
 		this.binding--;
 

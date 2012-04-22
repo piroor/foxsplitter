@@ -405,9 +405,10 @@ FoxSplitterWindow.prototype = {
 
 		var sibling = lastState.sibling;
 		if (!sibling || this.parent) {
+			// already grouped by some reason - do not restore anymore!
 			delete this._lastState;
 			this._restored = true;
-			return false;
+			return lastState.whole ? this._restoreMetaGroups(lastState.whole) : false ;
 		}
 
 		if (sibling.indexOf(':') < 0 || !this.groupClass) { // sibling is window - restore now!
@@ -481,7 +482,7 @@ FoxSplitterWindow.prototype = {
 		if (!sibling || sibling.parent) {
 			if (aContext.deferred)
 				aContext.deferred.call(false);
-			return false;
+			return this._restoreMetaGroups(lastState.whole);
 		}
 
 		this.bindWith(sibling, {
@@ -511,11 +512,73 @@ FoxSplitterWindow.prototype = {
 		if (aContext.deferred)
 			aContext.deferred.call(true);
 
-		return true;
+		return this._restoreMetaGroups(lastState.whole);
 	},
 	_needRestored : true,
 	_restored : false,
 	_restoringContext : null,
+	// Group-groups cannot be restored by the restoration of windows.
+	// So, we have to restore them after all window-groups are restored.
+	_restoreMetaGroups : function FSW_restoreMetaGroups(aGroupState)
+	{
+		if (!aGroupState || typeof aGroupState != 'object' || !aGroupState.members) {
+			return Deferred.next(function() {});
+		}
+
+		var self = this;
+		var members = aGroupState.members;
+		var left = members.left;
+		var right = members.right;
+		var top = members.top;
+		var bottom = members.bottom;
+
+		var mainWindow = null;
+		Object.keys(members).some(function(aMember) {
+			if (aMember.members)
+				return Object.keys(aMember.members).some(arguments.callee);
+
+			var FSWindow = FoxSplitterWindow.instancesById[aMember];
+			if (FSWindow)
+				return mainWindow = FSWindow.mainWindow;
+
+			return false;
+		});
+
+		return Deferred.next(function() {
+				if (left && typeof left != 'string')
+					return self._restoreMetaGroups(left)
+				else if (top && typeof top != 'string')
+					return self._restoreMetaGroups(top);
+			})
+			.next(function() {
+				if (right && typeof right != 'string')
+					return self._restoreMetaGroups(right);
+				else if (bottom && typeof members.bottom != 'string')
+					return self._restoreMetaGroups(bottom);
+			})
+			.next(function() {
+				left = left && self.groupClass.getInstanceById(typeof left == 'string' ? left : left.id);
+				right = right && self.groupClass.getInstanceById(typeof right == 'string' ? right : right.id);
+				top = top && self.groupClass.getInstanceById(typeof top == 'string' ? top : top.id);
+				bottom = bottom && self.groupClass.getInstanceById(typeof bottom == 'string' ? bottom : bottom.id);
+
+				if (left && !left.parent && right && !right.parent) {
+					right.bindWith(left, {
+						position   : self.POSITION_RIGHT,
+						silent     : true,
+						mainWindow : mainWindow
+					});
+				}
+				else if (top && !top.parent && bottom && !bottom.parent) {
+					bottom.bindWith(top, {
+						position   : self.POSITION_BOTTOM,
+						silent     : true,
+						mainWindow : mainWindow
+					});
+				}
+			})
+			.error(this.defaultHandleError);
+	},
 
 	_continueRestoreState : function FSW_continueRestoreState()
 	{
@@ -1542,8 +1605,8 @@ FoxSplitterWindow.prototype = {
 			return;
 
 		var state = this.state;
-		state = JSON.stringify(state);
 		state.whole = this.parent ? this.root.state : null ;
+		state = JSON.stringify(state);
 		this.setWindowValue(this.STATE, state);
 	},
 	shouldSaveState : false,
