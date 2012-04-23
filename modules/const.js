@@ -41,7 +41,7 @@ const Comparator = Cc['@mozilla.org/xpcom/version-comparator;1']
 
 var exports = {
 	domain         : 'extensions.foxsplitter@piro.sakura.ne.jp.',
-	IMAGES_VERSION : 2,
+	IMAGES_VERSION : 3,
 	PREFS_VERSION  : 1,
 
 	OS         : XULAppInfo.OS,
