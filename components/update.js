@@ -91,9 +91,16 @@ FoxSplitterUpdateService.prototype = {
 	},
 	get ExtensionManager()
 	{
-		return this._ExtensionManager ||
-			(this._ExtensionManager = Cc['@mozilla.org/extensions/manager;1']
-									.getService(Ci.nsIExtensionManager));
+		if (this._ExtensionManager === undefined) {
+			try {
+				this._ExtensionManagerr = Cc['@mozilla.org/extensions/manager;1']
+											.getService(Ci.nsIExtensionManager);
+			}
+			catch(e) {
+				this._ExtensionManager = null;
+			}
+		}
+		return this._ExtensionManager;
 	},
 	get RDF()
 	{
@@ -206,6 +213,7 @@ FoxSplitterUpdateService.prototype = {
 		switch (aTopic)
 		{
 			case 'app-startup':
+			case 'profile-after-change':
 				this.ObserverService.addObserver(this, 'final-ui-startup', false);
 				return;
 
@@ -460,4 +468,7 @@ FoxSplitterUpdateService.prototype = {
 	}
 };
 
-var NSGetModule = XPCOMUtils.generateNSGetModule([FoxSplitterUpdateService]);
+if (XPCOMUtils.generateNSGetFactory)
+	var NSGetFactory = XPCOMUtils.generateNSGetFactory([FoxSplitterUpdateService]);
+else
+	var NSGetModule = XPCOMUtils.generateNSGetModule([FoxSplitterUpdateService]);

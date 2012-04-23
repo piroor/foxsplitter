@@ -25,3 +25,13 @@ skin	splitbrowser	classic/1.0	jar:chrome/splitbrowser.jar!/skin/classic/splitbro
 style	chrome://global/content/customizeToolbar.xul	chrome://splitbrowser/skin/buttons.css
 
 resource splitbrowser-modules modules/
+
+
+component	{5f905db0-7d83-11e1-b0c4-0800200c9a66}	components/update.js
+contract	@piro.sakura.ne.jp/splitbrowser/update;1	{5f905db0-7d83-11e1-b0c4-0800200c9a66}
+category	profile-after-change	FoxSplitterUpdateService	@piro.sakura.ne.jp/splitbrowser/update;1
+
+override	chrome://splitbrowser/content/splitbrowser.xul	chrome://splitbrowser/content/dummyOverlay.xul	appversion>=4.0
+override	chrome://splitbrowser/content/multipletabConfigOverlay.xul	chrome://splitbrowser/content/dummyOverlay.xul	appversion>=4.0
+override	chrome://splitbrowser/content/sanitize/sanitizeOverlay.xul	chrome://splitbrowser/content/dummyOverlay.xul	appversion>=4.0
+override	chrome://splitbrowser/content/sanitize/sanitizePrefOverlay.xul	chrome://splitbrowser/content/dummyOverlay.xul	appversion>=4.0
