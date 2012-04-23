@@ -214,7 +214,8 @@ var exports = {
 		}
 
 		.toolbarbutton-1.%TOOLBAR_ITEM%,
-		#foxsplitter-syncScroll-button {
+		#foxsplitter-syncScroll-button,
+		#foxsplitter-toggleStretched-button {
 			list-style-image: url("resource://foxsplitter-resources/modules/images/icon16.png?%IMAGES_VERSION%") !important;
 			-moz-image-region: rect(0 16px 16px 0);
 		}
