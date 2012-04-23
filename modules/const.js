@@ -160,13 +160,13 @@ var exports = {
 		:root[%CHROMEHIDDEN%~="status"] .chromeclass-status,
 		:root[%CHROMEHIDDEN%~="extrachrome"] .chromeclass-extrachrome:not(#sidebar-box),
 		:root[%CHROMEHIDDEN%~="extrachrome"] #browser > .chromeclass-extrachrome#sidebar-box, /* Don't hide floating sidebar (by Ez Sidebar) */
-		:root[%CHROMEHIDDEN%~="location"] .chromeclass-location,
-		:root[%CHROMEHIDDEN%~="location"][chromehidden~="toolbar"] .chromeclass-toolbar,
-		:root[%CHROMEHIDDEN%~="toolbar"] .chromeclass-toolbar-additional,
-		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarseparator,
-		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar[customizable="true"] toolbarspring,
-		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS%,
-		:root[%CHROMEHIDDEN%~="extra-toolbars"] toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
+		:root[%CHROMEHIDDEN%~="location"] toolbox:not([customizing="true"]) .chromeclass-location,
+		:root[%CHROMEHIDDEN%~="location"][chromehidden~="toolbar"] toolbox:not([customizing="true"]) .chromeclass-toolbar,
+		:root[%CHROMEHIDDEN%~="toolbar"] toolbox:not([customizing="true"]) .chromeclass-toolbar-additional,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbox:not([customizing="true"]) toolbar[customizable="true"] toolbarseparator,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbox:not([customizing="true"]) toolbar[customizable="true"] toolbarspring,
+		:root[%CHROMEHIDDEN%~="toolbar-non-navigation-items"] toolbox:not([customizing="true"]) toolbar#nav-bar > *%NON_NAVIGATION_ITEM_CLASS%,
+		:root[%CHROMEHIDDEN%~="extra-toolbars"] toolbox:not([customizing="true"]) toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
 			visibility: collapse;
 			-moz-user-focus: none;
 		}

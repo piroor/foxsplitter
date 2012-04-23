@@ -1541,7 +1541,7 @@ FoxSplitterUI.prototype = {
 		var duration = prefs.getPref(domain+'shouldAutoHideToolbox.animation.duration');
 		var delay = prefs.getPref(domain+'shouldAutoHideToolbox.animation.delay');
 		this._autoHideToolboxStyleSheet = this.resolveSymbols(<![CDATA[
-			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox {
+			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not([customizing="true"]) {
 				margin-bottom: -%MARGIN_BOTTOM%px;
 				max-height: %HEIGHT%px;
 				overflow: hidden;
@@ -1551,7 +1551,7 @@ FoxSplitterUI.prototype = {
 				-moz-transition: margin-bottom ease %DURATION%s %DELAY%s,
 				                 max-height ease %DURATION%s %DELAY%s;
 			}
-			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not(:hover) {
+			:root[%MEMBER%="true"]:not([%MAIN%="true"]) #navigator-toolbox:not([customizing="true"]):not(:hover)  {
 				margin-bottom: 0 !important;
 				max-height: %COLLAPSED_HEIGHT%px;
 			}
