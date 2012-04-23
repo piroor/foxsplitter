@@ -5,7 +5,7 @@
   <RDF:Description RDF:about="urn:mozilla:install-manifest"
                    em:id="{29c4afe1-db19-4298-8785-fcc94d1d6c1d}"
                    em:name="Fox Splitter"
-                   em:version="0.6.2009050101"
+                   em:version="0.6.2012042301"
                    em:creator="SHIMODA Hiroshi"
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/_splitbrowser.html.en"
