@@ -89,6 +89,38 @@ FoxSplitterUpdateService.prototype = {
 			(this._ObserverService = Cc['@mozilla.org/observer-service;1']
 									.getService(Ci.nsIObserverService));
 	},
+
+	get AddonManager()
+	{
+		if (this._AddonManager === undefined) {
+			try {
+				let ns = {};
+				Components.utils.import('resource://gre/modules/AddonManager.jsm', ns);
+				this._AddonManager = ns.AddonManager;
+			}
+			catch(e) {
+				this._AddonManager = null;
+			}
+		}
+		return this._AddonManager;
+	},
+	get XPIProvider()
+	{
+		if (this._XPIProvider === undefined) {
+			try {
+				this._XPIProvider = Components.utils.import('resource://gre/modules/XPIProvider.jsm', {});
+			}
+			catch(e) {
+				this._XPIProvider = {};
+			}
+		}
+		return this._XPIProvider;
+	},
+	get XPIDatabase()
+	{
+		return this.XPIProvider.XPIDatabase;
+	},
+
 	get ExtensionManager()
 	{
 		if (this._ExtensionManager === undefined) {
@@ -137,19 +169,7 @@ FoxSplitterUpdateService.prototype = {
 		if (this._updateURI)
 			return this._updateURI;
 
-		var res = this.RDF.GetResource('urn:mozilla:item:'+OLD_ID);
-		var uri;
-		try {
-			uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.'+OLD_ID+'.update.url')));
-		}
-		catch(e) {
-		}
-
-		if (!uri && this.getValue(this.ExtensionManager.datasource, res, 'updateURL'))
-			return null;
-
-		if (!uri)
-			uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.update.url')));
+		var uri = decodeURIComponent(escape(this.Prefs.getCharPref('extensions.update.url')));
 
 		const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 							.getService(Ci.nsIXULAppInfo)
@@ -180,6 +200,7 @@ FoxSplitterUpdateService.prototype = {
 				.replace(/%APP_LOCALE%/g, locale)
 				.replace(/%CURRENT_APP_VERSION%/g, XULAppInfo.version)
 				.replace(/%UPDATE_TYPE%/g, 32 | 64)
+				.replace(/%COMPATIBILITY_MODE%/g, !this.AddonManager || this.AddonManager.checkCompatibility ? 'normal' : 'ignore' )
 				.replace(/%(\w{3,})%/g, function(aMatched, aParameter) {
 					try {
 						return Cc[CategoryManager.getCategoryEntry('extension-update-params', aParameter)]
@@ -243,6 +264,29 @@ FoxSplitterUpdateService.prototype = {
 		if (!this.enabled)
 			return;
 
+		if (this.AddonManager)
+			this.onStartupInternal();
+		else
+			this.onStartupInternalLegacy();
+	},
+	onStartupInternal : function()
+	{
+		var self = this;
+		this.AddonManager.getAddonByID(NEW_ID, function(aAddon) {
+			if (aAddon) return;
+
+			self.XPIDatabase.getVisibleAddonForID(OLD_ID, function(aRawAddon) {
+				// Ignore custom update.rdf.
+				// We have to take care of cases only installed from AMO website.
+				if (aRawAddon.updateURL)
+					return;
+
+				self.tryFetch();
+			});
+		});
+	},
+	onStartupInternalLegacy : function()
+	{
 		var version = this.getValue(this.ExtensionManager.datasource, this.RDF.GetResource('urn:mozilla:item:'+NEW_ID), 'version');
 		if (version)
 			return;
@@ -252,6 +296,11 @@ FoxSplitterUpdateService.prototype = {
 		if (this.getValue(this.ExtensionManager.datasource, this.RDF.GetResource('urn:mozilla:item:'+OLD_ID), 'updateURL'))
 			return;
 
+		this.tryFetch();
+	},
+
+	tryFetch : function()
+	{
 		var last = parseInt(this.Prefs.getCharPref('splitbrowser.update.lastFetchedTime'));
 		var interval = this.interval - (Date.now() - last);
 		if (interval <= 0) {
@@ -302,7 +351,7 @@ FoxSplitterUpdateService.prototype = {
 
 		var lastVersion = this.Prefs.getCharPref('splitbrowser.update.lastFetchedVersion');
 		if (item.version != lastVersion) {
-			switch (this.askUpdate(item.version))
+			switch (this.askUpdate(item.version) )
 			{
 				case 0:
 					this.Prefs.setCharPref('splitbrowser.update.lastFetchedVersion', item.version);
@@ -344,6 +393,7 @@ FoxSplitterUpdateService.prototype = {
 
 			var versions = container.GetElements();
 			var foundItem;
+			var ignoreCompatibilityCheck = this.AddonManager && !this.AddonManager.checkCompatibility;
 			while (versions.hasMoreElements())
 			{
 				let versionItem = versions.getNext().QueryInterface(Ci.nsIRDFResource);
@@ -361,11 +411,11 @@ FoxSplitterUpdateService.prototype = {
 						continue;
 
 					let minVersion = this.getValue(datasource, targetApp, 'minVersion') || 0;
-					if (Comparator.compare(XULAppInfo.version, minVersion) < 0)
+					if (!ignoreCompatibilityCheck && Comparator.compare(XULAppInfo.version, minVersion) < 0)
 						continue;
 
 					let maxVersion = this.getValue(datasource, targetApp, 'maxVersion') || 0;
-					if (Comparator.compare(XULAppInfo.version, maxVersion) > 0)
+					if (!ignoreCompatibilityCheck && Comparator.compare(XULAppInfo.version, maxVersion) > 0)
 						continue;
 
 					let updateLink = this.getValue(datasource, targetApp, 'updateLink');
@@ -381,23 +431,32 @@ FoxSplitterUpdateService.prototype = {
 						continue;
 
 					let installedRes = this.RDF.GetResource('urn:mozilla:item:'+OLD_ID);
-					foundItem = {
-						id                 : NEW_ID,
-						version            : version,
-						minAppVersion      : minVersion,
-						maxAppVersion      : maxVersion,
-						installLocationKey : 'app-profile',
-						name               : this.getValue(this.ExtensionManager.datasource, installedRes, 'name'),
-						xpiURL             : updateLink,
-						xpiHash            : updateHash,
-						iconURL            : this.getValue(this.ExtensionManager.datasource, installedRes, 'iconURL'),
-						updateRDF          : aRequest.channel.URI.spec,
-						updateKey          : this.getValue(this.ExtensionManager.datasource, installedRes, 'updateKey'),
-						type               : Ci.nsIUpdateItem.TYPE_EXTENSION,
-						targetAppID        : appID
-					};
-					foundItem.objectSource = foundItem.toSource();
-					foundItem.init = function() {};
+					if (this.AddonManager) {
+						foundItem = {
+							version            : version,
+							xpiURL             : updateLink,
+							xpiHash            : updateHash
+						};
+					}
+					else {
+						foundItem = {
+							id                 : NEW_ID,
+							version            : version,
+							minAppVersion      : minVersion,
+							maxAppVersion      : maxVersion,
+							installLocationKey : 'app-profile',
+							name               : this.getValue(this.ExtensionManager.datasource, installedRes, 'name'),
+							xpiURL             : updateLink,
+							xpiHash            : updateHash,
+							iconURL            : this.getValue(this.ExtensionManager.datasource, installedRes, 'iconURL'),
+							updateRDF          : aRequest.channel.URI.spec,
+							updateKey          : this.getValue(this.ExtensionManager.datasource, installedRes, 'updateKey'),
+							type               : Ci.nsIUpdateItem.TYPE_EXTENSION,
+							targetAppID        : appID
+						};
+						foundItem.objectSource = foundItem.toSource();
+						foundItem.init = function() {};
+					}
 				}
 			}
 		}
@@ -434,6 +493,9 @@ FoxSplitterUpdateService.prototype = {
 
 	askUpdate : function(aVersion)
 	{
+		// for Firefox 4 and later, always update.
+		if (this.AddonManager) return 0;
+
 		var checked = { value : false };
 		var result = Cc['@mozilla.org/embedcomp/prompt-service;1']
 						.getService(Ci.nsIPromptService)
@@ -456,6 +518,24 @@ FoxSplitterUpdateService.prototype = {
 	},
 
 	install : function(aUpdateItem)
+	{
+		if (this.AddonManager)
+			this.installInternal(aUpdateItem);
+		else
+			this.installInternalLegacy(aUpdateItem);
+	},
+	installInternal : function(aUpdateItem)
+	{
+		this.AddonManager.getInstallForURL(
+			aUpdateItem.xpiURL,
+			function(aInstall) {
+				aInstall.install();
+			},
+			'application/x-xpinstall',
+			aUpdateItem.xpiHash
+		);
+	},
+	installInternalLegacy : function(aUpdateItem)
 	{
 		this.ExtensionManager.addDownloads([aUpdateItem], 1, null);
 		this.ExtensionManager.uninstallItem(OLD_ID);
