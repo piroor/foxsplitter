@@ -17,7 +17,7 @@
  * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
- * Contributor(s):: SHIMODA Hiroshi <piro.outsider.reflex@gmail.com>
+ * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or

@@ -14,7 +14,7 @@
 # 
 # The Original Code is the Fox Splitter (formerly Split Browser).
 # 
-# The Initial Developer of the Original Code is SHIMODA Hiroshi.
+# The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
 # Portions created by the Initial Developer are Copyright (C) 2007-2008
 # the Initial Developer. All Rights Reserved.
 # 
