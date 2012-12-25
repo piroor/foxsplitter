@@ -36,10 +36,10 @@
 <?xml-stylesheet href="chrome://global/skin/"?>
 <prefwindow id="foxsplitter-config"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	title="bundle.getString('title')">
+	title="{{ label.getString('title') }}">
 
 	<prefpane id="prefpane-general"
-		label="bundle.getString('tab.general')">
+		label="{{ label.getString('tab.general') }}">
 		<preferences>
 			<preference id="shouldDuplicateOnSplit"
 				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldDuplicateOnSplit"
@@ -56,68 +56,68 @@
 		</preferences>
 
 		<groupbox>
-			<caption label="bundle.getString('shouldDuplicateOnSplit')"/>
+			<caption label="{{ label.getString('shouldDuplicateOnSplit') }}"/>
 			<radiogroup orient="vertical"
 				preference="shouldDuplicateOnSplit">
-				<radio value="false" label="bundle.getString('shouldDuplicateOnSplit.false')"/>
-				<radio value="true" label="bundle.getString('shouldDuplicateOnSplit.true')"/>
+				<radio value="false" label="{{ label.getString('shouldDuplicateOnSplit.false') }}"/>
+				<radio value="true" label="{{ label.getString('shouldDuplicateOnSplit.true') }}"/>
 			</radiogroup>
 		</groupbox>
 		<groupbox>
-			<caption label="bundle.getString('generalButton.split.position')"/>
+			<caption label="{{ label.getString('generalButton.split.position') }}"/>
 			<radiogroup orient="horizontal"
 				preference="generalButton.split.position">
 				<!-- FoxSplitterConst.POSITION_TOP -->
 				<radio value="4"
-					label="bundle.getString('ui.split.top.short')"/>
+					label="{{ label.getString('ui.split.top.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_BOTTOM -->
 				<radio value="8"
-					label="bundle.getString('ui.split.bottom.short')"/>
+					label="{{ label.getString('ui.split.bottom.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_RIGHT -->
 				<radio value="2"
-					label="bundle.getString('ui.split.right.short')"/>
+					label="{{ label.getString('ui.split.right.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_LEFT -->
 				<radio value="1"
-					label="bundle.getString('ui.split.left.short')"/>
+					label="{{ label.getString('ui.split.left.short') }}"/>
 			</radiogroup>
 		</groupbox>
 		<groupbox>
-			<caption label="bundle.getString('appMenu.split.position')"/>
+			<caption label="{{ label.getString('appMenu.split.position') }}"/>
 			<radiogroup orient="horizontal"
 				preference="appMenu.split.position">
 				<!-- FoxSplitterConst.POSITION_TOP -->
 				<radio value="4"
-					label="bundle.getString('ui.split.top.short')"/>
+					label="{{ label.getString('ui.split.top.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_BOTTOM -->
 				<radio value="8"
-					label="bundle.getString('ui.split.bottom.short')"/>
+					label="{{ label.getString('ui.split.bottom.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_RIGHT -->
 				<radio value="2"
-					label="bundle.getString('ui.split.right.short')"/>
+					label="{{ label.getString('ui.split.right.short') }}"/>
 				<!-- FoxSplitterConst.POSITION_LEFT -->
 				<radio value="1"
-					label="bundle.getString('ui.split.left.short')"/>
+					label="{{ label.getString('ui.split.left.short') }}"/>
 			</radiogroup>
 		</groupbox>
 		<groupbox>
-			<caption label="bundle.getString('importTabsFromClosedSibling')"/>
+			<caption label="{{ label.getString('importTabsFromClosedSibling') }}"/>
 			<radiogroup orient="vertical"
 				preference="importTabsFromClosedSibling">
 				<!-- FoxSplitterConst.IMPORT_NOTHING -->
 				<radio value="0"
-					label="bundle.getString('importTabsFromClosedSibling.nothing')"/>
+					label="{{ label.getString('importTabsFromClosedSibling.nothing') }}"/>
 				<!-- FoxSplitterConst.IMPORT_ONLY_HIDDEN -->
 				<radio value="2"
-					label="bundle.getString('importTabsFromClosedSibling.hidden')"/>
+					label="{{ label.getString('importTabsFromClosedSibling.hidden') }}"/>
 				<!-- FoxSplitterConst.IMPORT_ALL -->
 				<radio value="1"
-					label="bundle.getString('importTabsFromClosedSibling.all')"/>
+					label="{{ label.getString('importTabsFromClosedSibling.all') }}"/>
 			</radiogroup>
 		</groupbox>
 	</prefpane>
 
 	<prefpane id="prefpane-drag"
-		label="bundle.getString('tab.drag')">
+		label="{{ label.getString('tab.drag') }}">
 		<preferences>
 			<preference id="shouldDuplicateOnDrop"
 				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldDuplicateOnDrop"
@@ -136,15 +136,15 @@
 				type="bool"/>
 		</preferences>
 		<groupbox>
-			<caption label="bundle.getString('shouldDuplicateOnDrop')"/>
+			<caption label="{{ label.getString('shouldDuplicateOnDrop') }}"/>
 			<radiogroup orient="vertical"
 				preference="shouldDuplicateOnDrop">
-				<radio value="false" label="bundle.getString('shouldDuplicateOnDrop.false')"/>
-				<radio value="true" label="bundle.getString('shouldDuplicateOnDrop.true')"/>
+				<radio value="false" label="{{ label.getString('shouldDuplicateOnDrop.false') }}"/>
+				<radio value="true" label="{{ label.getString('shouldDuplicateOnDrop.true') }}"/>
 			</radiogroup>
 		</groupbox>
 		<hbox align="center">
-			<label value="bundle.getString('dropZoneSize.before')"
+			<label value="{{ label.getString('dropZoneSize.before') }}"
 				control="dropZoneSize-textbox"/>
 			<textbox id="dropZoneSize-textbox"
 				preference="dropZoneSize"
@@ -152,11 +152,11 @@
 				size="3"
 				min="0"
 				increment="1"/>
-			<label value="bundle.getString('dropZoneSize.after')"
+			<label value="{{ label.getString('dropZoneSize.after') }}"
 				control="dropZoneSize-textbox"/>
 		</hbox>
 		<hbox align="center">
-			<label value="bundle.getString('acceptDropDelay.before')"
+			<label value="{{ label.getString('acceptDropDelay.before') }}"
 				control="acceptDropDelay-textbox"/>
 			<textbox id="acceptDropDelay-textbox"
 				preference="acceptDropDelay"
@@ -164,17 +164,17 @@
 				size="3"
 				min="0"
 				increment="1"/>
-			<label value="bundle.getString('acceptDropDelay.after')"
+			<label value="{{ label.getString('acceptDropDelay.after') }}"
 				control="acceptDropDelay-textbox"/>
 		</hbox>
-		<checkbox label="bundle.getString('handleDragWithShiftKey')"
+		<checkbox label="{{ label.getString('handleDragWithShiftKey') }}"
 			preference="handleDragWithShiftKey"/>
-		<checkbox label="bundle.getString('draggableAppButton')"
+		<checkbox label="{{ label.getString('draggableAppButton') }}"
 			preference="draggableAppButton"/>
 	</prefpane>
 
 	<prefpane id="prefpane-appearance"
-		label="bundle.getString('tab.appearance')"
+		label="{{ label.getString('tab.appearance') }}"
 		onpaneload="inithiddenUIInMemberWindowChecks();">
 		<preferences>
 			<preference id="shouldMinimalizeUI"
@@ -191,50 +191,50 @@
 				type="int"/>
 		</preferences>
 
-		<checkbox label="bundle.getString('shouldMinimalizeUI')"
+		<checkbox label="{{ label.getString('shouldMinimalizeUI') }}"
 			preference="shouldMinimalizeUI"/>
-		<checkbox label="bundle.getString('shouldAutoHideToolbox')"
+		<checkbox label="{{ label.getString('shouldAutoHideToolbox') }}"
 			preference="shouldAutoHideToolbox"/>
-		<checkbox label="bundle.getString('shouldAutoHideTabs')"
+		<checkbox label="{{ label.getString('shouldAutoHideTabs') }}"
 			id="shouldAutoHideTabs-checkbox"
 			preference="shouldAutoHideTabs"/>
 		<hbox>
 			<spacer style="width:2em;"/>
-			<label value="bundle.getString('shouldAutoHideTabs.note')"
+			<label value="{{ label.getString('shouldAutoHideTabs.note') }}"
 				control="shouldAutoHideTabs-checkbox"/>
 		</hbox>
 		<groupbox id="updatehiddenUIInMemberWindow-groupbox"
 			orient="vertical"
 			oncommand="onChangehiddenUIInMemberWindow()">
-			<caption label="bundle.getString('hiddenUIInMemberWindow')"/>
-			<description value="bundle.getString('hiddenUIInMemberWindow.note')"/>
+			<caption label="{{ label.getString('hiddenUIInMemberWindow') }}"/>
+			<description value="{{ label.getString('hiddenUIInMemberWindow.note') }}"/>
 			<hbox>
 				<vbox>
 					<!-- FoxSplitterConst.HIDE_MENUBAR -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.menubar')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.menubar') }}"
 						value="1"/>
 					<!-- FoxSplitterConst.HIDE_TOOLBAR -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.toolbar')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.toolbar') }}"
 						value="2"/>
 					<!-- FoxSplitterConst.HIDE_LOCATION -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.location')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.location') }}"
 						value="4"/>
 					<!-- FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.non-navigation')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.non-navigation') }}"
 						value="64"/>
 				</vbox>
 				<vbox>
 					<!-- FoxSplitterConst.HIDE_BOOKMARKS -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.bookmarks')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.bookmarks') }}"
 						value="8"/>
 					<!-- FoxSplitterConst.HIDE_STATUS -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.status')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.status') }}"
 						value="16"/>
 					<!-- FoxSplitterConst.HIDE_EXTRA -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.extra')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.extra') }}"
 						value="32"/>
 					<!-- FoxSplitterConst.HIDE_EXTRA_TOOLBARS -->
-					<checkbox label="bundle.getString('hiddenUIInMemberWindow.extra-toolbars')"
+					<checkbox label="{{ label.getString('hiddenUIInMemberWindow.extra-toolbars') }}"
 						value="128"/>
 				</vbox>
 			</hbox>
@@ -242,7 +242,7 @@
 	</prefpane>
 
 	<prefpane id="prefpane-menu"
-		label="bundle.getString('tab.menu')">
+		label="{{ label.getString('tab.menu') }}">
 		<preferences>
 			<preference id="appMenu.split"
 				name="extensions.foxsplitter@piro.sakura.ne.jp.appMenu.split"
@@ -288,53 +288,53 @@
 				type="bool"/>
 		</preferences>
 
-		<checkbox label="bundle.getFormattedString('appMenu.split', [bundle.getString('ui.split.app.label')])"
+		<checkbox label="{{ label.getFormattedString('appMenu.split', [label.getString('ui.split.app.label')]) }}"
 			preference="appMenu.split"/>
-		<checkbox label="bundle.getFormattedString('viewMenu.split', [bundle.getString('ui.split.view.label')])"
+		<checkbox label="{{ label.getFormattedString('viewMenu.split', [label.getString('ui.split.view.label')]) }}"
 			preference="viewMenu.split"/>
-		<checkbox label="bundle.getFormattedString('context.splitFromLink', [bundle.getString('ui.split.link.label')])"
+		<checkbox label="{{ label.getFormattedString('context.splitFromLink', [label.getString('ui.split.link.label')]) }}"
 			preference="context.splitFromLink"/>
-		<checkbox label="bundle.getFormattedString('context.splitFromFrame', [bundle.getString('ui.split.frame.label')])"
+		<checkbox label="{{ label.getFormattedString('context.splitFromFrame', [label.getString('ui.split.frame.label')]) }}"
 			preference="context.splitFromFrame"/>
 		<groupbox orient="horizontal">
-			<caption label="bundle.getString('tabContextMenu')"/>
+			<caption label="{{ label.getString('tabContextMenu') }}"/>
 			<vbox>
-				<checkbox label="bundle.getString('ui.split.tab.move.label')"
+				<checkbox label="{{ label.getString('ui.split.tab.move.label') }}"
 					preference="context.splitFromTab.move"/>
-				<checkbox label="bundle.getString('ui.split.tab.duplicate.label')"
+				<checkbox label="{{ label.getString('ui.split.tab.duplicate.label') }}"
 					preference="context.splitFromTab.duplicate"/>
 			</vbox>
 			<vbox>
-				<checkbox label="bundle.getString('ui.gather.long')"
+				<checkbox label="{{ label.getString('ui.gather.long') }}"
 					preference="context.gatherWindows"/>
 			</vbox>
 		</groupbox>
 		<groupbox orient="vertical">
-			<caption label="bundle.getString('tabSelectionMenu')"/>
-			<description value="bundle.getString('tabSelectionMenu.note')"/>
+			<caption label="{{ label.getString('tabSelectionMenu') }}"/>
+			<description value="{{ label.getString('tabSelectionMenu.note') }}"/>
 			<hbox>
-				<checkbox label="bundle.getString('ui.split.right.short')"
+				<checkbox label="{{ label.getString('ui.split.right.short') }}"
 					preference="selection.splitToRight"/>
-				<checkbox label="bundle.getString('ui.split.left.short')"
+				<checkbox label="{{ label.getString('ui.split.left.short') }}"
 					preference="selection.splitToLeft"/>
-				<checkbox label="bundle.getString('ui.split.top.short')"
+				<checkbox label="{{ label.getString('ui.split.top.short') }}"
 					preference="selection.splitToTop"/>
-				<checkbox label="bundle.getString('ui.split.bottom.short')"
+				<checkbox label="{{ label.getString('ui.split.bottom.short') }}"
 					preference="selection.splitToBottom"/>
 			</hbox>
 			<hbox>
-				<checkbox label="bundle.getString('ui.layout.grid.selection')"
+				<checkbox label="{{ label.getString('ui.layout.grid.selection') }}"
 					preference="selection.grid"/>
-				<checkbox label="bundle.getString('ui.layout.x.selection')"
+				<checkbox label="{{ label.getString('ui.layout.x.selection') }}"
 					preference="selection.x"/>
-				<checkbox label="bundle.getString('ui.layout.y.selection')"
+				<checkbox label="{{ label.getString('ui.layout.y.selection') }}"
 					preference="selection.y"/>
 			</hbox>
 		</groupbox>
 	</prefpane>
 
 	<prefpane id="prefpane-shortcut"
-		label="bundle.getString('tab.shortcut')">
+		label="{{ label.getString('tab.shortcut') }}">
 		<preferences>
 			<preference id="shortcut.splitTabToTop"
 				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.splitTabToTop"
@@ -370,114 +370,114 @@
 			</columns>
 			<rows>
 				<row align="center">
-					<label value="bundle.getString('ui.split.right.long')"
+					<label value="{{ label.getString('ui.split.right.long') }}"
 						control="shortcut.splitTabToRight-textbox"/>
 					<textbox id="shortcut.splitTabToRight-textbox"
 						preference="shortcut.splitTabToRight"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.split.left.long')"
+					<label value="{{ label.getString('ui.split.left.long') }}"
 						control="shortcut.splitTabToLeft-textbox"/>
 					<textbox id="shortcut.splitTabToLeft-textbox"
 						preference="shortcut.splitTabToLeft"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.split.top.long')"
+					<label value="{{ label.getString('ui.split.top.long') }}"
 						control="shortcut.splitTabToTop-textbox"/>
 					<textbox id="shortcut.splitTabToTop-textbox"
 						preference="shortcut.splitTabToTop"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.split.bottom.long')"
+					<label value="{{ label.getString('ui.split.bottom.long') }}"
 						control="shortcut.splitTabToBottom-textbox"/>
 					<textbox id="shortcut.splitTabToBottom-textbox"
 						preference="shortcut.splitTabToBottom"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.layout.grid.long')"
+					<label value="{{ label.getString('ui.layout.grid.long') }}"
 						control="shortcut.layoutGrid-textbox"/>
 					<textbox id="shortcut.layoutGrid-textbox"
 						preference="shortcut.layoutGrid"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.layout.x.long')"
+					<label value="{{ label.getString('ui.layout.x.long') }}"
 						control="shortcut.layoutX-textbox"/>
 					<textbox id="shortcut.layoutX-textbox"
 						preference="shortcut.layoutX"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.layout.y.long')"
+					<label value="{{ label.getString('ui.layout.y.long') }}"
 						control="shortcut.layoutY-textbox"/>
 					<textbox id="shortcut.layoutY-textbox"
 						preference="shortcut.layoutY"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
 				<row align="center">
-					<label value="bundle.getString('ui.gather.long')"
+					<label value="{{ label.getString('ui.gather.long') }}"
 						control="shortcut.gather-textbox"/>
 					<textbox id="shortcut.gather-textbox"
 						preference="shortcut.gather"
 						onkeydown="updateShortcut(event)"
 						size="12"/>
-					<button label="bundle.getString('shortcut.clear')"
+					<button label="{{ label.getString('shortcut.clear') }}"
 						oncommand="clearPref(this.previousSibling);"
 						style="min-width:0"/>
-					<button label="bundle.getString('shortcut.reset')"
+					<button label="{{ label.getString('shortcut.reset') }}"
 						oncommand="resetPref(this.previousSibling.previousSibling);"
 						style="min-width:0"/>
 				</row>
@@ -486,7 +486,7 @@
 	</prefpane>
 
 	<prefpane id="prefpane-advanced"
-		label="bundle.getString('tab.advanced')"
+		label="{{ label.getString('tab.advanced') }}"
 		flex="1">
 		<preferences>
 			<preference id="syncScrollX"
@@ -499,23 +499,29 @@
 				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldKeepSizeRatioOnResize"
 				type="bool"/>
 		</preferences>
-		<checkbox label="bundle.getString('syncScrollX')"
+		<checkbox label="{{ label.getString('syncScrollX') }}"
 			preference="syncScrollX"/>
-		<checkbox label="bundle.getString('shouldScrollToSplitPosition')"
+		<checkbox label="{{ label.getString('shouldScrollToSplitPosition') }}"
 			preference="shouldScrollToSplitPosition"/>
-		<checkbox label="bundle.getString('shouldKeepSizeRatioOnResize')"
+		<checkbox label="{{ label.getString('shouldKeepSizeRatioOnResize') }}"
 			preference="shouldKeepSizeRatioOnResize"/>
 		<hbox align="center">
 			<spacer flex="1"/>
-			<button label="bundle.getString('platform.button')"
+			<button label="{{ label.getString('platform.button') }}"
 				oncommand="window.openDialog('./config-platform.xul', '_blank', 'chrome,dialog,modal,centerscreen');"/>
 			<spacer flex="1"/>
 		</hbox>
 	</prefpane>
 
-	<stringbundleset>
-		<stringbundle id="foxsplitter-label" src="chrome://foxsplitter/locale/label.properties"/>
-	</stringbundleset>
-	<script type="application/javascript" src="./label.js"/>
 	<script type="application/javascript" src="./config.js"/>
+
+	<!-- label library must be loaded at the end, after all other scripts are loaded -->
+	<stringbundleset>
+		<stringbundle id="label" src="chrome://foxsplitter/locale/label.properties"/>
+	</stringbundleset>
+	<script type="application/javascript"><![CDATA[
+		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
+			.getService(Components.interfaces.mozIJSSubScriptLoader)
+			.loadSubScript('resource://foxsplitter-resources/modules/lib/easyTemplate.js', window);
+	]]></script>
 </prefwindow>

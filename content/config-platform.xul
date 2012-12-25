@@ -34,10 +34,9 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 <?xml-stylesheet href="chrome://global/skin/"?>
-<!DOCTYPE prefwindow SYSTEM "chrome://backtoowner/locale/config.dtd">
 <prefwindow id="foxsplitter-config-platform"
 	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
-	title="bundle.getString('platform.title')"
+	title="{{ label.getString('platform.title') }}"
 	type="child">
 
 	<prefpane id="prefpane-platform"
@@ -72,18 +71,18 @@
 				type="string"/>
 		</preferences>
 		<groupbox orient="vertical">
-			<caption label="bundle.getString('platformOffset.caption')"/>
+			<caption label="{{ label.getString('platformOffset.caption') }}"/>
 			<hbox style="max-width:40em">
-				<description flex="1">"bundle.getString('platformOffset.description')"</description>
+				<description flex="1">{{ label.getString('platformOffset.description') }}</description>
 			</hbox>
 			<hbox align="center">
 				<spacer flex="1"/>
-				<button label="bundle.getString('platformOffset.forceUpdate')"
+				<button label="{{ label.getString('platformOffset.forceUpdate') }}"
 					oncommand="document.getElementById('platformOffset.needToBeUpdated').value=true;"/>
 				<spacer flex="1"/>
 			</hbox>
 			<hbox align="center">
-				<label value="bundle.getString('platformOffset.x')"
+				<label value="{{ label.getString('platformOffset.x') }}"
 					control="platformOffset.x-textbox"/>
 				<textbox id="platformOffset.x-textbox"
 					preference="platformOffset.x"
@@ -92,7 +91,7 @@
 					max="9999"
 					min="-9999"
 					size="5"/>
-				<label value="bundle.getString('platformOffset.y')"
+				<label value="{{ label.getString('platformOffset.y') }}"
 					control="platformOffset.y-textbox"/>
 				<textbox id="platformOffset.y-textbox"
 					preference="platformOffset.y"
@@ -101,7 +100,7 @@
 					max="9999"
 					min="-9999"
 					size="5"/>
-				<label value="bundle.getString('platformOffset.width')"
+				<label value="{{ label.getString('platformOffset.width') }}"
 					control="platformOffset.width-textbox"/>
 				<textbox id="platformOffset.width-textbox"
 					preference="platformOffset.width"
@@ -110,7 +109,7 @@
 					max="9999"
 					min="-9999"
 					size="5"/>
-				<label value="bundle.getString('platformOffset.height')"
+				<label value="{{ label.getString('platformOffset.height') }}"
 					control="platformOffset.height-textbox"/>
 				<textbox id="platformOffset.height-textbox"
 					preference="platformOffset.height"
@@ -122,38 +121,44 @@
 			</hbox>
 		</groupbox>
 		<groupbox>
-			<caption label="bundle.getString('methodToRaiseWindow.caption')"/>
+			<caption label="{{ label.getString('methodToRaiseWindow.caption') }}"/>
 			<radiogroup orient="vertical"
 				preference="methodToRaiseWindow"
 				oncommand="updateAvailabilityOfPathToWmctrl()">
 				<!-- FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG -->
 				<radio value="1"
-					label="bundle.getString('methodToRaiseWindow.zLevel')"/>
+					label="{{ label.getString('methodToRaiseWindow.zLevel') }}"/>
 				<hbox align="center">
 					<!-- FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL -->
 					<radio value="2"
-						label="bundle.getString('methodToRaiseWindow.wmctrl')"
+						label="{{ label.getString('methodToRaiseWindow.wmctrl') }}"
 						id="methodToRaiseWindow.wmctrl-radio"/>
 					<spacer style="width:0.5em;"/>
 					<label control="wmctrl.path-textbox"
-						value="bundle.getString('methodToRaiseWindow.wmctrl.path')"/>
+						value="{{ label.getString('methodToRaiseWindow.wmctrl.path') }}"/>
 					<textbox id="wmctrl.path-textbox"
 						preference="wmctrl.path"
 						flex="1"/>
 				</hbox>
 				<!-- FoxSplitterConst.RAISE_WINDOW_BY_FOCUS -->
 				<radio value="0"
-					label="bundle.getString('methodToRaiseWindow.focus')"/>
+					label="{{ label.getString('methodToRaiseWindow.focus') }}"/>
 				<!-- FoxSplitterConst.DO_NOT_RAISE_WINDOW -->
 				<radio value="-1"
-					label="bundle.getString('methodToRaiseWindow.none')"/>
+					label="{{ label.getString('methodToRaiseWindow.none') }}"/>
 			</radiogroup>
 		</groupbox>
 	</prefpane>
 
-	<stringbundleset>
-		<stringbundle id="foxsplitter-label" src="chrome://foxsplitter/locale/label.properties"/>
-	</stringbundleset>
-	<script type="application/javascript" src="./label.js"/>
 	<script type="application/javascript" src="./config-platform.js"/>
+
+	<!-- label library must be loaded at the end, after all other scripts are loaded -->
+	<stringbundleset>
+		<stringbundle id="label" src="chrome://foxsplitter/locale/label.properties"/>
+	</stringbundleset>
+	<script type="application/javascript"><![CDATA[
+		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
+			.getService(Components.interfaces.mozIJSSubScriptLoader)
+			.loadSubScript('resource://foxsplitter-resources/modules/lib/easyTemplate.js', window);
+	]]></script>
 </prefwindow>

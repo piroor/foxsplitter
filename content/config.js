@@ -77,6 +77,6 @@ function resetPref(aField) {
 
 var Cc = Components.classes;
 var Ci = Components.interfaces;
-Components.classes['@mozilla.org/moz/jssubscript-loader;1']
-	.getService(Components.interfaces.mozIJSSubScriptLoader)
+Cc['@mozilla.org/moz/jssubscript-loader;1']
+	.getService(Ci.mozIJSSubScriptLoader)
 	.loadSubScript('resource://foxsplitter-resources/modules/lib/KeyboardShortcut.js', window);
