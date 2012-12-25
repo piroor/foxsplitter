@@ -508,7 +508,7 @@
 		<hbox align="center">
 			<spacer flex="1"/>
 			<button label="bundle.getString('platform.button')"
-				oncommand="config.open('chrome://foxsplitter/content/config-platform.xul');"/>
+				oncommand="window.openDialog('./config-platform.xul', '_blank', 'chrome,dialog,modal,centerscreen');"/>
 			<spacer flex="1"/>
 		</hbox>
 	</prefpane>
