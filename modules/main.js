@@ -13,7 +13,7 @@
  *
  * The Original Code is Fox Splitter.
  *
- * The Initial Developer of the Original Code is Fox Splitter.
+ * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
  * Portions created by the Initial Developer are Copyright (C) 2007-2012
  * the Initial Developer. All Rights Reserved.
  *
