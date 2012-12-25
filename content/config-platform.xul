@@ -154,6 +154,6 @@
 	<stringbundleset>
 		<stringbundle id="foxsplitter-label" src="chrome://foxsplitter/locale/label.properties"/>
 	</stringbundleset>
-	<script type="application/xul" src="./label.js"/>
-	<script type="application/xul" src="./config-platform.js"/>
+	<script type="application/javascript" src="./label.js"/>
+	<script type="application/javascript" src="./config-platform.js"/>
 </prefwindow>
