@@ -218,13 +218,13 @@ FoxSplitterUI.prototype = {
 		);
 
 		this.toggleStretchedButton = ToolbarItem.create(
-			'  <toolbarbutton id="foxsplitter-toggleStretched-button"' +
-			'    label="' + bundle.getString('ui.stretch.short') + '"' +
-			'    tooltiptext="' + bundle.getString('ui.stretch.long') + '"' +
-			'    class="' + ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM + '"' +
-			'    foxsplitter-command="toggleStretched"' +
-			'    foxsplitter-toggle-mode="stretch"' +
-			'    oncommand="FoxSplitter.ui.handleEvent(event);"/>',
+			'<toolbarbutton id="foxsplitter-toggleStretched-button"' +
+			'  label="' + bundle.getString('ui.stretch.short') + '"' +
+			'  tooltiptext="' + bundle.getString('ui.stretch.long') + '"' +
+			'  class="' + ToolbarItem.BASIC_ITEM_CLASS + ' ' + this.TOOLBAR_ITEM + '"' +
+			'  foxsplitter-command="toggleStretched"' +
+			'  foxsplitter-toggle-mode="stretch"' +
+			'  oncommand="FoxSplitter.ui.handleEvent(event);"/>',
 			toolbar,
 			{
 				onInit : function() {
