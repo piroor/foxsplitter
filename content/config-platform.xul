@@ -152,7 +152,7 @@
 
 	<script type="application/javascript" src="./config-platform.js"/>
 
-	<!-- label library must be loaded at the end, after all other scripts are loaded -->
+	<!-- easyTemplate.js must be loaded at the end, after all other scripts are loaded -->
 	<stringbundleset>
 		<stringbundle id="label" src="chrome://foxsplitter/locale/label.properties"/>
 	</stringbundleset>
