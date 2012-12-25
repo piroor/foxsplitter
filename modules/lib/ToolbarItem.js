@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      3
+ * @version      4
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi.
@@ -382,6 +382,15 @@ try{
 	}
 	else { // string
 		fragment = range.createContextualFragment(String(aSource));
+		// clear white-space nodes from XUL tree
+		(function(aNode) {
+			Array.slice(aNode.childNodes).forEach(arguments.callee);
+			if (aNode.parentNode &&
+				aNode.parentNode.namespaceURI == ToolbarItem.XULNS &&
+				aNode.nodeType == Ci.nsIDOMNode.TEXT_NODE &&
+				aNode.nodeValue.replace(/^\s+|\s+$/g, '') == '')
+				aNode.parentNode.removeChild(aNode);
+		})(fragment);
 	}
 
 	range.detach();

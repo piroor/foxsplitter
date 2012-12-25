@@ -1,7 +1,7 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      11
+ * @version      12
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi.
@@ -10,6 +10,8 @@
  */
 
 const EXPORTED_SYMBOLS = ['config'];
+
+const XULNS = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
 
 'open,register,unregister,setDefault'.split(',').forEach(function(aSymbol) {
 	exports[aSymbol] = function() {
@@ -173,7 +175,17 @@ var config = {
 		var root = document.documentElement;
 		var range = document.createRange();
 		range.selectNode(root);
-		document.replaceChild(range.createContextualFragment(soruce), root);
+		var fragment = range.createContextualFragment(soruce);
+		// clear white-space nodes from XUL tree
+		(function(aNode) {
+			Array.slice(aNode.childNodes).forEach(arguments.callee);
+			if (aNode.parentNode &&
+				aNode.parentNode.namespaceURI == XULNS &&
+				aNode.nodeType == Ci.nsIDOMNode.TEXT_NODE &&
+				aNode.nodeValue.replace(/^\s+|\s+$/g, '') == '')
+				aNode.parentNode.removeChild(aNode);
+		})(fragment);
+		document.replaceChild(fragment, root);
 		range.detach();
 		window._sourceURI = sourceURI;
 	},
