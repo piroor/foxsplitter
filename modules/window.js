@@ -49,7 +49,7 @@ var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
 var bundle = require('lib/locale')
-				.get(resolve('locale/label.properties'));
+				.get('chrome://foxsplitter/locale/label.properties');
 
 function FoxSplitterWindow(aWindow, aOnInit) 
 {

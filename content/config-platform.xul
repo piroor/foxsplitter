@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Fox Splitter.
+   -
+   - The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
+   - Portions created by the Initial Developer are Copyright (C) 2007-2012
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+<?xml-stylesheet href="chrome://global/skin/"?>
+<!DOCTYPE prefwindow SYSTEM "chrome://backtoowner/locale/config.dtd">
+<prefwindow id="foxsplitter-config-platform"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="bundle.getString('platform.title')"
+	type="child">
+
+	<prefpane id="prefpane-platform"
+		flex="1"
+		onpaneload="updateAvailabilityOfPathToWmctrl()">
+		<preferences>
+			<preference id="platformOffset.needToBeUpdated"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.platformOffset.needToBeUpdated"
+				type="bool"
+				instantApply="true"/>
+			<preference id="platformOffset.x"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.platformOffset.x"
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.y"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.platformOffset.y"
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.width"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.platformOffset.width"
+				type="int"
+				instantApply="true"/>
+			<preference id="platformOffset.height"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.platformOffset.height"
+				type="int"
+				instantApply="true"/>
+			<preference id="methodToRaiseWindow"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.methodToRaiseWindow"
+				type="int"/>
+			<preference id="wmctrl.path"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.wmctrl.path"
+				type="string"/>
+		</preferences>
+		<groupbox orient="vertical">
+			<caption label="bundle.getString('platformOffset.caption')"/>
+			<hbox style="max-width:40em">
+				<description flex="1">"bundle.getString('platformOffset.description')"</description>
+			</hbox>
+			<hbox align="center">
+				<spacer flex="1"/>
+				<button label="bundle.getString('platformOffset.forceUpdate')"
+					oncommand="document.getElementById('platformOffset.needToBeUpdated').value=true;"/>
+				<spacer flex="1"/>
+			</hbox>
+			<hbox align="center">
+				<label value="bundle.getString('platformOffset.x')"
+					control="platformOffset.x-textbox"/>
+				<textbox id="platformOffset.x-textbox"
+					preference="platformOffset.x"
+					type="number"
+					increment="1"
+					max="9999"
+					min="-9999"
+					size="5"/>
+				<label value="bundle.getString('platformOffset.y')"
+					control="platformOffset.y-textbox"/>
+				<textbox id="platformOffset.y-textbox"
+					preference="platformOffset.y"
+					type="number"
+					increment="1"
+					max="9999"
+					min="-9999"
+					size="5"/>
+				<label value="bundle.getString('platformOffset.width')"
+					control="platformOffset.width-textbox"/>
+				<textbox id="platformOffset.width-textbox"
+					preference="platformOffset.width"
+					type="number"
+					increment="1"
+					max="9999"
+					min="-9999"
+					size="5"/>
+				<label value="bundle.getString('platformOffset.height')"
+					control="platformOffset.height-textbox"/>
+				<textbox id="platformOffset.height-textbox"
+					preference="platformOffset.height"
+					type="number"
+					increment="1"
+					max="9999"
+					min="-9999"
+					size="5"/>
+			</hbox>
+		</groupbox>
+		<groupbox>
+			<caption label="bundle.getString('methodToRaiseWindow.caption')"/>
+			<radiogroup orient="vertical"
+				preference="methodToRaiseWindow"
+				oncommand="updateAvailabilityOfPathToWmctrl()">
+				<!-- FoxSplitterConst.RAISE_WINDOW_BY_RAISED_FLAG -->
+				<radio value="1"
+					label="bundle.getString('methodToRaiseWindow.zLevel')"/>
+				<hbox align="center">
+					<!-- FoxSplitterConst.RAISE_WINDOW_BY_WMCTRL -->
+					<radio value="2"
+						label="bundle.getString('methodToRaiseWindow.wmctrl')"
+						id="methodToRaiseWindow.wmctrl-radio"/>
+					<spacer style="width:0.5em;"/>
+					<label control="wmctrl.path-textbox"
+						value="bundle.getString('methodToRaiseWindow.wmctrl.path')"/>
+					<textbox id="wmctrl.path-textbox"
+						preference="wmctrl.path"
+						flex="1"/>
+				</hbox>
+				<!-- FoxSplitterConst.RAISE_WINDOW_BY_FOCUS -->
+				<radio value="0"
+					label="bundle.getString('methodToRaiseWindow.focus')"/>
+				<!-- FoxSplitterConst.DO_NOT_RAISE_WINDOW -->
+				<radio value="-1"
+					label="bundle.getString('methodToRaiseWindow.none')"/>
+			</radiogroup>
+		</groupbox>
+	</prefpane>
+
+	<stringbundleset>
+		<stringbundle id="foxsplitter-label" src="chrome://foxsplitter/locale/label.properties"/>
+	</stringbundleset>
+	<script type="application/xul" src="./label.js"/>
+	<script type="application/xul" src="./config-platform.js"/>
+</prefwindow>

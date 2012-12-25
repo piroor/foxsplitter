@@ -413,45 +413,45 @@ Deferred.postie_for_message_manager = function (manager) {
 		};
 	manager.addMessageListener(postieId+':response', messageListener);
 
-	manager.loadFrameScript('data:application/javascript,'+encodeURIComponent(<![CDATA[
-		(function(_global) {
-			var [Deferred, timers] = %JSDEFERRED%();
-			var _onMessage = function (message) {
-					switch (message.name) {
-						case '%ID%:request':
-							var data = { id : message.json.id }
-							Deferred
-								.next(function () {
-									return eval(message.json.code);
-								})
-								.next(function (value) {
-									data.value = value;
-									sendAsyncMessage('%ID%:response', data);
-								})
-								.error(function (error) {
-									data.error = error;
-									sendAsyncMessage('%ID%:response', data);
-								});
-							break;
+	manager.loadFrameScript('data:application/javascript,'+encodeURIComponent(
+		'(function(_global) {\n' +
+		'  var [Deferred, timers] = %JSDEFERRED%();\n' +
+		'  var _onMessage = function (message) {\n' +
+		'      switch (message.name) {\n' +
+		'        case "%ID%:request":\n' +
+		'          var data = { id : message.json.id }\n' +
+		'          Deferred\n' +
+		'            .next(function () {\n' +
+		'              return eval(message.json.code);\n' +
+		'            })\n' +
+		'            .next(function (value) {\n' +
+		'              data.value = value;\n' +
+		'              sendAsyncMessage("%ID%:response", data);\n' +
+		'            })\n' +
+		'            .error(function (error) {\n' +
+		'              data.error = error;\n' +
+		'              sendAsyncMessage("%ID%:response", data);\n' +
+		'            });\n' +
+		'          break;\n' +
 
-						case '%ID%:destroy':
-							removeMessageListener('%ID%:request', onMessage);
-							removeMessageListener('%ID%:destroy', onMessage);
-							timers.forEach(function(aTimer) {
-								aTimer.cancel();
-							});
-							timers = undefined;
-							_onMessage = undefined;
-							_global = undefined;
-							Deferred = undefined;
-							break;
-					}
-				};
-			addMessageListener('%ID%:request', _onMessage);
-			addMessageListener('%ID%:destroy', _onMessage);
-			sendAsyncMessage('%ID%:response', { id : -1, init : true });
-		})(this);
-	]]>.toString()
+		'        case "%ID%:destroy":\n' +
+		'          removeMessageListener("%ID%:request", onMessage);\n' +
+		'          removeMessageListener("%ID%:destroy", onMessage);\n' +
+		'          timers.forEach(function(aTimer) {\n' +
+		'            aTimer.cancel();\n' +
+		'          });\n' +
+		'          timers = undefined;\n' +
+		'          _onMessage = undefined;\n' +
+		'          _global = undefined;\n' +
+		'          Deferred = undefined;\n' +
+		'          break;\n' +
+		'      }\n' +
+		'    };\n' +
+		'  addMessageListener("%ID%:request", _onMessage);\n' +
+		'  addMessageListener("%ID%:destroy", _onMessage);\n' +
+		'  sendAsyncMessage("%ID%:response", { id : -1, init : true });\n' +
+		'})(this);\n' +
+		'\n'
 		.replace(/%ID%/g, postieId)
 		.replace(/%JSDEFERRED%/, D.toSource())
 	), false);

@@ -1,0 +1,521 @@
+<?xml version="1.0"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+   - Version: MPL 1.1/GPL 2.0/LGPL 2.1
+   -
+   - The contents of this file are subject to the Mozilla Public License Version
+   - 1.1 (the "License"); you may not use this file except in compliance with
+   - the License. You may obtain a copy of the License at
+   - http://www.mozilla.org/MPL/
+   -
+   - Software distributed under the License is distributed on an "AS IS" basis,
+   - WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
+   - for the specific language governing rights and limitations under the
+   - License.
+   -
+   - The Original Code is Fox Splitter.
+   -
+   - The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
+   - Portions created by the Initial Developer are Copyright (C) 2007-2012
+   - the Initial Developer. All Rights Reserved.
+   -
+   - Contributor(s): YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
+   -
+   - Alternatively, the contents of this file may be used under the terms of
+   - either the GNU General Public License Version 2 or later (the "GPL"), or
+   - the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
+   - in which case the provisions of the GPL or the LGPL are applicable instead
+   - of those above. If you wish to allow use of your version of this file only
+   - under the terms of either the GPL or the LGPL, and not to allow others to
+   - use your version of this file under the terms of the MPL, indicate your
+   - decision by deleting the provisions above and replace them with the notice
+   - and other provisions required by the LGPL or the GPL. If you do not delete
+   - the provisions above, a recipient may use your version of this file under
+   - the terms of any one of the MPL, the GPL or the LGPL.
+   -
+   - ***** END LICENSE BLOCK ***** -->
+<?xml-stylesheet href="chrome://global/skin/"?>
+<prefwindow id="foxsplitter-config"
+	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="bundle.getString('title')">
+
+	<prefpane id="prefpane-general"
+		label="bundle.getString('tab.general')">
+		<preferences>
+			<preference id="shouldDuplicateOnSplit"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldDuplicateOnSplit"
+				type="bool"/>
+			<preference id="generalButton.split.position"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.generalButton.split.position"
+				type="int"/>
+			<preference id="appMenu.split.position"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.appMenu.split.position"
+				type="int"/>
+			<preference id="importTabsFromClosedSibling"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.importTabsFromClosedSibling"
+				type="int"/>
+		</preferences>
+
+		<groupbox>
+			<caption label="bundle.getString('shouldDuplicateOnSplit')"/>
+			<radiogroup orient="vertical"
+				preference="shouldDuplicateOnSplit">
+				<radio value="false" label="bundle.getString('shouldDuplicateOnSplit.false')"/>
+				<radio value="true" label="bundle.getString('shouldDuplicateOnSplit.true')"/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label="bundle.getString('generalButton.split.position')"/>
+			<radiogroup orient="horizontal"
+				preference="generalButton.split.position">
+				<!-- FoxSplitterConst.POSITION_TOP -->
+				<radio value="4"
+					label="bundle.getString('ui.split.top.short')"/>
+				<!-- FoxSplitterConst.POSITION_BOTTOM -->
+				<radio value="8"
+					label="bundle.getString('ui.split.bottom.short')"/>
+				<!-- FoxSplitterConst.POSITION_RIGHT -->
+				<radio value="2"
+					label="bundle.getString('ui.split.right.short')"/>
+				<!-- FoxSplitterConst.POSITION_LEFT -->
+				<radio value="1"
+					label="bundle.getString('ui.split.left.short')"/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label="bundle.getString('appMenu.split.position')"/>
+			<radiogroup orient="horizontal"
+				preference="appMenu.split.position">
+				<!-- FoxSplitterConst.POSITION_TOP -->
+				<radio value="4"
+					label="bundle.getString('ui.split.top.short')"/>
+				<!-- FoxSplitterConst.POSITION_BOTTOM -->
+				<radio value="8"
+					label="bundle.getString('ui.split.bottom.short')"/>
+				<!-- FoxSplitterConst.POSITION_RIGHT -->
+				<radio value="2"
+					label="bundle.getString('ui.split.right.short')"/>
+				<!-- FoxSplitterConst.POSITION_LEFT -->
+				<radio value="1"
+					label="bundle.getString('ui.split.left.short')"/>
+			</radiogroup>
+		</groupbox>
+		<groupbox>
+			<caption label="bundle.getString('importTabsFromClosedSibling')"/>
+			<radiogroup orient="vertical"
+				preference="importTabsFromClosedSibling">
+				<!-- FoxSplitterConst.IMPORT_NOTHING -->
+				<radio value="0"
+					label="bundle.getString('importTabsFromClosedSibling.nothing')"/>
+				<!-- FoxSplitterConst.IMPORT_ONLY_HIDDEN -->
+				<radio value="2"
+					label="bundle.getString('importTabsFromClosedSibling.hidden')"/>
+				<!-- FoxSplitterConst.IMPORT_ALL -->
+				<radio value="1"
+					label="bundle.getString('importTabsFromClosedSibling.all')"/>
+			</radiogroup>
+		</groupbox>
+	</prefpane>
+
+	<prefpane id="prefpane-drag"
+		label="bundle.getString('tab.drag')">
+		<preferences>
+			<preference id="shouldDuplicateOnDrop"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldDuplicateOnDrop"
+				type="bool"/>
+			<preference id="dropZoneSize"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.dropZoneSize"
+				type="int"/>
+			<preference id="acceptDropDelay"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.acceptDropDelay"
+				type="int"/>
+			<preference id="handleDragWithShiftKey"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.handleDragWithShiftKey"
+				type="bool"/>
+			<preference id="draggableAppButton"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.draggableAppButton"
+				type="bool"/>
+		</preferences>
+		<groupbox>
+			<caption label="bundle.getString('shouldDuplicateOnDrop')"/>
+			<radiogroup orient="vertical"
+				preference="shouldDuplicateOnDrop">
+				<radio value="false" label="bundle.getString('shouldDuplicateOnDrop.false')"/>
+				<radio value="true" label="bundle.getString('shouldDuplicateOnDrop.true')"/>
+			</radiogroup>
+		</groupbox>
+		<hbox align="center">
+			<label value="bundle.getString('dropZoneSize.before')"
+				control="dropZoneSize-textbox"/>
+			<textbox id="dropZoneSize-textbox"
+				preference="dropZoneSize"
+				type="number"
+				size="3"
+				min="0"
+				increment="1"/>
+			<label value="bundle.getString('dropZoneSize.after')"
+				control="dropZoneSize-textbox"/>
+		</hbox>
+		<hbox align="center">
+			<label value="bundle.getString('acceptDropDelay.before')"
+				control="acceptDropDelay-textbox"/>
+			<textbox id="acceptDropDelay-textbox"
+				preference="acceptDropDelay"
+				type="number"
+				size="3"
+				min="0"
+				increment="1"/>
+			<label value="bundle.getString('acceptDropDelay.after')"
+				control="acceptDropDelay-textbox"/>
+		</hbox>
+		<checkbox label="bundle.getString('handleDragWithShiftKey')"
+			preference="handleDragWithShiftKey"/>
+		<checkbox label="bundle.getString('draggableAppButton')"
+			preference="draggableAppButton"/>
+	</prefpane>
+
+	<prefpane id="prefpane-appearance"
+		label="bundle.getString('tab.appearance')"
+		onpaneload="inithiddenUIInMemberWindowChecks();">
+		<preferences>
+			<preference id="shouldMinimalizeUI"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldMinimalizeUI"
+				type="bool"/>
+			<preference id="shouldAutoHideToolbox"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldAutoHideToolbox"
+				type="bool"/>
+			<preference id="shouldAutoHideTabs"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldAutoHideTabs"
+				type="bool"/>
+			<preference id="hiddenUIInMemberWindow"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.hiddenUIInMemberWindow"
+				type="int"/>
+		</preferences>
+
+		<checkbox label="bundle.getString('shouldMinimalizeUI')"
+			preference="shouldMinimalizeUI"/>
+		<checkbox label="bundle.getString('shouldAutoHideToolbox')"
+			preference="shouldAutoHideToolbox"/>
+		<checkbox label="bundle.getString('shouldAutoHideTabs')"
+			id="shouldAutoHideTabs-checkbox"
+			preference="shouldAutoHideTabs"/>
+		<hbox>
+			<spacer style="width:2em;"/>
+			<label value="bundle.getString('shouldAutoHideTabs.note')"
+				control="shouldAutoHideTabs-checkbox"/>
+		</hbox>
+		<groupbox id="updatehiddenUIInMemberWindow-groupbox"
+			orient="vertical"
+			oncommand="onChangehiddenUIInMemberWindow()">
+			<caption label="bundle.getString('hiddenUIInMemberWindow')"/>
+			<description value="bundle.getString('hiddenUIInMemberWindow.note')"/>
+			<hbox>
+				<vbox>
+					<!-- FoxSplitterConst.HIDE_MENUBAR -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.menubar')"
+						value="1"/>
+					<!-- FoxSplitterConst.HIDE_TOOLBAR -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.toolbar')"
+						value="2"/>
+					<!-- FoxSplitterConst.HIDE_LOCATION -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.location')"
+						value="4"/>
+					<!-- FoxSplitterConst.HIDE_NON_NAVIGATION_ITEMS -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.non-navigation')"
+						value="64"/>
+				</vbox>
+				<vbox>
+					<!-- FoxSplitterConst.HIDE_BOOKMARKS -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.bookmarks')"
+						value="8"/>
+					<!-- FoxSplitterConst.HIDE_STATUS -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.status')"
+						value="16"/>
+					<!-- FoxSplitterConst.HIDE_EXTRA -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.extra')"
+						value="32"/>
+					<!-- FoxSplitterConst.HIDE_EXTRA_TOOLBARS -->
+					<checkbox label="bundle.getString('hiddenUIInMemberWindow.extra-toolbars')"
+						value="128"/>
+				</vbox>
+			</hbox>
+		</groupbox>
+	</prefpane>
+
+	<prefpane id="prefpane-menu"
+		label="bundle.getString('tab.menu')">
+		<preferences>
+			<preference id="appMenu.split"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.appMenu.split"
+				type="bool"/>
+			<preference id="viewMenu.split"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.viewMenu.split"
+				type="bool"/>
+			<preference id="context.splitFromLink"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.context.splitFromLink"
+				type="bool"/>
+			<preference id="context.splitFromFrame"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.context.splitFromFrame"
+				type="bool"/>
+			<preference id="context.splitFromTab.move"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.context.splitFromTab.move"
+				type="bool"/>
+			<preference id="context.splitFromTab.duplicate"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.context.splitFromTab.duplicate"
+				type="bool"/>
+			<preference id="context.gatherWindows"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.context.gatherWindows"
+				type="bool"/>
+			<preference id="selection.splitToTop"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.splitToTop"
+				type="bool"/>
+			<preference id="selection.splitToRight"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.splitToRight"
+				type="bool"/>
+			<preference id="selection.splitToBottom"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.splitToBottom"
+				type="bool"/>
+			<preference id="selection.splitToLeft"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.splitToLeft"
+				type="bool"/>
+			<preference id="selection.grid"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.grid"
+				type="bool"/>
+			<preference id="selection.x"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.x"
+				type="bool"/>
+			<preference id="selection.y"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.selection.y"
+				type="bool"/>
+		</preferences>
+
+		<checkbox label="bundle.getFormattedString('appMenu.split', [bundle.getString('ui.split.app.label')])"
+			preference="appMenu.split"/>
+		<checkbox label="bundle.getFormattedString('viewMenu.split', [bundle.getString('ui.split.view.label')])"
+			preference="viewMenu.split"/>
+		<checkbox label="bundle.getFormattedString('context.splitFromLink', [bundle.getString('ui.split.link.label')])"
+			preference="context.splitFromLink"/>
+		<checkbox label="bundle.getFormattedString('context.splitFromFrame', [bundle.getString('ui.split.frame.label')])"
+			preference="context.splitFromFrame"/>
+		<groupbox orient="horizontal">
+			<caption label="bundle.getString('tabContextMenu')"/>
+			<vbox>
+				<checkbox label="bundle.getString('ui.split.tab.move.label')"
+					preference="context.splitFromTab.move"/>
+				<checkbox label="bundle.getString('ui.split.tab.duplicate.label')"
+					preference="context.splitFromTab.duplicate"/>
+			</vbox>
+			<vbox>
+				<checkbox label="bundle.getString('ui.gather.long')"
+					preference="context.gatherWindows"/>
+			</vbox>
+		</groupbox>
+		<groupbox orient="vertical">
+			<caption label="bundle.getString('tabSelectionMenu')"/>
+			<description value="bundle.getString('tabSelectionMenu.note')"/>
+			<hbox>
+				<checkbox label="bundle.getString('ui.split.right.short')"
+					preference="selection.splitToRight"/>
+				<checkbox label="bundle.getString('ui.split.left.short')"
+					preference="selection.splitToLeft"/>
+				<checkbox label="bundle.getString('ui.split.top.short')"
+					preference="selection.splitToTop"/>
+				<checkbox label="bundle.getString('ui.split.bottom.short')"
+					preference="selection.splitToBottom"/>
+			</hbox>
+			<hbox>
+				<checkbox label="bundle.getString('ui.layout.grid.selection')"
+					preference="selection.grid"/>
+				<checkbox label="bundle.getString('ui.layout.x.selection')"
+					preference="selection.x"/>
+				<checkbox label="bundle.getString('ui.layout.y.selection')"
+					preference="selection.y"/>
+			</hbox>
+		</groupbox>
+	</prefpane>
+
+	<prefpane id="prefpane-shortcut"
+		label="bundle.getString('tab.shortcut')">
+		<preferences>
+			<preference id="shortcut.splitTabToTop"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.splitTabToTop"
+				type="string"/>
+			<preference id="shortcut.splitTabToRight"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.splitTabToRight"
+				type="string"/>
+			<preference id="shortcut.splitTabToBottom"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.splitTabToBottom"
+				type="string"/>
+			<preference id="shortcut.splitTabToLeft"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.splitTabToLeft"
+				type="string"/>
+			<preference id="shortcut.layoutGrid"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.layoutGrid"
+				type="string"/>
+			<preference id="shortcut.layoutX"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.layoutX"
+				type="string"/>
+			<preference id="shortcut.layoutY"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.layoutY"
+				type="string"/>
+			<preference id="shortcut.gather"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shortcut.gather"
+				type="string"/>
+		</preferences>
+		<grid>
+			<columns>
+				<column/>
+				<column/>
+				<column/>
+				<column/>
+			</columns>
+			<rows>
+				<row align="center">
+					<label value="bundle.getString('ui.split.right.long')"
+						control="shortcut.splitTabToRight-textbox"/>
+					<textbox id="shortcut.splitTabToRight-textbox"
+						preference="shortcut.splitTabToRight"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.split.left.long')"
+						control="shortcut.splitTabToLeft-textbox"/>
+					<textbox id="shortcut.splitTabToLeft-textbox"
+						preference="shortcut.splitTabToLeft"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.split.top.long')"
+						control="shortcut.splitTabToTop-textbox"/>
+					<textbox id="shortcut.splitTabToTop-textbox"
+						preference="shortcut.splitTabToTop"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.split.bottom.long')"
+						control="shortcut.splitTabToBottom-textbox"/>
+					<textbox id="shortcut.splitTabToBottom-textbox"
+						preference="shortcut.splitTabToBottom"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.layout.grid.long')"
+						control="shortcut.layoutGrid-textbox"/>
+					<textbox id="shortcut.layoutGrid-textbox"
+						preference="shortcut.layoutGrid"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.layout.x.long')"
+						control="shortcut.layoutX-textbox"/>
+					<textbox id="shortcut.layoutX-textbox"
+						preference="shortcut.layoutX"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.layout.y.long')"
+						control="shortcut.layoutY-textbox"/>
+					<textbox id="shortcut.layoutY-textbox"
+						preference="shortcut.layoutY"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+				<row align="center">
+					<label value="bundle.getString('ui.gather.long')"
+						control="shortcut.gather-textbox"/>
+					<textbox id="shortcut.gather-textbox"
+						preference="shortcut.gather"
+						onkeydown="updateShortcut(event)"
+						size="12"/>
+					<button label="bundle.getString('shortcut.clear')"
+						oncommand="clearPref(this.previousSibling);"
+						style="min-width:0"/>
+					<button label="bundle.getString('shortcut.reset')"
+						oncommand="resetPref(this.previousSibling.previousSibling);"
+						style="min-width:0"/>
+				</row>
+			</rows>
+		</grid>
+	</prefpane>
+
+	<prefpane id="prefpane-advanced"
+		label="bundle.getString('tab.advanced')"
+		flex="1">
+		<preferences>
+			<preference id="syncScrollX"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.syncScrollX"
+				type="bool"/>
+			<preference id="shouldScrollToSplitPosition"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldScrollToSplitPosition"
+				type="bool"/>
+			<preference id="shouldKeepSizeRatioOnResize"
+				name="extensions.foxsplitter@piro.sakura.ne.jp.shouldKeepSizeRatioOnResize"
+				type="bool"/>
+		</preferences>
+		<checkbox label="bundle.getString('syncScrollX')"
+			preference="syncScrollX"/>
+		<checkbox label="bundle.getString('shouldScrollToSplitPosition')"
+			preference="shouldScrollToSplitPosition"/>
+		<checkbox label="bundle.getString('shouldKeepSizeRatioOnResize')"
+			preference="shouldKeepSizeRatioOnResize"/>
+		<hbox align="center">
+			<spacer flex="1"/>
+			<button label="bundle.getString('platform.button')"
+				oncommand="config.open('chrome://foxsplitter/content/config-platform.xul');"/>
+			<spacer flex="1"/>
+		</hbox>
+	</prefpane>
+
+	<stringbundleset>
+		<stringbundle id="foxsplitter-label" src="chrome://foxsplitter/locale/label.properties"/>
+	</stringbundleset>
+	<script type="application/xul" src="./label.js"/>
+	<script type="application/xul" src="./config.js"/>
+</prefwindow>

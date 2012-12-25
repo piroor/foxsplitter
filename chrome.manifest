@@ -1,0 +1,13 @@
+content foxsplitter content/
+locale foxsplitter cz locale/cz/
+locale foxsplitter de locale/de/
+locale foxsplitter en-US locale/en-US/
+locale foxsplitter es locale/es/
+locale foxsplitter fr locale/fr/
+locale foxsplitter hu locale/hu/
+locale foxsplitter it locale/it/
+locale foxsplitter ja locale/ja/
+locale foxsplitter ko locale/ko/
+locale foxsplitter pl locale/pl/
+locale foxsplitter zh-CN locale/zh-CN/
+locale foxsplitter zh-TW locale/zh-TW/

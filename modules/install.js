@@ -90,7 +90,7 @@ function uninstallOldVersion()
 			if (aAddon && !aAddon.userDisabled) {
 				aAddon.userDisabled = true;
 				var bundle = require('lib/locale')
-								.get(resolve('locale/label.properties'));
+								.get('chrome://foxsplitter/locale/label.properties');
 				if (Cc['@mozilla.org/embedcomp/prompt-service;1']
 						.getService(Ci.nsIPromptService)
 						.confirmEx(
