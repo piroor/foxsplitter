@@ -33,15 +33,18 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-var bundle;
-window.addEventListener('DOMContentLoad', function initializer(aEvent) {
-	window.removeEventListener(aEvent.type, initializer, false);
-
-	bundle = document.getElementById('foxsplitter-label');
+(function() {
+	var sandbox = new Components.utils.Sandbox(window);
+	sandbox.bundle = document.getElementById('foxsplitter-label');
 	['title', 'label', 'value'].forEach(function(aAttribute) {
-		Array.slice(document.querySelectorAll('*[' + aAttribute + '^="bundle."]')).forEach(function(aNode) {
-			var definition = aNode.getAttribute(aAttribute);
-			aNode.setAttribute(aAttribute, eval(definition));
-		});
+		var selector = '*[' + aAttribute + '^="bundle."]';
+		var anonymousRoot = document.getAnonymousNodes(document.documentElement)[0];
+		Array.slice(document.querySelectorAll(selector))
+			.concat(Array.slice(anonymousRoot.querySelectorAll(selector)))
+			.forEach(function(aNode) {
+				var definition = aNode.getAttribute(aAttribute);
+				var label = Components.utils.evalInSandbox(definition, sandbox);
+				aNode.setAttribute(aAttribute, label);
+			});
 	});
-}, false);
+})();
