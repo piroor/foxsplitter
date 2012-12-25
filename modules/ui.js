@@ -499,7 +499,7 @@ FoxSplitterUI.prototype = {
 			if (prefs.getPref(this.domain + 'context.splitFromTab.duplicate')) {
 				let item = ToolbarItem.toDOMDocumentFragment(
 					'<menu id="foxsplitter-context-tab-split-duplicate"' +
-					'  class="' + this.tabContextItems.length ? '' : 'menu-iconic split '+this.MENU_ITEM  + '"' +
+					'  class="' + (this.tabContextItems.length ? '' : 'menu-iconic split ' + this.MENU_ITEM) + '"' +
 					'  label="' + bundle.getString('ui.split.tab.duplicate.label') + '"' +
 					'  accesskey="' + bundle.getString('ui.split.tab.duplicate.accesskey') + '"' +
 					'  oncommand="FoxSplitter.ui.handleEvent(event);">' +
@@ -523,7 +523,7 @@ FoxSplitterUI.prototype = {
 					'  </menupopup>' +
 					'</menu>',
 					tabContextPopup
-				).querySelector('*');
+				).querySelector('*')
 				tabContextPopup.insertBefore(item, (this.tabContextItems.length && this.tabContextItems[0] || this.document.getElementById('context_openTabInWindow')).nextSibling);
 				this.tabContextItems.push(item);
 				this.tabContextDuplicateItem = item;
