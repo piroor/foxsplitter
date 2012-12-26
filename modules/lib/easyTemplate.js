@@ -1,7 +1,7 @@
 /**
  * @fileOverview Easy template module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      2
+ * @version      3
  *
  * @license
  *   The MIT License, Copyright (c) 2012 YUKI "Piro" Hiroshi.
@@ -27,19 +27,31 @@ var easyTemplate = {
 			return this._applyToDocument();
 	},
 
+	_systemPrincipal : Components.classes['@mozilla.org/systemprincipal;1']
+						.createInstance(Components.interfaces.nsIPrincipal),
+	_documentPrincipal : (function() {
+		return (typeof window != 'undefined' && window && typeof window.constructor != 'function') ?
+				document.nodePrincipal : null;
+	})(),
+
 	_applyToString : function(aString, aNamespace) {
-		var sandbox = new Components.utils.Sandbox(location.href);
-		sandbox.__proto__ = aNamespace;
+		var sandbox = new Components.utils.Sandbox(
+				this._documentPrincipal || this._systemPrincipal,
+				{ sandboxPrototype: aNamespace }
+			);
 		return aString.split('}}')
 				.map(function(aPart) {
 					let [string, code] = aPart.split('{{');
-					return string + (code && Components.utils.evalInSandbox(code, sandbox));
+					return string + (code && Components.utils.evalInSandbox(code, sandbox) || '');
 				})
 				.join('');
 	},
 
 	_applyToDocument : function() {
-		var sandbox = new Components.utils.Sandbox(window);
+		var sandbox = new Components.utils.Sandbox(
+				this._documentPrincipal,
+				{ sandboxPrototype: window }
+			);
 
 		Array.forEach(document.querySelectorAll('stringbundle'), function(aBundle) {
 			if (aBundle.id)
