@@ -1,7 +1,7 @@
 /**
  * @fileOverview Keyboard shortcut helper module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      1
+ * @version      2
  *
  * @license
  *   The MIT License, Copyright (c) 2011 YUKI "Piro" Hiroshi.
@@ -9,11 +9,19 @@
  * @url http://github.com/piroor/restartless
  */
 
-const EXPORTED_SYMBOLS = ['KeyboardShortcut'];
+if (typeof window == 'undefined' ||
+	(window && typeof window.constructor == 'function')) {
+	this.EXPORTED_SYMBOLS = ['KeyboardShortcut'];
 
-const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
-					.getService(Ci.nsIXULAppInfo)
-					.QueryInterface(Ci.nsIXULRuntime);
+	/** A handler for bootstrap.js */
+	function shutdown()
+	{
+		KeyboardShortcut.instances.slice(0).forEach(function(aKey) {
+			aKey.destroy();
+		});
+		KeyboardShortcut = undefined;
+	}
+}
 
 /**
  * aDefinition = {
@@ -90,7 +98,7 @@ KeyboardShortcut.prototype = {
 		return aShortcut
 					.replace(/^\s+|\s+$/g, '')
 					.replace(/\s+/g, ' ')
-					.replace(/accel-/gi, XULAppInfo.OS == 'Darwin' ? 'meta' : 'ctrl' )
+					.replace(/accel-/gi, KeyboardShortcut.XULAppInfo.OS == 'Darwin' ? 'meta' : 'ctrl' )
 					.replace(/option-/gi, 'alt-')
 					.replace(/control-/gi, 'ctrl-')
 					.replace(/(command|\u2318)-/gi, 'meta-')
@@ -158,8 +166,8 @@ KeyboardShortcut.toKeyboardShortcut = function(aEvent) {
 
 	var shortcut = [];
 	if (aEvent.altKey) shortcut.push('Alt');
-	if (aEvent.ctrlKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? 'Control' : 'Ctrl');
-	if (aEvent.metaKey) shortcut.push(XULAppInfo.OS == 'Darwin' ? /* 'Command' */ '\u2318' : 'Meta' );
+	if (aEvent.ctrlKey) shortcut.push(KeyboardShortcut.XULAppInfo.OS == 'Darwin' ? 'Control' : 'Ctrl');
+	if (aEvent.metaKey) shortcut.push(KeyboardShortcut.XULAppInfo.OS == 'Darwin' ? /* 'Command' */ '\u2318' : 'Meta' );
 	if (aEvent.shiftKey) shortcut.push('Shift');
 	if (aEvent.charCode) shortcut.push(String.fromCharCode(aEvent.charCode));
 	if (aEvent.keyCode) shortcut.push(this._keyNameFromKeyCode(aEvent.keyCode));
@@ -193,11 +201,6 @@ KeyboardShortcut._keyCodeFromKeyName = function(aName) {
 	return ('DOM_'+keyCode in Ci.nsIDOMKeyEvent) ? keyCode : '' ;
 };
 
-/** A handler for bootstrap.js */
-function shutdown()
-{
-	KeyboardShortcut.instances.slice(0).forEach(function(aKey) {
-		aKey.destroy();
-	});
-	KeyboardShortcut = undefined;
-}
+KeyboardShortcut.XULAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+								.getService(Components.interfaces.nsIXULAppInfo)
+								.QueryInterface(Components.interfaces.nsIXULRuntime);

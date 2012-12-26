@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      4
+ * @version      5
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi.
@@ -394,7 +394,7 @@ try{
 	}
 
 	range.detach();
-}catch(e){dump(e+'\n\n'+aSource.toXMLString()+'\n');}
+}catch(e){dump(e+'\n\n'+(aSource.toXMLString ? aSource.toXMLString() : aSource)+'\n');}
 	return fragment;
 };
 

@@ -523,5 +523,6 @@
 		Components.classes['@mozilla.org/moz/jssubscript-loader;1']
 			.getService(Components.interfaces.mozIJSSubScriptLoader)
 			.loadSubScript('resource://foxsplitter-resources/modules/lib/easyTemplate.js', window);
+		easyTemplate.apply();
 	]]></script>
 </prefwindow>
