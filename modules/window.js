@@ -37,6 +37,7 @@ load('base');
 load('ui');
 load('lib/jsdeferred');
 load('lib/prefs');
+load('lib/here');
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
@@ -2457,17 +2458,17 @@ FoxSplitterWindow.prototype = {
 		if (!aEvent.originalTarget.ownerDocument)
 			return true;
 
-		var inputFieldPattern = <![CDATA[(
+		var inputFieldPattern = here(/*(
 				(
 					contains(" input INPUT ", concat(" ", local-name(), " ")) and
 					contains(" text TEXT file FILE password PASSWORD ", concat(" ", @type, " "))
 				) or
 				contains(" textarea TEXTAREA ", concat(" ", local-name(), " "))
-			)]]>.toString();
-		var popupPattern = <![CDATA[(
+			)*/);
+		var popupPattern = here(/*(
 				contains(" popup menupopup panel tooltip ", concat(" ", local-name(), " ")) and
 				not(contains(@class, "DROP_INDICATOR_CLASS"))
-			)]]>.toString().replace(/DROP_INDICATOR_CLASS/g, this.DROP_INDICATOR);
+			)*/).replace(/DROP_INDICATOR_CLASS/g, this.DROP_INDICATOR);
 		var undroppablePattern = ('ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+' or '+popupPattern+']').replace(/\n\t+/g, ' ');
 		return (
 			!aEvent.originalTarget.ownerDocument.evaluate(
@@ -2944,5 +2945,6 @@ function shutdown()
 {
 	prefs.removePrefListener(prefListener);
 	prefs = undefined;
+	here = undefined;
 	FoxSplitterConst = undefined;
 }
