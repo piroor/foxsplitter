@@ -10,6 +10,7 @@
                    em:description="Splits browser window as you like."
                    em:homepageURL="http://piro.sakura.ne.jp/xul/foxsplitter/index.html.en"
                    em:optionsURL="chrome://foxsplitter/content/config.xul"
+                   em:type="2"
                    em:bootstrap="true"
                    em:unpack="true">
 
