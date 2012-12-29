@@ -2469,7 +2469,7 @@ FoxSplitterWindow.prototype = {
 				contains(" popup menupopup panel tooltip ", concat(" ", local-name(), " ")) and
 				not(contains(@class, "DROP_INDICATOR_CLASS"))
 			)*/).replace(/DROP_INDICATOR_CLASS/g, this.DROP_INDICATOR);
-		var undroppablePattern = ('ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+' or '+popupPattern+']').replace(/\n\t+/g, ' ');
+		var undroppablePattern = ('ancestor-or-self::*[local-name()="textbox" or '+inputFieldPattern+' or '+popupPattern+']').replace(/\s\s+/g, ' ');
 		return (
 			!aEvent.originalTarget.ownerDocument.evaluate(
 				undroppablePattern,
