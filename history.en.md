@@ -1,6 +1,7 @@
 # History
 
  - master/HEAD
+   * Works on Firefox 29 and later
  - 2.1.2012122901
    * Works on Nightly 20.0a1.
    * Drop support for Firefox 9 and older versions.

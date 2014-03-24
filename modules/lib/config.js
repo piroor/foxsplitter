@@ -1,10 +1,10 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      12
+ * @version      13
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -62,7 +62,7 @@ var config = {
 							.QueryInterface(Ci.nsIInterfaceRequestor)
 							.getInterface(Ci.nsIWebNavigation)
 							.QueryInterface(Ci.nsIDocShell)
-							.QueryInterface(Ci.nsIDocShellTreeNode)
+							.QueryInterface(Ci.nsIDocShellTreeNode || Ci.nsIDocShellTreeItem) // nsIDocShellTreeNode is merged to nsIDocShellTreeItem by https://bugzilla.mozilla.org/show_bug.cgi?id=331376
 							.QueryInterface(Ci.nsIDocShellTreeItem)
 							.parent;
 			if (parent)
