@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2012
+ * Portions created by the Initial Developer are Copyright (C) 2007-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1616,11 +1616,21 @@ FoxSplitterWindow.prototype = {
 
 
 	// event handling
+	get MutationObserver()
+	{
+		var w = this.window;
+		return w.MutationObserver || w.MozMutationObserver;
+	},
 
 	startListen : function FSW_startListen()
 	{
 		if (this._listening || !this._window) return;
-		this.window.addEventListener('DOMAttrModified', this, false);
+
+		this.mutationOserver = new this.MutationObserver((function(aMutations, aObserver) {
+			this.handleMutations(aMutations, aObserver);
+		}).bind(this));
+		this.mutationOserver.observe(this.documentElement, { attributes : true });
+
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
 		this.window.addEventListener('deactivate', this, true);
@@ -1640,7 +1650,12 @@ FoxSplitterWindow.prototype = {
 	endListen : function FSW_endListen()
 	{
 		if (!this._listening || !this._window) return;
-		this.window.removeEventListener('DOMAttrModified', this, false);
+
+		if (this.mutationOserver) {
+			this.mutationOserver.disconnect();
+			delete this.mutationOserver;
+		}
+
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
 		this.window.removeEventListener('deactivate', this, true);
@@ -1685,9 +1700,6 @@ FoxSplitterWindow.prototype = {
 			case 'unload':
 				return this.destroy();
 
-
-			case 'DOMAttrModified':
-				return this._onDOMAttrModified(aEvent);
 
 			case 'resize':
 				if (aEvent.target == this.window)
@@ -1746,12 +1758,13 @@ FoxSplitterWindow.prototype = {
 		}
 	},
 
-	_onDOMAttrModified : function FSW_onDOMAttrModified(aEvent)
+	handleMutations : function FSW_handleMutations(aMutations, aObserver)
 	{
-		if (aEvent.target != this.documentElement)
-			return;
+		aMutations.forEach(function(aMutation) {
+			if (aMutation.type != 'attributes')
+				return;
 
-		switch (aEvent.attrName)
+		switch (aMutation.attributeName)
 		{
 			case 'screenX':
 			case 'screenY':
@@ -1766,10 +1779,13 @@ FoxSplitterWindow.prototype = {
 				return this._onWindowStateChange();
 
 			case 'chromemargin':
-				if (this.ui)
-					this.ui.onChromeMarginChange(aEvent);
+				if (this.ui) {
+					let value = aMutation.target.getAttribute(aMutation.attributeName);
+					this.ui.onChromeMarginChange(value);
+				}
 				return;
 		}
+		}, this);
 	},
 
 	_checkWindowState : function FSW_checkWindowState()

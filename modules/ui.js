@@ -856,18 +856,20 @@ FoxSplitterUI.prototype = {
 			this.documentElement.setAttribute('chromemargin', margin.join(','));
 		}
 		finally {
-			this._chromeMarginUpdating = false;
+			return Deferred.next((function() {
+				this._chromeMarginUpdating = false;
+			}).bind(this));
 		}
 	},
 	_chromeMarginUpdating : false,
 	_originalChromeMargin : undefined,
 
-	onChromeMarginChange : function FSUI_onChromeMarginChange(aEvent)
+	onChromeMarginChange : function FSUI_onChromeMarginChange(aNewValue)
 	{
 		if (this._chromeMarginUpdating)
 			return;
 
-		this._originalChromeMargin = aEvent.newValue;
+		this._originalChromeMargin = aNewValue;
 		this.updateChromeMargin();
 	},
 
@@ -903,7 +905,7 @@ FoxSplitterUI.prototype = {
 				switch (aEvent.attrName)
 				{
 					case 'chromemargin':
-						return this._onChromeMarginChange(aEvent);
+						return this._onChromeMarginChange(aEvent.newValue);
 				}
 				return;
 */
