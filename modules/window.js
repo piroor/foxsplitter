@@ -1764,27 +1764,27 @@ FoxSplitterWindow.prototype = {
 			if (aMutation.type != 'attributes')
 				return;
 
-		switch (aMutation.attributeName)
-		{
-			case 'screenX':
-			case 'screenY':
-				// possible maximized. do it after the "sizemode" is updated.
-				let (self = this) {
-					return Deferred.next(function() {
-						self.onMove();
-					});
-				}
+			switch (aMutation.attributeName)
+			{
+				case 'screenX':
+				case 'screenY':
+					// possible maximized. do it after the "sizemode" is updated.
+					let (self = this) {
+						return Deferred.next(function() {
+							self.onMove();
+						});
+					}
 
-			case 'sizemode':
-				return this._onWindowStateChange();
+				case 'sizemode':
+					return this._onWindowStateChange();
 
-			case 'chromemargin':
-				if (this.ui) {
-					let value = aMutation.target.getAttribute(aMutation.attributeName);
-					this.ui.onChromeMarginChange(value);
-				}
-				return;
-		}
+				case 'chromemargin':
+					if (this.ui) {
+						let value = aMutation.target.getAttribute(aMutation.attributeName);
+						this.ui.onChromeMarginChange(value);
+					}
+					return;
+			}
 		}, this);
 	},
 
