@@ -332,7 +332,7 @@ function _createNamespace(aURISpec, aRoot)
 				return doAndWait(aAsyncTask);
 			},
 			exports : {}
-		};
+		});
 	return ns;
 }
 
