@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      7
+ * @version      8
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
@@ -352,9 +352,10 @@ ToolbarItem.create = function(aSource, aOwner, aOptions) {
 	var item = aSource;
 	if (!(aSource instanceof Ci.nsIDOMElement)) {
 		let fragment = this.toDOMDocumentFragment(aSource, aOwner);
-		item = fragment.querySelector('*');
+		aOptions.node = item = fragment.querySelector('*');
 	}
-	aOptions.node = item.parentNode.removeChild(item);
+	if (item.parentNode) // remove topmost document fragment
+		aOptions.node = item.parentNode.removeChild(item);
 	if (aOwner instanceof Ci.nsIDOMElement && aOwner.localName == 'toolbar')
 		aOptions.toolbar = aOwner;
 	return new ToolbarItem(aOptions);
