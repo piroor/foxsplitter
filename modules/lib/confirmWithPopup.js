@@ -13,7 +13,7 @@ var namespace = {
 /**
  * @fileOverview Popup Notification (Door Hanger) Based Confirmation Library for Firefox 4.0 or later
  * @author       YUKI "Piro" Hiroshi
- * @version      5
+ * @version      6
  * Basic usage:
  *
  * @example
@@ -62,9 +62,7 @@ var namespace = {
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2012 YUKI "Piro" Hiroshi
- *   http://github.com/piroor/fxaddonlibs/blob/master/license.txt
- * @url http://github.com/piroor/fxaddonlibs/blob/master/confirmWithPopup.js
- * @url http://github.com/piroor/fxaddonlibs
+ * @url http://github.com/piroor/fxaddonlib-confirm-popup
  */
 
 if (typeof window == 'undefined')
@@ -103,7 +101,7 @@ catch(e) {
 
 var confirmWithPopup;
 (function(global) {
-	const currentRevision = 5;
+	const currentRevision = 6;
 
 	var loadedRevision = 'confirmWithPopup' in namespace ?
 			namespace.confirmWithPopup.revision :
@@ -308,10 +306,14 @@ var confirmWithPopup;
 					options.anchor,
 					primaryAction,
 					secondaryActions,
-					{
-						__proto__ : nativeOptions,
-						dismissed : true
-					}
+					Object.create(nativeOptions, {
+						dismissed : {
+							writable     : true,
+							configurable : true,
+							enumerable   : true,
+							value        : true
+						}
+					})
 				);
 				if (!options.dismissed) {
 					/**
@@ -325,21 +327,25 @@ var confirmWithPopup;
 							options.anchor,
 							primaryAction,
 							secondaryActions,
-							{
-								__proto__     : nativeOptions,
-								eventCallback : function(aEventType) {
-									try {
-										if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
-											deferred.fail(aEventType);
-										if (options.eventCallback)
-											options.eventCallback.call(aOptions.options || aOptions, aEventType);
-									}
-									finally {
-										if (aEventType == 'removed')
-											postProcess();
+							Object.create(nativeOptions, {
+								eventCallback : {
+									writable     : true,
+									configurable : true,
+									enumerable   : true,
+									value        : function(aEventType) {
+										try {
+											if (!done && (aEventType == 'removed' || aEventType == 'dismissed'))
+												deferred.fail(aEventType);
+											if (options.eventCallback)
+												options.eventCallback.call(aOptions.options || aOptions, aEventType);
+										}
+										finally {
+											if (aEventType == 'removed')
+												postProcess();
+										}
 									}
 								}
-							}
+							})
 						);
 					};
 					if (namespace.Deferred)
