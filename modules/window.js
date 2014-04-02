@@ -56,8 +56,7 @@ function FoxSplitterWindow(aWindow, aOnInit)
 {
 	this.init(aWindow, aOnInit);
 }
-FoxSplitterWindow.prototype = {
-	__proto__ : FoxSplitterBase.prototype,
+FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 	lastX      : null,
 	lastY      : null,
@@ -2904,7 +2903,7 @@ FoxSplitterWindow.prototype = {
 			browser    : null
 		};
 	}
-};
+});
 
 FoxSplitterBase.prototype.memberClass = FoxSplitterWindow;
 

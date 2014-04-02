@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2012
+ * Portions created by the Initial Developer are Copyright (C) 2007-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -53,8 +53,7 @@ function FoxSplitterUI(aFSWindow)
 {
 	this.init(aFSWindow);
 }
-FoxSplitterUI.prototype = {
-	__proto__ : FoxSplitterConst,
+FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 
 	get _window()
 	{
@@ -1683,7 +1682,7 @@ FoxSplitterUI.prototype = {
 		this._autoHideTabsWasEnabled = undefined;
 	}
 
-};
+});
 
 FoxSplitterUI.instances = [];
 

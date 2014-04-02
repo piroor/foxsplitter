@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2012
+ * Portions created by the Initial Developer are Copyright (C) 2007-2014
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -47,8 +47,7 @@ var domain = FoxSplitterConst.domain;
 function FoxSplitterBase() 
 {
 }
-FoxSplitterBase.prototype = {
-	__proto__ : FoxSplitterConst,
+FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	newMemberFactor : 0.5,
 	normalExpandFactor : 1.2,
@@ -1185,7 +1184,7 @@ FoxSplitterBase.prototype = {
 			}, 500);
 		}
 	}
-};
+});
 
 FoxSplitterBase.shouldDuplicateOnSplit = prefs.getPref(domain+'shouldDuplicateOnSplit');
 FoxSplitterBase.offsetX = prefs.getPref(domain+'platformOffset.x');
