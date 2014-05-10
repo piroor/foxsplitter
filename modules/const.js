@@ -186,6 +186,11 @@ exports.STYLESHEET = easyTemplate.apply(here(/*
 	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
 	  toolbox:not([customizing="true"])
 	  toolbar#nav-bar
+	  > *{{NON_NAVIGATION_ITEM_CLASS}}:not(#nav-bar-customization-target),
+	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
+	  toolbox:not([customizing="true"])
+	  toolbar#nav-bar
+	  > #nav-bar-customization-target
 	  > *{{NON_NAVIGATION_ITEM_CLASS}},
 	:root[{{CHROMEHIDDEN}}~="extra-toolbars"]
 	  toolbox:not([customizing="true"])
