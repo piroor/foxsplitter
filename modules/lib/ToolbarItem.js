@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      8
+ * @version      9
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
@@ -129,7 +129,11 @@ ToolbarItem.prototype = {
 
 	_normalizeDefinition : function(aDefinition)
 	{
-		if (aDefinition instanceof Ci.nsIDOMElement)
+		var ns = aDefinition && aDefinition.ownerDocument && aDefinition.ownerDocument.defaultView;
+		var Element = ns && typeof ns.Element == 'function' ? ns.Element : null ;
+		if (aDefinition &&
+			typeof Element == 'function' &&
+			aDefinition instanceof Element)
 			aDefinition = { node : aDefinition };
 		if (aDefinition.element && !aDefinition.node)
 			aDefinition.node = aDefinition.element;
@@ -147,7 +151,9 @@ ToolbarItem.prototype = {
 		if (aDefinition.destroy && !aDefinition.onDestroy)
 			aDefinition.onDestroy = aDefinition.destroy;
 
-		if (aDefinition.toolbar && aDefinition.toolbar instanceof Ci.nsIDOMElement)
+		if (aDefinition.toolbar &&
+			typeof Element == 'function' &&
+			aDefinition.toolbar instanceof Element)
 			aDefinition.toolbar = aDefinition.toolbar.id;
 
 		return aDefinition;
@@ -350,13 +356,15 @@ ToolbarItem.XULNS = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.x
 ToolbarItem.create = function(aSource, aOwner, aOptions) {
 	aOptions = aOptions || {};
 	var item = aSource;
-	if (!(aSource instanceof Ci.nsIDOMElement)) {
+	var ns = aSource && aSource.ownerDocument && aSource.ownerDocument.defaultView;
+	var Element = ns && typeof ns.Element == 'function' ? ns.Element : null ;
+	if (!(Element && aSource instanceof Element)) {
 		let fragment = this.toDOMDocumentFragment(aSource, aOwner);
 		aOptions.node = item = fragment.querySelector('*');
 	}
 	if (item.parentNode) // remove topmost document fragment
 		aOptions.node = item.parentNode.removeChild(item);
-	if (aOwner instanceof Ci.nsIDOMElement && aOwner.localName == 'toolbar')
+	if (Element && aOwner instanceof Element && aOwner.localName == 'toolbar')
 		aOptions.toolbar = aOwner;
 	return new ToolbarItem(aOptions);
 };
