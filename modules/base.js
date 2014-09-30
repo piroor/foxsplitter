@@ -854,7 +854,10 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		aOptions = aOptions || {};
 
 		// for backward compatibility
-		if (aOptions instanceof Ci.nsIDOMEvent)
+		if (aOptions &&
+			aOptions.view &&
+			typeof aOptions.view.Event == 'function' &&
+			aOptions instanceof aOptions.view.Event)
 			aOptions = { triggerEvent : aOptions };
 
 		if (this.shouldDuplicateOnSplit != this.isMiddleClick(aOptions.triggerEvent))
