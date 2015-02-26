@@ -1768,11 +1768,9 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				case 'screenX':
 				case 'screenY':
 					// possible maximized. do it after the "sizemode" is updated.
-					let (self = this) {
-						return Deferred.next(function() {
-							self.onMove();
-						});
-					}
+					return Deferred.next((function() {
+						this.onMove();
+					}).bind(this));
 
 				case 'sizemode':
 					return this._onWindowStateChange();
@@ -1831,13 +1829,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 					 * When the active window is minimized, another member can be focused.
 					 * So we have to minimize other windows with a delay.
 					 */
-					let (self = this) {
-						deferred = Deferred
-							.next(function() {
-								self.root.minimize(this);
-							})
-							.error(this.defaultHandleError);
-					}
+					deferred = Deferred
+						.next((function() {
+							this.root.minimize(this);
+						}).bind(this))
+						.error(this.defaultHandleError);
 					break;
 
 				case this.STATE_MAXIMIZED:

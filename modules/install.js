@@ -117,7 +117,8 @@ function migratePrefs()
 	switch (prefs.getPref(FSC.domain+'prefsVersion') || 0)
 	{
 		case 0:
-			let (current = prefs.getPref(FSC.domain+'hiddenUIInInactiveWindow')) {
+			{
+				let current = prefs.getPref(FSC.domain+'hiddenUIInInactiveWindow');
 				if (current !== null) {
 					prefs.setPref(FSC.domain+'hiddenUIInMemberWindow', current);
 					prefs.clearPref(FSC.domain+'hiddenUIInInactiveWindow');
