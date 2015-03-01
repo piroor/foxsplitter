@@ -1,10 +1,10 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      9
+ * @version      10
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2011-2015 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -238,7 +238,7 @@ ToolbarItem.prototype = {
 
 	_checkInsertedInOtherPlace : function()
 	{
-		var toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+this.id.quote()+')]');
+		var toolbar = this._getNodeByXPath('/descendant::*[local-name()="toolbar" and contains(concat(",",@currentset,","), '+JSON.stringify(this.id)+')]');
 		if (!toolbar)
 			return false;
 
