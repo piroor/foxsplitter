@@ -9,7 +9,7 @@
  * @url http://github.com/piroor/restartless
  */
 
-const EXPORTED_SYMBOLS = ['config'];
+var EXPORTED_SYMBOLS = ['config'];
 
 const XULNS = 'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul';
 

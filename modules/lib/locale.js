@@ -9,9 +9,9 @@
  * @url http://github.com/piroor/restartless
  */
 
-const EXPORTED_SYMBOLS = ['locale'];
+var EXPORTED_SYMBOLS = ['locale'];
 
-const DEFAULT_LOCALE = 'en-US';
+var DEFAULT_LOCALE = 'en-US';
 
 var gCache = {}
 var get = function(aPath, aBaseURI) {

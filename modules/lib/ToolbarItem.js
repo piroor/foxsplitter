@@ -9,7 +9,7 @@
  * @url http://github.com/piroor/restartless
  */
 
-const EXPORTED_SYMBOLS = ['ToolbarItem'];
+var EXPORTED_SYMBOLS = ['ToolbarItem'];
 
 const XULAppInfo = Cc['@mozilla.org/xre/app-info;1']
 					.getService(Ci.nsIXULAppInfo)
