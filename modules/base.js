@@ -476,27 +476,37 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	unbind : function FSB_unbind(aSilent) /* PUBLIC API */
 	{
-		if (!this.parent)
+		log('FSB_unbind: aSilent = '+aSilent);
+		if (!this.parent) {
+			log('FSB_unbind: no parent');
 			return;
+		}
 
 		if (!this.isGroup && this.stretched) {
 			let self = this;
+			log('FSB_unbind: try shrink');
 			return this.shrink().then(function() {
+					log('FSB_unbind: retry');
 					self.unbind(aSilent);
 				});
 		}
 
 		var sibling = this.sibling;
 
-		if (!aSilent)
+		if (!aSilent) {
+			log('FSB_unbind: try expanding sibling');
 			this._expandSibling();
+		}
 
 		let lastMainWindow = this.root.mainWindow;
 
+		log('FSB_unbind: unregister self');
 		this.parent.unregister(this);
 
+		log('FSB_unbind: update grouped appearance');
 		this.updateGroupedAppearance();
 		if (!this.isGroup) {
+			log('FSB_unbind: [non-group]');
 			this.saveState();
 
 			if (!this.binding) {
