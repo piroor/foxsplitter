@@ -35,7 +35,7 @@
 
 var config = require('lib/config');
 
-var FoxSplitterConst = require('const');
+var FoxSplitterConst = require('extended-const');
 var domain = FoxSplitterConst.domain;
 
 config.setDefault(domain+'shouldDuplicateOnSplit', true);

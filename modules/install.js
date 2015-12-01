@@ -113,7 +113,7 @@ function uninstallOldVersion()
 function migratePrefs()
 {
 	var prefs = require('lib/prefs').prefs;
-	var FSC = require('const');
+	var FSC = require('extended-const');
 	switch (prefs.getPref(FSC.domain+'prefsVersion') || 0)
 	{
 		case 0:

@@ -39,7 +39,7 @@ load('lib/commandLineHelper');
 
 var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
-var FoxSplitterConst = require('const');
+var FoxSplitterConst = require('extended-const');
 var domain = FoxSplitterConst.domain;
 
 var EXPORTED_SYMBOLS = ['Wmctrl'];
