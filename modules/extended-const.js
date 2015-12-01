@@ -75,32 +75,27 @@ exports.STYLESHEET = easyTemplate.apply(here(/*
 	:root[{{CHROMEHIDDEN}}~="extrachrome"]
 	  #browser > .chromeclass-extrachrome#sidebar-box, <!-- Don't hide floating sidebar (by Ez Sidebar) -->
 	:root[{{CHROMEHIDDEN}}~="location"]
-	  toolbox:not([customizing="true"])
+	  toolbar:not([customizing="true"])
 	  .chromeclass-location,
 	:root[{{CHROMEHIDDEN}}~="location"][chromehidden~="toolbar"]
-	  toolbox:not([customizing="true"])
+	  toolbar:not([customizing="true"])
 	  .chromeclass-toolbar,
 	:root[{{CHROMEHIDDEN}}~="toolbar"]
-	  toolbox:not([customizing="true"])
+	  toolbar:not([customizing="true"])
 	  .chromeclass-toolbar-additional,
 	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
-	  toolbox:not([customizing="true"])
-	  toolbar[customizable="true"] toolbarseparator,
+	  toolbar:not([customizing="true"])[customizable="true"] toolbarseparator,
 	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
-	  toolbox:not([customizing="true"])
-	  toolbar[customizable="true"] toolbarspring,
+	  toolbar:not([customizing="true"])[customizable="true"] toolbarspring,
 	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
-	  toolbox:not([customizing="true"])
-	  toolbar#nav-bar
+	  toolbar:not([customizing="true"])#nav-bar
 	  > *{{NON_NAVIGATION_ITEM_CLASS}}:not(#nav-bar-customization-target),
 	:root[{{CHROMEHIDDEN}}~="toolbar-non-navigation-items"]
-	  toolbox:not([customizing="true"])
-	  toolbar#nav-bar
+	  toolbar:not([customizing="true"])#nav-bar
 	  > #nav-bar-customization-target
 	  > *{{NON_NAVIGATION_ITEM_CLASS}},
 	:root[{{CHROMEHIDDEN}}~="extra-toolbars"]
-	  toolbox:not([customizing="true"])
-	  toolbar:not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
+	  toolbar:not([customizing="true"]):not(#toolbar-menubar):not(#nav-bar):not(#PersonalToolbar):not(#TabsToolbar) {
 		visibility: collapse;
 		-moz-user-focus: none;
 	}
@@ -190,8 +185,8 @@ exports.STYLESHEET = easyTemplate.apply(here(/*
 	.{{MENU_ITEM}}.toggleStretched[{{TOGGLE_MODE}}="shrink"]                   { -moz-image-region: rect(0 224px 16px 208px); }
 	.{{MENU_ITEM}}.toggleStretched[{{TOGGLE_MODE}}="shrink"][disabled="true"]  { -moz-image-region: rect(16px 224px 32px 208px); }
 
-	:root:not([{{MEMBER}}="true"]) toolbox:not([customizing="true"]) #foxsplitter-syncScroll-button,
-	:root:not([{{MEMBER}}="true"]):not([{{STRETCHED}}="true"]) toolbox:not([customizing="true"]) #foxsplitter-toggleStretched-button {
+	:root:not([{{MEMBER}}="true"]) toolbar:not([customizing="true"]) #foxsplitter-syncScroll-button,
+	:root:not([{{MEMBER}}="true"]):not([{{STRETCHED}}="true"]) toolbar:not([customizing="true"]) #foxsplitter-toggleStretched-button {
 		visibility: collapse;
 	}
 	#foxsplitter-syncScroll-button                 { -moz-image-region: rect(0 112px 16px 96px); }
