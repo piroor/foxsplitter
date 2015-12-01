@@ -92,6 +92,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		this._syncScroll = !!aValue;
 		if (this.ui)
 			this.ui.onSyncScrollStateChange();
+		this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
+			command : this.COMMAND_REQUEST_UPDATE_SYNC_STATE,
+			params  : {
+				sync : this._syncScroll
+			}
+		});
 		return this._syncScroll;
 	},
 
@@ -333,8 +339,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		this.positioning = 0;
 		this.resizing    = 0;
 		this.raising     = 0;
-		this.scrolling   = 0;
-		this.scrollPositionSynching = 0;
 		this.windowStateUpdating = 0;
 		this.maximizing  = 0;
 
@@ -1627,10 +1631,18 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		}).bind(this));
 		this.mutationOserver.observe(this.documentElement, { attributes : true });
 
+		this.window.messageManager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		this.window.messageManager.loadFrameScript(this.CONTENT_SCRIPT, true);
+		this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
+			command : this.COMMAND_REQUEST_UPDATE_SYNC_STATE,
+			params  : {
+				sync : this.syncScrollX || this.syncScrollY
+			}
+		});
+
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
 		this.window.addEventListener('deactivate', this, true);
-		this.window.addEventListener('scroll', this, true);
 		this.window.addEventListener('dragover', this, false);
 		this.window.addEventListener('dragleave', this, true);
 		this.window.addEventListener('drop', this, true);
@@ -1652,10 +1664,15 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			delete this.mutationOserver;
 		}
 
+		this.window.messageManager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
+			command : this.COMMAND_SHUTDOWN
+		});
+		this.window.messageManager.removeDelayedFrameScript(this.CONTENT_SCRIPT);
+
 		this.window.removeEventListener('resize', this, false);
 		this.window.removeEventListener('activate', this, true);
 		this.window.removeEventListener('deactivate', this, true);
-		this.window.removeEventListener('scroll', this, true);
 		this.window.removeEventListener('dragover', this, false);
 		this.window.removeEventListener('dragleave', this, true);
 		this.window.removeEventListener('drop', this, true);
@@ -2037,76 +2054,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		}
 	},
 
-	onScroll : function FSW_onScroll(aEvent)
-	{
-		if (!this._window || !this.parent || this.scrolling || this.scrollPositionSynching || !this.syncScroll)
-			return;
-
-		var scrolledFrame = aEvent.originalTarget.defaultView;
-		if (
-			!scrolledFrame ||
-			// ignore scrolling in Firefox UI
-			scrolledFrame.top == this.window ||
-			// ignore scrolling in background tabs
-			scrolledFrame.top != this.browser.contentWindow
-			)
-			return;
-
-		this.scrolling++;
-
-		try {
-			var xFactor = scrolledFrame.scrollX / scrolledFrame.scrollMaxX;
-			var yFactor = scrolledFrame.scrollY / scrolledFrame.scrollMaxY;
-			var frames = this._collectAllFrames(scrolledFrame.top);
-			var index = frames.indexOf(scrolledFrame);
-			this.root.allWindows.forEach(function(aFSWindow) {
-				if (aFSWindow != this && aFSWindow.syncScroll)
-					aFSWindow._setScrollPosition(xFactor, yFactor, index);
-			}, this);
-		}
-		catch(e) {
-			this.dumpError(e, 'FoxSplitter: FAILED TO SYNC SCROLL!');
-		}
-
-		var self = this;
-		next(function() {
-			self.scrolling--;
-		});
-	},
-
-	_collectAllFrames : function FSW_getAllFrames(aFrame)
-	{
-		var frames = [aFrame];
-		frames.push(aFrame);
-		Array.forEach(aFrame.frames, function(aFrame) {
-			frames = frames.concat(this._collectAllFrames(aFrame));
-		}, this);
-		return frames;
-	},
-
-	_setScrollPosition : function FSW_applyScroll(aXFactor, aYFactor, aFrameIndex)
-	{
-		if (!this._window || this.scrollPositionSynching)
-			return;
-
-		this.scrollPositionSynching++;
-
-		var frames = this._collectAllFrames(this.browser.contentWindow);
-		if (!aFrameIndex || aFrameIndex >= frames.length)
-			aFrameIndex = 0;
-
-		var frame = frames[aFrameIndex];
-		frame.scrollTo(
-			(this.syncScrollX ? (aXFactor * frame.scrollMaxX) : frame.scrollX ),
-			(this.syncScrollY ? (aYFactor * frame.scrollMaxY) : frame.scrollY )
-		);
-
-		var self = this;
-		next(function() {
-			self.scrollPositionSynching--;
-		});
-	},
-
 	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
 		if (!this._window || !this.parent || this.maximizing)
@@ -2202,6 +2149,51 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	get stillMaximizedYet()
 	{
 		return this.width >= this.window.screen.availWidth * 0.8;
+	},
+
+	handleMessage : function FSW_handleMessage(aMessage)
+	{
+		log('*********************handleMessage*******************\n');
+		log('TARGET IS: '+aMessage.target.localName+'\n');
+		log(JSON.stringify(aMessage.json)+'\n');
+
+		switch (aMessage.json.command)
+		{
+			case this.COMMAND_REPORT_PAGE_SCROLLED:
+				this.onScroll(aMessage.json.params);
+				return;
+		}
+	},
+
+	onScroll : function FSW_onScroll(aScrollInfo)
+	{
+		if (!this._window || !this.parent || !this.syncScroll)
+			return;
+
+		try {
+			if (!this.syncScrollX)
+				delete aScrollInfo.x;
+			if (!this.syncScrollY)
+				delete aScrollInfo.y;
+			this.root.allWindows.forEach(function(aFSWindow) {
+				if (aFSWindow != this && aFSWindow.syncScroll)
+					aFSWindow._applyScrollFactor(aScrollInfo);
+			}, this);
+		}
+		catch(e) {
+			this.dumpError(e, 'FoxSplitter: FAILED TO SYNC SCROLL!');
+		}
+	},
+
+	_applyScrollFactor : function FSW_applyScrollFactor(aScrollInfo)
+	{
+		if (!this._window)
+			return;
+
+		this.browser.selectedTab.linkedBrowser.messageManager.sendAsyncMessage(this.MESSAGE_TYPE, {
+			command : this.COMMAND_REQUEST_APPLY_SCROLL_FACTOR,
+			params  : aScrollInfo
+		});
 	},
 
 	// called by the parent group
