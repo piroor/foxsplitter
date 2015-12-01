@@ -1631,7 +1631,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		}).bind(this));
 		this.mutationOserver.observe(this.documentElement, { attributes : true });
 
-		this.window.messageManager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		this.handleMessage_withThis = this.handleMessage.bind(this);
+		this.window.messageManager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage_withThis);
 		this.window.messageManager.loadFrameScript(this.CONTENT_SCRIPT, true);
 
 		this.window.addEventListener('resize', this, false);
@@ -1658,7 +1659,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			delete this.mutationOserver;
 		}
 
-		this.window.messageManager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage);
+		this.window.messageManager.removeMessageListener(this.MESSAGE_TYPE, this.handleMessage_withThis);
 		this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
 			command : this.COMMAND_SHUTDOWN
 		});
