@@ -38,8 +38,8 @@ load('lib/ToolbarItem');
 load('lib/KeyboardShortcut');
 load('lib/here');
 load('lib/easyTemplate');
-load('lib/wait');
 load('base');
+load('wait');
 
 var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 

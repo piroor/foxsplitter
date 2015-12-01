@@ -34,7 +34,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 load('lib/prefs');
-load('lib/wait');
+load('wait');
 
 var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
