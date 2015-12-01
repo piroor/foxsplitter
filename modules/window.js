@@ -1867,6 +1867,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	{
 		if (
 			!this._window ||
+			this.window.closed ||
 			this.lastX === null ||
 			this.lastY === null ||
 			this.positioning ||
