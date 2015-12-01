@@ -1,10 +1,10 @@
 /**
  * @fileOverview Easy template module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      3
+ * @version      4
  *
  * @license
- *   The MIT License, Copyright (c) 2012 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2012-2015 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -30,8 +30,8 @@ var easyTemplate = {
 	_systemPrincipal : Components.classes['@mozilla.org/systemprincipal;1']
 						.createInstance(Components.interfaces.nsIPrincipal),
 	_documentPrincipal : (function() {
-		return (typeof window != 'undefined' && window && typeof window.constructor != 'function') ?
-				document.nodePrincipal : null;
+		return (typeof window != 'undefined' && window && window.document) ?
+				window.document.nodePrincipal : null;
 	})(),
 
 	_applyToString : function(aString, aNamespace) {
