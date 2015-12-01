@@ -1618,7 +1618,9 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 				MARGIN_BOTTOM    : toolboxHeight - collapsedHeight,
 				COLLAPSED_HEIGHT : collapsedHeight,
 				DURATION         : duration ? duration / 1000 : 0,
-				DELAY            : delay ? delay / 1000 : 0
+				DELAY            : delay ? delay / 1000 : 0,
+				MEMBER           : this.MEMBER,
+				MAIN             : this.MAIN
 			}
 		);
 
