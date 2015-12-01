@@ -1104,9 +1104,9 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 	_waitDOMEvent : function FSB_waitDOMEvent(aTarget, ...aArgs)
 	{
 		return new Promise(function(aResolve, aReject) {
-		var eventTypes = Array.slice(aArgs, 1);
+		var eventTypes = aArgs;
 
-		var handleEvent = function() {
+		var handleEvent = function(aEvent) {
 				eventTypes.forEach(function(aType) {
 					aTarget.removeEventListener(aType, handleEvent, true);
 				});
