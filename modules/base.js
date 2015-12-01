@@ -51,10 +51,10 @@ function log(aMessage, ...aArgs) {
 		if (aArgs.length > 0) {
 			aArgs = aArgs.map(function(aArg) {
 				try {
-					return uneval(aArgs);
+					return uneval(aArg);
 				}
 				catch(e) {
-					return aArgs;
+					return aArg;
 				}
 			});
 			aMessage += ' / ' + aArgs.join(', ');
