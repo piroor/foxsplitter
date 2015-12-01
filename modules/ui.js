@@ -144,27 +144,34 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 
 	destroy : function FSUI_destroy(aReason)
 	{
+		log('FSUI_destroy: reason = '+aReason);
 		this.window.removeEventListener('TabSelect', this, false);
 		this.toolbox.removeEventListener('MozMouseHittest', this, true);
 
+		log('FSUI_destroy: try clearing grouped appearance');
 		this.clearGroupedAppearance(aReason === this.REASON_QUIT ||
 		                            aReason === this.REASON_WINDOW_CLOSE);
+		log('FSUI_destroy: try making undraggable');
 		this._makeAppButtonUndraggable();
+		log('FSUI_destroy: try destorying UI elements');
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
 		this._destroyKeyboardShortcuts();
 
+		log('FSUI_destroy: try destorying stylesheets');
 		for (let styleSheet in this._styleSheets)
 		{
 			this._uninstallStyleSheet(styleSheet);
 		}
 		delete this._styleSheets;
 
+		log('FSUI_destroy: try destorying instance');
 		FoxSplitterUI.instances = FoxSplitterUI.instances.filter(function(aUI) {
 			return aUI != this;
 		}, this);
 
 		delete this.owner;
+		log('FSUI_destroy: done.');
 	},
 
 	_installStyleSheet : function FSUI_installStyleSheet(aStyleSheet)

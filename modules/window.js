@@ -613,6 +613,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	 */
 	_preDestroy : function FSW_preDestroy(aReason) 
 	{
+		log('FSW_preDestroy: reason = '+aReason);
 		this._preDestroyDone = true;
 
 		Cc['@mozilla.org/embedcomp/window-watcher;1']
@@ -623,24 +624,29 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this._restoreSiblingScrollPosition();
 			this._exportTabsToSibling();
 		}
+		log('FSW_preDestroy: done');
 	},
 	_preDestroyDone : false,
 
 	destroy : function FSW_destroy(aReason) 
 	{
+		log('FSW_destroy: reason = '+aReason);
 		this.shouldSaveState = aReason !== this.REASON_QUIT;
 
 		if (!this._preDestroyDone)
 			this._preDestroy(aReason);
 
 		if (this._reservedHandleRaised) {
+			log('FSW_destroy: destroy raised handler');
 			this._reservedHandleRaised.cancel();
 			delete this._reservedHandleRaised;
 			FoxSplitterWindow.raising--;
 		}
 
+		log('FSW_destroy: destroy TabView listener');
 		this._onTabViewHidden();
 
+		log('FSW_destroy: destroy custom elements');
 		this.hideDropIndicator();
 		this.unwatchWindowState();
 
@@ -648,13 +654,16 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
+		log('FSW_destroy: destroy UI');
 		this.ui.destroy(aReason);
 		delete this.ui;
 
 		var id = this.id;
 
+		log('FSW_destroy: unbind');
 		this.unbind(aReason);
 
+		log('FSW_destroy: unlisten events');
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
 		this.endListen();
@@ -662,10 +671,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		delete this.window;
 		delete this._wmctrl;
 
+		log('FSW_destroy: clear instance');
 		FoxSplitterWindow.instances = FoxSplitterWindow.instances.filter(function(aFSWindow) {
 			return aFSWindow != this;
 		}, this);
 		delete FoxSplitterWindow.instancesById[id];
+		log('FSW_destroy: done.');
 	},
 
 	_exportTabsToSibling : function FSW_exportTabsToSibling()
