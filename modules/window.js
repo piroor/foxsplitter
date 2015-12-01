@@ -2594,7 +2594,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		if (!this._window)
 			return Promise.resolve();
 
-		return new Promise((function() {
+		return new Promise((function(aResolve, aReject) {
 
 		var size = 10;
 		var indicator = this._dropIndicator;
