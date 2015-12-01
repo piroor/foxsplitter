@@ -1875,7 +1875,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				root.movingWindowClearer.cancel();
 
 			root.movingWindow = this;
-			root.movingWindowClearer = wait(500).then(function() {
+			root.movingWindowClearer = wait(500);
+			root.movingWindowClearer.then(function() {
 				root.movingWindow = null;
 				root.movingWindowClearer = null;
 			});
