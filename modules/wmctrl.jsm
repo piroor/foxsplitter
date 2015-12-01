@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2012
+ * Portions created by the Initial Developer are Copyright (C) 2012-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -33,10 +33,11 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-load('lib/jsdeferred');
 load('lib/textIO');
 load('lib/prefs');
 load('lib/commandLineHelper');
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
@@ -128,31 +129,26 @@ Wmctrl.__defineGetter__('path', function() {
 });
 
 Wmctrl.initPath = function wmctrl_initPath() {
-	var deferred = new Deferred();
-
 	var self = this;
-	Deferred.next(function() {
-		if (self.path) {
-			deferred.call(self.path);
-			return;
-		}
-		var pathFile = commandLineHelper.createTempFile('wmctrl-path');
-		return commandLineHelper.run(resolve('bin/which-wmctrl'), pathFile.path)
-				.next(function() {
-					var path = textIO.readFrom(pathFile, 'UTF-8').replace(/^\s+|\s+$/g, '');
-					pathFile.remove(true);
-					if (!path) {
-						deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
-					}
-					else {
-						Wmctrl.path = path;
-						deferred.call(path);
-					}
-				})
-				.error(function() {
-					deferred.fail(new Error(self.ERROR_WMCTRL_NOT_FOUND));
-				});
-	});
+	return new Promise(function(aResolve, aReject) {
+		if (self.path)
+			return aResolve(self.path);
 
-	return deferred;
+		var pathFile = commandLineHelper.createTempFile('wmctrl-path');
+		commandLineHelper.run(resolve('bin/which-wmctrl'), pathFile.path)
+			.next(function() {
+				var path = textIO.readFrom(pathFile, 'UTF-8').replace(/^\s+|\s+$/g, '');
+				pathFile.remove(true);
+				if (!path) {
+					aReject(new Error(self.ERROR_WMCTRL_NOT_FOUND));
+				}
+				else {
+					Wmctrl.path = path;
+					aResolve(path);
+				}
+			})
+			.error(function() {
+				aReject(new Error(self.ERROR_WMCTRL_NOT_FOUND));
+			});
+	});;
 };

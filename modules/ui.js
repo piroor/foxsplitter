@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2014
+ * Portions created by the Initial Developer are Copyright (C) 2007-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -33,13 +33,15 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-load('lib/jsdeferred');
 load('lib/prefs');
 load('lib/ToolbarItem');
 load('lib/KeyboardShortcut');
 load('lib/here');
 load('lib/easyTemplate');
+load('lib/wait');
 load('base');
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var bundle = require('lib/locale')
 				.get('chrome://foxsplitter/locale/label.properties');
@@ -735,12 +737,12 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 
 	resetMenuItems : function FSUI_resetMenuItems()
 	{
-		if (this._deferredResetMenuItems)
+		if (this._promisedResetMenuItems)
 			return;
 
 		var self = this;
-		this._deferredResetMenuItems = Deferred.next(function() {
-			delete self._deferredResetMenuItems;
+		this._promisedResetMenuItems = next(function() {
+			delete self._promisedResetMenuItems;
 			self._destroyMenuItems();
 			self._initMenuItems();
 		});
@@ -788,12 +790,12 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 
 	resetKeyboardShortcuts : function FSUI_resetKeyboardShortcuts()
 	{
-		if (this._deferredKeyboardShortcuts)
+		if (this._promisedKeyboardShortcuts)
 			return;
 
 		var self = this;
-		this._deferredKeyboardShortcuts = Deferred.next(function() {
-			delete self._deferredKeyboardShortcuts;
+		this._promisedKeyboardShortcuts = next(function() {
+			delete self._promisedKeyboardShortcuts;
 			self._destroyKeyboardShortcuts();
 			self._initKeyboardShortcuts();
 		});
@@ -855,7 +857,7 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 			this.documentElement.setAttribute('chromemargin', margin.join(','));
 		}
 		finally {
-			return Deferred.next((function() {
+			return next((function() {
 				this._chromeMarginUpdating = false;
 			}).bind(this));
 		}
@@ -1358,7 +1360,7 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 	{
 		var gContextMenu = this.window.gContextMenu;
 		if (!gContextMenu)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		return this.owner.openLinkAt(gContextMenu.linkURL, aPosition);
 	},
@@ -1367,7 +1369,7 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 	{
 		var gContextMenu = this.window.gContextMenu;
 		if (!gContextMenu)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		var uri = gContextMenu.target.ownerDocument.defaultView.location.href;
 		return this.owner.openLinkAt(uri, aPosition);
@@ -1429,21 +1431,21 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearance) {
-			this._deferredGroupAppearance.cancel();
-			this._deferredGroupAppearance = null;
+		if (this._promisedGroupAppearance) {
+			this._promisedGroupAppearance.cancel();
+			this._promisedGroupAppearance = null;
 		}
-		if (this._deferredGroupAppearanceUpdate) {
-			this._deferredGroupAppearanceUpdate.cancel();
-			this._deferredGroupAppearanceUpdate = null;
+		if (this._promisedGroupAppearanceUpdate) {
+			this._promisedGroupAppearanceUpdate.cancel();
+			this._promisedGroupAppearanceUpdate = null;
 		}
 
 		if (aForce)
 			return this._setGroupedAppearanceInternal(aForce);
 
 		var self = this;
-		this._deferredGroupAppearance = Deferred.next(function() {
-			delete self._deferredGroupAppearance;
+		this._promisedGroupAppearance = next(function() {
+			delete self._promisedGroupAppearance;
 			self._setGroupedAppearanceInternal();
 		});
 	},
@@ -1492,12 +1494,12 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearanceUpdate)
-			this._deferredGroupAppearanceUpdate.cancel();
+		if (this._promisedGroupAppearanceUpdate)
+			this._promisedGroupAppearanceUpdate.cancel();
 
 		var self = this;
-		this._deferredGroupAppearanceUpdate = Deferred.next(function() {
-			delete self._deferredGroupAppearanceUpdate;
+		this._promisedGroupAppearanceUpdate = next(function() {
+			delete self._promisedGroupAppearanceUpdate;
 			self._updateGroupedAppearanceInternal();
 		});
 	},
@@ -1517,21 +1519,21 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 		if (!this._window)
 			return;
 
-		if (this._deferredGroupAppearance) {
-			this._deferredGroupAppearance.cancel();
-			this._deferredGroupAppearance = null;
+		if (this._promisedGroupAppearance) {
+			this._promisedGroupAppearance.cancel();
+			this._promisedGroupAppearance = null;
 		}
-		if (this._deferredGroupAppearanceUpdate) {
-			this._deferredGroupAppearanceUpdate.cancel();
-			this._deferredGroupAppearanceUpdate = null;
+		if (this._promisedGroupAppearanceUpdate) {
+			this._promisedGroupAppearanceUpdate.cancel();
+			this._promisedGroupAppearanceUpdate = null;
 		}
 
 		if (aForce)
 			return this._clearGroupedAppearanceInternal();
 
 		var self = this;
-		this._deferredGroupAppearance = Deferred.next(function() {
-			delete self._deferredGroupAppearance;
+		this._promisedGroupAppearance = next(function() {
+			delete self._promisedGroupAppearance;
 			self._clearGroupedAppearanceInternal();
 		});
 	},

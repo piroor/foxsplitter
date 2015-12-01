@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2014
+ * Portions created by the Initial Developer are Copyright (C) 2007-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -33,8 +33,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-load('lib/jsdeferred');
 load('lib/prefs');
+load('lib/wait');
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
 
@@ -150,24 +152,24 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		}
 
 		if (!aSibling || !(position & this.POSITION_VALID))
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		if (!this.isGroup && this.stretched) {
 			let self = this;
-			return this.shrink().next(function() {
+			return this.shrink().then(function() {
 					self.bindTo(aSibling, aOptions);
 				});
 		}
 		else if (!aSibling.isGroup && aSibling.stretched) {
 			let self = this;
-			return aSibling.shrink().next(function() {
+			return aSibling.shrink().then(function() {
 					self.bindTo(aSibling, aOptions);
 				});
 		}
 
 		this.binding++;
 
-		var deferreds = [];
+		var promises = [];
 
 		mainWindow = (
 			mainWindow ||
@@ -200,7 +202,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		aSibling.position = this.opposite[position];
 
 		if (!silent)
-			deferreds.push(this._initPositionAndSize());
+			promises.push(this._initPositionAndSize());
 
 		this.setGroupedAppearance();
 		if (!this.isGroup) {
@@ -208,7 +210,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 			let self = this;
 			let binding = this.binding;
-			deferreds.push(Deferred.next(function() {
+			promises.push(next(function() {
 				if (!binding) {
 					let event = self.document.createEvent('Events');
 					event.initEvent(self.EVENT_TYPE_SPLIT, true, false);
@@ -223,7 +225,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		if (!aSibling.isGroup) {
 			aSibling.saveState();
 
-			deferreds.push(Deferred.next(function() {
+			promises.push(next(function() {
 				let event = aSibling.document.createEvent('Events');
 				event.initEvent(aSibling.EVENT_TYPE_SPLIT, true, false);
 				aSibling.document.dispatchEvent(event);
@@ -250,11 +252,11 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 		this.binding--;
 
-		return deferreds.length > 1 ?
-				Deferred.parallel(deferreds) :
-			deferreds.length ?
-				deferreds[0] :
-				Deferred.next(function() {}) ;
+		return promises.length > 1 ?
+				Promise.all(promises) :
+			promises.length ?
+				promises[0] :
+				Promise.resolve() ;
 	},
 	bindWith : function FSB_bindWith(aSibling, aOptions) /* PUBLIC API, for backward compatibility */
 	{
@@ -266,24 +268,24 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		var base = this.sibling;
 		var positionAndSize = base.calculatePositionAndSizeFor(this.position);
 
-		var deferreds = [];
+		var promises = [];
 		if (positionAndSize.base.deltaX || positionAndSize.base.deltaY)
 			base.moveBy(positionAndSize.base.deltaX, positionAndSize.base.deltaY);
 		if (positionAndSize.base.deltaWidth || positionAndSize.base.deltaHeight)
-			deferreds.push(base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight));
+			promises.push(base.resizeBy(positionAndSize.base.deltaWidth, positionAndSize.base.deltaHeight));
 
 		if (this.x != positionAndSize.x || this.y != positionAndSize.y)
 			this.moveTo(positionAndSize.x, positionAndSize.y);
 		if (this.width != positionAndSize.width || this.height != positionAndSize.height)
-			deferreds.push(this.resizeTo(positionAndSize.width, positionAndSize.height));
+			promises.push(this.resizeTo(positionAndSize.width, positionAndSize.height));
 
 		var self = this;
-		return (deferreds.length > 1 ?
-					Deferred.parallel(deferreds) :
-				deferreds.length ?
-					deferreds[0] :
-					Deferred )
-					.next(function() {
+		return (promises.length > 1 ?
+					Promise.all(promises) :
+				promises.length ?
+					promises[0] :
+					Promise.resolev() )
+					.then(function() {
 						return base.parent.resetPositionAndSize(base);
 					});
 	},
@@ -454,7 +456,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 		if (!this.isGroup && this.stretched) {
 			let self = this;
-			return this.shrink().next(function() {
+			return this.shrink().then(function() {
 					self.unbind(aSilent);
 				});
 		}
@@ -523,9 +525,9 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 	{
 		var sibling = this.sibling;
 		if (!sibling)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
-		var deferred;
+		var promise;
 		if (sibling.position & this.POSITION_HORIZONTAL) {
 			let totalWidth = this.parent.width;
 			let deltaX = this.maximized ? 0 : Math.round(totalWidth - (totalWidth / this.expandFactor)) ;
@@ -534,7 +536,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 				let deltaXToMove = sibling.parent.parent ? 0 : deltaX ;
 				sibling.moveBy(-this.width + deltaXToMove, 0);
 			}
-			deferred = sibling.resizeBy(this.width - deltaX, 0);
+			promise = sibling.resizeBy(this.width - deltaX, 0);
 		}
 		else {
 			let totalHeight = this.parent.height;
@@ -544,13 +546,13 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 				let deltaYToMove = sibling.parent.parent ? 0 : deltaY ;
 				sibling.moveBy(0, -this.height + deltaYToMove);
 			}
-			deferred = sibling.resizeBy(0, this.height - deltaY);
+			promise = sibling.resizeBy(0, this.height - deltaY);
 		}
 
 		let parent = sibling.parent.parent;
 		if (parent) {
-			(deferred || Deferred)
-				.next(function() {
+			(promise || Promise.resolve())
+				.then(function() {
 					return parent.resetPositionAndSize(sibling);
 				});
 		}
@@ -568,7 +570,6 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 				'outerWidth='+aPositionAndSize.width - this.offsetWidth,
 				'outerHeight='+aPositionAndSize.height - this.offsetHeight
 			].join(',');
-		var deferred = new Deferred();
 
 		var arg = aURIOrTab;
 		if (!(arg instanceof Ci.nsISupports)) {
@@ -605,33 +606,33 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			root.setAttribute('height', aPositionAndSize.height);
 		}, false);
 
-		window.addEventListener(this.EVENT_TYPE_READY, function(aEvent) {
-			if (window) {
-				window.removeEventListener(aEvent.type, arguments.callee, false);
-				deferred.call(window);
-				window = undefined;
-			}
-			else {
-				deferred.fail(new Error(aEvent.type+' event is handled twice.'));
-			}
-		}, false);
+		return new Promise(function(aResolve, aReject) {
+			window.addEventListener(this.EVENT_TYPE_READY, function(aEvent) {
+				if (window) {
+					window.removeEventListener(aEvent.type, arguments.callee, false);
+					aResolve(window);
+					window = undefined;
+				}
+				else {
+					aReject(new Error(aEvent.type+' event is handled twice.'));
+				}
+			}, false);
+		})
+			.then(function(aWindow) {
+				var sv = aWindow.FoxSplitter;
 
-		return deferred
-				.next(function(aWindow) {
-					var sv = aWindow.FoxSplitter;
+				if (sv.x != aPositionAndSize.x || sv.y != aPositionAndSize.y)
+					sv.moveTo(aPositionAndSize.x, aPositionAndSize.y);
 
-					if (sv.x != aPositionAndSize.x || sv.y != aPositionAndSize.y)
-						sv.moveTo(aPositionAndSize.x, aPositionAndSize.y);
+				if (sv.width != aPositionAndSize.width || sv.height != aPositionAndSize.height)
+					return sv.resizeTo(aPositionAndSize.width, aPositionAndSize.height)
+							.then(function() {
+								return aWindow;
+							});
 
-					if (sv.width != aPositionAndSize.width || sv.height != aPositionAndSize.height)
-						return sv.resizeTo(aPositionAndSize.width, aPositionAndSize.height)
-								.next(function() {
-									return aWindow;
-								});
-
-					return aWindow;
-				})
-				.error(this.defaultHandleError);
+				return aWindow;
+			})
+			.catch(this.defaultHandleError);
 	},
 
 	openLinksAt : function FSB_openLinksAt(aURIs, aPosition, aOptions) /* PUBLIC API */
@@ -643,29 +644,28 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		var maximized = !this.parent && !this.isGroup && this.maximized;
 		var lastMainWindow = (this.parent && this.root.mainWindow) || this;
 		var stretchedMember = this.parent && this.root.stretchedMember;
-		return Deferred
-				.next(function() {
+		return next(function() {
 					if (stretchedMember)
 						return stretchedMember.shrink();
 				})
-				.next(function() {
+				.then(function() {
 					if (maximized)
 						return self.restore();
 				})
-				.next(function() {
+				.then(function() {
 					var positionAndSize = self.calculatePositionAndSizeFor(aPosition, true);
 					return self._openWindow(first, positionAndSize)
 				})
-				.next(function(aWindow) {
+				.then(function(aWindow) {
 					return aWindow.FoxSplitter.bindTo(self, {
 								position   : aPosition,
 								mainWindow : lastMainWindow
 							})
-								.next(function() {
+								.then(function() {
 									return aWindow;
 								});
 				})
-				.next(function(aWindow) {
+				.then(function(aWindow) {
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
@@ -675,23 +675,23 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 					self.root.readyToMaximize();
 					var waitMaximized = self._waitDOMEvent(self.window, self.EVENT_TYPE_WINDOW_STATE_CHANGED)
-							.next(function() {
+							.then(function() {
 								waitMaximized = null;
 								return aWindow;
 							});
 					self.maximize();
 					return waitMaximized || aWindow;
 				})
-				.next(function(aWindow) {
+				.then(function(aWindow) {
 					/*
 					if (stretchedMember)
 						return stretchedMember.stretch()
-								.next(function() { return aWindow; });
+								.then(function() { return aWindow; });
 					*/
 
 					return aWindow;
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	openLinkAt : function FSB_openLinkAt(aURIOrTab, aPosition, aOptions) /* PUBLIC API */
@@ -704,7 +704,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		aOptions = aOptions || {};
 		var self = this;
 		return this.openLinkAt('about:blank', aPosition)
-				.next(function(aWindow) {
+				.then(function(aWindow) {
 					var firstTab = aWindow.gBrowser.selectedTab;
 					var tabs = aWindow.FoxSplitter.duplicateTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
@@ -712,7 +712,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 						self._scrollTabsToSplitPosition(aTabs, tabs, aPosition);
 					return aWindow;
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 	duplicateTabAt : function FSB_duplicateTabAt(aTab, aPosition, aOptions) /* PUBLIC API */
 	{
@@ -818,13 +818,13 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			return this.moveWindowTo(aTabs[0].ownerDocument.defaultView, aPosition);
 
 		return this.openLinkAt('about:blank', aPosition)
-				.next(function(aWindow) {
+				.then(function(aWindow) {
 					var firstTab = aWindow.gBrowser.selectedTab;
 					aWindow.FoxSplitter.importTabs(aTabs);
 					aWindow.gBrowser.removeTab(firstTab);
 					return aWindow;
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 	moveTabTo : function FSB_moveTabTo(aTab, aPosition, aOptions) /* PUBLIC API */
 	{
@@ -839,14 +839,12 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 						position   : aPosition,
 						mainWindow : lastMainWindow
 					})
-					.next(function() {
+					.then(function() {
 						return aDOMWindow;
 					});
 		}
 
-		return Deferred.next(function() {
-			return aDOMWindow;
-		});
+		return Promise.resolve(aDOMWindow);
 	},
 
 	splitTabsTo : function FSB_splitTabsTo(aTabs, aPosition, aOptions) /* PUBLIC API */
@@ -885,13 +883,13 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		this._reservedMoveDeltaY = (this._reservedMoveDeltaY || 0) + aDY;
 
 		var self = this;
-		this._reservedMoveBy = Deferred.next(function() {
+		this._reservedMoveBy = next(function() {
 			self.moveBy(self._reservedMoveDeltaX, self._reservedMoveDeltaY);
 			delete self._reservedMoveDeltaX;
 			delete self._reservedMoveDeltaY
 			delete self._reservedMoveBy;
 		});
-		this._reservedMoveBy.error(this.defaultHandleError);
+		this._reservedMoveBy.catch(this.defaultHandleError);
 	},
 
 	reserveResizeBy : function FSB_reserveResizeBy(aDW, aDH)
@@ -905,13 +903,13 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		this._reservedResizeDeltaHeight = (this._reservedResizeDeltaHeight || 0) + aDH;
 
 		var self = this;
-		this._reservedResizeBy = Deferred.next(function() {
+		this._reservedResizeBy = next(function() {
 			self.resizeBy(self._reservedResizeDeltaWidth, self._reservedResizeDeltaHeight);
 			delete self._reservedResizeDeltaWidth;
 			delete self._reservedResizeDeltaHeight
 			delete self._reservedResizeBy;
 		});
-		this._reservedResizeBy.error(this.defaultHandleError);
+		this._reservedResizeBy.catch(this.defaultHandleError);
 	},
 
 	onResizeTop : function FSB_onResizeTop(aDelta)
@@ -1104,7 +1102,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	_waitDOMEvent : function FSB_waitDOMEvent(aTarget)
 	{
-		var deferred = new Deferred();
+		return new Promise(function(aResolve, aReject) {
 		var eventTypes = Array.slice(arguments, 1);
 
 		var handleEvent = function() {
@@ -1112,7 +1110,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					aTarget.removeEventListener(aType, handleEvent, true);
 				});
 				if (timer) timer.cancel();
-				deferred.call();
+				aResolve();
 			};
 
 		eventTypes.forEach(function(aType) {
@@ -1120,15 +1118,15 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		});
 
 		// timeout (for safety)
-		let timer = Deferred.wait(0.5);
+		let timer = wait(500);
 		timer
-			.next(function() {
+			.then(function() {
 				timer = null;
 				handleEvent();
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 
-		return deferred;
+		});
 	},
 
 
@@ -1241,16 +1239,15 @@ FoxSplitterBase.shouldKeepSizeRatioOnResize = prefs.getPref(domain+'shouldKeepSi
 FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 	var self = this;
 	if (!prefs.getPref(domain+'platformOffset.needToBeUpdated'))
-		return Deferred.next(function() {
-			return {
-				x : self.offsetX,
-				y : self.offsetY,
-				width : self.offsetWidth,
-				heigh : self.offsetHeight
-			};
+		return Promise.resolve({
+			x : self.offsetX,
+			y : self.offsetY,
+			width : self.offsetWidth,
+			heigh : self.offsetHeight
 		});
 
-	var deferred = new Deferred();
+	return new Promise(function(aResolve, aReject) {
+
 	prefs.setPref(domain+'platformOffset.needToBeUpdated', false);
 	var window = WindowWatcher.openWindow(
 			null,
@@ -1263,18 +1260,18 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 		window.removeEventListener('load', arguments.callee, false);
 		// on some environments, just on this timing the window is not shown yet, so we fail to calculate offsets.
 		// to avoid this problem, (for safety,) wait until the window is completely shown.
-		Deferred.wait(0.5).next(function() {
+		wait(500).then(function() {
 			prefs.setPref(domain+'platformOffset.x', self.offsetX = window.screenX - 100);
 			prefs.setPref(domain+'platformOffset.y', self.offsetY = window.screenY - 100);
 			var width = window.screen.availWidth;
 			var height = window.screen.availHeight;
 			window.moveTo(0, 0);
 			window.resizeTo(width, height);
-			Deferred.next(function() {
+			next(function() {
 				prefs.setPref(domain+'platformOffset.width', self.offsetWidth = width - window.outerWidth);
 				prefs.setPref(domain+'platformOffset.height', self.offsetHeight = height - window.outerHeight);
 				window.close();
-				deferred.call({
+				aResolve({
 					x : self.offsetX,
 					y : self.offsetY,
 					width : self.offsetWidth,
@@ -1283,7 +1280,7 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 			});
 		});
 	}, false);
-	return deferred;
+	});
 };
 FoxSplitterBase.updatePlatformOffset();
 

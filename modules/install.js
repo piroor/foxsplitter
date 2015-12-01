@@ -182,7 +182,6 @@ function initWmctrlPath()
 					if (windows.length && windows[0].gBrowser) {
 						let b = windows[0].gBrowser;
 						let confirmWithPopup = require('lib/confirmWithPopup').confirmWithPopup;
-						let Deferred = require('lib/jsdeferred').Deferred;
 						confirmWithPopup({
 							browser : b,
 							label   : text,
@@ -196,7 +195,7 @@ function initWmctrlPath()
 							],
 							persistence : 2
 						})
-						.next(function(aButtonIndex) {
+						.then(function(aButtonIndex) {
 							switch (aButtonIndex)
 							{
 								case 0:
@@ -207,7 +206,7 @@ function initWmctrlPath()
 									return;
 							}
 						// })
-						// .error(function(e) {
+						// .catch(function(e) {
 						// 	dump(e+'\n');
 						});
 					}

@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2014
+ * Portions created by the Initial Developer are Copyright (C) 2007-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -35,9 +35,11 @@
 
 load('base');
 load('ui');
-load('lib/jsdeferred');
 load('lib/prefs');
 load('lib/here');
+load('lib/wait');
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var EXPORTED_SYMBOLS = ['FoxSplitterWindow'];
 
@@ -337,7 +339,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		if (aOnInit) {
 			let self = this;
-			Deferred.wait(0.1).next(function() {
+			wait(100).then(function() {
 				return self._initAfterLoad();
 			});
 		}
@@ -351,7 +353,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			.registerNotification(this);
 
 		var self = this;
-		return Deferred.next(function() {
+		return next(function() {
 			// workaround to fix broken appearance on sized windows
 			if (!self.maximized) {
 				self.resizeBy(0, -1);
@@ -359,7 +361,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			}
 			return self._restoreState();
 		})
-		.next(function() {
+		.then(function() {
 			self.startListen();
 			self.watchWindowState();
 
@@ -367,16 +369,16 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			event.initEvent(self.EVENT_TYPE_READY, true, false);
 			self.document.dispatchEvent(event);
 		})
-		.error(this.defaultHandleError)
-		.next(function() {
+		.catch(this.defaultHandleError)
+		.then(function() {
 			// OK, it's the time to start saving any state changing!
 			self.shouldSaveState = true;
+			return wait(1000); // wait for other windows...
 		})
-		.wait(1) // wait for other windows...
-		.next(function() {
+		.then(function() {
 			self.saveState();
 		})
-		.error(this.defaultHandleError);
+		.catch(this.defaultHandleError);
 	},
 
 	_restoreState : function FSW_restoreState()
@@ -424,13 +426,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			});
 
 		// the sibling is not restored yet, so wait its restoration
-		var deferred = new Deferred();
 		this._restoringContext = {
 			siblingId : sibling,
-			lastState : lastState,
-			deferred  : deferred
+			lastState : lastState
 		};
-		return deferred;
+		return wait(0);
 	},
 	_getSiblingById : function FSB_getSiblingById(aId)
 	{
@@ -443,10 +443,10 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	{
 		var self = this;
 		return this._restorePosition(aContext)
-				.next(function() {
+				.then(function() {
 					return self._restoreSize(aContext);
 				})
-				.next(function() {
+				.then(function() {
 					return self._restoreGroup(aContext);
 				});
 	},
@@ -456,7 +456,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			aContext.lastState.y != this.imaginaryY)
 			return this.moveTo(aContext.lastState.x, aContext.lastState.y);
 		else
-			return Deferred;
+			return Promise.resolve();
 	},
 	_restoreSize : function FSW_restoreSize(aContext)
 	{
@@ -464,7 +464,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			aContext.lastState.height != this.imaginaryHeight)
 			return this.resizeTo(aContext.lastState.width, aContext.lastState.height);
 		else
-			return Deferred;
+			return Promise.resolve();
 	},
 	_restoreGroup : function FSW_restoreGroup(aContext)
 	{
@@ -473,7 +473,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			aContext.sibling = this._getSiblingById(aContext.siblingId);
 			// the sibling is not restored yet...
 			if (!aContext.sibling)
-				return aContext.deferred;
+				return wait(0);
 		}
 
 		if (this._restoringContext)
@@ -483,8 +483,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var lastState = aContext.lastState;
 
 		if (!sibling || sibling.parent) {
-			if (aContext.deferred)
-				aContext.deferred.call(false);
 			return this._restoreMetaGroups(lastState.whole);
 		}
 
@@ -512,9 +510,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			aFSWindow._continueRestoreState();
 		});
 
-		if (aContext.deferred)
-			aContext.deferred.call(true);
-
 		return this._restoreMetaGroups(lastState.whole);
 	},
 	_needRestored : true,
@@ -525,7 +520,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	_restoreMetaGroups : function FSW_restoreMetaGroups(aGroupState)
 	{
 		if (!aGroupState || typeof aGroupState != 'object' || !aGroupState.members)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		var self = this;
 		var members = aGroupState.members;
@@ -546,19 +541,19 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			return false;
 		});
 
-		return Deferred.next(function() {
+		return next(function() {
 				if (left && typeof left != 'string')
 					return self._restoreMetaGroups(left)
 				else if (top && typeof top != 'string')
 					return self._restoreMetaGroups(top);
 			})
-			.next(function() {
+			.then(function() {
 				if (right && typeof right != 'string')
 					return self._restoreMetaGroups(right);
 				else if (bottom && typeof members.bottom != 'string')
 					return self._restoreMetaGroups(bottom);
 			})
-			.next(function() {
+			.then(function() {
 				left = left && self.groupClass.getInstanceById(typeof left == 'string' ? left : left.id);
 				right = right && self.groupClass.getInstanceById(typeof right == 'string' ? right : right.id);
 				top = top && self.groupClass.getInstanceById(typeof top == 'string' ? top : top.id);
@@ -579,7 +574,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 					});
 				}
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 	},
 
 	_continueRestoreState : function FSW_continueRestoreState()
@@ -691,7 +686,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	moveTo : function FSW_moveTo(aX, aY)
 	{
 		if (this.minimized || !this._window)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.positioning++;
 
@@ -704,11 +699,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		return Deferred.next(function() {
+		return next(function() {
 				self.updateLastPositionAndSize();
 			})
-			.error(this.defaultHandleError)
-			.next(function() {
+			.catch(this.defaultHandleError)
+			.then(function() {
 				self.positioning--;
 			});
 	},
@@ -716,7 +711,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	moveBy : function FSW_moveBy(aDX, aDY)
 	{
 		if (this.minimized || !this._window)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.positioning++;
 
@@ -726,11 +721,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		return Deferred.next(function() {
+		return next(function() {
 				self.updateLastPositionAndSize();
 			})
-			.error(this.defaultHandleError)
-			.next(function() {
+			.catch(this.defaultHandleError)
+			.then(function() {
 				self.positioning--;
 			});
 	},
@@ -738,7 +733,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	resizeTo : function FSW_resizeTo(aW, aH)
 	{
 		if (this.minimized || !this._window)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.resizing++;
 
@@ -750,50 +745,48 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		aW = Math.max(this.MIN_WIDTH, Math.round(aW)) - this.offsetWidth;
 		aH = Math.max(this.MIN_HEIGHT, Math.round(aH)) - this.offsetHeight;
 		var waitResizeEvent = this._waitDOMEvent(this.window, 'resize')
-								.next(function() {
+								.then(function() {
 									waitResizeEvent = null;
 								});
 		this.window.resizeTo(aW, aH);
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		return Deferred
-				.next(function() {
+		return next(function() {
 					return waitResizeEvent;
 				})
-				.next(function() {
+				.then(function() {
 					self.updateLastPositionAndSize();
 					self.resizing--;
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	resizeBy : function FSW_resizeBy(aDW, aDH)
 	{
 		if (this.minimized || !this._window)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.resizing++;
 
 		aDW = Math.max(-this.window.innerWidth+this.MIN_WIDTH, Math.round(aDW));
 		aDH = Math.max(-this.window.innerHeight+this.MIN_HEIGHT, Math.round(aDH));
 		var waitResizeEvent = this._waitDOMEvent(this.window, 'resize')
-								.next(function() {
+								.then(function() {
 									waitResizeEvent = null;
 								});
 		this.window.resizeBy(aDW, aDH);
 		this.updateLastPositionAndSize();
 
 		var self = this;
-		return Deferred
-				.next(function() {
+		return next(function() {
 					return waitResizeEvent;
 				})
-				.next(function() {
+				.then(function() {
 					self.updateLastPositionAndSize();
 					self.resizing--;
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	raise : function FSW_raise()
@@ -804,7 +797,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this.minimized ||
 			this.methodToRaiseWindow == this.DO_NOT_RAISE_WINDOW
 			)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		switch (this.methodToRaiseWindow)
 		{
@@ -844,7 +837,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		XULWindow.zLevel = Ci.nsIXULWindow.highestZ;
 
 		var self = this;
-		return Deferred.next(function() {
+		return next(function() {
 				XULWindow.zLevel = originalFlag; // Ci.nsIXULWindow.normalZ;
 				self.raising--;
 			});
@@ -856,27 +849,27 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		var self = this;
 		return this.wmctrl.raise()
-				.error(function(e) {
+				.catch(function(e) {
 					dump(e+'\n');
 				})
-				.next(function() {
+				.then(function() {
 					self.raising--;
 				});
 	},
 
 	_raiseWindowByXLib : function FSW_raiseWindowByXLib()
 	{
-		return Deferred.next(function() {});
+		return wait(0);
 	},
 
 	/**
 	 * on Windows:
 	 *   (event loop 1) focused => "activate" event is fired
-	 *     => (event loop 2) Deferred.next() is processed
+	 *     => (event loop 2) next() is processed
 	 *       => ready to decrement the "raising" counter
 	 * on Linux:
 	 *   (event loop 1) focused
-	 *     => (event loop 2) Deferred.next() is processed
+	 *     => (event loop 2) next() is processed
 
 	 *       => (event loop 3) "activate" event is fired
 	 *         => ready to decrement the "raising" counter
@@ -890,12 +883,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		this.raising++;
 
 		var self = this;
-		var deferred = Deferred
-						.parallel(
+		var promise = Promise.all([
 							this._waitDOMEvent(this.window, 'activate', 'deactivate'),
-							Deferred.next(function() {})
-						)
-						.next(function() {
+							wait(0)
+						])
+						.then(function() {
 							self.raising--;
 						});
 
@@ -920,7 +912,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this.dumpError(e, 'FoxSplitter: FAILED TO RAISE A WINDOW!');
 		}
 
-		return deferred;
+		return promise;
 	},
 
 	maximize : function FSW_maximize()
@@ -959,42 +951,43 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		if (root && (root.minimized || root.maximized))
 			return root.restore();
 
-		return Deferred.next(function() {});
+		return Promise.resolve();
 	},
 
 	_doChangeWindowStateOperation : function FSW_doChangeWindowStateOperation(aOperation)
 	{
 		var window = this.window;
-		var waitStateChanged = new Deferred();
-		window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
-			window.removeEventListener(aEvent.type, arguments.callee, false);
-			waitStateChanged.call();
-			waitStateChanged = null;
-		}, false);
+		var waitStateChanged = new Promise((function(aResolve, aReject) {
+			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
+				window.removeEventListener(aEvent.type, arguments.callee, false);
+				aResolve();
+				waitStateChanged = null;
+			}, false);
+		});
 		var waitRestored = this._waitDOMEvent(window, 'resize')
-							.next(function() {
+							.then(function() {
 								waitRestored = null;
 							});
 
 		aOperation();
 
-		var deferreds = [];
+		var promises = [];
 
-		if (waitStateChanged) deferreds.push(waitStateChanged);
-		if (waitRestored) deferreds.push(waitRestored);
+		if (waitStateChanged) promises.push(waitStateChanged);
+		if (waitRestored) promises.push(waitRestored);
 
-		return deferreds.length > 1 ?
-				Deferred.parallel(deferreds) :
-			deferreds.length ?
-				deferreds[0] :
-				Deferred.next(function() {});
+		return promises.length > 1 ?
+				Promise.all(promises) :
+			promises.length ?
+				promises[0] :
+				Promise.resolve();
 	},
 
 
 	stretch : function FSW_stretch()
 	{
 		if (!this.parent || this.stretched || this.root.stretchedMember)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		var root = this.root;
 		var x = root.x;
@@ -1009,10 +1002,10 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		var self = this;
 		return this.moveTo(x, y)
-			.next(function() {
+			.then(function() {
 				return self.resizeTo(width, height);
 			})
-			.next(function() {
+			.then(function() {
 				self.stretched = true;
 				self.stretchedOffsetX = currentX - x;
 				self.stretchedOffsetY = currentY - y;
@@ -1031,22 +1024,22 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	shrink : function FSW_shrink(aSilent)
 	{
 		if (!this.parent || !this.stretched)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.stretched = false;
 		this.documentElement.removeAttribute(this.STRETCHED);
 
 		if (aSilent) {
 			this._shrinkPostProcess();
-			return Deferred.next(function() {});
+			return Promise.resolve();
 		}
 
 		var self = this;
 		return this.resizeTo(this.width + this.stretchedOffsetWidth, this.height + this.stretchedOffsetHeight)
-			.next(function() {
+			.then(function() {
 				// don't move the window yet, because it is not resized actually!
 			})
-			.next(function() {
+			.then(function() {
 				// now, the window is actually shown with the specified size.
 				// we can move it.
 				self.moveTo(self.x + self.stretchedOffsetX, self.y + self.stretchedOffsetY);
@@ -1076,9 +1069,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			!this._window ||
 			(isAllTabs && aTabs.length == 1)
 			) {
-			return Deferred.next(function() {
-				return [];
-			});
+			return Promise.resolve([]);
 		}
 
 		var selectedTab = this.browser.selectedTab;
@@ -1128,7 +1119,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		var col = 0;
 		var row = 0;
-		var deferreds = [];
+		var promises = [];
 		var self = this;
 		var tiles = beforeTabs.concat([null]).concat(afterTabs)
 					.map(function(aTab) {
@@ -1150,12 +1141,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 						tile.x = baseX + (offsetWidth * col);
 						tile.y = baseY + (height * row);
 						if (aTab) {
-							deferreds.push(this._openWindow(aTab, tile));
+							promises.push(this._openWindow(aTab, tile));
 						}
 						else {
 							this.moveTo(tile.x, tile.y);
 							this.resizeTo(tile.width, tile.height);
-							deferreds.push(Deferred.next(function() {
+							promises.push(next(function() {
 								return self.window;
 							}));
 						}
@@ -1167,22 +1158,16 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 						return tile;
 					}, this);
 
-		return Deferred
-				.parallel(deferreds)
-				.next(function(aWindows) {
+		return Promise
+				.all(promises)
+				.then(function(aWindows) {
 					var beforeXTiles = [];
 					var beforeYTiles = [];
 					var afterXTiles  = [];
 					var afterYTiles  = [];
 					var rows = [];
 
-					/**
-					 * JSDeferred doesn't return results as an array
-					 * if parallel() received an array from another namespace.
-					 * So, we manuall make it an array.
-					 */
-					aWindows.length = tilesCount;
-					Array.forEach(aWindows, function(aWindow, aIndex) {
+					aWindows.forEach(function(aWindow, aIndex) {
 						var tile = tiles[aIndex];
 						tile.FSWindow = aWindow.FoxSplitter;
 						if (tile.direction == -1) {
@@ -1242,7 +1227,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 						return aTile.FSWindow.window;
 					})
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	tileAllTabs : function FSW_tileAllTabs(aMode) /* PUBLIC API */
@@ -1259,47 +1244,38 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	gatherWindows : function FSW_gatherWindows() /* PUBLIC API */
 	{
 		if (!this.parent || !this._window)
-			return Deferred.next(function() {
-				return [];
-			});
+			return Promise.resolve([]);
 
 		var FSWindows = this.root.allWindows;
 		var current = FSWindows.indexOf(this);
 		var offset = 0;
-		var deferreds = [];
+		var promises = [];
 		FSWindows.forEach(function(aFSWindow, aIndex) {
 			if (aIndex == current)
 				return;
 
 			var count = aFSWindow.allTabs.length;
-			deferreds.push(this.importAllTabsFrom(aFSWindow.window, offset));
+			promises.push(this.importAllTabsFrom(aFSWindow.window, offset));
 			offset += count;
 		}, this);
 
-		if (!deferreds.length)
-			return Deferred.next(function() {
-				return [];
-			});
+		if (!promises.length)
+			return Promise.resolve([]);
 
 		var self = this;
-		return Deferred
-				.parallel(deferreds)
-				.next(function(aTabsFromWindows) {
+		return Promise
+				.all(promises)
+				.then(function(aTabsFromWindows) {
 					self.clearGroupedAppearance();
-
-					// JSDeferred doesn't return an array...
-					aTabsFromWindows.length = deferreds.length;
-					return Array.slice(aTabsFromWindows);
+					return aTabsFromWindows.slice(0);
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	importAllTabsFrom : function FSW_importAllTabsFrom(aWindow, aOffset) /* PUBLIC API */
 	{
 		if (!this.parent || !this._window || !aWindow.FoxSplitter)
-			return Deferred.next(function() {
-				return [];
-			});
+			return Promise.resolve([]);
 
 		var FSWindows = this.root.allWindows;
 		var current = FSWindows.indexOf(this);
@@ -1314,30 +1290,25 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		offset = Math.min(allTabsCount, offset);
 
 		var selectedTab = this.browser.selectedTab;
-		var deferreds = this.importTabs(aWindow.FoxSplitter.allTabs, offset);
+		var promises = this.importTabs(aWindow.FoxSplitter.allTabs, offset);
 
-		if (!deferreds.length)
-			return Deferred.next(function() {
-				return [];
-			});
+		if (!promises.length)
+			return Promise.resolve([]);
 
 		var self = this;
-		return Deferred
-				.parallel(deferreds)
-				.next(function(aImportedTabs) {
+		return Promise
+				.all(promises)
+				.then(function(aImportedTabs) {
 					/**
 					 * swapBrowsersAndCloseOther() focuses to the imported tab,
 					 * so we have to focus to the original selected tab again.
 					 */
 					self.browser.selectedTab = selectedTab;
-
-					// JSDeferred doesn't return an array...
-					aImportedTabs.length = deferreds.length;
-					return Array.filter(aImportedTabs, function(aTab) {
+					return aImportedTabs.filter(function(aTab) {
 						return aTab;
 					});
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	importTabs : function FSW_importTabs(aTabs, aPosition) /* PUBLIC API */
@@ -1366,9 +1337,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	importTab : function FSW_importTab(aTab, aPosition) /* PUBLIC API */
 	{
 		if (!this._window)
-			return Deferred.next(function() {
-				return null;
-			});
+			return Promise.resolve(null);
 
 		var groupInfo = this._getGroupInfo(aTab);
 		// we cannot import hidden tab!
@@ -1403,31 +1372,31 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 	_reserveMoveTabToGroup : function FSW_reserveMoveTabToGroup(aTab, aGroupInfo)
 	{
-		var deferred = new Deferred();
 		var self = this;
-		Deferred.next(function() {
+		return new Promise((function(aResolve, aReject) {
+		next(function() {
 			if (aGroupInfo)
 				self._moveImportedTabToNamedGroup(aTab, aGroupInfo)
-					.next(function() {
-						deferred.call(aTab);
+					.then(function() {
+						aResolve(aTab);
 					});
 			else
-				deferred.call(aTab);
+				aResolve(aTab);
 		});
-		return deferred
-				.error(this.defaultHandleError);
+		}).bind(this))
+		  .catch(this.defaultHandleError);
 	},
 
 	_getExistingGroups : function FSW_getExistingGroups()
 	{
-		var deferred = new Deferred();
 		var self = this;
-		Deferred.next(function() {
-			self.window.TabView._initFrame(function() {
-				deferred.call(self.window.TabView._window.GroupItems.groupItems);
-			});
+		return new Promise(function(aResolve, aReject) {
+			next(function() {
+				self.window.TabView._initFrame(function() {
+					aResolve(self.window.TabView._window.GroupItems.groupItems);
+				})
+			});;
 		});
-		return deferred;
 	},
 
 	_getGroupInfo : function FSW_getGroupInfo(aTab)
@@ -1459,7 +1428,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	{
 		var self = this;
 		return this._getExistingGroups()
-				.next(function(aGroups) {
+				.then(function(aGroups) {
 					var targetGroup;
 					aGroups.some(function(aGroup) {
 						if (aGroup.getTitle() != aTargetGroupInfo.title)
@@ -1491,7 +1460,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 						self.browser.removeTab(tempTab);
 					}
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 
 	duplicateTabs : function FSW_duplicateTabs(aTabs) /* PUBLIC API */
@@ -1768,7 +1737,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				case 'screenX':
 				case 'screenY':
 					// possible maximized. do it after the "sizemode" is updated.
-					return Deferred.next((function() {
+					return next((function() {
 						this.onMove();
 					}).bind(this));
 
@@ -1820,7 +1789,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		this.windowStateUpdating++;
 
-		var deferred;
+		var promise;
 		try {
 			switch (state)
 			{
@@ -1829,19 +1798,18 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 					 * When the active window is minimized, another member can be focused.
 					 * So we have to minimize other windows with a delay.
 					 */
-					deferred = Deferred
-						.next((function() {
+					promise = next((function() {
 							this.root.minimize(this);
 						}).bind(this))
-						.error(this.defaultHandleError);
+						.catch(this.defaultHandleError);
 					break;
 
 				case this.STATE_MAXIMIZED:
-					deferred = this._onMaximized(false);
+					promise = this._onMaximized(false);
 					break;
 
 				case this.STATE_FULLSCREEN:
-					deferred = this._onMaximized(true);
+					promise = this._onMaximized(true);
 					break;
 
 				default:
@@ -1854,9 +1822,9 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this.dumpError(e, 'FoxSplitter: FAILED TO MINIMIZE/RESTORE WINDOWS!');
 		}
 
-		if (deferred) {
+		if (promise) {
 			let self = this;
-			deferred.next(function() {
+			promise.then(function() {
 				self.windowStateUpdating--;
 				self.document.dispatchEvent(event);
 			});
@@ -1890,7 +1858,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				root.movingWindowClearer.cancel();
 
 			root.movingWindow = this;
-			root.movingWindowClearer = Deferred.wait(0.5).next(function() {
+			root.movingWindowClearer = wait(500).then(function() {
 				root.movingWindow = null;
 				root.movingWindowClearer = null;
 			});
@@ -1899,7 +1867,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var self = this;
 		if (this.parent && this.root.maximized)
 			return this.root.restore()
-					.next(function() {
+					.then(function() {
 						self.parent.resetPositionAndSize(self)
 					});
 
@@ -1912,7 +1880,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var newX = this.x;
 		var newY = this.y;
 
-		Deferred.wait(0.1).next(function() {
+		wait(100).then(function() {
 			self.positioning--;
 			/**
 			 * Switching of workspaces (virtual desktops) on the platform can move
@@ -1922,7 +1890,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			var root = self.root;
 			if (root && FoxSplitterWindow.positioning == 1) {
 				self.parent.resetPositionAndSize(self);
-				Deferred.next(function() {
+				next(function() {
 					FoxSplitterWindow.positioning--;
 				});
 			}
@@ -1997,14 +1965,16 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this._reservedHandleRaised.cancel();
 
 		var self = this;
-		this._reservedHandleRaised = Deferred.next(function() {
+		this._reservedHandleRaised = next(function() {
 			delete self._reservedHandleRaised;
 			self._handleRaised();
 		});
 		this._reservedHandleRaised
-			.error(this.defaultHandleError)
-			.wait(0.1)
-			.next(function() {
+			.catch(this.defaultHandleError)
+			.then(function() {
+				return wait(100);
+			})
+			.then(function() {
 				FoxSplitterWindow.raising--;
 			});
 
@@ -2069,7 +2039,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		}
 
 		var self = this;
-		Deferred.next(function() {
+		next(function() {
 			self.scrolling--;
 		});
 	},
@@ -2102,7 +2072,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		);
 
 		var self = this;
-		Deferred.next(function() {
+		next(function() {
 			self.scrollPositionSynching--;
 		});
 	},
@@ -2110,7 +2080,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	_onMaximized : function FSW_onMaximized(aFullScreen)
 	{
 		if (!this._window || !this.parent || this.maximizing)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.resizing++;
 		this.positioning++;
@@ -2125,12 +2095,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			this.resizing--;
 			this.positioning--;
 			this.maximizing--;
-			return Deferred.next(function() {});
+			return Promise.resolve();
 		}
 
 		var waitMaximized = this.notMaximizedYet ?
 								this._waitDOMEvent(this.window, 'resize')
-									.next(function() {
+									.then(function() {
 										waitMaximized = null;
 									}) :
 								null ;
@@ -2138,15 +2108,15 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var stretched = this.stretched;
 		var maximizedX, maximizedY, maximizedWidth, maximizedHeight;
 		var self = this;
-		return (waitMaximized || Deferred)
-			.next(function() {
+		return (waitMaximized || Promise.resolve())
+			.then(function() {
 				maximizedX = self.x;
 				maximizedY = self.y;
 				maximizedWidth = self.width;
 				maximizedHeight = self.height;
 
 				var waitRestored = self._waitDOMEvent(self.window, 'resize')
-										.next(function() {
+										.then(function() {
 											waitRestored = null;
 										});
 
@@ -2157,17 +2127,17 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 				return waitRestored;
 			})
-			.error(function(aError) {
+			.catch(function(aError) {
 				self.dumpError(e, 'FoxSplitter: FAILED TO MAXIMIZE!');
 			})
-			.next(function() {
+			.then(function() {
 				self.resizing--;
 				self.positioning--;
 
 				if (stretched)
 					return self.shrink();
 			})
-			.next(function() {
+			.then(function() {
 				if (root.maximized)
 					return root.restore();
 				else
@@ -2179,20 +2149,20 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 						fullScreen : aFullScreen
 					});
 			})
-			.next(function() {
+			.then(function() {
 				// fix broken rendering on Windows (workaround)
 				return self.resizeBy(0, 1)
-						.next(function() {
+						.then(function() {
 							return self.resizeBy(0, -1);
 						});
 			})
-			.next(function() {
+			.then(function() {
 				self.maximizing--;
 
 				if (stretched)
 					return self.stretch();
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 	},
 
 	get notMaximizedYet()
@@ -2340,13 +2310,13 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			return;
 
 		var self = this;
-		this._reservedHandleDragOver = Deferred.wait(this.acceptDropDelay / 1000);
+		this._reservedHandleDragOver = wait(this.acceptDropDelay);
 		this._reservedHandleDragOver
-			.next(function() {
+			.then(function() {
 				delete self._reservedHandleDragOver;
 				self._updateDropIndicator(aDragInfo.position, aDragInfo.target);
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 	},
 
 	_onDragLeave : function FSW_onDragLeave(aEvent)
@@ -2426,12 +2396,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		if (!this._window)
 			return;
 
-		Deferred.next(function() {
+		next(function() {
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
 		})
-		.error(this.defaultHandleError);
+		.catch(this.defaultHandleError);
 	},
 
 	_getTabFromEvent : function FSW_getTabFromEvent(aEvent)
@@ -2610,7 +2580,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		if (this._lastDropPosition != aPosition) {
 			let self = this;
 			this.hideDropIndicator()
-				.next(function() {
+				.then(function() {
 					self._showDropIndicatorAt(aPosition, aTarget);
 				});
 		}
@@ -2622,9 +2592,9 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	_showDropIndicatorAt : function FSW_showDropIndicatorAt(aPosition, aTarget)
 	{
 		if (!this._window)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
-		var deferred = new Deferred();
+		return new Promise((function() {
 
 		var size = 10;
 		var indicator = this._dropIndicator;
@@ -2668,15 +2638,15 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		indicator.addEventListener('popupshown', function() {
 			indicator.removeEventListener('popupshown', arguments.callee, false);
 			indicator.style.opacity = 1;
-			deferred.call();
+			aResolve();
 		}, false);
 
 		indicator.openPopupAtScreen(x, y, false, null);
 
 		this._lastDropPosition = aPosition;
 
-		return deferred
-				.error(this.defaultHandleError);
+		}).bind(this))
+				.catch(this.defaultHandleError);
 	},
 
 	hideDropIndicator : function FSW_hideDropIndicator()
@@ -2691,42 +2661,39 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			delete this._reservedHandleDragOver;
 		}
 
-		var deferred = new Deferred();
 		var indicator = this._dropIndicator;
 		if (!indicator) {
-			Deferred.next(function() {
-				deferred.call();
-			});
-			return deferred;
+			return wait(0);
 		}
 
 		indicator.style.opacity = 0;
 
+		var promise;
 		if (this.window.getComputedStyle(indicator, null).getPropertyValue('opacity') == '0') {
-			Deferred.next(function() {
-				deferred.call();
-			});
+			promise = wait(0);
 		}
 		else {
-			indicator.addEventListener('transitionend', function() {
-				indicator.removeEventListener('transitionend', arguments.callee, false);
-				deferred.call();
-			}, false);
+			promise = new Promise(function(aResolve, aReject) {
+				indicator.addEventListener('transitionend', function() {
+					indicator.removeEventListener('transitionend', arguments.callee, false);
+					aResolve();
+				}, false);
+			});
 		}
 
 		var self = this;
-		return deferred
-				.next(function() {
+		return promise
+				.then(function() {
 					return self._hideDropIndicatorPostProcess();
 				})
-				.error(this.defaultHandleError);
+				.catch(this.defaultHandleError);
 	},
 	_hideDropIndicatorPostProcess : function FSW_hideDropIndicatorPostProcess()
 	{
 		if (!this._window)
 			return;
 
-		var deferred = new Deferred();
+		var promise;
 
 		var indicator = this._dropIndicator;
 		delete this._lastDropPosition;
@@ -2735,39 +2702,37 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			delete this._dropIndicator;
 			if (indicator.state == 'closed') {
 				indicator.parentNode.removeChild(indicator);
-				Deferred.next(function() {
-					deferred.call();
-				});
+				promise = wait(0);
 			}
 			else {
-				indicator.addEventListener('popuphidden', function() {
-					indicator.removeEventListener('popuphidden', arguments.callee, false);
-					indicator.parentNode.removeChild(indicator);
-					deferred.call();
-				}, false);
-				indicator.hidePopup();
+				promise = new Promise(function(aResolve, aReject) {
+					indicator.addEventListener('popuphidden', function() {
+						indicator.removeEventListener('popuphidden', arguments.callee, false);
+						indicator.parentNode.removeChild(indicator);
+						aResolve();
+					}, false);
+					indicator.hidePopup();
+				});
 			}
 		}
 		else {
-			Deferred.next(function() {
-				deferred.call();
-			});
+			promise = wait(0);
 		}
-		return deferred
-				.error(this.defaultHandleError);
+		return promise
+				.catch(this.defaultHandleError);
 	},
 
 	_reserveHideAllDropIndicator : function FSW_reserveHideAllDropIndicator()
 	{
 		this._cancelReserveHideAllDropIndicator();
 		var self = this;
-		this._reservedHideAllDropIndicator = Deferred.next(function() {
+		this._reservedHideAllDropIndicator = next(function() {
 			self._reservedHideAllDropIndicator = undefined;
 			FoxSplitterWindow.instances.forEach(function(aFSWindow) {
 				aFSWindow.hideDropIndicator();
 			});
 		});
-		this._reservedHideAllDropIndicator.error(this.defaultHandleError);
+		this._reservedHideAllDropIndicator.catch(this.defaultHandleError);
 	},
 
 	_cancelReserveHideAllDropIndicator : function FSW_cancelReserveHideAllDropIndicator()

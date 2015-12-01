@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2014
+ * Portions created by the Initial Developer are Copyright (C) 2007-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -34,7 +34,9 @@
  * ***** END LICENSE BLOCK ***** */
 
 load('base');
-load('lib/jsdeferred');
+load('lib/wait');
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var EXPORTED_SYMBOLS = ['FoxSplitterGroup'];
  
@@ -268,10 +270,10 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 		if (stretchedMember) {
 			let self = this;
 			return stretchedMember.shrink()
-					.next(function() {
+					.then(function() {
 						return self._resizeByInternal(aDW, aDH);
 					})
-					.next(function() {
+					.then(function() {
 						return stretchedMember.stretch();
 					});
 		}
@@ -281,7 +283,7 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 	},
 	_resizeByInternal : function FSG_resizeByInternal(aDW, aDH)
 	{
-		var deferreds = [];
+		var promises = [];
 		if (aDW) {
 			let right = this.rightMember;
 			if (right) {
@@ -291,11 +293,11 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 				this.leftMember.resizeBy(halfDW, 0);
 
 				right.moveBy(halfDW, 0);
-				deferreds.push(right.resizeBy(aDW - halfDW, 0));
+				promises.push(right.resizeBy(aDW - halfDW, 0));
 			}
 			else {
 				this.members.forEach(function(aMember) {
-					deferreds.push(aMember.resizeBy(aDW, 0));
+					promises.push(aMember.resizeBy(aDW, 0));
 				});
 			}
 		}
@@ -308,35 +310,35 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 				this.topMember.resizeBy(0, halfDH);
 
 				bottom.moveBy(0, halfDH);
-				deferreds.push(bottom.resizeBy(0, aDH - halfDH));
+				promises.push(bottom.resizeBy(0, aDH - halfDH));
 			}
 			else {
 				this.members.forEach(function(aMember) {
-					deferreds.push(aMember.resizeBy(0, aDH));
+					promises.push(aMember.resizeBy(0, aDH));
 				});
 			}
 		}
-		return deferreds.length ?
-			Deferred.parallel(deferreds) : Deferred.next(function() {}) ;
+		return promises.length ?
+			Promise.all(promises) : Promise.resolve();
 	},
 
 	raise : function FSG_raise(aFinallyRaised)
 	{
-		var deferreds = [];
+		var promises = [];
 		this.allWindows.forEach(function(aMember) {
 			if (aFinallyRaised == aMember)
 				return;
-			var deferred = aMember.raise(aFinallyRaised);
-			if (deferred)
-				deferreds.push(deferred);
+			var promise = aMember.raise(aFinallyRaised);
+			if (promise)
+				promises.push(promise);
 		});
 		if (aFinallyRaised) {
 			this.memberClass.raising++;
-			if (deferreds.length) {
+			if (promises.length) {
 				let self = this;
-				Deferred
-					.parallel(deferreds)
-					.next(function() {
+				Promise
+					.all(promises)
+					.then(function() {
 						aFinallyRaised.raise();
 						self.memberClass.raising--;
 					});
@@ -438,37 +440,30 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 
 	reserveResetPositionAndSize : function FSG_reserveResetPositionAndSize(aBaseMember, aForce)
 	{
-		var deferred = new Deferred();
+		return new Promise((function(aResolve, aReject) {
 
 		if (this._reservedResetPositionAndSize) {
 			this._reservedResetPositionAndSize.cancel();
 			delete this._reservedResetPositionAndSize;
 		}
 
-		if (this._lastReserveResetPositionAndSize) {
-			this._lastReserveResetPositionAndSize.call();
-			delete this._lastDeferred;
-		}
-
 		if (aForce)
 			this._lastReserveResetPositionAndSizeForce = true;
 
 		var self = this;
-		this._reservedResetPositionAndSize = Deferred.wait(0.5);
+		this._reservedResetPositionAndSize = wait(500);
 		this._reservedResetPositionAndSize
-			.next(function() {
+			.then(function() {
 				var force = self._lastReserveResetPositionAndSizeForce;
 				delete self._reservedResetPositionAndSize;
 				delete self._lastReserveResetPositionAndSize;
 				delete self._lastReserveResetPositionAndSizeForce;
 				self.resetPositionAndSize(aBaseMember, force);
-				deferred.call();
+				aResolve();
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 
-		this._lastReserveResetPositionAndSize = deferred;
-
-		return deferred.error(this.defaultHandleError);
+		}).bind(this)).catch(this.defaultHandleError);
 	},
 
 	// reposition/resize grouped windows based on their relations
@@ -554,7 +549,7 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 		else if (this.minimized)
 			return this._restoreFromMinimized(aTriggerFSWindow);
 
-		return Deferred.next(function() {});
+		return Promise.resolve();
 	},
 
 
@@ -589,7 +584,7 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 	_restoreFromMaximized : function FSG_restoreFromMaximized()
 	{
 		if (!this.maximized || !('_normalX' in this))
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.moveTo(this._normalX, this._normalY);
 		this.resizeTo(this._normalWidth, this._normalHeight);
@@ -601,7 +596,7 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 		this.maximized = false;
 		this.fullscreen = false;
 
-		return Deferred.next(function() {});
+		return Promise.resolve();
 	},
 
 	setMaximizedState : function FSG_setMaximizedState(aFSWindow)
@@ -614,18 +609,17 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 		var width = this._normalWidth;
 		var height = this._normalHeight;
 		var fullscreen = this.fullscreen;
-		Deferred
-			.next(function() {
-				aFSWindow.moveTo(x, y);
-				return aFSWindow.resizeTo(width, height);
-			})
-			.next(function() {
-				if (fullscreen)
-					return aFSWindow.fullscreen();
-				else
-					return aFSWindow.maximize();
-			})
-			.error(this.defaultHandleError);
+		next(function() {
+			aFSWindow.moveTo(x, y);
+			return aFSWindow.resizeTo(width, height);
+		})
+		.then(function() {
+			if (fullscreen)
+				return aFSWindow.fullscreen();
+			else
+				return aFSWindow.maximize();
+		})
+		.catch(this.defaultHandleError);
 	},
 
 
@@ -651,32 +645,32 @@ FoxSplitterGroup.prototype = inherit(FoxSplitterBase.prototype, {
 		 * even if it has been already minimized in the same event loop.
 		 */
 		if (focused)
-			Deferred.next(function() {
+			next(function() {
 				if (!focused.minimized)
 					focused.window.minimize();
 			})
-			.error(this.defaultHandleError);
+			.catch(this.defaultHandleError);
 	},
 
 	_restoreFromMinimized : function FSG_restoreFromMinimized(aTriggerFSWindow)
 	{
 		if (!this.minimized)
-			return Deferred.next(function() {});
+			return Promise.resolve();
 
 		this.allWindows.forEach(function(aFSWindow) {
 			if (aFSWindow.minimized)
 				aFSWindow.window.restore();
 		});
 
-		var deferred;
+		var promise;
 		if (aTriggerFSWindow && aTriggerFSWindow.parent)
-			deferred = aTriggerFSWindow.parent.reserveResetPositionAndSize(aTriggerFSWindow);
+			promise = aTriggerFSWindow.parent.reserveResetPositionAndSize(aTriggerFSWindow);
 		else
-			deferred = this.reserveResetPositionAndSize();
+			promise = this.reserveResetPositionAndSize();
 
 		this.minimized = false;
 
-		return deferred || Deferred.next(function() {});
+		return promise;
 	}
 });
 

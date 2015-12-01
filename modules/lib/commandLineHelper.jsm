@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2012
+ * Portions created by the Initial Developer are Copyright (C) 2012-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -33,9 +33,9 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-load('jsdeferred');
-
 var EXPORTED_SYMBOLS = ['commandLineHelper'];
+
+var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var commandLineHelper = {
 	run : function commandLineHelper_run(aExecutable)
@@ -58,38 +58,31 @@ var commandLineHelper = {
 			}
 		}
 		catch(e) {
-			return Deferred.next(function() {
-				throw new Error(e+'\ninvalid executable: ' + aExecutable);
-			});
+			return Promise.reject(new Error(e+'\ninvalid executable: ' + aExecutable));
 		}
 
 		if (!executable.exists()) {
-			return Deferred.next(function() {
-				throw new Error('missing executable: ' + aExecutable);
-			});
+			return Promise.reject(new Error('missing executable: ' + aExecutable));
 		}
 
 		var process = Cc['@mozilla.org/process/util;1']
 						.createInstance(Ci.nsIProcess);
 		if (!process.runwAsync) {
-			return Deferred.next(function() {
-				throw new Error('missing feature: nsIProcess::runwAsync');
-			});
+			return Promise.reject(new Error('missing feature: nsIProcess::runwAsync'));
 		}
 
-		var deferred = new Deferred();
-		process.init(executable);
-		process.runwAsync(args, args.length, {
-			observe : function run_observe(aSubject, aTopic, aData)
-			{
-				if (aTopic == 'process-finished')
-					deferred.call();
-				else
-					deferred.fail(new Error(aExecutable + ' failed'));
-			}
+		return new Promise(function(aResolve, aReject) {
+			process.init(executable);
+			process.runwAsync(args, args.length, {
+				observe : function run_observe(aSubject, aTopic, aData)
+				{
+					if (aTopic == 'process-finished')
+						aResolve();
+					else
+						aReject(new Error(aExecutable + ' failed'));
+				}
+			});
 		});
-
-		return deferred;
 	},
 
 	createTempFile : function commandLineHelper_createTempFile(aLeafName)
