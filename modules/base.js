@@ -46,6 +46,11 @@ const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
+function log(aMessage) {
+	if (prefs.getPref(domain+'debug.base') || prefs.getPref(domain+'debug.all'))
+		console.log(aMessage);
+}
+
 function FoxSplitterBase() 
 {
 }
@@ -321,7 +326,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			currentScreen.GetAvailRect(screenAvailLeft, screenAvailTop, screenAvailWidth, screenAvailHeight);
 		}
 		catch(e) {
-			dump(e+'\n');
+			log(e);
 		}
 		screenLeft   = screenLeft.value;
 		screenTop    = screenTop.value;
@@ -1133,14 +1138,14 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	defaultHandleError : function FSB_defaultHandleError(aError)
 	{
-		dump(aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
+		log(aError+'\n'+aError.stack.replace(/^/gm, '  '));
 		throw aError;
 	},
 
 	dumpError : function FSB_dumpError(aError, aMessage)
 	{
 		var message = aMessage ? aMessage+'\n' : '' ;
-		dump(message+aError+'\n'+aError.stack.replace(/^/gm, '  ')+'\n');
+		log(message+aError+'\n'+aError.stack.replace(/^/gm, '  '));
 	},
 
 	debug : true,
@@ -1156,7 +1161,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		if (!this.debug) return;
 
 		if (this.isGroup) {
-			dump(aMessage);
+			log(aMessage);
 		}
 		else {
 			if (!this._log) this._log = '';
@@ -1181,7 +1186,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					logger.linkedBrowser.loadURI(header+encodeURIComponent(self._log));
 				}
 				catch(e) {
-					dump(aMessage);
+					log(aMessage);
 				}
 			}, 500);
 		}

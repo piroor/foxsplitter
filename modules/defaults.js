@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2012
+ * Portions created by the Initial Developer are Copyright (C) 2007-2015
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -113,6 +113,12 @@ config.setDefault(domain+'methodToRaiseWindow',
 		FoxSplitterConst.RAISE_WINDOW_BY_FOCUS );
 config.setDefault(domain+'wmctrl.path', '');
 config.setDefault(domain+'wmctrl.alertNotFound', true);
+
+config.setDefault(domain+'debug.all', false);
+config.setDefault(domain+'debug.base', false);
+config.setDefault(domain+'debug.window', false);
+config.setDefault(domain+'debug.group', false);
+config.setDefault(domain+'debug.ui', false);
 
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-top',    true);
 config.setDefault('extensions.multipletab.show.foxsplitter-selection-split-right',  true);

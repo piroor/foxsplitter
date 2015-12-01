@@ -40,6 +40,11 @@ var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', 
 
 var EXPORTED_SYMBOLS = ['FoxSplitterGroup'];
  
+function log(aMessage) {
+	if (prefs.getPref(domain+'debug.group') || prefs.getPref(domain+'debug.all'))
+		console.log(aMessage);
+}
+
 function FoxSplitterGroup() 
 {
 	this.init();

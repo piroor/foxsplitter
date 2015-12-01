@@ -51,6 +51,11 @@ var EXPORTED_SYMBOLS = ['FoxSplitterUI'];
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
+function log(aMessage) {
+	if (prefs.getPref(domain+'debug.ui') || prefs.getPref(domain+'debug.all'))
+		console.log(aMessage);
+}
+
 function FoxSplitterUI(aFSWindow) 
 {
 	this.init(aFSWindow);

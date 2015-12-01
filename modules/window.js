@@ -54,6 +54,11 @@ var domain = FoxSplitterConst.domain;
 var bundle = require('lib/locale')
 				.get('chrome://foxsplitter/locale/label.properties');
 
+function log(aMessage) {
+	if (prefs.getPref(domain+'debug.window') || prefs.getPref(domain+'debug.all'))
+		console.log(aMessage);
+}
+
 function FoxSplitterWindow(aWindow, aOnInit) 
 {
 	this.init(aWindow, aOnInit);
@@ -850,7 +855,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var self = this;
 		return this.wmctrl.raise()
 				.catch(function(e) {
-					dump(e+'\n');
+					log(e);
 				})
 				.then(function() {
 					self.raising--;
