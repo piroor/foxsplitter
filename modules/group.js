@@ -40,9 +40,21 @@ var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', 
 
 var EXPORTED_SYMBOLS = ['FoxSplitterGroup'];
  
-function log(aMessage) {
-	if (prefs.getPref(domain+'debug.group') || prefs.getPref(domain+'debug.all'))
+function log(aMessage, ...aArgs) {
+	if (prefs.getPref(domain+'debug.group') || prefs.getPref(domain+'debug.all')) {
+		if (aArgs.length > 0) {
+			aArgs = aArgs.map(function(aArg) {
+				try {
+					return uneval(aArgs);
+				}
+				catch(e) {
+					return aArgs;
+				}
+			});
+			aMessage += ' / ' + stringified.join(', ');
+		}
 		console.log(aMessage);
+	}
 }
 
 function FoxSplitterGroup() 

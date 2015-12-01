@@ -54,9 +54,21 @@ var domain = FoxSplitterConst.domain;
 var bundle = require('lib/locale')
 				.get('chrome://foxsplitter/locale/label.properties');
 
-function log(aMessage) {
-	if (prefs.getPref(domain+'debug.window') || prefs.getPref(domain+'debug.all'))
+function log(aMessage, ...aArgs) {
+	if (prefs.getPref(domain+'debug.window') || prefs.getPref(domain+'debug.all')) {
+		if (aArgs.length > 0) {
+			aArgs = aArgs.map(function(aArg) {
+				try {
+					return uneval(aArgs);
+				}
+				catch(e) {
+					return aArgs;
+				}
+			});
+			aMessage += ' / ' + stringified.join(', ');
+		}
 		console.log(aMessage);
+	}
 }
 
 function FoxSplitterWindow(aWindow, aOnInit) 

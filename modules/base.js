@@ -46,9 +46,21 @@ const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 var FoxSplitterConst = require('const');
 var domain = FoxSplitterConst.domain;
 
-function log(aMessage) {
-	if (prefs.getPref(domain+'debug.base') || prefs.getPref(domain+'debug.all'))
+function log(aMessage, ...aArgs) {
+	if (prefs.getPref(domain+'debug.base') || prefs.getPref(domain+'debug.all')) {
+		if (aArgs.length > 0) {
+			aArgs = aArgs.map(function(aArg) {
+				try {
+					return uneval(aArgs);
+				}
+				catch(e) {
+					return aArgs;
+				}
+			});
+			aMessage += ' / ' + stringified.join(', ');
+		}
 		console.log(aMessage);
+	}
 }
 
 function FoxSplitterBase() 
@@ -146,6 +158,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	bindTo : function FSB_bindTo(aSibling, aOptions, ...aArgs) /* PUBLIC API */
 	{
+		log('FSB_bindTo', aSibling, aOptions, aArgs);
 		aOptions = aOptions || {};
 
 		var position   = aOptions.position;
@@ -157,18 +170,24 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			silent   = allArgs.length > 2 ? allArgs[2] : false ;
 		}
 
-		if (!aSibling || !(position & this.POSITION_VALID))
+		if (!aSibling || !(position & this.POSITION_VALID)) {
+			log('FSB_bindTo: no sibling or invalid position');
 			return Promise.resolve();
+		}
 
 		if (!this.isGroup && this.stretched) {
 			let self = this;
+			log('FSB_bindTo: try shrink self');
 			return this.shrink().then(function() {
+					log('FSB_bindTo: retry');
 					self.bindTo(aSibling, aOptions);
 				});
 		}
 		else if (!aSibling.isGroup && aSibling.stretched) {
 			let self = this;
+			log('FSB_bindTo: try shrink sibling');
 			return aSibling.shrink().then(function() {
+					log('FSB_bindTo: retry');
 					self.bindTo(aSibling, aOptions);
 				});
 		}
@@ -569,6 +588,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	_openWindow : function FSB_openWindow(aURIOrTab, aPositionAndSize)
 	{
+		log('FSB_openWindow', aURIOrTab, aPositionAndSize);
 		var options = [
 				'chrome,dialog=no,all',
 				'screenX='+aPositionAndSize.x,
@@ -614,6 +634,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 		return new Promise(function(aResolve, aReject) {
 			window.addEventListener(this.EVENT_TYPE_READY, function onReady(aEvent) {
+				log('FSB_openWindow: ' + aEvent.type + ' handled');
 				if (window) {
 					window.removeEventListener(aEvent.type, onReady, false);
 					aResolve(window);
@@ -625,16 +646,22 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			}, false);
 		})
 			.then(function(aWindow) {
+				log('FSB_openWindow: post process');
 				var sv = aWindow.FoxSplitter;
 
-				if (sv.x != aPositionAndSize.x || sv.y != aPositionAndSize.y)
+				if (sv.x != aPositionAndSize.x || sv.y != aPositionAndSize.y) {
+					log('FSB_openWindow: try move');
 					sv.moveTo(aPositionAndSize.x, aPositionAndSize.y);
+				}
 
-				if (sv.width != aPositionAndSize.width || sv.height != aPositionAndSize.height)
+				if (sv.width != aPositionAndSize.width || sv.height != aPositionAndSize.height) {
+					log('FSB_openWindow: try resize');
 					return sv.resizeTo(aPositionAndSize.width, aPositionAndSize.height)
 							.then(function() {
+								log('FSB_openWindow: resized');
 								return aWindow;
 							});
+				}
 
 				return aWindow;
 			})
@@ -643,6 +670,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 
 	openLinksAt : function FSB_openLinksAt(aURIs, aPosition, aOptions) /* PUBLIC API */
 	{
+		log('FSB_openLinksAs', aURIs, aPosition, aOptions);
 		aURIs = aURIs.slice(0);
 		var first = aURIs.shift(); // only the first element can be tab
 
@@ -651,27 +679,33 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		var lastMainWindow = (this.parent && this.root.mainWindow) || this;
 		var stretchedMember = this.parent && this.root.stretchedMember;
 		return next(function() {
+					log('FSB_openLinksAs: try shrink');
 					if (stretchedMember)
 						return stretchedMember.shrink();
 				})
 				.then(function() {
+					log('FSB_openLinksAs: try unmaximize');
 					if (maximized)
 						return self.restore();
 				})
 				.then(function() {
+					log('FSB_openLinksAs: try open window');
 					var positionAndSize = self.calculatePositionAndSizeFor(aPosition, true);
 					return self._openWindow(first, positionAndSize)
 				})
 				.then(function(aWindow) {
+					log('FSB_openLinksAs: window opened, try bind');
 					return aWindow.FoxSplitter.bindTo(self, {
 								position   : aPosition,
 								mainWindow : lastMainWindow
 							})
 								.then(function() {
+									log('FSB_openLinksAs: window bound');
 									return aWindow;
 								});
 				})
 				.then(function(aWindow) {
+					log('FSB_openLinksAs: try open URIs');
 					aURIs.forEach(function(aURI) {
 						aWindow.gBrowser.addTab(aURI);
 					});
@@ -679,9 +713,11 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					if (!maximized)
 						return aWindow;
 
+					log('FSB_openLinksAs: try maximize');
 					self.root.readyToMaximize();
 					var waitMaximized = self._waitDOMEvent(self.window, self.EVENT_TYPE_WINDOW_STATE_CHANGED)
 							.then(function() {
+								log('FSB_openLinksAs: maximized');
 								waitMaximized = null;
 								return aWindow;
 							});
@@ -689,6 +725,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					return waitMaximized || aWindow;
 				})
 				.then(function(aWindow) {
+					log('FSB_openLinksAs: successfully opened');
 					/*
 					if (stretchedMember)
 						return stretchedMember.stretch()
