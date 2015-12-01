@@ -64,12 +64,12 @@ Wmctrl.prototype = {
 		var self = this;
 		if (!this.id)
 			return this.initId()
-					.next(function() {
+					.then(function() {
 						return self.raise();
 					});
 
 		return commandLineHelper.run(this.path, '-i', '-r', this.id, '-b', 'add,above')
-				.next(function() {
+				.then(function() {
 					return commandLineHelper.run(self.path, '-i', '-r', self.id, '-b', 'remove,above');
 				});
 	},
@@ -78,7 +78,7 @@ Wmctrl.prototype = {
 	{
 		var self = this;
 		return this.getWindowId(this.window)
-				.next(function(aWindowId) {
+				.then(function(aWindowId) {
 					return self.id = aWindowId;
 				});
 	},
@@ -88,7 +88,7 @@ Wmctrl.prototype = {
 		var self = this;
 		if (!this.path)
 			return Wmctrl.initPath()
-					.next(function() {
+					.then(function() {
 						return self.getWindowId(aWindow);
 					});
 
@@ -99,12 +99,12 @@ Wmctrl.prototype = {
 		aWindow.document.title = temporaryTitle;
 
 		return commandLineHelper.run(resolve('bin/wmctrl-list'), this.path, listFile.path)
-				.error(function() {
+				.catch(function() {
 					// we must restore the original title anyway!
 					if (aWindow.document.title == temporaryTitle)
 						aWindow.document.title = originalTitle;
 				})
-				.next(function() {
+				.then(function() {
 					aWindow.document.title = originalTitle;
 
 					var list = textIO.readFrom(listFile, 'UTF-8');
@@ -136,7 +136,7 @@ Wmctrl.initPath = function wmctrl_initPath() {
 
 		var pathFile = commandLineHelper.createTempFile('wmctrl-path');
 		commandLineHelper.run(resolve('bin/which-wmctrl'), pathFile.path)
-			.next(function() {
+			.then(function() {
 				var path = textIO.readFrom(pathFile, 'UTF-8').replace(/^\s+|\s+$/g, '');
 				pathFile.remove(true);
 				if (!path) {
@@ -147,7 +147,7 @@ Wmctrl.initPath = function wmctrl_initPath() {
 					aResolve(path);
 				}
 			})
-			.error(function() {
+			.catch(function() {
 				aReject(new Error(self.ERROR_WMCTRL_NOT_FOUND));
 			});
 	});;
