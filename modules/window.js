@@ -661,7 +661,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var id = this.id;
 
 		log('FSW_destroy: unbind');
-		this.unbind(aReason);
+		this.unbind(aReason == this.REASON_QUIT);
 
 		log('FSW_destroy: unlisten events');
 		var w = this.window;
