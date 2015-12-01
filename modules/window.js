@@ -1633,12 +1633,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		this.window.messageManager.addMessageListener(this.MESSAGE_TYPE, this.handleMessage);
 		this.window.messageManager.loadFrameScript(this.CONTENT_SCRIPT, true);
-		this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
-			command : this.COMMAND_REQUEST_UPDATE_SYNC_STATE,
-			params  : {
-				sync : this.syncScrollX || this.syncScrollY
-			}
-		});
 
 		this.window.addEventListener('resize', this, false);
 		this.window.addEventListener('activate', this, true);
@@ -2161,6 +2155,15 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		{
 			case this.COMMAND_REPORT_PAGE_SCROLLED:
 				this.onScroll(aMessage.json.params);
+				return;
+
+			case this.COMMAND_REPORT_INITIALIZED:
+				this.window.messageManager.broadcastAsyncMessage(this.MESSAGE_TYPE, {
+					command : this.COMMAND_REQUEST_UPDATE_SYNC_STATE,
+					params  : {
+						sync : this.syncScroll
+					}
+				});
 				return;
 		}
 	},

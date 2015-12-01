@@ -148,5 +148,6 @@ var FoxSplitterConst = {
 	COMMAND_SHUTDOWN : 'shutdown',
 	COMMAND_REQUEST_UPDATE_SYNC_STATE   : 'request-update-sync-state',
 	COMMAND_REQUEST_APPLY_SCROLL_FACTOR : 'request-apply-scroll-factor',
+	COMMAND_REPORT_INITIALIZED          : 'report-initialized',
 	COMMAND_REPORT_PAGE_SCROLLED        : 'report-page-scrolled'
 };

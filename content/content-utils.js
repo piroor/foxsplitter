@@ -134,4 +134,8 @@
 				break;
 		}
 	}
+
+	global.sendAsyncMessage(FoxSplitterConst.MESSAGE_TYPE, {
+		command : FoxSplitterConst.COMMAND_REPORT_INITIALIZED
+	});
 })(this);
