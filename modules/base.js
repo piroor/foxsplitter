@@ -609,30 +609,32 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 			arg = array;
 		}
 
-		var window = WindowWatcher.openWindow(
-				this._window || null,
-				'chrome://browser/content/browser.xul',
-				'_blank',
-				options,
-				arg
-			);
-		var self = this;
+		return new Promise((function(aResolve, aReject) {
+			log('FSB_openWindow: open window');
+			var window = WindowWatcher.openWindow(
+					this._window || null,
+					'chrome://browser/content/browser.xul',
+					'_blank',
+					options,
+					arg
+				);
+			var self = this;
 
-		/**
-		 * Browser windows inherits screenX/screenY/width/height from the last
-		 * browser window. We have to override them after those values are applied
-		 * from localstore.rdf.
-		 */
-		window.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
-			window.removeEventListener(aEvent.type, onDOMContentLoaded, false);
-			var root = window.document.documentElement;
-			root.setAttribute('screenX', aPositionAndSize.x);
-			root.setAttribute('screenY', aPositionAndSize.y);
-			root.setAttribute('width', aPositionAndSize.width);
-			root.setAttribute('height', aPositionAndSize.height);
-		}, false);
+			/**
+			 * Browser windows inherits screenX/screenY/width/height from the last
+			 * browser window. We have to override them after those values are applied
+			 * from localstore.rdf.
+			 */
+			window.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
+				log('FSB_openWindow: DOMContentLoaded handled');
+				window.removeEventListener(aEvent.type, onDOMContentLoaded, false);
+				var root = window.document.documentElement;
+				root.setAttribute('screenX', aPositionAndSize.x);
+				root.setAttribute('screenY', aPositionAndSize.y);
+				root.setAttribute('width', aPositionAndSize.width);
+				root.setAttribute('height', aPositionAndSize.height);
+			}, false);
 
-		return new Promise(function(aResolve, aReject) {
 			window.addEventListener(this.EVENT_TYPE_READY, function onReady(aEvent) {
 				log('FSB_openWindow: ' + aEvent.type + ' handled');
 				if (window) {
@@ -644,7 +646,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					aReject(new Error(aEvent.type+' event is handled twice.'));
 				}
 			}, false);
-		})
+		}).bind(this))
 			.then(function(aWindow) {
 				log('FSB_openWindow: post process');
 				var sv = aWindow.FoxSplitter;
