@@ -1,7 +1,7 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      11
+ * @version      12
  *
  * @license
  *   The MIT License, Copyright (c) 2011-2015 YUKI "Piro" Hiroshi.
@@ -39,7 +39,11 @@ ToolbarItem.prototype = {
 	},
 	get defaultToolbar()
 	{
-		return this._definition.toolbar ? this._document.getElementById(this._definition.toolbar) : null ;
+		if (!this._definition.toolbar)
+			return null;
+		return typeof this._definition.toolbar === 'string' ?
+				this._document.getElementById(this._definition.toolbar) :
+				this._definition.toolbar ;
 	},
 	get defaultCustomizableToolbar()
 	{
