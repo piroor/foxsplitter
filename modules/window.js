@@ -2168,14 +2168,18 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 	onScroll : function FSW_onScroll(aScrollInfo)
 	{
-		if (!this._window || !this.parent || !this.syncScroll)
+		log('FSW_onScroll', aScrollInfo);
+		if (!this._window || !this.parent || !this.syncScroll) {
+			log('FSW_onScroll: ignore', !this._window, !this.parent, !this.syncScroll);
 			return;
+		}
 
 		try {
 			if (!this.syncScrollX)
 				delete aScrollInfo.x;
 			if (!this.syncScrollY)
 				delete aScrollInfo.y;
+			log('FSW_onScroll: try applying', aScrollInfo);
 			this.root.allWindows.forEach(function(aFSWindow) {
 				if (aFSWindow != this && aFSWindow.syncScroll)
 					aFSWindow._applyScrollFactor(aScrollInfo);
@@ -2190,6 +2194,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	{
 		if (!this._window)
 			return;
+
+		log('FSW_applyScrollFactor: try applying', aScrollInfo);
 
 		this.browser.selectedTab.linkedBrowser.messageManager.sendAsyncMessage(this.MESSAGE_TYPE, {
 			command : this.COMMAND_REQUEST_APPLY_SCROLL_FACTOR,
