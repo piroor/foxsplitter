@@ -47,10 +47,17 @@ function wait(aMilliSeconds, aCallback) {
 	});
 	if (typeof aCallback === 'function')
 		promise = promise.then(aCallback);
-	promise.cancel = function() {
+	var canceller = function() {
 		if (timer)
 			clearTimeout(timer);
 	};
+	return new Proxy(promise, {
+		get : function(aTarget, aName) {
+			if (aName == 'cancel')
+				return canceller;
+			return aTarget[aName];
+		}
+	});
 	return promise;
 }
 
