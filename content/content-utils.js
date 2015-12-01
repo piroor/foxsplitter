@@ -77,8 +77,8 @@
 
 					let frame = frames[params.frameIndex];
 					frame.scrollTo(
-						(x in params ? (params.x * frame.scrollMaxX) : frame.scrollX ),
-						(y in params ? (params.y * frame.scrollMaxY) : frame.scrollY )
+						('x' in params ? (params.x * frame.scrollMaxX) : frame.scrollX ),
+						('y' in params ? (params.y * frame.scrollMaxY) : frame.scrollY )
 					);
 				}
 				setTimeout(function() {
