@@ -65,7 +65,7 @@ function log(aMessage, ...aArgs) {
 					return aArgs;
 				}
 			});
-			aMessage += ' / ' + stringified.join(', ');
+			aMessage += ' / ' + aArgs.join(', ');
 		}
 		console.log(aMessage);
 	}
