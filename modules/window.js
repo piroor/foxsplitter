@@ -1720,9 +1720,6 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			case 'deactivate':
 				return this.onDeactivate();
 
-			case 'scroll':
-				return this.onScroll(aEvent);
-
 
 			case 'dragover':
 				return this._onDragOver(aEvent);
