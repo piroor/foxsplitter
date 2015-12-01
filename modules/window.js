@@ -530,9 +530,9 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		var bottom = members.bottom;
 
 		var mainWindow = null;
-		Object.keys(members).some(function(aMember) {
+		Object.keys(members).some(function findMainWindow(aMember) {
 			if (aMember.members)
-				return Object.keys(aMember.members).some(arguments.callee);
+				return Object.keys(aMember.members).some(findMainWindow);
 
 			var FSWindow = FoxSplitterWindow.instancesById[aMember];
 			if (FSWindow)
@@ -958,8 +958,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	{
 		var window = this.window;
 		var waitStateChanged = new Promise((function(aResolve, aReject) {
-			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function(aEvent) {
-				window.removeEventListener(aEvent.type, arguments.callee, false);
+			window.addEventListener(this.EVENT_TYPE_WINDOW_STATE_CHANGED, function onStateChanged(aEvent) {
+				window.removeEventListener(aEvent.type, onStateChanged, false);
 				aResolve();
 				waitStateChanged = null;
 			}, false);
@@ -2635,8 +2635,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		indicator.width = width;
 		indicator.height = height;
-		indicator.addEventListener('popupshown', function() {
-			indicator.removeEventListener('popupshown', arguments.callee, false);
+		indicator.addEventListener('popupshown', function onPopupshown() {
+			indicator.removeEventListener('popupshown', onPopupshown, false);
 			indicator.style.opacity = 1;
 			aResolve();
 		}, false);
@@ -2674,8 +2674,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		}
 		else {
 			promise = new Promise(function(aResolve, aReject) {
-				indicator.addEventListener('transitionend', function() {
-					indicator.removeEventListener('transitionend', arguments.callee, false);
+				indicator.addEventListener('transitionend', function onTransitionend() {
+					indicator.removeEventListener('transitionend', onTransitionend, false);
 					aResolve();
 				}, false);
 			});
@@ -2706,8 +2706,8 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			}
 			else {
 				promise = new Promise(function(aResolve, aReject) {
-					indicator.addEventListener('popuphidden', function() {
-						indicator.removeEventListener('popuphidden', arguments.callee, false);
+					indicator.addEventListener('popuphidden', function onPopuphidden() {
+						indicator.removeEventListener('popuphidden', onPopuphidden, false);
 						indicator.parentNode.removeChild(indicator);
 						aResolve();
 					}, false);

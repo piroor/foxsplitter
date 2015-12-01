@@ -139,7 +139,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		return new this.groupClass();
 	},
 
-	bindTo : function FSB_bindTo(aSibling, aOptions) /* PUBLIC API */
+	bindTo : function FSB_bindTo(aSibling, aOptions, ...aArgs) /* PUBLIC API */
 	{
 		aOptions = aOptions || {};
 
@@ -147,8 +147,9 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		var silent     = aOptions.silent;
 		var mainWindow = aOptions.mainWindow;
 		if (typeof aOptions != 'object') { // for backward compatibility
-			position = arguments[1];
-			silent   = arguments.length > 2 ? arguments[2] : false ;
+			let allArgs = [aSibling, aOptions].concat(aArgs);
+			position = allArgs[1];
+			silent   = allArgs.length > 2 ? allArgs[2] : false ;
 		}
 
 		if (!aSibling || !(position & this.POSITION_VALID))
@@ -597,8 +598,8 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		 * browser window. We have to override them after those values are applied
 		 * from localstore.rdf.
 		 */
-		window.addEventListener('DOMContentLoaded', function(aEvent) {
-			window.removeEventListener(aEvent.type, arguments.callee, false);
+		window.addEventListener('DOMContentLoaded', function onDOMContentLoaded(aEvent) {
+			window.removeEventListener(aEvent.type, onDOMContentLoaded, false);
 			var root = window.document.documentElement;
 			root.setAttribute('screenX', aPositionAndSize.x);
 			root.setAttribute('screenY', aPositionAndSize.y);
@@ -607,9 +608,9 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		}, false);
 
 		return new Promise(function(aResolve, aReject) {
-			window.addEventListener(this.EVENT_TYPE_READY, function(aEvent) {
+			window.addEventListener(this.EVENT_TYPE_READY, function onReady(aEvent) {
 				if (window) {
-					window.removeEventListener(aEvent.type, arguments.callee, false);
+					window.removeEventListener(aEvent.type, onReady, false);
 					aResolve(window);
 					window = undefined;
 				}
@@ -738,8 +739,8 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 								y : browser.boxObject.height,
 							} ;
 			let self = this;
-			aNewTab.addEventListener('SSTabRestored', function() {
-				aNewTab.removeEventListener('SSTabRestored', arguments.callee, false);
+			aNewTab.addEventListener('SSTabRestored', function onSSTabRestored() {
+				aNewTab.removeEventListener('SSTabRestored', onSSTabRestored, false);
 				browser.contentWindow.setTimeout(function() {
 					self._scrollContentToSplitPosition(browser.contentWindow, scrollSize);
 				}, 0);
@@ -1100,10 +1101,10 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		});
 	},
 
-	_waitDOMEvent : function FSB_waitDOMEvent(aTarget)
+	_waitDOMEvent : function FSB_waitDOMEvent(aTarget, ...aArgs)
 	{
 		return new Promise(function(aResolve, aReject) {
-		var eventTypes = Array.slice(arguments, 1);
+		var eventTypes = Array.slice(aArgs, 1);
 
 		var handleEvent = function() {
 				eventTypes.forEach(function(aType) {
@@ -1256,8 +1257,8 @@ FoxSplitterBase.updatePlatformOffset = function FSB_updatePlatformOffset() {
 			'chrome,dialog=no,all,screenX=100,screenY=100,outerWidth=100,outerHeight=100',
 			null
 		);
-	window.addEventListener('load', function() {
-		window.removeEventListener('load', arguments.callee, false);
+	window.addEventListener('load', function onLoad() {
+		window.removeEventListener('load', onLoad, false);
 		// on some environments, just on this timing the window is not shown yet, so we fail to calculate offsets.
 		// to avoid this problem, (for safety,) wait until the window is completely shown.
 		wait(500).then(function() {
