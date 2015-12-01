@@ -48,7 +48,7 @@ const SessionStore = Cc['@mozilla.org/browser/sessionstore;1']
 const ObserverService = Cc['@mozilla.org/observer-service;1']
 					.getService(Ci.nsIObserverService);
 
-var FoxSplitterConst = require('const');
+var FoxSplitterConst = require('extended-const');
 var domain = FoxSplitterConst.domain;
 
 var bundle = require('lib/locale')

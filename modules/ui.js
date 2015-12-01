@@ -48,7 +48,7 @@ var bundle = require('lib/locale')
 
 var EXPORTED_SYMBOLS = ['FoxSplitterUI'];
 
-var FoxSplitterConst = require('const');
+var FoxSplitterConst = require('extended-const');
 var domain = FoxSplitterConst.domain;
 
 function log(aMessage, ...aArgs) {

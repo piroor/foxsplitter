@@ -43,7 +43,7 @@ var EXPORTED_SYMBOLS = ['FoxSplitterBase'];
 const WindowWatcher = Cc['@mozilla.org/embedcomp/window-watcher;1']
 						.getService(Ci.nsIWindowWatcher);
 
-var FoxSplitterConst = require('const');
+var FoxSplitterConst = require('extended-const');
 var domain = FoxSplitterConst.domain;
 
 function log(aMessage, ...aArgs) {
