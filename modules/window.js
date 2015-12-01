@@ -963,7 +963,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				aResolve();
 				waitStateChanged = null;
 			}, false);
-		});
+		}).bind(this));
 		var waitRestored = this._waitDOMEvent(window, 'resize')
 							.then(function() {
 								waitRestored = null;
