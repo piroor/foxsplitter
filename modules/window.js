@@ -611,7 +611,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	 * The nsWindowWatcher notifies "domwindowclosed" event before "unload"
 	 * so it is the best timing.
 	 */
-	_preDestroy : function FSW_preDestroy(aOnQuit) 
+	_preDestroy : function FSW_preDestroy(aReason) 
 	{
 		this._preDestroyDone = true;
 
@@ -619,19 +619,19 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 			.getService(Ci.nsIWindowWatcher)
 			.unregisterNotification(this);
 
-		if (this.parent && !aOnQuit) {
+		if (this.parent && aReason !== this.REASON_QUIT) {
 			this._restoreSiblingScrollPosition();
 			this._exportTabsToSibling();
 		}
 	},
 	_preDestroyDone : false,
 
-	destroy : function FSW_destroy(aOnQuit) 
+	destroy : function FSW_destroy(aReason) 
 	{
-		this.shouldSaveState = !aOnQuit;
+		this.shouldSaveState = aReason !== this.REASON_QUIT;
 
 		if (!this._preDestroyDone)
-			this._preDestroy(aOnQuit);
+			this._preDestroy(aReason);
 
 		if (this._reservedHandleRaised) {
 			this._reservedHandleRaised.cancel();
@@ -648,12 +648,12 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 
 		this.setWindowValue(this.SYNC_SCROLL, this.syncScroll);
 
-		this.ui.destroy(aOnQuit);
+		this.ui.destroy(aReason);
 		delete this.ui;
 
 		var id = this.id;
 
-		this.unbind(aOnQuit);
+		this.unbind(aReason);
 
 		var w = this.window;
 		w.removeEventListener('unload', this, false);
@@ -1683,7 +1683,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 				return;
 
 			case 'unload':
-				return this.destroy();
+				return this.destroy(this.REASON_WINDOW_CLOSE);
 
 
 			case 'resize':
@@ -1735,7 +1735,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		{
 			case 'domwindowclosed':
 				if (aSubject == this.window)
-					this._preDestroy();
+					this._preDestroy(this.REASON_WINDOW_CLOSE);
 				return;
 
 			case 'sessionstore-windows-restored':
@@ -2204,11 +2204,11 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 		if (this.ui)
 			this.ui.updateGroupedAppearance();
 	},
-	clearGroupedAppearance : function FSW_clearGroupedAppearance(aOnQuit)
+	clearGroupedAppearance : function FSW_clearGroupedAppearance(aReason)
 	{
 		this.documentElement.removeAttribute(this.MEMBER);
 		if (this.ui)
-			this.ui.clearGroupedAppearance(aOnQuit);
+			this.ui.clearGroupedAppearance(aReason);
 	},
 
 

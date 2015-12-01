@@ -154,7 +154,10 @@ var exports = {
 		.map(function(aId) {
 			return ':not(#'+aId+')';
 		})
-		.join('')
+		.join(''),
+
+	REASON_WINDOW_CLOSE : 1,
+	REASON_QUIT : 2
 };
 
 exports.STYLESHEET = easyTemplate.apply(here(/*

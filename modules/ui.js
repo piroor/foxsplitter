@@ -142,12 +142,13 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 		this._makeAppButtonDraggable();
 	},
 
-	destroy : function FSUI_destroy(aOnQuit)
+	destroy : function FSUI_destroy(aReason)
 	{
 		this.window.removeEventListener('TabSelect', this, false);
 		this.toolbox.removeEventListener('MozMouseHittest', this, true);
 
-		this.clearGroupedAppearance(aOnQuit);
+		this.clearGroupedAppearance(aReason === this.REASON_QUIT ||
+		                            aReason === this.REASON_WINDOW_CLOSE);
 		this._makeAppButtonUndraggable();
 		this._destroyToolbarItems();
 		this._destroyMenuItems();
