@@ -1,10 +1,10 @@
 /**
  * @fileOverview Easy template module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      4
+ * @version      5
  *
  * @license
- *   The MIT License, Copyright (c) 2012-2015 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2012-2016 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -53,16 +53,17 @@ var easyTemplate = {
 				{ sandboxPrototype: window }
 			);
 
-		Array.forEach(document.querySelectorAll('stringbundle'), function(aBundle) {
+		for (let aBundle of document.querySelectorAll('stringbundle'))
+		{
 			if (aBundle.id)
 				sandbox[aBundle.id] = aBundle;
-		});
+		}
 
 		['title', 'label', 'value'].forEach(function(aAttribute) {
 			var selector = '*[' + aAttribute + '^="{{"][' + aAttribute + '$="}}"]';
 			var anonymousRoot = document.getAnonymousNodes(document.documentElement)[0];
-			Array.slice(document.querySelectorAll(selector))
-				.concat(Array.slice(anonymousRoot.querySelectorAll(selector)))
+			[...document.querySelectorAll(selector)]
+				.concat([...anonymousRoot.querySelectorAll(selector)])
 				.forEach(function(aNode) {
 					var definition = aNode.getAttribute(aAttribute);
 					definition = definition.replace(/^\{\{|\}\}$/g, '');

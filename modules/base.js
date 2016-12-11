@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2015
+ * Portions created by the Initial Developer are Copyright (C) 2007-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -1225,11 +1225,12 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 					b.selectedTab = self._loggerTab = logger = b.addTab();
 					logger.style.backgroundColor = 'red';
 				}
-				Array.forEach(b.tabContainer.childNodes, function(aTab) {
+				for (let aTab of b.tabContainer.childNodes)
+				{
 					if (aTab.linkedBrowser &&
 						aTab.linkedBrowser.currentURI.spec.indexOf(header) == 0)
 						b.removeTab(aTab);
-				});
+				}
 				try {
 					logger.linkedBrowser.stop();
 					logger.linkedBrowser.loadURI(header+encodeURIComponent(self._log));

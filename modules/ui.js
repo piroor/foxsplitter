@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2015
+ * Portions created by the Initial Developer are Copyright (C) 2007-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -100,7 +100,7 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 	},
 	get toolbars()
 	{
-		return !this._window ? [] : Array.slice(this.document.querySelectorAll('toolbar, toolbox')) ;
+		return !this._window ? [] : [...this.document.querySelectorAll('toolbar, toolbox')] ;
 	},
 	get appButton()
 	{
@@ -1096,20 +1096,22 @@ FoxSplitterUI.prototype = inherit(FoxSplitterConst, {
 
 		var tabsItems = aPopup.querySelectorAll('.' + this.MENU_ITEM + '.tabs');
 		var multipleTabs = this.owner.visibleTabs.length > 1;
-		Array.forEach(tabsItems, function(aItem) {
+		for (let aItem of tabsItems)
+		{
 			if (multipleTabs)
 				aItem.removeAttribute('disabled');
 			else
 				aItem.setAttribute('disabled', true);
-		}, this);
+		}
 
 		var groupedItems = aPopup.querySelectorAll('.' + this.MENU_ITEM + '.grouped');
-		Array.forEach(groupedItems, function(aItem) {
+		for (let aItem of groupedItems)
+		{
 			if (this.owner.parent)
 				aItem.removeAttribute('disabled');
 			else
 				aItem.setAttribute('disabled', true);
-		}, this);
+		}
 
 		var toggleStretchedItem = aPopup.querySelector('.' + this.MENU_ITEM + '.toggleStretched');
 		if (toggleStretchedItem) {

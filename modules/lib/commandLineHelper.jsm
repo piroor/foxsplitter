@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is Fox Splitter.
- * Portions created by the Initial Developer are Copyright (C) 2012-2015
+ * Portions created by the Initial Developer are Copyright (C) 2012-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -38,10 +38,8 @@ var EXPORTED_SYMBOLS = ['commandLineHelper'];
 var { Promise } = Components.utils.import('resource://gre/modules/Promise.jsm', {});
 
 var commandLineHelper = {
-	run : function commandLineHelper_run(aExecutable)
+	run : function commandLineHelper_run(aExecutable, ...aArgs)
 	{
-		var args = Array.slice(arguments, 1);
-
 		var executable;
 		try {
 			if (aExecutable.indexOf('file:') == 0) {
@@ -73,7 +71,7 @@ var commandLineHelper = {
 
 		return new Promise(function(aResolve, aReject) {
 			process.init(executable);
-			process.runwAsync(args, args.length, {
+			process.runwAsync(aArgs, aArgs.length, {
 				observe : function run_observe(aSubject, aTopic, aData)
 				{
 					if (aTopic == 'process-finished')

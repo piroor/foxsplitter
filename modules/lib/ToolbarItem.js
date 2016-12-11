@@ -1,10 +1,10 @@
 /**
  * @fileOverview Toolbar item module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      12
+ * @version      13
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2015 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2011-2016 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -399,8 +399,8 @@ try{
 	else { // string
 		fragment = range.createContextualFragment(String(aSource));
 		// clear white-space nodes from XUL tree
-		(function(aNode) {
-			Array.slice(aNode.childNodes).forEach(arguments.callee);
+		(function processNode(aNode) {
+			[...aNode.childNodes].forEach(processNode);
 			if (aNode.parentNode &&
 				aNode.parentNode.namespaceURI == ToolbarItem.XULNS &&
 				aNode.nodeType == Ci.nsIDOMNode.TEXT_NODE &&

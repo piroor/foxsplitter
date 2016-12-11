@@ -1,10 +1,10 @@
 /**
  * @fileOverview Configuration dialog module for restartless addons
  * @author       YUKI "Piro" Hiroshi
- * @version      13
+ * @version      15
  *
  * @license
- *   The MIT License, Copyright (c) 2011-2014 YUKI "Piro" Hiroshi.
+ *   The MIT License, Copyright (c) 2011-2016 YUKI "Piro" Hiroshi.
  *   https://github.com/piroor/restartless/blob/master/license.txt
  * @url http://github.com/piroor/restartless
  */
@@ -155,7 +155,7 @@ var config = {
 			let xmlnses = root.match(/xmlns(:[^=]+)\s*=\s*('[^']*'|"[^"]*")/g);
 			root = root
 					.replace(/\s+[^ =]+\s*=\s*('[^']*'|"[^"]*")/g, '')
-					.replace(/(\/>)$/, ' ' + Array.slice(xmlnses).join(' ') + '$1')
+					.replace(/(\/>)$/, ' ' + [...xmlnses].join(' ') + '$1')
 		}
 
 		this._configs[this._resolveResURI(aURI)] = {
@@ -177,8 +177,8 @@ var config = {
 		range.selectNode(root);
 		var fragment = range.createContextualFragment(soruce);
 		// clear white-space nodes from XUL tree
-		(function(aNode) {
-			Array.slice(aNode.childNodes).forEach(arguments.callee);
+		(function processNode(aNode) {
+			[...aNode.childNodes].forEach(processNode);
 			if (aNode.parentNode &&
 				aNode.parentNode.namespaceURI == XULNS &&
 				aNode.nodeType == Ci.nsIDOMNode.TEXT_NODE &&
@@ -328,12 +328,13 @@ var WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1']
 	while (browsers.hasMoreElements())
 	{
 		let browser = browsers.getNext().QueryInterface(Ci.nsIDOMWindow);
-		if (browser.gBrowser)
-			Array.slice(browser.gBrowser.mTabContainer.childNodes)
-				.forEach(function(aTab) {
+		if (browser.gBrowser) {
+			for (let aTab of browser.gBrowser.mTabContainer.childNodes)
+			{
 				if (aTab.linkedBrowser.currentURI.spec == 'about:addons')
 					config._onLoadManager(aTab.linkedBrowser.contentWindow);
-			});
+			}
+		}
 	}
 }
 {

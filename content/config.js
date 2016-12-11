@@ -14,7 +14,7 @@
  * The Original Code is Fox Splitter.
  *
  * The Initial Developer of the Original Code is YUKI "Piro" Hiroshi.
- * Portions created by the Initial Developer are Copyright (C) 2007-2012
+ * Portions created by the Initial Developer are Copyright (C) 2007-2016
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):: YUKI "Piro" Hiroshi <piro.outsider.reflex@gmail.com>
@@ -39,20 +39,22 @@ function inithiddenUIInMemberWindowChecks() {
 	hiddenUIInMemberWindow = document.getElementById('hiddenUIInMemberWindow');
 	updatehiddenUIInMemberWindowGroupbox = document.getElementById('updatehiddenUIInMemberWindow-groupbox');
 	var prefValue = parseInt(hiddenUIInMemberWindow.value);
-	Array.forEach(updatehiddenUIInMemberWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
-		var value = parseInt(aCheckbox.getAttribute('value'));
+	for (let aCheckbox of updatehiddenUIInMemberWindowGroupbox.querySelectorAll('checkbox[value]'))
+	{
+		let value = parseInt(aCheckbox.getAttribute('value'));
 		aCheckbox.checked = !(prefValue & value);
-	});
+	}
 }
 function onChangehiddenUIInMemberWindow() {
 	var pref = hiddenUIInMemberWindow;
 	var prefValue = parseInt(pref.value);
-	Array.forEach(updatehiddenUIInMemberWindowGroupbox.querySelectorAll('checkbox[value]'), function(aCheckbox) {
-		var value = parseInt(aCheckbox.getAttribute('value'));
+	for (let aCheckbox of updatehiddenUIInMemberWindowGroupbox.querySelectorAll('checkbox[value]'))
+	{
+		let value = parseInt(aCheckbox.getAttribute('value'));
 		if (prefValue & value) prefValue ^= value;
 		if (!aCheckbox.checked)
 			prefValue |= value;
-	});
+	}
 	pref.value = prefValue;
 }
 function updateShortcut(aEvent) {
