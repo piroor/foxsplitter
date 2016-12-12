@@ -36,10 +36,9 @@
 	function collectAllFrames(aFrame) {
 		var frames = [aFrame];
 		frames.push(aFrame);
-		for (let aFrame of aFrame.frames)
-		{
-			frames = frames.concat(collectAllFrames(aFrame));
-		}
+		Array.prototype.forEach.call(aFrame.frames, function(aSubFrame) {
+			frames = frames.concat(collectAllFrames(aSubFrame));
+		});
 		return frames;
 	}
 
