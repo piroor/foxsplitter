@@ -318,7 +318,7 @@ FoxSplitterWindow.prototype = inherit(FoxSplitterBase.prototype, {
 	get allTabs()
 	{
 		return !this.browser ? [] :
-			[...this.browser.mTabContainer.childNodes];
+			[...this.browser.tabContainer.childNodes];
 	},
 
 

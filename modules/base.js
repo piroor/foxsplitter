@@ -1134,7 +1134,7 @@ FoxSplitterBase.prototype = inherit(FoxSplitterConst, {
 		var tabs = aTabs.slice(0);
 
 		var browser = this.getTabBrowserFromTab(tabs[0]);
-		var allTabs = browser.visibleTabs || browser.mTabContainer.childNodes;
+		var allTabs = browser.visibleTabs || browser.tabContainer.childNodes;
 
 		var windowMove = allTabs.length == tabs.length;
 		var selectedTabs = this._filterSelectedTabs(tabs);

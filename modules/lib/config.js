@@ -329,7 +329,7 @@ var WindowMediator = Cc['@mozilla.org/appshell/window-mediator;1']
 	{
 		let browser = browsers.getNext().QueryInterface(Ci.nsIDOMWindow);
 		if (browser.gBrowser) {
-			for (let aTab of browser.gBrowser.mTabContainer.childNodes)
+			for (let aTab of browser.gBrowser.tabContainer.childNodes)
 			{
 				if (aTab.linkedBrowser.currentURI.spec == 'about:addons')
 					config._onLoadManager(aTab.linkedBrowser.contentWindow);
