@@ -154,7 +154,7 @@ function initWmctrlPath()
 			}
 
 			var wmctrl = Cc['@mozilla.org/file/local;1']
-							.createInstance(Ci.nsILocalFile);
+							.createInstance(Ci.nsIFile);
 			wmctrl.initWithPath(aPath);
 			if (!wmctrl.exists())
 				throw new Error(Wmctrl.ERROR_WMCTRL_NOT_FOUND);

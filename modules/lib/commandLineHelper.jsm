@@ -51,7 +51,7 @@ var commandLineHelper = {
 			}
 			else {
 				executable = Cc['@mozilla.org/file/local;1']
-								.createInstance(Ci.nsILocalFile);
+								.createInstance(Ci.nsIFile);
 				executable.initWithPath(aExecutable);
 			}
 		}
@@ -87,7 +87,7 @@ var commandLineHelper = {
 	{
 		var file = Cc['@mozilla.org/file/directory_service;1']
 					.getService(Ci.nsIProperties)
-					.get('TmpD', Ci.nsILocalFile);
+					.get('TmpD', Ci.nsIFile);
 		file.append(aLeafName);
 		file.createUnique(Ci.nsIFile.NORMAL_FILE_TYPE, 0600);
 		return file;
